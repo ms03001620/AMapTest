@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">AMapTest</string>
+
+    <string name="front_sheet_behavior" translatable="false">com.example.amaptest.FrontSheetBehavior</string>
+    <string name="free_dc_total">快%d&#160;</string>
+    <string name="free_ac_total">&#160;慢%d</string>
+
+</resources>

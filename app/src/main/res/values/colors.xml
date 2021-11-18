@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+
+
+    <color name="base_color_white">#FFFFFF</color>
+    <color name="base_color_white_opacity_15">#26FFFFFF</color>
+    <color name="base_color_black">#000000</color>
+    <color name="base_color_primary">#101820</color>
+    <color name="base_color_second_primary">#990E1821</color>
+    <color name="base_color_third_primary">#26101820</color>
+    <color name="base_color_333333">#333333</color>
+    <color name="base_color_f0f0f0">#F0F0F0</color>
+    <color name="base_color_fff8f8f8">#FFF8F8F8</color>
+    <color name="base_color_e03c31">#E03C31</color>
+    <color name="base_color_0cd070">#0CD070</color>
+    <color name="base_color_d9d9d6">#D9D9D6</color>
+    <color name="base_color_ff7500">#FF7500</color>
+    <color name="base_color_26d8d8d">#26D8D8D8</color>
+    <color name="base_color_101820">#101820</color>
+    <color name="base_color_4D101820">#4D101820</color>
+    <color name="base_color_26101820">#26101820</color>
+    <color name="base_color_99101820">#99101820</color>
+    <color name="base_color_f8f8f8">#F8F8F8</color>
+    <color name="base_color_ffffff">#FFFFFF</color>
+    <color name="base_color_030303">#030303</color>
+    <color name="base_color_C4C4C4">#C4C4C4</color>
+    <color name="base_color_FF7500">#FF7500</color>
+    <color name="base_color_d2d5db">#d2d5db</color>
+    <color name="base_color_ff75787b">#FF75787B</color>
+    <color name="base_color_ffeff0f1">#FFEFF0F1</color>
+    <color name="base_color_00000000">#00000000</color>
+    <color name="base_color_button_white">#ecece7</color>
+    <color name="base_color_fff0f0f0">#FFF0F0F0</color>
+    <color name="base_color_ecece7">#ECECE7</color>
+    <color name="base_color_f7ea48">#F7EA48</color>
+    <color name="base_color_75787B">#75787B</color>
+    <color name="base_color_F7EA48">#F7EA48</color>
+    <color name="base_color_DADCDE">#DADCDE</color>
+    <color name="base_color_b2b3b9">#B2B3B9</color>
+    <color name="base_color_B7BABC">#B7BABC</color>
+    <color name="base_color_1D1D1B">#1D1D1B</color>
+    <color name="base_color_4C101820">#4C101820</color>
+    <color name="base_color_F3F3F3">#F3F3F3</color>
+    <color name="base_color_866D4B">#866D4B</color>
+
+    <color name="base_colorSplashBg">#11171E</color>
+    <color name="base_orange">#FF7500</color>
+    <color name="base_blue">#007AFF</color>
+    <color name="base_red">#FF0000</color>
+    <color name="base_white">#FFFFFF</color>
+    <color name="base_black">#000000</color>
+    <color name="base_transparent">#00ffffff</color>
+    <color name="base_transparent_99">#99FFFFFF</color>
+    <!--按钮不可点击时候的背景色-->
+    <color name="base_color_enable_button">#75787B</color>
+
+    <!-- 0708 最新 commonui 样式   -->
+    <color name="base_color_button_disable_bg">#4D53565A</color>
+    <color name="base_color_button_enable_bg">#53565A</color>
+    <color name="base_color_button_disable_text">#F5F5F5</color>
+    <color name="base_color_button_disable_icon">#F5A35D</color>
+
+    <color name="base_color_white_button_enable_bg">#ECECE7</color>
+    <color name="base_color_white_button_disable_bg">#ECECE7</color>
+    <color name="base_color_white_button_disable_text">#4D101820</color>
+
+    <color name="base_color_f5f5f5">#F5F5F5</color>
+    <color name="base_color_53565A">#53565A</color>
+    <!--15%透明-->
+    <!--30%透明-->
+    <!--40%透明-->
+    <color name="base_color_primary_transparent_forty_percent">#99101820</color>
+    <!--60%透明-->
+    <color name="base_color_primary_transparent_sixty_percent">#66101820</color>
+    <!--70%透明-->
+    <color name="base_color_primary_transparent_seventy_percent">#4D101820</color>
+    <!--85%透明-->
+    <color name="base_color_primary_transparent_eight_five_percent">#26101820</color>
+
+    <!-- 不透明度 -->
+    <!-- 5% -->
+    <!-- 10% -->
+    <!-- 15% -->
+    <color name="base_color_primary_opacity_15">#26101820</color>
+    <!-- 20% -->
+    <!-- 25% -->
+    <color name="base_color_primary_opacity_25">#40101820</color>
+    <!-- 30% -->
+    <color name="base_color_primary_opacity_30">#4D101820</color>
+    <!-- 35% -->
+    <color name="base_color_primary_opacity_35">#59101820</color>
+    <!-- 40% -->
+    <color name="base_color_primary_opacity_40">#66101820</color>
+    <!-- 45% -->
+    <!-- 50% -->
+    <!-- 55% -->
+    <!-- 60% -->
+    <color name="base_color_primary_opacity_60">#99101820</color>
+    <!-- 65% -->
+    <color name="base_color_primary_opacity_65">#A6101820</color>
+    <!-- 70% -->
+    <!-- 75% -->
+    <!-- 80% -->
+    <!-- 85% -->
+    <color name="base_color_primary_opacity_85">#D9101820</color>
+    <!-- 90% -->
+    <color name="base_color_B1B3B3">#B1B3B3</color>
+    <!--黑色，不透明30%-->
+    <color name="base_color_30_percent_black">#4D000000</color>
+    <!--黑色，不透明15%-->
+    <color name="base_color_15_percent_black">#26000000</color>
+    <color name="base_color_97999B">#97999B</color>
+</resources>

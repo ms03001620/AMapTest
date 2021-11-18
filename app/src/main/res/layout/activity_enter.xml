@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".EnterActivity">
+
+    <com.example.amaptest.ChargingProgressView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:background="@drawable/charging_icon_progress"
+        android:layout_height="1dp"/>
+
+    <Button
+        android:id="@+id/btn_enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="enter" />
+
+    <Button
+        android:id="@+id/btn_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="enterMap" />
+
+    <Button
+        android:id="@+id/btn_anim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="anim" />
+
+    <Button
+        android:id="@+id/btn_bottomSheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BottomSheet" />
+
+
+    <Button
+        android:id="@+id/btn_sheetBehavior"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SheetBehavior" />
+
+    <Button
+        android:id="@+id/btn_cluster"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cluster" />
+
+
+
+</LinearLayout>

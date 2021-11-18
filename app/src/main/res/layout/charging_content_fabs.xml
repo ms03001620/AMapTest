@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="ContentDescription">
+
+    <data />
+
+    <merge tools:parentTag="RelativeLayout">
+
+
+
+        <ImageView
+            android:id="@+id/fab_favorite"
+            style="@style/ChargingFabMore"
+            android:src="@drawable/charging_icon_favorite" />
+
+        <ImageView
+            android:id="@+id/fab_help"
+            style="@style/ChargingFabMore"
+            android:src="@drawable/charging_icon_help" />
+
+        <ImageView
+            android:id="@+id/fab_orders"
+            style="@style/ChargingFabMore"
+            android:src="@drawable/charging_icon_orders" />
+
+        <ImageView
+            android:id="@+id/fab_more"
+            style="@style/ChargingFabMore"
+            android:src="@drawable/charging_icon_more_close"
+            android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/fab_positioning"
+            style="@style/ChargingFabMore"
+            android:layout_above="@+id/fab_base"
+            android:src="@drawable/charging_icon_positioning"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/fab_base"
+            android:layout_width="@dimen/charging_station_fab_size"
+            android:layout_height="@dimen/charging_station_fab_size"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="@dimen/charging_station_fab_margin"
+            android:layout_marginBottom="34dp"
+            android:src="@drawable/charging_icon_qr" />
+    </merge>
+</layout>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="charging_station_fab_size">48dp</dimen>
+    <dimen name="charging_station_fab_gap">8dp</dimen>
+    <dimen name="charging_station_fab_margin">12dp</dimen>
+</resources>
