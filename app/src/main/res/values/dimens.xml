@@ -3,4 +3,6 @@
     <dimen name="charging_station_fab_size">48dp</dimen>
     <dimen name="charging_station_fab_gap">8dp</dimen>
     <dimen name="charging_station_fab_margin">12dp</dimen>
+
+    <dimen name="charging_station_cluster_size">48dp</dimen>
 </resources>

@@ -22,6 +22,8 @@ import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.R
 import com.example.amaptest.SizeUtils
 import com.example.amaptest.ViewModelFactory
+import com.example.amaptest.ui.main.calc.Cluster
+import com.example.amaptest.ui.main.calc.DistanceInfo
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.freeAcDcAll
 import com.polestar.repository.data.charging.isValid
@@ -30,9 +32,7 @@ import java.lang.StringBuilder
 class ClusterFragment : Fragment(),
     LocationSource,
     AMapLocationListener,
-    AMap.OnMarkerClickListener
-{
-
+    AMap.OnMarkerClickListener {
     companion object {
         fun newInstance() = ClusterFragment()
     }
@@ -44,6 +44,13 @@ class ClusterFragment : Fragment(),
         )[MainViewModel::class.java]
     }
 
+    private val clusterViewModel by lazy {
+        ViewModelProvider(
+            requireActivity(),
+            ViewModelFactory()
+        )[ClusterViewModel::class.java]
+    }
+
     lateinit var mapView: MapView
     private val styleData by lazy {
         AssetsReadUtils.readBytes(requireActivity(), "style.data")
@@ -51,6 +58,11 @@ class ClusterFragment : Fragment(),
     private val styleDataExtra by lazy {
         AssetsReadUtils.readBytes(requireActivity(), "style_extra.data")
     }
+
+    private val clusterIconSize by lazy {
+        resources.getDimension(R.dimen.charging_station_cluster_size)
+    }
+
     private lateinit var myLocationStyle: MyLocationStyle
     private var locationClient: AMapLocationClient? = null
     private var locationOptions: AMapLocationClientOption? = null
@@ -89,47 +101,72 @@ class ClusterFragment : Fragment(),
         myLocationStyle.strokeWidth(2f)
         myLocationStyle.radiusFillColor(Color.parseColor("#0A137ED4"))
         initObserver()
-        viewModel.mock(requireContext())
+        initClusterObserver()
+        initZoomBtn(view)
+
+        mapView.map.setOnCameraChangeListener(object : AMap.OnCameraChangeListener {
+            override fun onCameraChange(p0: CameraPosition?) {
+            }
+
+            override fun onCameraChangeFinish(p0: CameraPosition?) {
+                clusterViewModel.reCalcCluster(getClusterMergeDistance())
+            }
+        })
+
+        clusterViewModel.initClusterAlgorithm(clusterIconSize)
+
+        mapView.map.setOnMapLoadedListener {
+            clusterViewModel.mock(requireContext(), getClusterMergeDistance())
+            //viewModel.mock(requireContext())
+            moveCameraToDefault()
+        }
         return view
     }
 
-    private fun initObserver() {
-        viewModel.stationLiveData.observe(viewLifecycleOwner) {
+    private fun initClusterObserver() {
+        clusterViewModel.stationClusterLiveData.observe(viewLifecycleOwner) { list ->
             mapView.map.clear()
-            markersMap.clear()
-            currentShownMarker = null
-            if (it.isValid() && it.lat != null && it.lng != null) {
-                val markerOptions = MarkerOptions()
-                    .position(LatLng(it.lat!!, it.lng!!))
-                    .icon(getCollapsedBitmapDescriptor(it))
-                    .infoWindowEnable(true)
-                mapView.map.animateCamera(CameraUpdateFactory.newLatLng(LatLng(it.lat!!, it.lng!!)))
-                val marker = mapView.map.addMarker(markerOptions)
-                markersMap[marker] = it
-                onMarkerClick(marker)
-            } else {
-                viewModel.startLocation()
+            val boundsBuilder = LatLngBounds.builder()
+            list.forEach { cluster ->
+                addMarkToMap(
+                    cluster,
+                    mapView.map
+                )?.let {
+                    boundsBuilder.include(it.position)
+                }
             }
         }
+    }
+
+    private fun moveCameraToDefault() {
+        with(MockUtils.mockBaiYulan()) {
+            CameraUpdateFactory.newLatLng(this)
+        }.let {
+            mapView.map.moveCamera(it)
+        }
+    }
+
+
+    private fun initObserver() {
         viewModel.stationListLiveData.observe(viewLifecycleOwner) {
             mapView.map.clear()
             markersMap.clear()
             currentShownMarker = null
             val boundsBuilder = LatLngBounds.builder()
             for (station in it) {
-                if (station.lat != null && station.lng != null) {
-                    val markerOptions = MarkerOptions()
-                        .position(LatLng(station.lat!!, station.lng!!))
-                        .icon(getCollapsedBitmapDescriptor(station))
-                        .infoWindowEnable(true)
-                    val marker = mapView.map.addMarker(markerOptions)
-                    markersMap[marker] = station
-                    boundsBuilder.include(LatLng(station.lat!!, station.lng!!))
+                getLatLng(station)?.let { latlng ->
+                    addMarkToMap(latlng, station, mapView.map)?.let { marker ->
+                        markersMap[marker] = station
+                        boundsBuilder.include(latlng)
+                    }
                 }
             }
             mapView.map.animateCamera(
-                CameraUpdateFactory.newLatLngBounds(boundsBuilder.build(),
-                100))
+                CameraUpdateFactory.newLatLngBounds(
+                    boundsBuilder.build(),
+                    100
+                )
+            )
         }
         viewModel.markerCollapsedLiveData.observe(viewLifecycleOwner) {
             markersMap[currentShownMarker]?.let {
@@ -145,6 +182,86 @@ class ClusterFragment : Fragment(),
             mapView.map.isMyLocationEnabled = true
             mapView.map.myLocationStyle = myLocationStyle
         }
+
+        viewModel.stationLiveData.observe(viewLifecycleOwner) { station ->
+            mapView.map.clear()
+            markersMap.clear()
+            currentShownMarker = null
+            getLatLng(station)?.let { latlng ->
+                addMarkToMap(latlng, station, mapView.map)?.let {
+                    markersMap[it] = station
+                    onMarkerClick(it)
+                }
+            }
+        }
+    }
+
+    private fun addMarkToMap(
+        cluster: Cluster,
+        map: AMap
+    ): Marker? {
+        return with(cluster.isOnlyOne()) {
+            if (this) {
+                getCollapsedBitmapDescriptor(cluster.clusterItem.getEntry())
+            } else {
+                getClusterBitmapDescriptor(cluster.size())
+            }
+        }.let {
+            MarkerOptions()
+                .position(cluster.getCenterLatLng())
+                .icon(it)
+                .infoWindowEnable(true)
+        }.let {
+            map.addMarker(it)
+        }
+    }
+
+    private fun addMarkToMap(
+        latLng: LatLng,
+        stationDetail: StationDetail,
+        map: AMap,
+        isCluster: Boolean = false,
+    ): Marker? {
+        return with(isCluster) {
+            if (this) {
+                getClusterBitmapDescriptor(0)
+            } else {
+                getCollapsedBitmapDescriptor(stationDetail)
+            }
+        }.let {
+            MarkerOptions()
+                .position(latLng)
+                .icon(it)
+                .infoWindowEnable(true)
+        }.let {
+            map.addMarker(it)
+        }
+    }
+
+    private fun getLatLng(stationDetail: StationDetail): LatLng? {
+        if (stationDetail.isValid() &&
+            stationDetail.lat != null &&
+            stationDetail.lng != null
+        ) {
+            return LatLng(stationDetail.lat, stationDetail.lng)
+        }
+        return null
+    }
+
+    fun getClusterMergeDistance() =
+        DistanceInfo(
+            clusterIconSize * mapView.map.scalePerPixel,
+            mapView.map.cameraPosition.zoom != mapView.map.maxZoomLevel
+        )
+
+    private fun initZoomBtn(view: View) {
+        view.findViewById<View>(R.id.btn_zoom_in)?.setOnClickListener {
+            mapView.map.animateCamera(CameraUpdateFactory.zoomIn())
+        }
+
+        view.findViewById<View>(R.id.btn_zoom_out)?.setOnClickListener {
+            mapView.map.animateCamera(CameraUpdateFactory.zoomOut())
+        }
     }
 
     private fun getCollapsedBitmapDescriptor(stationDetail: StationDetail): BitmapDescriptor? {
@@ -154,10 +271,10 @@ class ClusterFragment : Fragment(),
         return BitmapDescriptorFactory.fromView(view)
     }
 
-    private fun getClusterBitmapDescriptor(stationDetail: StationDetail): BitmapDescriptor? {
+    private fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
         val view = LayoutInflater.from(requireContext())
             .inflate(R.layout.charging_layout_marker_cluster, null, false)
-        view.findViewById<TextView>(R.id.text_cluster).text =  stationDetail.freeAcDcAll().toString()
+        view.findViewById<TextView>(R.id.text_cluster).text = clusterSize.toString()
         return BitmapDescriptorFactory.fromView(view)
     }
 
@@ -189,8 +306,14 @@ class ClusterFragment : Fragment(),
             }
             currentShownMarker = p0
             val currentStation = markersMap[currentShownMarker]
-            p0?.setMarkerOptions(p0.options.icon(getExpandedBitmapDescriptor(currentStation?.freeDcTotal
-                ?: 0, currentStation?.freeAcTotal ?: 0)))
+            p0?.setMarkerOptions(
+                p0.options.icon(
+                    getExpandedBitmapDescriptor(
+                        currentStation?.freeDcTotal
+                            ?: 0, currentStation?.freeAcTotal ?: 0
+                    )
+                )
+            )
 
             currentShownMarker?.let {
                 moveCameraWithOffset(it, mapView.map, SizeUtils.dp2px(150f))

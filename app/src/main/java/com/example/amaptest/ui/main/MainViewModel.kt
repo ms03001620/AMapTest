@@ -27,12 +27,16 @@ class MainViewModel : ViewModel() {
         markerCollapsedLiveData.postValue(true)
     }
 
-    fun mock(context: Context){
+    fun mock(context: Context) {
         viewModelScope.launch {
-            delay(2000)
+            delay(1000)
             AssetsReadUtils.mockStation(context)?.let {
-                stationListLiveData.postValue(it/*.subList(0, 2)*/)
+                stationListLiveData.postValue(it.subList(2, 6))
             }
         }
+    }
+
+    fun setStationList(list: List<StationDetail>) {
+        stationListLiveData.value = list
     }
 }
