@@ -6,6 +6,10 @@ import com.polestar.repository.data.charging.StationDetail
 class Cluster(val clusterItem: ClusterItem<StationDetail>) {
     private val items = mutableListOf<ClusterItem<StationDetail>>()
 
+    init{
+        items.add(clusterItem)
+    }
+
     fun getCenterLatLng(): LatLng {
         return clusterItem.getPosition()
     }
@@ -17,4 +21,10 @@ class Cluster(val clusterItem: ClusterItem<StationDetail>) {
     fun isOnlyOne() = items.size == 1
 
     fun size() = items.size
+
+    fun contains(item: ClusterItem<StationDetail>) : Boolean{
+
+        return items.contains(item)
+    }
+
 }

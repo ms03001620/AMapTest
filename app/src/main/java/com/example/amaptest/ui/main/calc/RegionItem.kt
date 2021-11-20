@@ -13,4 +13,14 @@ class RegionItem(val stationDetail: StationDetail) : ClusterItem<StationDetail> 
     override fun getEntry(): StationDetail {
         return stationDetail
     }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (this.hashCode() == other.hashCode()) return true
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return stationDetail.stationid.hashCode()
+    }
 }

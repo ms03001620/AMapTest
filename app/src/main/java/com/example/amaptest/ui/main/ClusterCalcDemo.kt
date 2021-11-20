@@ -52,10 +52,7 @@ class ClusterCalcDemo {
             }
 
             if (g == null) {
-                Cluster(clusterItem).let {
-                    it.addClusterItem(clusterItem)
-                    newResult.add(it)
-                }
+                newResult.add(Cluster(clusterItem))
             } else {
                 g?.addClusterItem(clusterItem)
             }
@@ -65,7 +62,6 @@ class ClusterCalcDemo {
                 clusterItem
             ) ?: run {
                 Cluster(clusterItem).let {
-                    it.addClusterItem(clusterItem)
                     newResult.add(it)
                 }
             }*/
