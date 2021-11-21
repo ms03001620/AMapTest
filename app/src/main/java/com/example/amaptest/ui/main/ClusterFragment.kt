@@ -251,7 +251,8 @@ class ClusterFragment : Fragment(),
     fun getClusterMergeDistance() =
         DistanceInfo(
             clusterIconSize * mapView.map.scalePerPixel,
-            mapView.map.cameraPosition.zoom != mapView.map.maxZoomLevel
+            mapView.map.cameraPosition.zoom != mapView.map.maxZoomLevel,
+            mapView.map.cameraPosition
         )
 
     private fun initZoomBtn(view: View) {

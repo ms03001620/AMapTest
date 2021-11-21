@@ -10,12 +10,12 @@ import com.example.amaptest.ui.main.calc.DistanceInfo
 import com.example.amaptest.ui.main.calc.RegionItem
 import com.polestar.repository.data.charging.StationDetail
 
-class ClusterCalcDemo {
+class ClusterCalcDemo: ClusterCalcDemoBase {
     //https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/index.html?overview-summary.html
 
     private val mClusterItems = mutableListOf<ClusterItem<StationDetail>>()
 
-    fun setData(it: List<StationDetail>) {
+    override fun setData(it: List<StationDetail>) {
         mClusterItems.clear()
         it.map {
             RegionItem(it)
@@ -24,9 +24,9 @@ class ClusterCalcDemo {
         }
     }
 
-    fun calc(
+    override fun calc(
         distanceInfo: DistanceInfo,
-        visibleBounds: LatLngBounds? = null,
+        visibleBounds: LatLngBounds?,
         callback: (list: List<Cluster>) -> Unit
     ) {
         logd("calc distanceMerge:$distanceInfo")
