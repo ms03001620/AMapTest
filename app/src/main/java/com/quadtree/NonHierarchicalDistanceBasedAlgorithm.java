@@ -1,25 +1,7 @@
-/*
- * Copyright 2013 Google Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.quadtree;
 
-import com.amap.api.maps.model.LatLng;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -42,10 +24,9 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> {
     private final PointQuadTree<QuadItem<T>> mQuadTree = new PointQuadTree<QuadItem<T>>(
             new Bounds(.0, 1.0, .0, 1.0), 0);
 
-    private static final SphericalMercatorProjection PROJECTION = new SphericalMercatorProjection(1);
-
     /**
      * Adds an item to the algorithm
+     *
      * @param item the item to be added
      * @return true if the algorithm contents changed as a result of the call
      */
@@ -63,6 +44,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> {
 
     /**
      * Adds a collection of items to the algorithm
+     *
      * @param items the items to be added
      * @return true if the algorithm contents changed as a result of the call
      */
@@ -86,6 +68,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> {
 
     /**
      * Removes an item from the algorithm
+     *
      * @param item the item to be removed
      * @return true if this algorithm contained the specified element (or equivalently, if this
      * algorithm changed as a result of the call).
@@ -106,6 +89,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> {
 
     /**
      * Removes a collection of items from the algorithm
+     *
      * @param items the items to be removed
      * @return true if this algorithm contents changed as a result of the call
      */
@@ -128,6 +112,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> {
 
     /**
      * Updates the provided item in the algorithm
+     *
      * @param item the item to be updated
      * @return true if the item existed in the algorithm and was updated, or false if the item did
      * not exist in the algorithm and the algorithm contents remain unchanged.
@@ -171,7 +156,7 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> {
                     distanceToCluster.put(candidate, 0d);
                     continue;
                 }
-                StaticCluster staticCluster = new StaticCluster(candidate.mClusterItem.getPosition());
+                StaticCluster staticCluster = new StaticCluster(candidate.getClusterItem().getPosition());
                 results.add(staticCluster);
 
                 for (QuadItem<T> clusterItem : searchBoundsItems) {
@@ -184,10 +169,10 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> {
                             continue;
                         }
                         // Move item to the closer cluster.
-                        itemToCluster.get(clusterItem).remove(clusterItem.mClusterItem);
+                        itemToCluster.get(clusterItem).remove(clusterItem.getClusterItem());
                     }
                     distanceToCluster.put(clusterItem, distance);
-                    staticCluster.add(clusterItem.mClusterItem);
+                    staticCluster.add(clusterItem.getClusterItem());
                     itemToCluster.put(clusterItem, staticCluster);
                 }
                 visitedCandidates.addAll(searchBoundsItems);
@@ -201,22 +186,14 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> {
         final Set<T> items = new LinkedHashSet<>();
         synchronized (mQuadTree) {
             for (QuadItem<T> quadItem : mQuadList) {
-                items.add(quadItem.mClusterItem);
+                items.add(quadItem.getClusterItem());
             }
         }
         return items;
     }
 
-    public void setMaxDistanceBetweenClusteredItems(int maxDistance) {
-        mMaxDistance = maxDistance;
-    }
-
-    public int getMaxDistanceBetweenClusteredItems() {
-        return mMaxDistance;
-    }
-
     private double distanceSquared(Point a, Point b) {
-        return (a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y);
+        return (a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY());
     }
 
     private Bounds createBoundsFromSpan(Point p, double span) {
@@ -224,55 +201,9 @@ public class NonHierarchicalDistanceBasedAlgorithm<T extends ClusterItem> {
         // LatLng.
         double halfSpan = span / 2;
         return new Bounds(
-                p.x - halfSpan, p.x + halfSpan,
-                p.y - halfSpan, p.y + halfSpan);
+                p.getX() - halfSpan, p.getX() + halfSpan,
+                p.getY() - halfSpan, p.getY() + halfSpan);
     }
 
-    protected static class QuadItem<T extends ClusterItem> implements PointQuadTree.Item, Cluster<T> {
-        private final T mClusterItem;
-        private final Point mPoint;
-        private final LatLng mPosition;
-        private Set<T> singletonSet;
 
-        private QuadItem(T item) {
-            mClusterItem = item;
-            mPosition = item.getPosition();
-            mPoint = PROJECTION.toPoint(mPosition);
-            singletonSet = Collections.singleton(mClusterItem);
-        }
-
-        @Override
-        public Point getPoint() {
-            return mPoint;
-        }
-
-        @Override
-        public LatLng getPosition() {
-            return mPosition;
-        }
-
-        @Override
-        public Set<T> getItems() {
-            return singletonSet;
-        }
-
-        @Override
-        public int getSize() {
-            return 1;
-        }
-
-        @Override
-        public int hashCode() {
-            return mClusterItem.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            if (!(other instanceof QuadItem<?>)) {
-                return false;
-            }
-
-            return ((QuadItem<?>) other).mClusterItem.equals(mClusterItem);
-        }
-    }
 }

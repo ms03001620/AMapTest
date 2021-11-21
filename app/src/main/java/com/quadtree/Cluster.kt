@@ -1,14 +1,9 @@
-package com.quadtree;
+package com.quadtree
 
-import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.LatLng
 
-import java.util.Collection;
-
-
-public interface Cluster<T extends ClusterItem> {
-    LatLng getPosition();
-
-    Collection<T> getItems();
-
-    int getSize();
+interface Cluster<T : ClusterItem?> {
+    val position: LatLng?
+    val items: Collection<T>?
+    val size: Int
 }

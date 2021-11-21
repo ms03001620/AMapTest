@@ -1,79 +1,38 @@
-package com.quadtree;
+package com.quadtree
 
+import com.amap.api.maps.model.LatLng
+import org.json.JSONArray
+import java.util.*
 
-import com.amap.api.maps.model.LatLng;
+object JsonTestUtil {
+    private const val REGEX_INPUT_BOUNDARY_BEGINNING = "\\A"
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+    fun read(fileName: String?): List<ClusterItem> {
+        val stream = JsonTestUtil::class.java.classLoader.getResourceAsStream(fileName)
+        val json = Scanner(stream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next()
+        // testImplementation 'org.json:json:20210307' for JSONArray
+        val array = JSONArray(json)
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
-public class JsonTestUtil {
-    private static final String REGEX_INPUT_BOUNDARY_BEGINNING = "\\A";
-    public static List<ClusterItem> read(String fileName) throws Exception {
-        List<ClusterItem> items = new ArrayList();
-
-        InputStream stream = JsonTestUtil.class.getClassLoader().getResourceAsStream(fileName);
-        String json = new Scanner(stream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next();
-
-        JSONArray array = new JSONArray(json);
-        for (int i = 0; i < array.length(); i++) {
-            String title = null;
-            String snippet = null;
-            JSONObject object = array.getJSONObject(i);
-            double lat = object.getDouble("lat");
-            double lng = object.getDouble("lng");
-            if (!object.isNull("title")) {
-                title = object.getString("title");
+        return mutableListOf<ClusterItem>().also {
+            for (i in 0 until array.length()) {
+                val node = array.getJSONObject(i)
+                it.add(
+                    TestClusterItem(
+                        LatLng(
+                            node.optDouble("lat", Double.NaN),
+                            node.optDouble("lng", Double.NaN)
+                        ),
+                        node.optString("title", ""),
+                        node.optString("snippet", "")
+                    )
+                )
             }
-            if (!object.isNull("snippet")) {
-                snippet = object.getString("snippet");
-            }
-            items.add(new TestClusterItem(lat, lng, title, snippet));
         }
-        return items;
     }
 
-    static class TestClusterItem implements ClusterItem{
-        private final LatLng mPosition;
-        private String mTitle;
-        private String mSnippet;
-
-        public TestClusterItem(double lat, double lng, String title, String snippet) {
-            mPosition = new LatLng(lat, lng);
-            mTitle = title;
-            mSnippet = snippet;
-        }
-
-
-        @Override
-        public LatLng getPosition() {
-            return mPosition;
-        }
-
-        @Override
-        public String getTitle() { return mTitle; }
-
-        @Override
-        public String getSnippet() { return mSnippet; }
-
-        /**
-         * Set the title of the marker
-         * @param title string to be set as title
-         */
-        public void setTitle(String title) {
-            mTitle = title;
-        }
-
-        /**
-         * Set the description of the marker
-         * @param snippet string to be set as snippet
-         */
-        public void setSnippet(String snippet) {
-            mSnippet = snippet;
-        }
-    }
+    class TestClusterItem(
+        override val position: LatLng,
+        override var title: String?,
+        override val snippet: String?
+    ) : ClusterItem
 }
