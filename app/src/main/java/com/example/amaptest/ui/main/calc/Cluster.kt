@@ -23,7 +23,6 @@ class Cluster(val clusterItem: ClusterItem<StationDetail>) {
     fun size() = items.size
 
     fun contains(item: ClusterItem<StationDetail>) : Boolean{
-
         return items.contains(item)
     }
 

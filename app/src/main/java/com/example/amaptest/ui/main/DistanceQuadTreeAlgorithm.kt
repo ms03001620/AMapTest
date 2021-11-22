@@ -7,10 +7,10 @@ import com.example.amaptest.ui.main.calc.DistanceInfo
 import com.example.amaptest.ui.main.calc.RegionItem
 import com.polestar.repository.data.charging.StationDetail
 import com.quadtree.ClusterItem
-import com.quadtree.NonHierarchicalDistanceBasedAlgorithm
+import com.quadtree.DistanceBasedAlgorithm
 
-class ClusterCalcDemoV2 : ClusterCalcDemoBase {
-    private val algorithm = NonHierarchicalDistanceBasedAlgorithm<ClusterItem>()
+class DistanceQuadTreeAlgorithm : BaseClusterAlgorithm {
+    private val algorithm = DistanceBasedAlgorithm<ClusterItem>()
 
     override fun setData(it: List<StationDetail>) {
         it.map {

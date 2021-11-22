@@ -5,7 +5,7 @@ import com.example.amaptest.ui.main.calc.Cluster
 import com.example.amaptest.ui.main.calc.DistanceInfo
 import com.polestar.repository.data.charging.StationDetail
 
-interface ClusterCalcDemoBase {
+interface BaseClusterAlgorithm {
     fun setData(it: List<StationDetail>)
     fun calc(
         distanceInfo: DistanceInfo,

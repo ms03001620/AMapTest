@@ -12,7 +12,7 @@ import com.example.amaptest.ui.main.calc.same
 import kotlinx.coroutines.launch
 
 class ClusterViewModel : ViewModel() {
-    lateinit var clusterCalc: ClusterCalcDemoBase
+    lateinit var clusterCalcClusterAlgorithm: BaseClusterAlgorithm
     val stationClusterLiveData = MutableLiveData<List<Cluster>>()
     lateinit var lastDistanceMerge: DistanceInfo
 
@@ -20,8 +20,8 @@ class ClusterViewModel : ViewModel() {
         lastDistanceMerge = distanceInfo
         viewModelScope.launch {
             AssetsReadUtils.mockStation(context)?.let {
-                clusterCalc.setData(it)
-                clusterCalc.calc(distanceInfo, callback = {
+                clusterCalcClusterAlgorithm.setData(it)
+                clusterCalcClusterAlgorithm.calc(distanceInfo, callback = {
                     stationClusterLiveData.postValue(it)
                 })
             }
@@ -35,13 +35,13 @@ class ClusterViewModel : ViewModel() {
         }
         lastDistanceMerge = distanceInfo
         viewModelScope.launch {
-            clusterCalc.calc(distanceInfo, callback = {
+            clusterCalcClusterAlgorithm.calc(distanceInfo, callback = {
                 stationClusterLiveData.postValue(it)
             })
         }
     }
 
     fun initClusterAlgorithm(clusterIconSize: Float) {
-        clusterCalc = ClusterCalcDemoV2()
+        clusterCalcClusterAlgorithm = DistanceQuadTreeAlgorithm()
     }
 }

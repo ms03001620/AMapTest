@@ -7,14 +7,14 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.*
 
-class NonHierarchicalDistanceBasedAlgorithmTest {
+class DistanceBasedAlgorithmTest {
 
     @Test
     fun baseTest() {
         val list: List<ClusterItem> = JsonTestUtil.read("json_stations.json")
         assertEquals(20, list.size)
 
-        val algorithm = NonHierarchicalDistanceBasedAlgorithm<ClusterItem>()
+        val algorithm = DistanceBasedAlgorithm<ClusterItem>()
 
         assertTrue(algorithm.addItems(list))
 
@@ -30,8 +30,8 @@ class NonHierarchicalDistanceBasedAlgorithmTest {
             JsonTestUtil.TestClusterItem(LatLng(0.1, 0.5),"title1", "")
         val item_2_3: ClusterItem =
             JsonTestUtil.TestClusterItem(LatLng(0.2, 0.3),"title2", "")
-        val algo: NonHierarchicalDistanceBasedAlgorithm<ClusterItem> =
-            NonHierarchicalDistanceBasedAlgorithm()
+        val algo: DistanceBasedAlgorithm<ClusterItem> =
+            DistanceBasedAlgorithm()
         assertTrue(algo.addItem(item_1_5))
         assertTrue(algo.addItem(item_2_3))
         assertEquals(2, algo.items.size)
@@ -66,8 +66,8 @@ class NonHierarchicalDistanceBasedAlgorithmTest {
 
     @Test
     fun testInsertionOrder() {
-        val algo: NonHierarchicalDistanceBasedAlgorithm<ClusterItem> =
-            NonHierarchicalDistanceBasedAlgorithm()
+        val algo: DistanceBasedAlgorithm<ClusterItem> =
+            DistanceBasedAlgorithm()
         for (i in 0..99) {
             algo.addItem(
                 JsonTestUtil.TestClusterItem(LatLng(0.0, 0.0), i.toString(), "")

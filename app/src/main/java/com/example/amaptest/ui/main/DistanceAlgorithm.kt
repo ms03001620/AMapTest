@@ -10,7 +10,7 @@ import com.example.amaptest.ui.main.calc.DistanceInfo
 import com.example.amaptest.ui.main.calc.RegionItem
 import com.polestar.repository.data.charging.StationDetail
 
-class ClusterCalcDemo: ClusterCalcDemoBase {
+class DistanceAlgorithm: BaseClusterAlgorithm {
     //https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/index.html?overview-summary.html
 
     private val mClusterItems = mutableListOf<ClusterItem<StationDetail>>()

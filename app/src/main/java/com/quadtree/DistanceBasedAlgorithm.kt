@@ -5,7 +5,7 @@ import java.util.HashMap
 import java.util.HashSet
 import java.util.LinkedHashSet
 
-class NonHierarchicalDistanceBasedAlgorithm<T : ClusterItem> {
+class DistanceBasedAlgorithm<T : ClusterItem> {
     private val maxDistance = DEFAULT_MAX_DISTANCE_AT_ZOOM
 
     /**
