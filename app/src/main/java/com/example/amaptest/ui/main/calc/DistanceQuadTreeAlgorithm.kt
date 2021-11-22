@@ -1,10 +1,8 @@
-package com.example.amaptest.ui.main
+package com.example.amaptest.ui.main.calc
 
-import com.amap.api.maps.model.LatLngBounds
-import com.example.amaptest.ui.main.calc.DistanceInfo
-import com.quadtree.Cluster
-import com.quadtree.ClusterItem
-import com.quadtree.DistanceBasedAlgorithm
+import com.example.amaptest.ui.main.quadtree.Cluster
+import com.example.amaptest.ui.main.quadtree.ClusterItem
+import com.example.amaptest.ui.main.quadtree.DistanceBasedAlgorithm
 
 class DistanceQuadTreeAlgorithm : BaseClusterAlgorithm {
     private val algorithm = DistanceBasedAlgorithm<ClusterItem>()

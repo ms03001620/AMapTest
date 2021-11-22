@@ -26,8 +26,8 @@ import com.example.amaptest.ui.main.calc.StationClusterItem
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.freeAcDcAll
 import com.polestar.repository.data.charging.isValid
-import com.quadtree.Cluster
-import com.quadtree.ClusterItem
+import com.example.amaptest.ui.main.quadtree.Cluster
+import com.example.amaptest.ui.main.quadtree.ClusterItem
 import java.lang.StringBuilder
 
 class ClusterFragment : Fragment(),

@@ -1,9 +1,8 @@
-package com.example.amaptest.ui.main
+package com.example.amaptest.ui.main.calc
 
-import com.example.amaptest.ui.main.calc.DistanceInfo
-import com.quadtree.Cluster
-import com.quadtree.ClusterItem
-import com.quadtree.JsonTestUtil
+import com.example.amaptest.ui.main.quadtree.Cluster
+import com.example.amaptest.ui.main.quadtree.ClusterItem
+import com.example.amaptest.JsonTestUtil
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test

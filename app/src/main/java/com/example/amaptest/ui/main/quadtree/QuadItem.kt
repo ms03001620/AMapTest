@@ -1,4 +1,4 @@
-package com.quadtree
+package com.example.amaptest.ui.main.quadtree
 
 class QuadItem<T : ClusterItem>(val clusterItem: T) : PointQuadTree.Item, Cluster<T> {
     override val point = PROJECTION.toPoint(clusterItem.position)

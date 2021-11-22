@@ -2,7 +2,7 @@ package com.example.amaptest.ui.main.calc
 
 import com.amap.api.maps.model.LatLng
 import com.polestar.repository.data.charging.StationDetail
-import com.quadtree.ClusterItem
+import com.example.amaptest.ui.main.quadtree.ClusterItem
 
 class StationClusterItem(val stationDetail: StationDetail) : ClusterItem {
     override val position: LatLng

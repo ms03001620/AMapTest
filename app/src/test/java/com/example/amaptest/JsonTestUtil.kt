@@ -1,6 +1,7 @@
-package com.quadtree
+package com.example.amaptest
 
 import com.amap.api.maps.model.LatLng
+import com.example.amaptest.ui.main.quadtree.ClusterItem
 import org.json.JSONArray
 import java.util.*
 

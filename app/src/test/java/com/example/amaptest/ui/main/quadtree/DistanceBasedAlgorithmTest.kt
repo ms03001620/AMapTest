@@ -1,6 +1,7 @@
-package com.quadtree
+package com.example.amaptest.ui.main.quadtree
 
 import com.amap.api.maps.model.LatLng
+import com.example.amaptest.JsonTestUtil
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

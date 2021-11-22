@@ -1,35 +1,33 @@
-package com.example.amaptest.ui.main
+package com.example.amaptest.ui.main.calc
 
 import com.amap.api.maps.AMapUtils
-import com.amap.api.maps.model.LatLngBounds
-import com.example.amaptest.logd
-import com.example.amaptest.ui.main.calc.DistanceInfo
-import com.quadtree.Cluster
-import com.quadtree.ClusterItem
-import com.quadtree.StaticCluster
+import com.example.amaptest.ui.main.quadtree.Cluster
+import com.example.amaptest.ui.main.quadtree.ClusterItem
+import com.example.amaptest.ui.main.quadtree.StaticCluster
 
-class DistanceBaseAlgorithm {
+class DistanceAlgorithm : BaseClusterAlgorithm {
+    //https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/index.html?overview-summary.html
+
     private val mClusterItems = mutableListOf<ClusterItem>()
 
-    fun feed(it: List<ClusterItem>) {
+    override fun feed(it: List<ClusterItem>) {
         mClusterItems.clear()
         mClusterItems.addAll(it)
     }
 
-    fun calc(
-        distanceMerge: Float,
-        enableCluster: Boolean,
+    override fun calc(
+        distanceInfo: DistanceInfo,
         callback: (list: Set<Cluster<ClusterItem>>) -> Unit
     ) {
-        logd("calc distanceMerge:$distanceMerge")
         val newResult = hashSetOf<Cluster<ClusterItem>>()
 
         mClusterItems.forEach { clusterItem ->
-            newResult.firstOrNull {enableCluster &&
+            newResult.firstOrNull {
+                distanceInfo.enableCluster &&
                         AMapUtils.calculateLineDistance(
                             clusterItem.position,
                             it.position
-                        ) <= distanceMerge
+                        ) <= distanceInfo.distanceMerge
             }?.let {
                 it.items?.add(clusterItem)
             } ?: run {
@@ -41,4 +39,5 @@ class DistanceBaseAlgorithm {
         }
         callback.invoke(newResult)
     }
+
 }

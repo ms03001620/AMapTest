@@ -1,4 +1,4 @@
-package com.quadtree
+package com.example.amaptest.ui.main.quadtree
 
 
 import java.util.HashMap
