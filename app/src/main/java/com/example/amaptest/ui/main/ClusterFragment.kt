@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
@@ -22,11 +21,12 @@ import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.R
 import com.example.amaptest.SizeUtils
 import com.example.amaptest.ViewModelFactory
-import com.example.amaptest.ui.main.calc.Cluster
 import com.example.amaptest.ui.main.calc.DistanceInfo
+import com.example.amaptest.ui.main.calc.StationClusterItem
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.freeAcDcAll
 import com.polestar.repository.data.charging.isValid
+import com.quadtree.ClusterItem
 import java.lang.StringBuilder
 
 class ClusterFragment : Fragment(),
@@ -124,10 +124,10 @@ class ClusterFragment : Fragment(),
     }
 
     private fun initClusterObserver() {
-        clusterViewModel.stationClusterLiveData.observe(viewLifecycleOwner) { list ->
+        clusterViewModel.stationClusterLiveData.observe(viewLifecycleOwner) { set ->
             mapView.map.clear()
             val boundsBuilder = LatLngBounds.builder()
-            list.forEach { cluster ->
+            set.forEach { cluster ->
                 addMarkToMap(
                     cluster,
                     mapView.map
@@ -197,18 +197,20 @@ class ClusterFragment : Fragment(),
     }
 
     private fun addMarkToMap(
-        cluster: Cluster,
+        cluster: com.quadtree.Cluster<StationClusterItem>,
         map: AMap
     ): Marker? {
-        return with(cluster.isOnlyOne()) {
+        val onlyOne = cluster.items?.size == 1
+
+        return with(onlyOne) {
             if (this) {
-                getCollapsedBitmapDescriptor(cluster.clusterItem.getEntry())
+                getCollapsedBitmapDescriptor(cluster.items?.toList()!![0].stationDetail)
             } else {
-                getClusterBitmapDescriptor(cluster.size())
+                getClusterBitmapDescriptor(cluster.items?.size ?: 0)
             }
         }.let {
             MarkerOptions()
-                .position(cluster.getCenterLatLng())
+                .position(cluster.position)
                 .icon(it)
                 .infoWindowEnable(true)
         }.let {

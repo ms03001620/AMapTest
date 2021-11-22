@@ -3,7 +3,7 @@ package com.quadtree
 class QuadItem<T : ClusterItem>(val clusterItem: T) : PointQuadTree.Item, Cluster<T> {
     override val point = PROJECTION.toPoint(clusterItem.position)
     override val position = clusterItem.position
-    override val items = setOf(clusterItem)
+    override val items = mutableListOf(clusterItem)
     override val size = 1
 
     override fun hashCode() = clusterItem.hashCode()

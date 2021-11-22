@@ -4,10 +4,7 @@ import com.amap.api.maps.AMapUtils
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.LatLngBounds
 import com.example.amaptest.logd
-import com.example.amaptest.ui.main.calc.Cluster
-import com.example.amaptest.ui.main.calc.ClusterItem
-import com.example.amaptest.ui.main.calc.DistanceInfo
-import com.example.amaptest.ui.main.calc.RegionItem
+import com.example.amaptest.ui.main.calc.*
 import com.polestar.repository.data.charging.StationDetail
 
 class DistanceAlgorithm: BaseClusterAlgorithm {
@@ -27,7 +24,7 @@ class DistanceAlgorithm: BaseClusterAlgorithm {
     override fun calc(
         distanceInfo: DistanceInfo,
         visibleBounds: LatLngBounds?,
-        callback: (list: List<Cluster>) -> Unit
+        callback: (list: Set<com.quadtree.Cluster<StationClusterItem>>) -> Unit
     ) {
         logd("calc distanceMerge:$distanceInfo")
         val newResult = mutableListOf<Cluster>()
@@ -66,7 +63,7 @@ class DistanceAlgorithm: BaseClusterAlgorithm {
                 }
             }*/
         }
-        callback.invoke(newResult.toList())
+       // callback.invoke(newResult.toList())
     }
 
     private fun getCluster(

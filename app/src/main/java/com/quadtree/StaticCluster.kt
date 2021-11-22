@@ -17,7 +17,7 @@ class StaticCluster<T : ClusterItem?>(override val position: LatLng) : Cluster<T
         return mItems.remove(t)
     }
 
-    override val items: Collection<T>
+    override val items: MutableCollection<T>
         get() = mItems
     override val size: Int
         get() = mItems.size
