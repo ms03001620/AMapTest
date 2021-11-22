@@ -3,8 +3,7 @@ package com.example.amaptest.ui.main
 import com.amap.api.maps.AMapUtils
 import com.amap.api.maps.model.LatLngBounds
 import com.example.amaptest.logd
-import com.example.amaptest.ui.main.calc.*
-import com.polestar.repository.data.charging.StationDetail
+import com.example.amaptest.ui.main.calc.DistanceInfo
 import com.quadtree.Cluster
 import com.quadtree.ClusterItem
 import com.quadtree.StaticCluster
@@ -12,15 +11,11 @@ import com.quadtree.StaticCluster
 class DistanceAlgorithm : BaseClusterAlgorithm {
     //https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/index.html?overview-summary.html
 
-    private val mClusterItems = mutableListOf<StationClusterItem>()
+    private val mClusterItems = mutableListOf<ClusterItem>()
 
-    override fun setData(it: List<StationDetail>) {
+    override fun setData(it: List<ClusterItem>) {
         mClusterItems.clear()
-        it.map {
-            StationClusterItem(it)
-        }.let {
-            mClusterItems.addAll(it)
-        }
+        mClusterItems.addAll(it)
     }
 
     override fun calc(

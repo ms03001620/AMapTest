@@ -22,10 +22,14 @@ class ClusterViewModel : ViewModel() {
         lastDistanceMerge = distanceInfo
         viewModelScope.launch {
             AssetsReadUtils.mockStation(context)?.let {
-                clusterCalcClusterAlgorithm.setData(it)
-                clusterCalcClusterAlgorithm.calc(distanceInfo, callback = {
-                    stationClusterLiveData.postValue(it)
-                })
+                it.map {
+                    StationClusterItem(it)
+                }.let {
+                    clusterCalcClusterAlgorithm.setData(it)
+                    clusterCalcClusterAlgorithm.calc(distanceInfo, callback = {
+                        stationClusterLiveData.postValue(it)
+                    })
+                }
             }
         }
     }
