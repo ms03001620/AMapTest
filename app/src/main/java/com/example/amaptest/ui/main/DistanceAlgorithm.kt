@@ -5,6 +5,7 @@ import com.amap.api.maps.model.LatLngBounds
 import com.example.amaptest.logd
 import com.example.amaptest.ui.main.calc.*
 import com.polestar.repository.data.charging.StationDetail
+import com.quadtree.Cluster
 import com.quadtree.StaticCluster
 
 class DistanceAlgorithm : BaseClusterAlgorithm {
@@ -24,34 +25,29 @@ class DistanceAlgorithm : BaseClusterAlgorithm {
     override fun calc(
         distanceInfo: DistanceInfo,
         visibleBounds: LatLngBounds?,
-        callback: (list: Set<com.quadtree.Cluster<StationClusterItem>>) -> Unit
+        callback: (list: Set<Cluster<StationClusterItem>>) -> Unit
     ) {
         logd("calc distanceMerge:$distanceInfo")
-        val newResult = hashSetOf<com.quadtree.Cluster<StationClusterItem>>()
+        val newResult = hashSetOf<Cluster<StationClusterItem>>()
 
         mClusterItems.filter {
             true
         }.filter {
             visibleBounds?.contains(it.position) ?: true
         }.forEach { clusterItem ->
-
-            var g: com.quadtree.Cluster<StationClusterItem>? = null
-
-            newResult.forEach lit@{
-                val dd = AMapUtils.calculateLineDistance(clusterItem.position, it.position)
-                logd("calc dd:$dd, distanceMerge:$distanceInfo")
-                if (distanceInfo.enableCluster && dd <= distanceInfo.distanceMerge) {
-                    g = it
-                    return@lit
+            newResult.firstOrNull {
+                distanceInfo.enableCluster &&
+                        AMapUtils.calculateLineDistance(
+                            clusterItem.position,
+                            it.position
+                        ) <= distanceInfo.distanceMerge
+            }?.let {
+                it.items?.add(clusterItem)
+            } ?: run {
+                StaticCluster<StationClusterItem>(clusterItem.position).let {
+                    it.add(clusterItem)
+                    newResult.add(it)
                 }
-            }
-
-            if (g == null) {
-                val staticCluster = StaticCluster<StationClusterItem>(clusterItem.position)
-                staticCluster.add(clusterItem)
-                newResult.add(staticCluster)
-            } else {
-                g?.items?.add(clusterItem)
             }
         }
         callback.invoke(newResult)
