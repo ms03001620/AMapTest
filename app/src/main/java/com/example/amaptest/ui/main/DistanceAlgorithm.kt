@@ -1,14 +1,13 @@
 package com.example.amaptest.ui.main
 
 import com.amap.api.maps.AMapUtils
-import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.LatLngBounds
 import com.example.amaptest.logd
 import com.example.amaptest.ui.main.calc.*
 import com.polestar.repository.data.charging.StationDetail
 import com.quadtree.StaticCluster
 
-class DistanceAlgorithm: BaseClusterAlgorithm {
+class DistanceAlgorithm : BaseClusterAlgorithm {
     //https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/index.html?overview-summary.html
 
     private val mClusterItems = mutableListOf<StationClusterItem>()
@@ -35,7 +34,8 @@ class DistanceAlgorithm: BaseClusterAlgorithm {
         }.filter {
             visibleBounds?.contains(it.position) ?: true
         }.forEach { clusterItem ->
-            var g :com.quadtree.Cluster<StationClusterItem>? = null
+
+            var g: com.quadtree.Cluster<StationClusterItem>? = null
 
             newResult.forEach lit@{
                 val dd = AMapUtils.calculateLineDistance(clusterItem.position, it.position)
@@ -55,16 +55,6 @@ class DistanceAlgorithm: BaseClusterAlgorithm {
             }
         }
         callback.invoke(newResult)
-    }
-
-    private fun getCluster(
-        distanceMerge: Float,
-        latLng: LatLng,
-        clusters: MutableList<Cluster>
-    ): Cluster? {
-        return clusters.firstOrNull {
-            AMapUtils.calculateLineDistance(latLng, it.getCenterLatLng()) < distanceMerge
-        }
     }
 
 }

@@ -6,12 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.logd
-import com.example.amaptest.ui.main.calc.Cluster
 import com.example.amaptest.ui.main.calc.DistanceInfo
 import com.example.amaptest.ui.main.calc.StationClusterItem
 import com.example.amaptest.ui.main.calc.same
-import com.quadtree.ClusterItem
-import com.quadtree.StaticCluster
 import kotlinx.coroutines.launch
 
 class ClusterViewModel : ViewModel() {
