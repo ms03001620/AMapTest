@@ -9,7 +9,7 @@ import com.quadtree.DistanceBasedAlgorithm
 class DistanceQuadTreeAlgorithm : BaseClusterAlgorithm {
     private val algorithm = DistanceBasedAlgorithm<ClusterItem>()
 
-    override fun setData(it: List<ClusterItem>) {
+    override fun feed(it: List<ClusterItem>) {
         algorithm.addItems(it)
     }
 

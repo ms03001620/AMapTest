@@ -25,7 +25,7 @@ class ClusterViewModel : ViewModel() {
                 it.map {
                     StationClusterItem(it)
                 }.let {
-                    clusterCalcClusterAlgorithm.setData(it)
+                    clusterCalcClusterAlgorithm.feed(it)
                     clusterCalcClusterAlgorithm.calc(distanceInfo, callback = {
                         stationClusterLiveData.postValue(it)
                     })

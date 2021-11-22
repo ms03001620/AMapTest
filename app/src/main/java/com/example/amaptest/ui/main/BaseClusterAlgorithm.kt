@@ -6,7 +6,7 @@ import com.quadtree.Cluster
 import com.quadtree.ClusterItem
 
 interface BaseClusterAlgorithm {
-    fun setData(it: List<ClusterItem>)
+    fun feed(it: List<ClusterItem>)
     fun calc(
         distanceInfo: DistanceInfo,
         visibleBounds: LatLngBounds? = null,
