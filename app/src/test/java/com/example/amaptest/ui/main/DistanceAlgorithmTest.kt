@@ -24,6 +24,8 @@ class DistanceAlgorithmTest {
         assertEquals(4, calc(DistanceInfo(distanceMerge = 1000f, enableCluster = true))?.size ?: 0)
         assertEquals(8, calc(DistanceInfo(distanceMerge = 500f, enableCluster = true))?.size ?: 0)
         assertEquals(12, calc(DistanceInfo(distanceMerge = 200f, enableCluster = true))?.size ?: 0)
+        assertEquals(14, calc(DistanceInfo(distanceMerge = 100f, enableCluster = true))?.size ?: 0)
+        assertEquals(14, calc(DistanceInfo(distanceMerge = 5f, enableCluster = true))?.size ?: 0)
         assertEquals(20, calc(DistanceInfo(distanceMerge = 3000f, enableCluster = false))?.size ?: 0)
 
         algorithm.feed(emptyList())
