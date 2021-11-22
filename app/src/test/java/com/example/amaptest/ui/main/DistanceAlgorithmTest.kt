@@ -13,6 +13,7 @@ class DistanceAlgorithmTest {
         assertEquals(20, list.size)
 
         val algorithm = DistanceAlgorithm()
+
        // algorithm.setData(list)
     }
 

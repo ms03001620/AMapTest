@@ -26,6 +26,7 @@ import com.example.amaptest.ui.main.calc.StationClusterItem
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.freeAcDcAll
 import com.polestar.repository.data.charging.isValid
+import com.quadtree.Cluster
 import com.quadtree.ClusterItem
 import java.lang.StringBuilder
 
@@ -197,14 +198,15 @@ class ClusterFragment : Fragment(),
     }
 
     private fun addMarkToMap(
-        cluster: com.quadtree.Cluster<StationClusterItem>,
+        cluster: Cluster<ClusterItem>,
         map: AMap
     ): Marker? {
         val onlyOne = cluster.items?.size == 1
 
         return with(onlyOne) {
             if (this) {
-                getCollapsedBitmapDescriptor(cluster.items?.toList()!![0].stationDetail)
+                val f = cluster.items?.toList()!![0] as StationClusterItem
+                getCollapsedBitmapDescriptor(f.stationDetail)
             } else {
                 getClusterBitmapDescriptor(cluster.items?.size ?: 0)
             }

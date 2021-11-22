@@ -6,6 +6,7 @@ import com.example.amaptest.logd
 import com.example.amaptest.ui.main.calc.*
 import com.polestar.repository.data.charging.StationDetail
 import com.quadtree.Cluster
+import com.quadtree.ClusterItem
 import com.quadtree.StaticCluster
 
 class DistanceAlgorithm : BaseClusterAlgorithm {
@@ -25,10 +26,10 @@ class DistanceAlgorithm : BaseClusterAlgorithm {
     override fun calc(
         distanceInfo: DistanceInfo,
         visibleBounds: LatLngBounds?,
-        callback: (list: Set<Cluster<StationClusterItem>>) -> Unit
+        callback: (list: Set<Cluster<ClusterItem>>) -> Unit
     ) {
         logd("calc distanceMerge:$distanceInfo")
-        val newResult = hashSetOf<Cluster<StationClusterItem>>()
+        val newResult = hashSetOf<Cluster<ClusterItem>>()
 
         mClusterItems.filter {
             true
@@ -44,7 +45,7 @@ class DistanceAlgorithm : BaseClusterAlgorithm {
             }?.let {
                 it.items?.add(clusterItem)
             } ?: run {
-                StaticCluster<StationClusterItem>(clusterItem.position).let {
+                StaticCluster<ClusterItem>(clusterItem.position).let {
                     it.add(clusterItem)
                     newResult.add(it)
                 }
