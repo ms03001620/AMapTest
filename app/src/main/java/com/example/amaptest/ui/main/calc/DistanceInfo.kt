@@ -1,11 +1,13 @@
 package com.example.amaptest.ui.main.calc
 
 import com.amap.api.maps.model.CameraPosition
+import com.amap.api.maps.model.LatLngBounds
 
 data class DistanceInfo(
     val distanceMerge: Float,
     val enableCluster: Boolean,
-    val cameraPosition: CameraPosition
+    val cameraPosition: CameraPosition? = null,
+    val visibleBounds: LatLngBounds? = null
 )
 
 

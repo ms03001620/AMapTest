@@ -15,9 +15,8 @@ class DistanceQuadTreeAlgorithm : BaseClusterAlgorithm {
 
     override fun calc(
         distanceInfo: DistanceInfo,
-        visibleBounds: LatLngBounds?,
         callback: (list: Set<Cluster<ClusterItem>>) -> Unit
     ) {
-        callback.invoke(algorithm.getClusters(distanceInfo.cameraPosition.zoom))
+        callback.invoke(algorithm.getClusters(distanceInfo.cameraPosition?.zoom ?: 0f))
     }
 }
