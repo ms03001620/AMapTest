@@ -46,6 +46,7 @@ class ClusterViewModel : ViewModel() {
     }
 
     fun initClusterAlgorithm(clusterIconSize: Float) {
-        clusterCalcClusterAlgorithm = DistanceAlgorithm()
+        //clusterCalcClusterAlgorithm = DistanceAlgorithm()
+        clusterCalcClusterAlgorithm = DistanceQuadTreeAlgorithm()
     }
 }
