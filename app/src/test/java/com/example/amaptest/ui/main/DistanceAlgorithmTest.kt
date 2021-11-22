@@ -23,8 +23,11 @@ class DistanceAlgorithmTest {
         assertEquals(1, calc(DistanceInfo(distanceMerge = 3000f, enableCluster = true))?.size ?: 0)
         assertEquals(4, calc(DistanceInfo(distanceMerge = 1000f, enableCluster = true))?.size ?: 0)
         assertEquals(8, calc(DistanceInfo(distanceMerge = 500f, enableCluster = true))?.size ?: 0)
-
+        assertEquals(12, calc(DistanceInfo(distanceMerge = 200f, enableCluster = true))?.size ?: 0)
         assertEquals(20, calc(DistanceInfo(distanceMerge = 3000f, enableCluster = false))?.size ?: 0)
+
+        algorithm.feed(emptyList())
+        assertEquals(0, calc(DistanceInfo(distanceMerge = 3000f, enableCluster = false))?.size ?: 0)
     }
 
     private fun calc(distanceInfo: DistanceInfo): Set<Cluster<ClusterItem>>? {
