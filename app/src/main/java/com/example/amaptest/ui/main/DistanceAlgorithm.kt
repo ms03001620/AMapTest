@@ -6,16 +6,17 @@ import com.amap.api.maps.model.LatLngBounds
 import com.example.amaptest.logd
 import com.example.amaptest.ui.main.calc.*
 import com.polestar.repository.data.charging.StationDetail
+import com.quadtree.StaticCluster
 
 class DistanceAlgorithm: BaseClusterAlgorithm {
     //https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/index.html?overview-summary.html
 
-    private val mClusterItems = mutableListOf<ClusterItem<StationDetail>>()
+    private val mClusterItems = mutableListOf<StationClusterItem>()
 
     override fun setData(it: List<StationDetail>) {
         mClusterItems.clear()
         it.map {
-            RegionItem(it)
+            StationClusterItem(it)
         }.let {
             mClusterItems.addAll(it)
         }
@@ -27,21 +28,18 @@ class DistanceAlgorithm: BaseClusterAlgorithm {
         callback: (list: Set<com.quadtree.Cluster<StationClusterItem>>) -> Unit
     ) {
         logd("calc distanceMerge:$distanceInfo")
-        val newResult = mutableListOf<Cluster>()
+        val newResult = hashSetOf<com.quadtree.Cluster<StationClusterItem>>()
 
         mClusterItems.filter {
             true
         }.filter {
-            visibleBounds?.contains(it.getPosition()) ?: true
+            visibleBounds?.contains(it.position) ?: true
         }.forEach { clusterItem ->
-            var g :Cluster? = null
+            var g :com.quadtree.Cluster<StationClusterItem>? = null
 
             newResult.forEach lit@{
-                val dd =
-                    AMapUtils.calculateLineDistance(clusterItem.getPosition(), it.getCenterLatLng())
-
+                val dd = AMapUtils.calculateLineDistance(clusterItem.position, it.position)
                 logd("calc dd:$dd, distanceMerge:$distanceInfo")
-
                 if (distanceInfo.enableCluster && dd <= distanceInfo.distanceMerge) {
                     g = it
                     return@lit
@@ -49,21 +47,14 @@ class DistanceAlgorithm: BaseClusterAlgorithm {
             }
 
             if (g == null) {
-                newResult.add(Cluster(clusterItem))
+                val staticCluster = StaticCluster<StationClusterItem>(clusterItem.position)
+                staticCluster.add(clusterItem)
+                newResult.add(staticCluster)
             } else {
-                g?.addClusterItem(clusterItem)
+                g?.items?.add(clusterItem)
             }
-
-
-/*            getCluster(distanceMerge, clusterItem.getPosition(), newResult)?.addClusterItem(
-                clusterItem
-            ) ?: run {
-                Cluster(clusterItem).let {
-                    newResult.add(it)
-                }
-            }*/
         }
-       // callback.invoke(newResult.toList())
+        callback.invoke(newResult)
     }
 
     private fun getCluster(
