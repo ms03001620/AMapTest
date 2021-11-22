@@ -9,11 +9,12 @@ import com.example.amaptest.logd
 import com.example.amaptest.ui.main.calc.DistanceInfo
 import com.example.amaptest.ui.main.calc.StationClusterItem
 import com.example.amaptest.ui.main.calc.same
+import com.quadtree.Cluster
 import kotlinx.coroutines.launch
 
 class ClusterViewModel : ViewModel() {
     lateinit var clusterCalcClusterAlgorithm: BaseClusterAlgorithm
-    val stationClusterLiveData = MutableLiveData<Set<com.quadtree.Cluster<StationClusterItem>>>()
+    val stationClusterLiveData = MutableLiveData<Set<Cluster<StationClusterItem>>>()
     lateinit var lastDistanceMerge: DistanceInfo
 
     fun mock(context: Context, distanceInfo: DistanceInfo) {

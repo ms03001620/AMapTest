@@ -26,24 +26,6 @@ class DistanceQuadTreeAlgorithm : BaseClusterAlgorithm {
         visibleBounds: LatLngBounds?,
         callback: (list: Set<com.quadtree.Cluster<StationClusterItem>>) -> Unit
     ) {
-
         callback.invoke(algorithm.getClusters(distanceInfo.cameraPosition.zoom))
-        return
-/*        algorithm.getClusters(distanceInfo.cameraPosition.zoom).forEach {
-            var cluster: Cluster? = null
-            it.items?.forEachIndexed { index, clusterItem ->
-                val t = RegionItem((clusterItem as StationClusterItem).stationDetail)
-                if (index == 0) {
-                    cluster = Cluster(t)
-                } else {
-                    cluster?.addClusterItem(t)
-                }
-                cluster?.let {
-                    resultList.add(it)
-                }
-            }
-        }.let {
-            callback.invoke(resultList)
-        }*/
     }
 }
