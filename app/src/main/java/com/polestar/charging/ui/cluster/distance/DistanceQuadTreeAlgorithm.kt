@@ -9,8 +9,8 @@ import com.polestar.charging.ui.cluster.quadtree.DistanceBasedAlgorithm
 class DistanceQuadTreeAlgorithm : BaseClusterAlgorithm {
     private val algorithm = DistanceBasedAlgorithm<ClusterItem>()
 
-    override fun feed(it: List<ClusterItem>) {
-        algorithm.addItems(it)
+    override fun feed(list: List<ClusterItem>) {
+        algorithm.addItems(list)
     }
 
     override fun calc(

@@ -12,9 +12,9 @@ class DistanceAlgorithm : BaseClusterAlgorithm {
 
     private val clusterItems = mutableListOf<ClusterItem>()
 
-    override fun feed(it: List<ClusterItem>) {
+    override fun feed(list: List<ClusterItem>) {
         clusterItems.clear()
-        clusterItems.addAll(it)
+        clusterItems.addAll(list)
     }
 
     override fun calc(
