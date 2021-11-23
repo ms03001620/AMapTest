@@ -10,5 +10,4 @@ class StationClusterItem(val stationDetail: StationDetail) : ClusterItem {
         get() = stationDetail.stationid ?: "NoneId"
     override val snippet: String
         get() = stationDetail.providerName + stationDetail.stationName
-
 }
