@@ -10,11 +10,11 @@ import com.polestar.charging.ui.cluster.base.StaticCluster
 class DistanceAlgorithm : BaseClusterAlgorithm {
     //https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/index.html?overview-summary.html
 
-    private val mClusterItems = mutableListOf<ClusterItem>()
+    private val clusterItems = mutableListOf<ClusterItem>()
 
     override fun feed(it: List<ClusterItem>) {
-        mClusterItems.clear()
-        mClusterItems.addAll(it)
+        clusterItems.clear()
+        clusterItems.addAll(it)
     }
 
     override fun calc(
@@ -23,7 +23,7 @@ class DistanceAlgorithm : BaseClusterAlgorithm {
     ) {
         val newResult = hashSetOf<Cluster<ClusterItem>>()
 
-        mClusterItems.forEach { clusterItem ->
+        clusterItems.forEach { clusterItem ->
             newResult.firstOrNull {
                 distanceInfo.enableCluster &&
                         AMapUtils.calculateLineDistance(
@@ -41,5 +41,4 @@ class DistanceAlgorithm : BaseClusterAlgorithm {
         }
         callback.invoke(newResult)
     }
-
 }
