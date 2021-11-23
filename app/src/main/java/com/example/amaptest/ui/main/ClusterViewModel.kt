@@ -6,9 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.logd
-import com.example.amaptest.ui.main.calc.*
-import com.example.amaptest.ui.main.quadtree.Cluster
-import com.example.amaptest.ui.main.quadtree.ClusterItem
+import com.polestar.charging.ui.cluster.base.*
+import com.polestar.charging.ui.cluster.distance.*
 import kotlinx.coroutines.launch
 
 class ClusterViewModel : ViewModel() {
@@ -46,7 +45,7 @@ class ClusterViewModel : ViewModel() {
     }
 
     fun initClusterAlgorithm(clusterIconSize: Float) {
-        //clusterCalcClusterAlgorithm = DistanceAlgorithm()
-        clusterCalcClusterAlgorithm = DistanceQuadTreeAlgorithm()
+        clusterCalcClusterAlgorithm = DistanceAlgorithm()
+        //clusterCalcClusterAlgorithm = DistanceQuadTreeAlgorithm()
     }
 }

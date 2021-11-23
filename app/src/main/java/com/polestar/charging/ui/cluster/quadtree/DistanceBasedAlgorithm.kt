@@ -1,6 +1,6 @@
-package com.example.amaptest.ui.main.quadtree
+package com.polestar.charging.ui.cluster.quadtree
 
-
+import com.polestar.charging.ui.cluster.base.*
 import java.util.HashMap
 import java.util.HashSet
 import java.util.LinkedHashSet
@@ -18,12 +18,6 @@ class DistanceBasedAlgorithm<T : ClusterItem> {
      */
     private val quadTree = PointQuadTree<QuadItem<T>>(Bounds(.0, 1.0, .0, 1.0))
 
-    /**
-     * Adds an item to the algorithm
-     *
-     * @param item the item to be added
-     * @return true if the algorithm contents changed as a result of the call
-     */
     fun addItem(item: T): Boolean {
         var result: Boolean
         val quadItem = QuadItem(item)
@@ -36,12 +30,6 @@ class DistanceBasedAlgorithm<T : ClusterItem> {
         return result
     }
 
-    /**
-     * Adds a collection of items to the algorithm
-     *
-     * @param items the items to be added
-     * @return true if the algorithm contents changed as a result of the call
-     */
     fun addItems(items: Collection<T>): Boolean {
         var result = false
         for (item in items) {
@@ -60,13 +48,6 @@ class DistanceBasedAlgorithm<T : ClusterItem> {
         }
     }
 
-    /**
-     * Removes an item from the algorithm
-     *
-     * @param item the item to be removed
-     * @return true if this algorithm contained the specified element (or equivalently, if this
-     * algorithm changed as a result of the call).
-     */
     fun removeItem(item: T): Boolean {
         var result: Boolean
         // QuadItem delegates hashcode() and equals() to its item so,
@@ -81,18 +62,10 @@ class DistanceBasedAlgorithm<T : ClusterItem> {
         return result
     }
 
-    /**
-     * Removes a collection of items from the algorithm
-     *
-     * @param items the items to be removed
-     * @return true if this algorithm contents changed as a result of the call
-     */
     fun removeItems(items: Collection<T>): Boolean {
         var result = false
         synchronized(quadTree) {
             for (item in items) {
-                // QuadItem delegates hashcode() and equals() to its item so,
-                //   removing any QuadItem to that item will remove the item
                 val quadItem = QuadItem(item)
                 val individualResult = quadList.remove(quadItem)
                 if (individualResult) {
@@ -104,20 +77,11 @@ class DistanceBasedAlgorithm<T : ClusterItem> {
         return result
     }
 
-    /**
-     * Updates the provided item in the algorithm
-     *
-     * @param item the item to be updated
-     * @return true if the item existed in the algorithm and was updated, or false if the item did
-     * not exist in the algorithm and the algorithm contents remain unchanged.
-     */
     fun updateItem(item: T): Boolean {
-        // TODO - Can this be optimized to update the item in-place if the location hasn't changed?
         var result: Boolean
         synchronized(quadTree) {
             result = removeItem(item)
             if (result) {
-                // Only add the item if it was removed (to help prevent accidental duplicates on map)
                 result = addItem(item)
             }
         }
@@ -185,8 +149,6 @@ class DistanceBasedAlgorithm<T : ClusterItem> {
     }
 
     private fun createBoundsFromSpan(p: Point, span: Double): Bounds {
-        // TODO: Use a span that takes into account the visual size of the marker, not just its
-        // LatLng.
         val halfSpan = span / 2
         return Bounds(
             p.x - halfSpan, p.x + halfSpan,

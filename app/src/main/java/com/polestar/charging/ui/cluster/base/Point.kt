@@ -1,4 +1,4 @@
 
-package com.example.amaptest.ui.main.quadtree
+package com.polestar.charging.ui.cluster.base
 
 data class Point(val x: Double, val y: Double)

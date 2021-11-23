@@ -1,7 +1,7 @@
 package com.example.amaptest
 
 import com.amap.api.maps.model.LatLng
-import com.example.amaptest.ui.main.quadtree.ClusterItem
+import com.polestar.charging.ui.cluster.base.ClusterItem
 import org.json.JSONArray
 import java.util.*
 

@@ -21,13 +21,13 @@ import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.R
 import com.example.amaptest.SizeUtils
 import com.example.amaptest.ViewModelFactory
-import com.example.amaptest.ui.main.calc.DistanceInfo
-import com.example.amaptest.ui.main.calc.StationClusterItem
+import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.freeAcDcAll
 import com.polestar.repository.data.charging.isValid
-import com.example.amaptest.ui.main.quadtree.Cluster
-import com.example.amaptest.ui.main.quadtree.ClusterItem
+import com.polestar.charging.ui.cluster.base.Cluster
+import com.polestar.charging.ui.cluster.base.ClusterItem
+import com.polestar.charging.ui.cluster.base.DistanceInfo
 import java.lang.StringBuilder
 
 class ClusterFragment : Fragment(),

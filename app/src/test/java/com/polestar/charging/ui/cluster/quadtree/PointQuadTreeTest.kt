@@ -1,5 +1,7 @@
-package com.example.amaptest.ui.main.quadtree
+package com.polestar.charging.ui.cluster.quadtree
 
+import com.polestar.charging.ui.cluster.base.Bounds
+import com.polestar.charging.ui.cluster.base.Point
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test

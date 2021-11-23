@@ -1,8 +1,9 @@
-package com.example.amaptest.ui.main.calc
+package com.polestar.charging.ui.cluster.distance
 
-import com.example.amaptest.ui.main.quadtree.Cluster
-import com.example.amaptest.ui.main.quadtree.ClusterItem
 import com.example.amaptest.JsonTestUtil
+import com.polestar.charging.ui.cluster.base.Cluster
+import com.polestar.charging.ui.cluster.base.ClusterItem
+import com.polestar.charging.ui.cluster.base.DistanceInfo
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -25,7 +26,10 @@ class DistanceAlgorithmTest {
         assertEquals(12, calc(DistanceInfo(distanceMerge = 200f, enableCluster = true))?.size ?: 0)
         assertEquals(14, calc(DistanceInfo(distanceMerge = 100f, enableCluster = true))?.size ?: 0)
         assertEquals(14, calc(DistanceInfo(distanceMerge = 5f, enableCluster = true))?.size ?: 0)
-        assertEquals(20, calc(DistanceInfo(distanceMerge = 3000f, enableCluster = false))?.size ?: 0)
+        assertEquals(
+            20,
+            calc(DistanceInfo(distanceMerge = 3000f, enableCluster = false))?.size ?: 0
+        )
 
         algorithm.feed(emptyList())
         assertEquals(0, calc(DistanceInfo(distanceMerge = 3000f, enableCluster = false))?.size ?: 0)

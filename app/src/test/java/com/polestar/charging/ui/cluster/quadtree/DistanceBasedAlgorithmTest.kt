@@ -1,7 +1,8 @@
-package com.example.amaptest.ui.main.quadtree
+package com.polestar.charging.ui.cluster.quadtree
 
 import com.amap.api.maps.model.LatLng
 import com.example.amaptest.JsonTestUtil
+import com.polestar.charging.ui.cluster.base.ClusterItem
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -28,9 +29,9 @@ class DistanceBasedAlgorithmTest {
     @Test
     fun testAddRemoveUpdateClear() {
         val item_1_5: ClusterItem =
-            JsonTestUtil.TestClusterItem(LatLng(0.1, 0.5),"title1", "")
+            JsonTestUtil.TestClusterItem(LatLng(0.1, 0.5), "title1", "")
         val item_2_3: ClusterItem =
-            JsonTestUtil.TestClusterItem(LatLng(0.2, 0.3),"title2", "")
+            JsonTestUtil.TestClusterItem(LatLng(0.2, 0.3), "title2", "")
         val algo: DistanceBasedAlgorithm<ClusterItem> =
             DistanceBasedAlgorithm()
         assertTrue(algo.addItem(item_1_5))

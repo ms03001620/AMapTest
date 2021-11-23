@@ -1,4 +1,4 @@
-package com.example.amaptest.ui.main.quadtree
+package com.polestar.charging.ui.cluster.base
 
 class Bounds(val minX: Double, val maxX: Double, val minY: Double, val maxY: Double) {
     val midX = (minX + maxX) / 2

@@ -1,6 +1,7 @@
-package com.example.amaptest.ui.main.quadtree
+package com.polestar.charging.ui.cluster.base
 
 import com.amap.api.maps.model.LatLng
+import com.polestar.charging.ui.cluster.base.Point
 
 class SphericalMercatorProjection(val mWorldWidth: Double) {
     fun toPoint(latLng: LatLng): Point {

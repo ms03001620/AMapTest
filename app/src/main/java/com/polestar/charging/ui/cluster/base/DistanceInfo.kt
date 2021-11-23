@@ -1,4 +1,4 @@
-package com.example.amaptest.ui.main.calc
+package com.polestar.charging.ui.cluster.base
 
 import com.amap.api.maps.model.CameraPosition
 import com.amap.api.maps.model.LatLngBounds

@@ -1,8 +1,10 @@
-package com.example.amaptest.ui.main.calc
+package com.polestar.charging.ui.cluster.distance
 
-import com.example.amaptest.ui.main.quadtree.Cluster
-import com.example.amaptest.ui.main.quadtree.ClusterItem
-import com.example.amaptest.ui.main.quadtree.DistanceBasedAlgorithm
+import com.polestar.charging.ui.cluster.base.BaseClusterAlgorithm
+import com.polestar.charging.ui.cluster.base.Cluster
+import com.polestar.charging.ui.cluster.base.ClusterItem
+import com.polestar.charging.ui.cluster.base.DistanceInfo
+import com.polestar.charging.ui.cluster.quadtree.DistanceBasedAlgorithm
 
 class DistanceQuadTreeAlgorithm : BaseClusterAlgorithm {
     private val algorithm = DistanceBasedAlgorithm<ClusterItem>()

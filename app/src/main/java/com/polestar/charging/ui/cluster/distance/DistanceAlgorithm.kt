@@ -1,9 +1,11 @@
-package com.example.amaptest.ui.main.calc
+package com.polestar.charging.ui.cluster.distance
 
 import com.amap.api.maps.AMapUtils
-import com.example.amaptest.ui.main.quadtree.Cluster
-import com.example.amaptest.ui.main.quadtree.ClusterItem
-import com.example.amaptest.ui.main.quadtree.StaticCluster
+import com.polestar.charging.ui.cluster.base.BaseClusterAlgorithm
+import com.polestar.charging.ui.cluster.base.Cluster
+import com.polestar.charging.ui.cluster.base.ClusterItem
+import com.polestar.charging.ui.cluster.base.DistanceInfo
+import com.polestar.charging.ui.cluster.base.StaticCluster
 
 class DistanceAlgorithm : BaseClusterAlgorithm {
     //https://a.amap.com/lbs/static/unzip/Android_Map_Doc/3D/index.html?overview-summary.html
