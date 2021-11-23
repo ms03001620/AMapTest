@@ -11,13 +11,13 @@
         android:id="@+id/btn_enter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="enter" />
+        android:text="Location" />
 
     <Button
         android:id="@+id/btn_map"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="enterMap" />
+        android:text="map" />
 
     <Button
         android:id="@+id/btn_anim"
