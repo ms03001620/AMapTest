@@ -18,8 +18,8 @@ class PointQuadTree<T : PointQuadTree.Item>(
         val point: Point
     }
 
-    private var mItems: MutableSet<T>? = null
-    private var mChildren: MutableList<PointQuadTree<T>>? = null
+    private var items: MutableSet<T>? = null
+    private var children: MutableList<PointQuadTree<T>>? = null
 
     fun add(item: T) {
         if (bounds.contains(item.point.x, item.point.y)) {
@@ -28,7 +28,7 @@ class PointQuadTree<T : PointQuadTree.Item>(
     }
 
     private fun insert(x: Double, y: Double, item: T) {
-        mChildren?.let {
+        children?.let {
             if (y < bounds.midY) {
                 if (x < bounds.midX) {
                     // top left
@@ -46,8 +46,8 @@ class PointQuadTree<T : PointQuadTree.Item>(
                 }
             }
         } ?: run {
-            mItems = mItems ?: LinkedHashSet()
-            mItems?.let {
+            items = items ?: LinkedHashSet()
+            items?.let {
                 it.add(item)
                 if (it.size > MAX_ELEMENTS && depth < MAX_DEPTH) {
                     split()
@@ -57,8 +57,8 @@ class PointQuadTree<T : PointQuadTree.Item>(
     }
 
     private fun split() {
-        mChildren = mutableListOf()
-        mChildren?.add(
+        children = mutableListOf()
+        children?.add(
             PointQuadTree(
                 Bounds(
                     bounds.minX,
@@ -69,7 +69,7 @@ class PointQuadTree<T : PointQuadTree.Item>(
                 depth + 1
             )
         )
-        mChildren?.add(
+        children?.add(
             PointQuadTree(
                 Bounds(
                     bounds.midX,
@@ -80,7 +80,7 @@ class PointQuadTree<T : PointQuadTree.Item>(
                 depth + 1
             )
         )
-        mChildren?.add(
+        children?.add(
             PointQuadTree(
                 Bounds(
                     bounds.minX,
@@ -91,7 +91,7 @@ class PointQuadTree<T : PointQuadTree.Item>(
                 depth + 1
             )
         )
-        mChildren?.add(
+        children?.add(
             PointQuadTree(
                 Bounds(
                     bounds.midX,
@@ -102,8 +102,8 @@ class PointQuadTree<T : PointQuadTree.Item>(
                 depth + 1
             )
         )
-        val items = mItems
-        mItems = null
+        val items = items
+        this.items = null
         items?.forEach {
             insert(it.point.x, it.point.y, it)
         }
@@ -119,7 +119,7 @@ class PointQuadTree<T : PointQuadTree.Item>(
     }
 
     private fun remove(x: Double, y: Double, item: T): Boolean {
-        return mChildren?.let { children ->
+        return children?.let { children ->
             if (y < bounds.midY) {
                 if (x < bounds.midX) {
                     children[0].remove(x, y, item)
@@ -134,7 +134,7 @@ class PointQuadTree<T : PointQuadTree.Item>(
                 }
             }
         } ?: run {
-            mItems?.remove(item) ?: false
+            items?.remove(item) ?: false
         }
     }
 
@@ -142,8 +142,8 @@ class PointQuadTree<T : PointQuadTree.Item>(
      * Removes all points from the quadTree
      */
     fun clear() {
-        mChildren = null
-        mItems?.clear()
+        children = null
+        items?.clear()
     }
 
     /**
@@ -159,12 +159,12 @@ class PointQuadTree<T : PointQuadTree.Item>(
         if (bounds.intersects(searchBounds).not()) {
             return
         }
-        mChildren?.let { children ->
+        children?.let { children ->
             children.forEach {
                 it.search(searchBounds, results)
             }
         } ?: run {
-            mItems?.let {
+            items?.let {
                 if (searchBounds.contains(bounds)) {
                     results.addAll(it)
                 } else {
