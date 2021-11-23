@@ -41,11 +41,13 @@ class EnterActivity : AppCompatActivity() {
             gotoSheet()
         }
 
+        findViewById<View>(R.id.btn_sheetBehavior).setOnClickListener {
+            gotoSheetBehavior()
+        }
+
         findViewById<View>(R.id.btn_cluster).setOnClickListener {
             gotoCluster()
         }
-
-
     }
 
     fun checkLocation(): Boolean {
