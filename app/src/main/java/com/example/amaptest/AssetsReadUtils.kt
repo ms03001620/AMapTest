@@ -18,9 +18,9 @@ object AssetsReadUtils {
         return input2OutputStream(stream)?.toByteArray()
     }
 
-    fun readJson(context: Context): String? {
+    fun readJson(context: Context, fileName: String): String? {
         return try {
-            val stream = context.assets.open("json_stations.txt")
+            val stream = context.assets.open(fileName)
             val inputAsString = stream.bufferedReader().use { it.readText() }
             inputAsString
         } catch (e: Exception) {
@@ -35,8 +35,8 @@ object AssetsReadUtils {
         return yourClassList
     }
 
-    fun mockStation(context: Context): List<StationDetail>? {
-        readJson(context)?.let {
+    fun mockStation(context: Context, fileName: String = "json_stations.txt"): List<StationDetail>? {
+        readJson(context, fileName)?.let {
             return jsonToStations(it)
         }
         return null

@@ -18,7 +18,7 @@ class ClusterViewModel : ViewModel() {
     fun mock(context: Context, distanceInfo: DistanceInfo) {
         lastDistanceMerge = distanceInfo
         viewModelScope.launch {
-            AssetsReadUtils.mockStation(context)?.let {
+            AssetsReadUtils.mockStation(context, "json_stations570.json")?.let {
                 it.map {
                     StationClusterItem(it)
                 }.let {
@@ -45,7 +45,7 @@ class ClusterViewModel : ViewModel() {
     }
 
     fun initClusterAlgorithm(clusterIconSize: Float) {
-        clusterCalcClusterAlgorithm = DistanceAlgorithm()
-        //clusterCalcClusterAlgorithm = DistanceQuadTreeAlgorithm()
+        //clusterCalcClusterAlgorithm = DistanceAlgorithm()
+        clusterCalcClusterAlgorithm = DistanceQuadTreeAlgorithm()
     }
 }

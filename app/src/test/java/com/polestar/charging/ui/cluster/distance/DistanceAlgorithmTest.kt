@@ -11,14 +11,29 @@ import org.junit.Test
 class DistanceAlgorithmTest {
     private val algorithm = DistanceAlgorithm()
 
-    @Before
-    fun setup() {
-        val list: List<ClusterItem> = JsonTestUtil.read("json_stations.json")
+
+    @Test
+    fun baseBigDataTest() {
+        val list: List<ClusterItem> = JsonTestUtil.read("json_stations570.json")
+        assertEquals(570, list.size)
         algorithm.feed(list)
+
+        assertEquals(
+            570,
+            calc(DistanceInfo(distanceMerge = 3000f, enableCluster = false))?.size ?: 0
+        )
+
+        assertEquals(
+            1,
+            calc(DistanceInfo(distanceMerge = 500000f, enableCluster = true))?.size ?: 0
+        )
     }
 
     @Test
     fun baseTest() {
+
+        val list: List<ClusterItem> = JsonTestUtil.read("json_stations.json")
+        algorithm.feed(list)
         assertNotNull(calc(DistanceInfo(distanceMerge = 3000f, enableCluster = true)))
         assertEquals(1, calc(DistanceInfo(distanceMerge = 3000f, enableCluster = true))?.size ?: 0)
         assertEquals(4, calc(DistanceInfo(distanceMerge = 1000f, enableCluster = true))?.size ?: 0)

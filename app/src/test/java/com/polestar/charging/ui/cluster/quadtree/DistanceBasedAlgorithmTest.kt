@@ -12,6 +12,23 @@ import java.util.*
 class DistanceBasedAlgorithmTest {
 
     @Test
+    fun baseBigTest() {
+        val list: List<ClusterItem> = JsonTestUtil.read("json_stations570.json")
+        assertEquals(570, list.size)
+
+        val algorithm = DistanceBasedAlgorithm<ClusterItem>()
+
+        assertTrue(algorithm.addItems(list))
+
+        val c = algorithm.getClusters(8.0f)
+
+        assertEquals(1, c.size)
+        assertEquals(570, c.toList()[0].items?.size)
+
+        assertEquals(6, algorithm.getClusters(9.0f).size)
+    }
+
+    @Test
     fun baseTest() {
         val list: List<ClusterItem> = JsonTestUtil.read("json_stations.json")
         assertEquals(20, list.size)
