@@ -89,8 +89,7 @@ class DistanceBasedAlgorithm<T : ClusterItem> {
     }
 
     fun getClusters(zoom: Float): Set<Cluster<T>> {
-        val discreteZoom = zoom.toInt()
-        val zoomSpecificSpan = maxDistance / Math.pow(2.0, discreteZoom.toDouble()) / 256
+        val zoomSpecificSpan = maxDistance / Math.pow(2.0, zoom.toDouble()) / 256
         val visitedCandidates: MutableSet<QuadItem<T>> = HashSet()
         val results = HashSet<Cluster<T>>()
         val distanceToCluster: MutableMap<QuadItem<T>, Double> = HashMap()
@@ -157,6 +156,6 @@ class DistanceBasedAlgorithm<T : ClusterItem> {
     }
 
     companion object {
-        private const val DEFAULT_MAX_DISTANCE_AT_ZOOM = 100 // essentially 100 dp.
+        private const val DEFAULT_MAX_DISTANCE_AT_ZOOM = 120 // essentially 100 dp.
     }
 }

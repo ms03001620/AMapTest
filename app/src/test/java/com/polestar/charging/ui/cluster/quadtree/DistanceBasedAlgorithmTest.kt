@@ -25,7 +25,7 @@ class DistanceBasedAlgorithmTest {
         assertEquals(1, c.size)
         assertEquals(570, c.toList()[0].items?.size)
 
-        assertEquals(6, algorithm.getClusters(9.0f).size)
+        assertEquals(5, algorithm.getClusters(9.0f).size)
     }
 
     @Test
@@ -39,8 +39,8 @@ class DistanceBasedAlgorithmTest {
 
         assertEquals(1, algorithm.getClusters(11f).size)
         assertEquals(1, algorithm.getClusters(12f).size)
-        assertEquals(4, algorithm.getClusters(13f).size)
-        assertEquals(8, algorithm.getClusters(14f).size)
+        assertEquals(2, algorithm.getClusters(13f).size)
+        assertEquals(7, algorithm.getClusters(14f).size)
     }
 
     @Test
