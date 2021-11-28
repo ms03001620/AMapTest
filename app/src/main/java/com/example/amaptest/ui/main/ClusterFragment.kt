@@ -1,5 +1,6 @@
 package com.example.amaptest.ui.main
 
+import android.content.Context
 import android.graphics.Color
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -28,6 +29,7 @@ import com.polestar.repository.data.charging.isValid
 import com.polestar.charging.ui.cluster.base.Cluster
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.DistanceInfo
+import com.polestar.charging.ui.cluster.view.DefaultClusterRenderer
 import java.lang.StringBuilder
 
 class ClusterFragment : Fragment(),
@@ -71,6 +73,12 @@ class ClusterFragment : Fragment(),
     private var currentShownMarker: Marker? = null
     private val markersMap = HashMap<Marker, StationDetail>()
 
+
+    lateinit var mRenderer: DefaultClusterRenderer<ClusterItem>
+    fun initClusterRenderer(context: Context, map: AMap){
+        mRenderer = DefaultClusterRenderer(context, map)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -101,6 +109,7 @@ class ClusterFragment : Fragment(),
         myLocationStyle.strokeColor(Color.parseColor("#0D101820"))
         myLocationStyle.strokeWidth(2f)
         myLocationStyle.radiusFillColor(Color.parseColor("#0A137ED4"))
+        initClusterRenderer(requireContext(), mapView.map)
         initObserver()
         initClusterObserver()
         initZoomBtn(view)
@@ -127,14 +136,14 @@ class ClusterFragment : Fragment(),
     private fun initClusterObserver() {
         clusterViewModel.stationClusterLiveData.observe(viewLifecycleOwner) { set ->
             mapView.map.clear()
-            val boundsBuilder = LatLngBounds.builder()
+
+            //mRenderer.onClustersChanged(set)
+
             set.forEach { cluster ->
                 addMarkToMap(
                     cluster,
                     mapView.map
-                )?.let {
-                    boundsBuilder.include(it.position)
-                }
+                )
             }
         }
     }

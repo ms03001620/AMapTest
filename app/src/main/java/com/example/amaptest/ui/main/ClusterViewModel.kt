@@ -8,6 +8,7 @@ import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.logd
 import com.polestar.charging.ui.cluster.base.*
 import com.polestar.charging.ui.cluster.distance.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ClusterViewModel : ViewModel() {
@@ -17,8 +18,8 @@ class ClusterViewModel : ViewModel() {
 
     fun mock(context: Context, distanceInfo: DistanceInfo) {
         lastDistanceMerge = distanceInfo
-        viewModelScope.launch {
-            AssetsReadUtils.mockStation(context, "json_stations570.json")?.let {
+        viewModelScope.launch(Dispatchers.IO) {
+            AssetsReadUtils.mockStation(context, "json_stations.json")?.let {
                 it.map {
                     StationClusterItem(it)
                 }.let {

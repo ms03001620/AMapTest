@@ -35,7 +35,7 @@ object AssetsReadUtils {
         return yourClassList
     }
 
-    fun mockStation(context: Context, fileName: String = "json_stations.txt"): List<StationDetail>? {
+    fun mockStation(context: Context, fileName: String): List<StationDetail>? {
         readJson(context, fileName)?.let {
             return jsonToStations(it)
         }

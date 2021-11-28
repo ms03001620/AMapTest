@@ -73,9 +73,8 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
     fun initData(){
-        AssetsReadUtils.mockStation(this)?.let {
+        AssetsReadUtils.mockStation(this, "json_stations.json")?.let {
             stations = it.subList(0, 2)
         }
         Log.d("MainActivity", "stations:$stations")

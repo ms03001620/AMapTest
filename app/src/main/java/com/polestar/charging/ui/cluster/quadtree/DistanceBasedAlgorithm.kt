@@ -156,6 +156,6 @@ class DistanceBasedAlgorithm<T : ClusterItem> {
     }
 
     companion object {
-        private const val DEFAULT_MAX_DISTANCE_AT_ZOOM = 120 // essentially 100 dp.
+        const val DEFAULT_MAX_DISTANCE_AT_ZOOM = 120 // essentially 100 dp.
     }
 }
