@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import com.example.amaptest.flow.FlowActivity
 
 class EnterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,6 +49,9 @@ class EnterActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_cluster).setOnClickListener {
             gotoCluster()
         }
+        findViewById<View>(R.id.btn_flow).setOnClickListener {
+            gotoFlow()
+        }
     }
 
     fun checkLocation(): Boolean {
@@ -79,6 +83,10 @@ class EnterActivity : AppCompatActivity() {
         startActivity(Intent(this, ClusterActivity::class.java))
     }
 
+    fun gotoFlow() {
+        startActivity(Intent(this, FlowActivity::class.java))
+    }
+
 
     private var requestOnlyFinePermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
@@ -86,7 +94,7 @@ class EnterActivity : AppCompatActivity() {
                 gotoLocation()
             } else {
                 with(allGrants.keys.toString() + allGrants.values.toString()) {
-                    Toast.makeText(applicationContext, this, 1).show()
+                    Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()
                 }
             }
         }
