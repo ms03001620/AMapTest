@@ -135,11 +135,11 @@ class ClusterFragment : Fragment(),
 
     private fun initClusterObserver() {
         clusterViewModel.stationClusterLiveData.observe(viewLifecycleOwner) { set ->
-            mapView.map.clear()
-
             mRenderer.onClustersChanged(set)
 
-/*            set.forEach { cluster ->
+/*
+mapView.map.clear()
+set.forEach { cluster ->
                 addMarkToMap(
                     cluster,
                     mapView.map
