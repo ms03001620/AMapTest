@@ -12,6 +12,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.example.amaptest.flow.FlowActivity
+import com.example.amaptest.marker.MarkerActionActivity
 
 class EnterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +53,10 @@ class EnterActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_flow).setOnClickListener {
             gotoFlow()
         }
+
+        findViewById<View>(R.id.btn_maker_action).setOnClickListener {
+            gotoMarkerAction()
+        }
     }
 
     fun checkLocation(): Boolean {
@@ -61,6 +66,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoMap() {
         startActivity(Intent(this, MainActivity::class.java))
+    }
+
+    fun gotoMarkerAction() {
+        startActivity(Intent(this, MarkerActionActivity::class.java))
     }
 
     fun gotoAnim() {
