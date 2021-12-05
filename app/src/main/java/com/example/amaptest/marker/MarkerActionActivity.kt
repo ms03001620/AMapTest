@@ -1,16 +1,11 @@
 package com.example.amaptest.marker
 
-import android.content.res.Resources
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
-import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
-import android.widget.TextView
-import com.amap.api.maps.AMap
+import androidx.appcompat.app.AppCompatActivity
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapView
 import com.amap.api.maps.model.*
@@ -31,27 +26,39 @@ class MarkerActionActivity : AppCompatActivity() {
     }
 
     lateinit var mMapView: MapView
+    lateinit var mMapProxy: MapProxy
     lateinit var stations : List<StationDetail>
-    var markerStations = mutableListOf<Marker>()
+    lateinit var markerAction: MarkerAction
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_marker_action)
         initData()
         setupMap(savedInstanceState)
-        loadMarks()
+        moveCameraToDataArea()
         initBtns()
     }
 
+    var currcentMarker: Marker? = null
+
     fun initBtns(){
+        findViewById<View>(R.id.btn_add).setOnClickListener {
+            currcentMarker = markerAction.addMarker(stations[0])
+        }
+
         findViewById<View>(R.id.btn_move).setOnClickListener {
-            move(markerStations[0], markerStations[1])
+            markerAction.transfer(stations[0], stations[1], false)
+        }
+
+        findViewById<View>(R.id.btn_move_delete).setOnClickListener {
+            markerAction.transfer(stations[0], stations[1], true)
         }
 
         findViewById<View>(R.id.btn_del).setOnClickListener {
-            markerStations[1].remove()
+            markerAction.delete(stations[0])
         }
     }
+
 
     private fun move(source: Marker, target: Marker){
         val set = AnimationSet(true)
@@ -77,8 +84,6 @@ class MarkerActionActivity : AppCompatActivity() {
         source.startAnimation()
     }
 
-
-
     fun initData(){
         AssetsReadUtils.mockStation(this, "json_stations.json")?.let {
             stations = it.subList(0, 2)
@@ -89,6 +94,8 @@ class MarkerActionActivity : AppCompatActivity() {
     fun setupMap(savedInstanceState: Bundle?){
         mMapView = findViewById(R.id.map)
         mMapView.onCreate(savedInstanceState)
+        mMapProxy = MapProxy(mMapView.map, applicationContext)
+        markerAction = MarkerAction(mMapProxy)
         mMapView.map.setCustomMapStyle(
             CustomMapStyleOptions()
                 .setEnable(true)
@@ -113,34 +120,17 @@ class MarkerActionActivity : AppCompatActivity() {
         mMapView.map.myLocationStyle = myLocationStyle
     }
 
-    fun loadMarks() {
+    private fun moveCameraToDataArea() {
         val boundsBuilder = LatLngBounds.builder()
         for (station in stations) {
-            if (station.lat != null && station.lng != null && station.acTotal != null && station.dcTotal != null) {
-                val markerOptions = MarkerOptions()
-                    .position(LatLng(station.lat, station.lng))
-                    .icon(getCollapsedBitmapDescriptor((station.acTotal + station.dcTotal).toString()))
-                    .infoWindowEnable(true)
-                val marker = mMapView.map.addMarker(markerOptions)
-                markerStations.add(marker)
-                //markersMap[marker] = station
-                boundsBuilder.include(LatLng(station.lat, station.lng))
-            }
+            boundsBuilder.include(LatLng(station.lat ?: Double.NaN, station.lng ?: Double.NaN))
         }
-        mMapView.map.animateCamera(
+        mMapView.map.moveCamera(
             CameraUpdateFactory.newLatLngBounds(
                 boundsBuilder.build(),
                 100
             )
         )
-    }
-
-
-    private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
-        val view = LayoutInflater.from(this)
-            .inflate(R.layout.charging_layout_marker_collapsed, null, false)
-        view.findViewById<TextView>(R.id.tv).text = total
-        return BitmapDescriptorFactory.fromView(view)
     }
 
     override fun onDestroy() {
@@ -162,5 +152,6 @@ class MarkerActionActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         mMapView.onSaveInstanceState(outState)
     }
+
 
 }

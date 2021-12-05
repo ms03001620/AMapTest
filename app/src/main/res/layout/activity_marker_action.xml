@@ -19,18 +19,28 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/btn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="add"/>
+
+        <Button
             android:id="@+id/btn_move"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="move"/>
 
         <Button
+            android:id="@+id/btn_move_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="move_del"/>
+
+        <Button
             android:id="@+id/btn_del"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="delete"/>
-
-
 
     </LinearLayout>
 
