@@ -24,8 +24,15 @@ class FlowActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_flow)
 
+        initBtns()
         initObserve()
         initStart()
+    }
+
+    private fun initBtns() {
+        binding.btnSwitch.setOnClickListener {
+            viewModel.getNewsOdd()
+        }
     }
 
     private fun initObserve() {

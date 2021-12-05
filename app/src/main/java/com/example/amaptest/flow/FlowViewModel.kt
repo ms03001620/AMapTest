@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 
@@ -17,6 +18,17 @@ class FlowViewModel : ViewModel() {
     fun getNews() {
         viewModelScope.launch {
             newsApi.latestNews.collect {
+                news.value = it
+            }
+        }
+    }
+
+
+    fun getNewsOdd() {
+        viewModelScope.launch {
+            newsApi.latestNews.filter {
+                it % 2 == 0
+            }.collect {
                 news.value = it
             }
         }
