@@ -56,6 +56,12 @@
         android:layout_height="wrap_content"
         android:text="MarkerAction" />
 
+    <Button
+        android:id="@+id/btn_bluetooth"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bluetooth" />
+
 
 
 </LinearLayout>

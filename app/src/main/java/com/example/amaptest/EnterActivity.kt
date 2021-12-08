@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.marker.MarkerActionActivity
 
@@ -57,6 +58,10 @@ class EnterActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_maker_action).setOnClickListener {
             gotoMarkerAction()
         }
+
+        findViewById<View>(R.id.btn_bluetooth).setOnClickListener {
+            gotoBluetooth()
+        }
     }
 
     fun checkLocation(): Boolean {
@@ -94,6 +99,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoFlow() {
         startActivity(Intent(this, FlowActivity::class.java))
+    }
+
+    fun gotoBluetooth() {
+        startActivity(Intent(this, BluetoothActivity::class.java))
     }
 
 
