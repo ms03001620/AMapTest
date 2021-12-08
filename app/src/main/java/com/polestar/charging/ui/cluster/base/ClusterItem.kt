@@ -20,4 +20,6 @@ interface ClusterItem {
      * The description of this marker.
      */
     val snippet: String?
+
+    val id: String
 }

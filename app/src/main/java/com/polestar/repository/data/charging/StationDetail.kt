@@ -1,6 +1,7 @@
 package com.polestar.repository.data.charging
 
 import androidx.annotation.VisibleForTesting
+import com.amap.api.maps.model.LatLng
 import java.io.Serializable
 import java.lang.Exception
 import java.util.*
@@ -110,6 +111,8 @@ fun StationDetail.getAcKw() = gunKw?.firstOrNull {
 fun StationDetail.getDcKw() = gunKw?.firstOrNull() {
     it.type == VALUE_DC
 }?.kw
+
+fun StationDetail.toLatLng() = LatLng(lat?: Double.NaN, lng?: Double.NaN)
 
 fun StationDetail.displayName(): String {
     var result = ""

@@ -206,28 +206,6 @@ set.forEach { cluster ->
         }
     }
 
-    private fun addMarkToMap(
-        cluster: Cluster<ClusterItem>,
-        map: AMap
-    ): Marker? {
-        val onlyOne = cluster.items?.size == 1
-
-        return with(onlyOne) {
-            if (this) {
-                val f = cluster.items?.toList()!![0] as StationClusterItem
-                getCollapsedBitmapDescriptor(f.stationDetail)
-            } else {
-                getClusterBitmapDescriptor(cluster.items?.size ?: 0)
-            }
-        }.let {
-            MarkerOptions()
-                .position(cluster.position)
-                .icon(it)
-                .infoWindowEnable(true)
-        }.let {
-            map.addMarker(it)
-        }
-    }
 
     private fun addMarkToMap(
         latLng: LatLng,

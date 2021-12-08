@@ -46,9 +46,9 @@ class DistanceBasedAlgorithmTest {
     @Test
     fun testAddRemoveUpdateClear() {
         val item_1_5: ClusterItem =
-            JsonTestUtil.TestClusterItem(LatLng(0.1, 0.5), "title1", "")
+            JsonTestUtil.TestClusterItem("", LatLng(0.1, 0.5), "title1", "")
         val item_2_3: ClusterItem =
-            JsonTestUtil.TestClusterItem(LatLng(0.2, 0.3), "title2", "")
+            JsonTestUtil.TestClusterItem("",LatLng(0.2, 0.3), "title2", "")
         val algo: DistanceBasedAlgorithm<ClusterItem> =
             DistanceBasedAlgorithm()
         assertTrue(algo.addItem(item_1_5))
@@ -89,7 +89,7 @@ class DistanceBasedAlgorithmTest {
             DistanceBasedAlgorithm()
         for (i in 0..99) {
             algo.addItem(
-                JsonTestUtil.TestClusterItem(LatLng(0.0, 0.0), i.toString(), "")
+                JsonTestUtil.TestClusterItem("", LatLng(0.0, 0.0), i.toString(), "")
             )
         }
         assertEquals(100, algo.items.size)

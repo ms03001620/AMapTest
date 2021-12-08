@@ -9,6 +9,11 @@ import com.amap.api.maps.model.animation.TranslateAnimation
 import com.polestar.repository.data.charging.StationDetail
 
 class MarkerAction(val map: MapProxy) {
+
+    fun addCluster(cluster: MarkerCluster): Marker? {
+        return map.addCluster(cluster.getId(), cluster.getSize(), cluster.getLatlng())
+    }
+
     fun addMarker(stationDetail: StationDetail): Marker? {
         return map.addMarker(stationDetail)
     }
@@ -19,6 +24,10 @@ class MarkerAction(val map: MapProxy) {
         map.getMarker(from)?.let {
             transfer(from.id, it, stationDetailToLatLng(to), removeAtEnd)
         }
+    }
+
+    fun exp(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
+
     }
 
     fun transfer(id: String?, marker: Marker, moveTo: LatLng, removeAtEnd: Boolean) {

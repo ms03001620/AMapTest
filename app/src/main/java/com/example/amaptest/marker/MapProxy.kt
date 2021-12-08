@@ -21,6 +21,17 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return null
     }
 
+    fun addCluster(id: String, size: Int, latLng: LatLng?): Marker? {
+        latLng?.let { latLng ->
+            if (set.containsKey(id).not()) {
+                return addMarker(stationToClusterOptions(size, latLng))?.also {
+                    set.put(id, it)
+                }
+            }
+        }
+        return null
+    }
+
     fun deleteMarker(station: StationDetail) {
         deleteMarker(station.id)
     }
@@ -41,6 +52,19 @@ class MapProxy(private val map: AMap, private val context: Context) {
         view.findViewById<TextView>(R.id.tv).text = total
         return BitmapDescriptorFactory.fromView(view)
     }
+
+    private fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.charging_layout_marker_cluster, null, false)
+        view.findViewById<TextView>(R.id.text_cluster).text = clusterSize.toString()
+        return BitmapDescriptorFactory.fromView(view)
+    }
+
+    private fun stationToClusterOptions(size: Int, latLng: LatLng) = MarkerOptions()
+        .position(latLng)
+        .icon(getClusterBitmapDescriptor(size))
+        .infoWindowEnable(true)
+
 
     private fun stationToMarkerOptions(station: StationDetail) = MarkerOptions()
         .position(LatLng(station.lat ?: Double.NaN, station.lng ?: Double.NaN))
