@@ -3,13 +3,21 @@ plugins {
     id 'kotlin-android'
 }
 
+/*  const val compileSdkVersion = 31
+    const val minSdkVersion = 23
+    const val targetSdkVersion = 29
+    const val versionCode = 119
+    const val versionName = "2.9.0"
+    const val ndkVersion = "23.0.7599858"
+*/
+
 android {
     compileSdk 31
 
     defaultConfig {
         applicationId "com.example.amaptest"
-        minSdk 21
-        targetSdk 31
+        minSdk 23
+        targetSdk 29
         versionCode 1
         versionName "1.0"
 
