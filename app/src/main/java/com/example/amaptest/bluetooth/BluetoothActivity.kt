@@ -2,6 +2,7 @@ package com.example.amaptest.bluetooth
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothAdapter.*
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -111,6 +112,24 @@ class BluetoothActivity : AppCompatActivity() {
             startActivity(discoverableIntent)
         }
 
+        binding.btnBindingForce.setOnClickListener {
+            val imei = binding.editImei.text.toString()
+            if (imei.isBlank()) {
+                printlnLogs("need IMEI")
+            }else{
+                try {
+                    device.bluetoothAdapter.getRemoteDevice(imei)?.let {
+                        getNoBondedDevice(it)
+                    }?.let {
+                        pairToDevice(it)
+                    }
+                } catch (e: IllegalArgumentException) {
+                    printlnLogs("getRemoteDevice: ${e.message}")
+                }
+
+            }
+        }
+
         binding.btnBinding.setOnClickListener {
             val imei = binding.editImei.text.toString()
             if (imei.isBlank()) {
@@ -177,19 +196,44 @@ class BluetoothActivity : AppCompatActivity() {
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
 
                     device?.let {
-                        val deviceName = device.name
-                        val deviceHardwareAddress = (device.address ?: "").uppercase()
+                        val macAddress = (device.address ?: "").uppercase()
 
-                        if (macSet.containsKey(deviceHardwareAddress)) {
-                            printlnLogs("has contain:$deviceHardwareAddress")
+                        if (macSet.containsKey(macAddress)) {
+                            printlnLogs("has contain:$macAddress")
                         } else {
-                            macSet.put(deviceHardwareAddress, device)
-                            printlnLogs("$deviceName, $deviceHardwareAddress")
+                            macSet.put(macAddress, device)
+                            printlnLogs("${device.name}, $macAddress")
                         }
                     } ?: run {
                         printlnLogs("onReceive null BluetoothDevice")
                     }
                 }
+                BluetoothDevice.ACTION_NAME_CHANGED ->{
+                    val device: BluetoothDevice? =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+
+                    device?.let {
+                        val macAddress = (device.address ?: "").uppercase()
+                        if (macSet.containsKey(macAddress)) {
+                            // 名字改变的设备在结果中
+                            val oldName = macSet.get(macAddress)?.name ?: ""
+                            val newName = device.name ?: ""
+                            // 将新设备对象放入集合
+                            macSet.put(macAddress, device)
+                            printlnLogs("ACTION_NAME_CHANGED ($oldName) -> ($newName)")
+                        } else {
+                            // 名字变更的设备不在结果中， 直接放入集合
+                            macSet.put(macAddress, device)
+                            printlnLogs("ACTION_NAME_CHANGED add new device:${device.name}")
+                        }
+                    }
+                }
+
+                /*BluetoothDevice.ACTION_PAIRING_REQUEST->{
+                    //
+
+                }*/
+
                 else -> {
                     printlnLogs("onReceive action:${intent.action}, ignore!!!")
                 }
@@ -230,7 +274,9 @@ class BluetoothActivity : AppCompatActivity() {
             this.addAction(BluetoothDevice.ACTION_FOUND)
             this.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
             this.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST)
-            this.addAction(BluetoothDevice.ACTION_NAME_CHANGED)
+            this.addAction(BluetoothDevice.ACTION_NAME_CHANGED) // 远程设备名称更新
+            this.addAction(ACTION_DISCOVERY_STARTED) // 开始扫描
+            this.addAction(ACTION_DISCOVERY_FINISHED) // 扫描结束
         }.let {
             registerReceiver(receiver, it)
         }

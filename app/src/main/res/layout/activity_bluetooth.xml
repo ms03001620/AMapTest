@@ -77,13 +77,21 @@
 
                 <EditText
                     android:id="@+id/edit_imei"
-                    android:layout_width="150dp"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:hint="IMEI"
                     android:textColorHint="@color/base_color_75787B"
                     android:textColor="#000"
                     android:text="@string/mac_address_macbook"
                     android:textSize="10sp" />
+
+                <Button
+                    android:id="@+id/btn_binding_force"
+                    style="@style/Button_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="强制绑定" />
+
 
             </LinearLayout>
         </LinearLayout>
