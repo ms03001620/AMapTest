@@ -19,6 +19,9 @@ class BluetoothHardwareImpl : BluetoothHardware {
         return bluetoothAdapter.isEnabled
     }
 
+    fun sss(){
+    }
+
     override fun bondedDevices() = bluetoothAdapter.bondedDevices
 
 

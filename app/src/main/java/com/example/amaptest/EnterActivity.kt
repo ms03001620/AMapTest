@@ -61,6 +61,8 @@ class EnterActivity : AppCompatActivity() {
 
         // 蓝牙
         findViewById<View>(R.id.btn_bluetooth).setOnClickListener {
+            //https://developer.android.com/reference/android/bluetooth/BluetoothDevice#createBond()
+
             // android S 以上需要动态权限。否则
             // 调用 requestBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)) 时
             // java.lang.SecurityException: Permission Denial: starting Intent { act=android.bluetooth.adapter.action.REQUEST_ENABLE

@@ -27,4 +27,16 @@ class BaseTest {
         assertFalse(map.containsKey(string1))
         assertEquals("", "".uppercase())
     }
+
+    @Test
+    fun testUUID() {
+        val uuid = UUID.nameUUIDFromBytes("Hello".toByteArray(Charsets.UTF_8))
+
+        assertEquals("8b1a9953-c461-3296-a827-abf8c47804d7", uuid.toString())
+
+        assertEquals(
+            UUID.fromString("8b1a9953-c461-3296-a827-abf8c47804d7").toString(),
+            uuid.toString()
+        )
+    }
 }

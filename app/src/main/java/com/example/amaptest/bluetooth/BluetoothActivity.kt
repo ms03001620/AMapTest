@@ -20,6 +20,8 @@ import com.example.amaptest.LocationUtils
 import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
 import com.example.amaptest.databinding.ActivityBluetoothBinding
+import java.lang.StringBuilder
+import java.util.*
 
 class BluetoothActivity : AppCompatActivity() {
     private val viewModel by lazy {
@@ -32,6 +34,7 @@ class BluetoothActivity : AppCompatActivity() {
     lateinit var binding: ActivityBluetoothBinding
     var logIndex = 0
     val macSet = hashMapOf<String, BluetoothDevice>()
+    val uuid = UUID.nameUUIDFromBytes("Hello".toByteArray(Charsets.UTF_8))
 
     val listener = object : BluetoothHelper.OnBluetoothEvent {
         override fun onErrorNoBluetoothDevice() {
@@ -59,9 +62,9 @@ class BluetoothActivity : AppCompatActivity() {
         initObserve()
         initStart()
         initHelper()
-        initReg()
+        initRegister()
         initChecksdk()
-        printEnabled()
+        printLocalInfo()
     }
 
     private fun initChecksdk() {
@@ -79,9 +82,8 @@ class BluetoothActivity : AppCompatActivity() {
             requestBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
         }
 
-        //android.permission.BLUETOOTH_CONNECT
-        binding.btnIsEnable.setOnClickListener {
-            printEnabled()
+        binding.btnInfo.setOnClickListener {
+            printLocalInfo()
         }
 
         binding.btnRequestBonded.setOnClickListener {
@@ -89,9 +91,9 @@ class BluetoothActivity : AppCompatActivity() {
         }
         binding.btnRequestScan.setOnClickListener {
             if (checkLocation()) {
-                checkLocationSwitch({
+                checkLocationSwitch {
                     helper.requestScan()
-                })
+                }
             } else {
                 requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
             }
@@ -114,8 +116,26 @@ class BluetoothActivity : AppCompatActivity() {
             if (imei.isBlank()) {
                 printlnLogs("need IMEI")
             } else {
-                macSet[imei.uppercase()]?.let {
-                    pairToDevice(it)
+                macSet[imei.uppercase()]?.let { targetDevice ->
+                    device.bluetoothAdapter.isDiscovering.let {
+                        if (it) {
+                            printlnLogs("isDiscovering true")
+                            if (device.bluetoothAdapter.cancelDiscovery()) {
+                                printlnLogs("cancelDiscovery")
+                                targetDevice
+                            } else {
+                                printlnLogs("cancelDiscovery failed")
+                                null
+                            }
+                        } else {
+                            targetDevice
+                        }
+                    }?.let {
+                        getNoBondedDevice(it)
+                    }?.let {
+                        pairToDevice(it)
+                    }
+
                 } ?: run {
                     printlnLogs("not fount device is:$imei, scan first")
                 }
@@ -124,35 +144,54 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
 
-    fun pairToDevice(bluetoothDevice: BluetoothDevice) {
-        printlnLogs("pairToDevice:$bluetoothDevice")
-
+    fun getNoBondedDevice(device: BluetoothDevice): BluetoothDevice? {
+        if (device.bondState == BluetoothDevice.BOND_NONE) {
+            return device
+        }
+        printlnLogs("$device, bonded!!!")
+        return null
     }
 
 
+    fun pairToDevice(bluetoothDevice: BluetoothDevice) {
+        printlnLogs("pairToDevice:$bluetoothDevice")
+        val create = bluetoothDevice.createBond()
+        printlnLogs("createBond:$create")
 
-
-
+        //ConnectThread(bluetoothDevice, uuid).start()
+    }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            if (intent.action == BluetoothDevice.ACTION_FOUND) {
-                // Discovery has found a device. Get the BluetoothDevice
-                // object and its info from the Intent.
-                val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+            when (intent.action) {
+                BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
+                    val state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1)
+                    val prevState =
+                        intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, -1)
+                    printlnLogs("onReceive state:${parseToString(prevState)} -> state:${parseToString(state)}")
+                }
+                BluetoothDevice.ACTION_FOUND -> {
+                    // Discovery has found a device. Get the BluetoothDevice
+                    // object and its info from the Intent.
+                    val device: BluetoothDevice? =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
 
-                device?.let {
-                    val deviceName = device.name
-                    val deviceHardwareAddress = (device.address ?: "").uppercase()
+                    device?.let {
+                        val deviceName = device.name
+                        val deviceHardwareAddress = (device.address ?: "").uppercase()
 
-                    if (macSet.containsKey(deviceHardwareAddress)) {
-                        printlnLogs("has contain:$deviceHardwareAddress")
-                    } else {
-                        macSet.put(deviceHardwareAddress, device)
-                        printlnLogs("$deviceName, $deviceHardwareAddress")
+                        if (macSet.containsKey(deviceHardwareAddress)) {
+                            printlnLogs("has contain:$deviceHardwareAddress")
+                        } else {
+                            macSet.put(deviceHardwareAddress, device)
+                            printlnLogs("$deviceName, $deviceHardwareAddress")
+                        }
+                    } ?: run {
+                        printlnLogs("onReceive null BluetoothDevice")
                     }
-                } ?: run {
-                    printlnLogs("onReceive null BluetoothDevice")
+                }
+                else -> {
+                    printlnLogs("onReceive action:${intent.action}, ignore!!!")
                 }
             }
         }
@@ -186,8 +225,15 @@ class BluetoothActivity : AppCompatActivity() {
 
     }
 
-    private fun initReg() {
-        registerReceiver(receiver, IntentFilter(BluetoothDevice.ACTION_FOUND))
+    private fun initRegister() {
+        IntentFilter().apply {
+            this.addAction(BluetoothDevice.ACTION_FOUND)
+            this.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
+            this.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST)
+            this.addAction(BluetoothDevice.ACTION_NAME_CHANGED)
+        }.let {
+            registerReceiver(receiver, it)
+        }
     }
 
     fun checkLocation(): Boolean {
@@ -195,7 +241,7 @@ class BluetoothActivity : AppCompatActivity() {
         return t == PackageManager.PERMISSION_GRANTED
     }
 
-    private fun checkLocationSwitch(callback: ()->Unit) {
+    private fun checkLocationSwitch(callback: () -> Unit) {
         if (LocationUtils.isLocationSwitchOpen(this)) {
             // 有权限进入
             callback.invoke()
@@ -208,14 +254,30 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-    fun printEnabled(){
-        val t = BluetoothAdapter.getDefaultAdapter()
-        var result = "false"
-
-        if (t?.isEnabled == true) {
-            result = "true"
+    fun printLocalInfo() {
+        StringBuilder().let { info ->
+            BluetoothAdapter.getDefaultAdapter()?.let { adapter ->
+                info.append("\t")
+                info.append("Name:${adapter.name}")
+                info.append("\n\t")
+                info.append("Enable:${adapter.isEnabled}")
+                info.append("\n\t")
+                info.append("isDiscovering:${adapter.isDiscovering}")
+                info.append("\n\t")
+                info.append("state:${adapter.state}")
+            }
+        }.let {
+            printlnLogs(it.toString())
         }
-        printlnLogs("enabled: $result")
+    }
+
+    private fun parseToString(code: Int): String{
+        return when(code){
+            10 -> "BOND_NONE"
+            11 -> "BOND_BONDING"
+            12 -> "BOND_BONDED"
+            else -> "code:$code"
+        }
     }
 
     private var requestOnlyFinePermissionLauncher =

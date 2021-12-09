@@ -32,7 +32,6 @@ class BluetoothHelper(
     }
 
 
-
     fun requestScan() {
         if (successInit) {
             hardware?.startDiscovery()
