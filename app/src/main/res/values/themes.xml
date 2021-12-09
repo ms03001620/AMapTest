@@ -40,6 +40,37 @@
         <item name="android:elevation">0dp</item>
     </style>
 
+    <style name="BaseNoTitleWithPaddingDialogStyle" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
+        <item name="windowNoTitle">true</item>
+        <item name="android:paddingLeft">48dp</item>
+        <item name="android:paddingRight">48dp</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+
+    <style name="BaseText16ThirdPrimary">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/base_color_third_primary</item>
+        <item name="android:gravity">start|top</item>
+    </style>
+
+    <style name="BaseText20Primary">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/base_color_primary</item>
+        <item name="android:gravity">start|top</item>
+    </style>
+
+    <style name="BaseText16Primary">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/base_color_primary</item>
+        <item name="android:gravity">start|top</item>
+    </style>
 
 
     <style name="StationDetailDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">

@@ -1,15 +1,15 @@
 package com.example.amaptest
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.flow.FlowActivity
@@ -59,14 +59,44 @@ class EnterActivity : AppCompatActivity() {
             gotoMarkerAction()
         }
 
+        // 蓝牙
         findViewById<View>(R.id.btn_bluetooth).setOnClickListener {
-            gotoBluetooth()
+            // android S 以上需要动态权限。否则
+            // 调用 requestBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)) 时
+            // java.lang.SecurityException: Permission Denial: starting Intent { act=android.bluetooth.adapter.action.REQUEST_ENABLE
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (checkBluetoothLocation()) {
+                    gotoBluetooth()
+                } else {
+                    requestBluetoothPermissionLauncher.launch(
+                        arrayOf(
+                            Manifest.permission.BLUETOOTH_CONNECT,
+                            Manifest.permission.BLUETOOTH_SCAN
+                        )
+                    )
+                }
+            } else {
+                gotoBluetooth()
+            }
         }
     }
 
     fun checkLocation(): Boolean {
         val t = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
         return t == PackageManager.PERMISSION_GRANTED
+    }
+
+    @RequiresApi(Build.VERSION_CODES.S)
+    fun checkBluetoothLocation(): Boolean {
+        val p1 = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.BLUETOOTH_SCAN
+        ) == PackageManager.PERMISSION_GRANTED
+        val p2 = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.BLUETOOTH_CONNECT
+        ) == PackageManager.PERMISSION_GRANTED
+        return p1 && p2
     }
 
     fun gotoMap() {
@@ -85,7 +115,7 @@ class EnterActivity : AppCompatActivity() {
         startActivity(Intent(this, SheetActivity::class.java))
     }
 
-    fun gotoSheetBehavior(){
+    fun gotoSheetBehavior() {
         startActivity(Intent(this, SheetBehaviorActivity::class.java))
     }
 
@@ -110,6 +140,17 @@ class EnterActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
             if (allGrants.values.all { it }) {
                 gotoLocation()
+            } else {
+                with(allGrants.keys.toString() + allGrants.values.toString()) {
+                    Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    private var requestBluetoothPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
+            if (allGrants.values.all { it }) {
+                gotoBluetooth()
             } else {
                 with(allGrants.keys.toString() + allGrants.values.toString()) {
                     Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()

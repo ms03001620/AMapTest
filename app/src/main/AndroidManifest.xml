@@ -2,9 +2,24 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.amaptest">
     <!-- 允许访问网络，必选权限 -->
+
     <uses-permission android:name="android.permission.INTERNET" /> <!-- 允许获取粗略位置，若用GPS实现定位小蓝点功能则必选 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 允许获取设备和运营商信息，用于问题排查和网络定位，若无gps但仍需实现定位小蓝点功能则此权限必选 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+
+
+    <!-- 蓝牙权限 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" /> <!-- for bluetoothAdapter.startDiscovery()-->
+
+    <!-- If your app targets Android 9 or lower, you can declare
+         ACCESS_COARSE_LOCATION instead. -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+
 
     <application
         android:allowBackup="true"
