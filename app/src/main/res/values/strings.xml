@@ -19,5 +19,6 @@
     <string name="charging_open_settings">去设置</string>
     <string name="charging_not_open_for_now">暂不开启</string>
     <string name="cancel_scan">取消扫描</string>
+    <string name="mac_address_macbook">3C:06:30:19:C2:DA</string>
 
 </resources>

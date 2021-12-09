@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId "com.example.amaptest"
         minSdk 23
-        targetSdk 29
+        targetSdk 29 //31 29
         versionCode 1
         versionName "1.0"
 

@@ -31,6 +31,7 @@ class BluetoothActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityBluetoothBinding
     var logIndex = 0
+    val macSet = hashMapOf<String, BluetoothDevice>()
 
     val listener = object : BluetoothHelper.OnBluetoothEvent {
         override fun onErrorNoBluetoothDevice() {
@@ -60,6 +61,7 @@ class BluetoothActivity : AppCompatActivity() {
         initHelper()
         initReg()
         initChecksdk()
+        printEnabled()
     }
 
     private fun initChecksdk() {
@@ -79,13 +81,7 @@ class BluetoothActivity : AppCompatActivity() {
 
         //android.permission.BLUETOOTH_CONNECT
         binding.btnIsEnable.setOnClickListener {
-            val t = BluetoothAdapter.getDefaultAdapter()
-            var result = "false"
-
-            if (t?.isEnabled == true) {
-                result = "true"
-            }
-            printlnLogs("enabled: $result")
+            printEnabled()
         }
 
         binding.btnRequestBonded.setOnClickListener {
@@ -107,23 +103,57 @@ class BluetoothActivity : AppCompatActivity() {
                 Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
                     putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300)
                 }
+            // 系统将显示对话框，请求用户允许将设备设为可检测到模式。如果用户响应“Yes”，则设备会变为可检测到模式，
+            // 并在指定时间内保持该模式。然后，您的 Activity 将会收到对 onActivityResult() 回调的调用
+            // 其结果代码等于设备可检测到的持续时间。如果用户响应“No”或出现错误，则结果代码为 RESULT_CANCELED。
             startActivity(discoverableIntent)
+        }
+
+        binding.btnBinding.setOnClickListener {
+            val imei = binding.editImei.text.toString()
+            if (imei.isBlank()) {
+                printlnLogs("need IMEI")
+            } else {
+                macSet[imei.uppercase()]?.let {
+                    pairToDevice(it)
+                } ?: run {
+                    printlnLogs("not fount device is:$imei, scan first")
+                }
+            }
         }
     }
 
 
+    fun pairToDevice(bluetoothDevice: BluetoothDevice) {
+        printlnLogs("pairToDevice:$bluetoothDevice")
+
+    }
+
+
+
+
+
+
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
-            val action: String? = intent.action
             if (intent.action == BluetoothDevice.ACTION_FOUND) {
                 // Discovery has found a device. Get the BluetoothDevice
                 // object and its info from the Intent.
-                val device: BluetoothDevice? =
-                    intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                val deviceName = device?.name
-                val deviceHardwareAddress = device?.address // MAC address
+                val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
 
-                printlnLogs("$deviceName, $deviceHardwareAddress")
+                device?.let {
+                    val deviceName = device.name
+                    val deviceHardwareAddress = (device.address ?: "").uppercase()
+
+                    if (macSet.containsKey(deviceHardwareAddress)) {
+                        printlnLogs("has contain:$deviceHardwareAddress")
+                    } else {
+                        macSet.put(deviceHardwareAddress, device)
+                        printlnLogs("$deviceName, $deviceHardwareAddress")
+                    }
+                } ?: run {
+                    printlnLogs("onReceive null BluetoothDevice")
+                }
             }
         }
     }
@@ -176,6 +206,16 @@ class BluetoothActivity : AppCompatActivity() {
                 printlnLogs("用户取消授权")
             }
         }
+    }
+
+    fun printEnabled(){
+        val t = BluetoothAdapter.getDefaultAdapter()
+        var result = "false"
+
+        if (t?.isEnabled == true) {
+            result = "true"
+        }
+        printlnLogs("enabled: $result")
     }
 
     private var requestOnlyFinePermissionLauncher =
