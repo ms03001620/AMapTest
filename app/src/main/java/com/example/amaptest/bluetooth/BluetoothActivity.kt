@@ -70,25 +70,6 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-    private fun initBase(accessable: () -> Unit) {
-        val service = getSystemService(Context.BLUETOOTH_SERVICE)
-        if (service is BluetoothManager && service.adapter != null) {
-            bluetoothAdapter = service.adapter
-            accessable.invoke()
-        } else {
-            Toast.makeText(this, "蓝牙硬件不可用", Toast.LENGTH_LONG).show()
-            finish()
-        }
-    }
-
-    private fun initChecksdk() {
-        printlnLogs("Build.VERSION.SDK_INT = ${Build.VERSION.SDK_INT}")
-    }
-
-    fun initHelper() {
-        device = BluetoothHelper(listener, BluetoothHardwareImpl(bluetoothAdapter))
-    }
-
     private fun initBtns() {
         binding.btnRequestDevice.setOnClickListener {
             // crash S RequestMultiplePermissions; effect api bluetoothAdapter.bondedDevices
@@ -322,6 +303,26 @@ class BluetoothActivity : AppCompatActivity() {
             printlnLogs(it.toString())
         }
     }
+
+    private fun initBase(accessable: () -> Unit) {
+        val service = getSystemService(Context.BLUETOOTH_SERVICE)
+        if (service is BluetoothManager && service.adapter != null) {
+            bluetoothAdapter = service.adapter
+            accessable.invoke()
+        } else {
+            Toast.makeText(this, "蓝牙硬件不可用", Toast.LENGTH_LONG).show()
+            finish()
+        }
+    }
+
+    private fun initChecksdk() {
+        printlnLogs("Build.VERSION.SDK_INT = ${Build.VERSION.SDK_INT}")
+    }
+
+    private fun initHelper() {
+        device = BluetoothHelper(listener, BluetoothHardwareImpl(bluetoothAdapter))
+    }
+
 
     private fun parseToString(code: Int): String {
         return when (code) {
