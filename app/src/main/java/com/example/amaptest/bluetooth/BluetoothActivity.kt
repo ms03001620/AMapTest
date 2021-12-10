@@ -4,6 +4,7 @@ import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothAdapter.*
 import android.bluetooth.BluetoothDevice
+import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -37,6 +38,8 @@ class BluetoothActivity : AppCompatActivity() {
     val macSet = hashMapOf<String, BluetoothDevice>()
     val uuid = UUID.nameUUIDFromBytes("Hello".toByteArray(Charsets.UTF_8))
 
+    lateinit var bluetoothAdapter: BluetoothAdapter
+
     val listener = object : BluetoothHelper.OnBluetoothEvent {
         override fun onErrorNoBluetoothDevice() {
             finish()
@@ -53,19 +56,29 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-    val device = BluetoothHardwareImpl()
-    val helper = BluetoothHelper(listener, device)
+    lateinit var device: BluetoothHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_bluetooth)
-        initBtns()
-        initObserve()
-        initStart()
-        initHelper()
         initRegister()
-        initChecksdk()
-        printLocalInfo()
+        initBase {
+            initHelper()
+            initBtns()
+            initChecksdk()
+            printLocalInfo()
+        }
+    }
+
+    private fun initBase(accessable: () -> Unit) {
+        val service = getSystemService(Context.BLUETOOTH_SERVICE)
+        if (service is BluetoothManager && service.adapter != null) {
+            bluetoothAdapter = service.adapter
+            accessable.invoke()
+        } else {
+            Toast.makeText(this, "蓝牙硬件不可用", Toast.LENGTH_LONG).show()
+            finish()
+        }
     }
 
     private fun initChecksdk() {
@@ -73,7 +86,7 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     fun initHelper() {
-        helper.init()
+        device = BluetoothHelper(listener, BluetoothHardwareImpl(bluetoothAdapter))
     }
 
     private fun initBtns() {
@@ -88,12 +101,12 @@ class BluetoothActivity : AppCompatActivity() {
         }
 
         binding.btnRequestBonded.setOnClickListener {
-            helper.requestBondedDevices()
+            device.requestBondedDevices()
         }
         binding.btnRequestScan.setOnClickListener {
             if (checkLocation()) {
                 checkLocationSwitch {
-                    helper.requestScan()
+                    device.requestScan()
                 }
             } else {
                 requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
@@ -116,9 +129,9 @@ class BluetoothActivity : AppCompatActivity() {
             val imei = binding.editImei.text.toString()
             if (imei.isBlank()) {
                 printlnLogs("need IMEI")
-            }else{
+            } else {
                 try {
-                    device.bluetoothAdapter.getRemoteDevice(imei)?.let {
+                    bluetoothAdapter.getRemoteDevice(imei)?.let {
                         getNoBondedDevice(it)
                     }?.let {
                         pairToDevice(it)
@@ -126,7 +139,6 @@ class BluetoothActivity : AppCompatActivity() {
                 } catch (e: IllegalArgumentException) {
                     printlnLogs("getRemoteDevice: ${e.message}")
                 }
-
             }
         }
 
@@ -136,10 +148,10 @@ class BluetoothActivity : AppCompatActivity() {
                 printlnLogs("need IMEI")
             } else {
                 macSet[imei.uppercase()]?.let { targetDevice ->
-                    device.bluetoothAdapter.isDiscovering.let {
+                    bluetoothAdapter.isDiscovering.let {
                         if (it) {
                             printlnLogs("isDiscovering true")
-                            if (device.bluetoothAdapter.cancelDiscovery()) {
+                            if (bluetoothAdapter.cancelDiscovery()) {
                                 printlnLogs("cancelDiscovery")
                                 targetDevice
                             } else {
@@ -162,7 +174,6 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-
     fun getNoBondedDevice(device: BluetoothDevice): BluetoothDevice? {
         if (device.bondState == BluetoothDevice.BOND_NONE) {
             return device
@@ -171,13 +182,10 @@ class BluetoothActivity : AppCompatActivity() {
         return null
     }
 
-
     fun pairToDevice(bluetoothDevice: BluetoothDevice) {
         printlnLogs("pairToDevice:$bluetoothDevice")
         val create = bluetoothDevice.createBond()
         printlnLogs("createBond:$create")
-
-        //ConnectThread(bluetoothDevice, uuid).start()
     }
 
     private val receiver = object : BroadcastReceiver() {
@@ -187,7 +195,13 @@ class BluetoothActivity : AppCompatActivity() {
                     val state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1)
                     val prevState =
                         intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, -1)
-                    printlnLogs("onReceive state:${parseToString(prevState)} -> state:${parseToString(state)}")
+                    printlnLogs(
+                        "onReceive state:${parseToString(prevState)} -> state:${
+                            parseToString(
+                                state
+                            )
+                        }"
+                    )
                 }
                 BluetoothDevice.ACTION_FOUND -> {
                     // Discovery has found a device. Get the BluetoothDevice
@@ -208,7 +222,7 @@ class BluetoothActivity : AppCompatActivity() {
                         printlnLogs("onReceive null BluetoothDevice")
                     }
                 }
-                BluetoothDevice.ACTION_NAME_CHANGED ->{
+                BluetoothDevice.ACTION_NAME_CHANGED -> {
                     val device: BluetoothDevice? =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
 
@@ -233,7 +247,6 @@ class BluetoothActivity : AppCompatActivity() {
                     //
 
                 }*/
-
                 else -> {
                     printlnLogs("onReceive action:${intent.action}, ignore!!!")
                 }
@@ -261,15 +274,9 @@ class BluetoothActivity : AppCompatActivity() {
             }
         }
 
-    private fun initObserve() {
-
-    }
-
-    private fun initStart() {
-
-    }
 
     private fun initRegister() {
+        //ACTION_CONNECTION_STATE_CHANGED 连接变化
         IntentFilter().apply {
             this.addAction(BluetoothDevice.ACTION_FOUND)
             this.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
@@ -302,11 +309,10 @@ class BluetoothActivity : AppCompatActivity() {
 
     fun printLocalInfo() {
         StringBuilder().let { info ->
-            BluetoothAdapter.getDefaultAdapter()?.let { adapter ->
-                info.append("\t")
-                info.append("Name:${adapter.name}")
+            bluetoothAdapter.let { adapter ->
+                info.append("本机设备:${adapter.name}")
                 info.append("\n\t")
-                info.append("Enable:${adapter.isEnabled}")
+                info.append("蓝牙开关:${adapter.isEnabled}")
                 info.append("\n\t")
                 info.append("isDiscovering:${adapter.isDiscovering}")
                 info.append("\n\t")
@@ -317,8 +323,8 @@ class BluetoothActivity : AppCompatActivity() {
         }
     }
 
-    private fun parseToString(code: Int): String{
-        return when(code){
+    private fun parseToString(code: Int): String {
+        return when (code) {
             10 -> "BOND_NONE"
             11 -> "BOND_BONDING"
             12 -> "BOND_BONDED"
@@ -329,7 +335,7 @@ class BluetoothActivity : AppCompatActivity() {
     private var requestOnlyFinePermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
             if (allGrants.values.all { it }) {
-                helper.requestScan()
+                device.requestScan()
             } else {
                 with(allGrants.keys.toString() + allGrants.values.toString()) {
                     Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()
@@ -341,5 +347,4 @@ class BluetoothActivity : AppCompatActivity() {
         super.onDestroy()
         unregisterReceiver(receiver)
     }
-
 }
