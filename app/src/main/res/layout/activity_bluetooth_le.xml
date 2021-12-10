@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/btns"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_info"
+                    style="@style/Button_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="INFO_LE" />
+
+                <Button
+                    android:id="@+id/btn_request_device"
+                    style="@style/Button_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OPEN" />
+
+                <Button
+                    android:id="@+id/btn_request_bonded"
+                    style="@style/Button_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Bonded" />
+
+                <Button
+                    android:id="@+id/btn_request_scan"
+                    style="@style/Button_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="scan" />
+
+            </LinearLayout>
+
+
+            <!-- group 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_wait"
+                    style="@style/Button_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="开启被扫" />
+
+                <Button
+                    android:id="@+id/btn_binding"
+                    style="@style/Button_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="绑定到" />
+
+                <EditText
+                    android:id="@+id/edit_imei"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:hint="IMEI"
+                    android:textColorHint="@color/base_color_75787B"
+                    android:textColor="#000"
+                    android:text="@string/mac_address_macbook"
+                    android:textSize="10sp" />
+
+                <Button
+                    android:id="@+id/btn_binding_force"
+                    style="@style/Button_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="强制绑定" />
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp">
+
+            <EditText
+                android:id="@+id/text_logs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#EFEFEF"
+                android:text=""
+                android:textColor="#000"
+                android:textSize="10sp" />
+
+        </ScrollView>
+
+    </LinearLayout>
+</layout>

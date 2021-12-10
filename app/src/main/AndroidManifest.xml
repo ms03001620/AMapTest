@@ -35,6 +35,9 @@
             android:name=".bluetooth.BluetoothActivity"
             android:exported="false" />
         <activity
+            android:name=".ble.BleActivity"
+            android:exported="false" />
+        <activity
             android:name=".ClusterActivity"
             android:exported="false" />
         <activity

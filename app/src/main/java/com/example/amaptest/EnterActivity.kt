@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.example.amaptest.ble.BleActivity
 import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.marker.MarkerActionActivity
@@ -81,6 +82,24 @@ class EnterActivity : AppCompatActivity() {
                 gotoBluetooth()
             }
         }
+
+        // 蓝牙LE
+        findViewById<View>(R.id.btn_bluetooth_le).setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                if (checkBluetoothLocation()) {
+                    gotoBluetoothLe()
+                } else {
+                    requestBluetoothLePermissionLauncher.launch(
+                        arrayOf(
+                            Manifest.permission.BLUETOOTH_CONNECT,
+                            Manifest.permission.BLUETOOTH_SCAN
+                        )
+                    )
+                }
+            } else {
+                gotoBluetoothLe()
+            }
+        }
     }
 
     fun checkLocation(): Boolean {
@@ -137,6 +156,9 @@ class EnterActivity : AppCompatActivity() {
         startActivity(Intent(this, BluetoothActivity::class.java))
     }
 
+    fun gotoBluetoothLe() {
+        startActivity(Intent(this, BleActivity::class.java))
+    }
 
     private var requestOnlyFinePermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
@@ -153,6 +175,17 @@ class EnterActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
             if (allGrants.values.all { it }) {
                 gotoBluetooth()
+            } else {
+                with(allGrants.keys.toString() + allGrants.values.toString()) {
+                    Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    private var requestBluetoothLePermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
+            if (allGrants.values.all { it }) {
+                gotoBluetoothLe()
             } else {
                 with(allGrants.keys.toString() + allGrants.values.toString()) {
                     Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()
