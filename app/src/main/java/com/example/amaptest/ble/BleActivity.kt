@@ -86,21 +86,20 @@ class BleActivity : AppCompatActivity() {
         }
     }
 
-    val settingsBuilder = ScanSettings.Builder()
+    private val settingsBuilder = ScanSettings.Builder()
         .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
         .setReportDelay(0)
         .build()
 
-    val filterBuilder = mutableListOf<ScanFilter>(
+    private val filterBuilder = mutableListOf<ScanFilter>(
         ScanFilter.Builder()
             .setDeviceName("Time33333333")
             .build()
     )
-    private val removeRunnable = object : Runnable {
-        override fun run() {
-            printlnLogs("stopScan")
-            bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
-        }
+
+    private val removeRunnable = Runnable {
+        printlnLogs("stopScan")
+        bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
     }
 
     //time33333 4476205C-4A22-45BC-BC7C-94962223E7B8
@@ -113,6 +112,7 @@ class BleActivity : AppCompatActivity() {
                 macSet.put(key, result)
             }
         }
+
         override fun onBatchScanResults(results: List<ScanResult?>) {
             printlnLogs("onBatchScanResults: ${results.size}")
         }
@@ -122,7 +122,7 @@ class BleActivity : AppCompatActivity() {
         }
     }
 
-    private fun connect(bluetoothDevice: BluetoothDevice){
+    private fun connect(bluetoothDevice: BluetoothDevice) {
         bluetoothDevice.connectGatt(this, false, bluetoothGattCallback)
     }
 
@@ -207,7 +207,7 @@ class BleActivity : AppCompatActivity() {
     }
 
 
-    private fun printMain() = printlnLogs("isMain${Looper.getMainLooper()== Looper.myLooper()}")
+    private fun printMain() = printlnLogs("isMain${Looper.getMainLooper() == Looper.myLooper()}")
 
     private fun printlnLogs(logs: String) {
         var newLogs = logs
@@ -219,10 +219,8 @@ class BleActivity : AppCompatActivity() {
     }
 
 
-
     private fun initRegister() {
     }
-
 
 
     fun printLocalInfo() {
@@ -244,13 +242,17 @@ class BleActivity : AppCompatActivity() {
     fun PackageManager.missingSystemFeature(name: String): Boolean = !hasSystemFeature(name)
 
     private fun initBase(accessable: () -> Unit) {
-        packageManager.takeIf { it.missingSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) }?.also {
-            Toast.makeText(this, "蓝牙LE不可用", Toast.LENGTH_SHORT).show()
-            finish()
-        }
+        packageManager.takeIf { it.missingSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) }
+            ?.also {
+                Toast.makeText(this, "蓝牙LE不可用", Toast.LENGTH_SHORT).show()
+                finish()
+            }
 
         val service = getSystemService(Context.BLUETOOTH_SERVICE)
-        if (service is BluetoothManager && service.adapter != null) {
+        if (service is BluetoothManager &&
+            service.adapter != null &&
+            service.adapter.bluetoothLeScanner != null
+        ) {
             bluetoothAdapter = service.adapter
             accessable.invoke()
         } else {
@@ -264,7 +266,6 @@ class BleActivity : AppCompatActivity() {
     }
 
 
-
     private fun gattConCode(code: Int): String {
         return when (code) {
             GATT_SUCCESS -> "GATT_SUCCESS"
@@ -272,7 +273,6 @@ class BleActivity : AppCompatActivity() {
             else -> "code:$code"
         }
     }
-
 
 
     private fun profileConCode(code: Int): String {
@@ -285,11 +285,4 @@ class BleActivity : AppCompatActivity() {
         }
     }
 
-
-
-
-/*    bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
-        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
-    }*/
 }
