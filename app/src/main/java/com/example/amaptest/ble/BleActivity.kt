@@ -1,35 +1,28 @@
 package com.example.amaptest.ble
 
-import android.Manifest
-import android.bluetooth.BluetoothAdapter
-import android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_FINISHED
-import android.bluetooth.BluetoothAdapter.ACTION_DISCOVERY_STARTED
-import android.bluetooth.BluetoothDevice
-import android.bluetooth.BluetoothManager
-import android.content.BroadcastReceiver
+import android.bluetooth.*
+import android.bluetooth.BluetoothGatt.*
+import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanFilter
+import android.bluetooth.le.ScanResult
+import android.bluetooth.le.ScanSettings
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
-import com.example.amaptest.LocationUtils
 import com.example.amaptest.R
-import com.example.amaptest.bluetooth.BluetoothHardwareImpl
 import com.example.amaptest.bluetooth.BluetoothHelper
 import com.example.amaptest.databinding.ActivityBluetoothLeBinding
-import java.util.*
+import java.lang.RuntimeException
 
 class BleActivity : AppCompatActivity() {
     lateinit var binding: ActivityBluetoothLeBinding
     var logIndex = 0
-    val macSet = hashMapOf<String, BluetoothDevice>()
-    val uuid = UUID.nameUUIDFromBytes("Hello".toByteArray(Charsets.UTF_8))
+    val macSet = hashMapOf<String, ScanResult>()
 
     lateinit var bluetoothAdapter: BluetoothAdapter
 
@@ -49,14 +42,12 @@ class BleActivity : AppCompatActivity() {
         }
     }
 
-    lateinit var device: BluetoothHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_bluetooth_le)
         initRegister()
         initBase {
-            initHelper()
             initBtns()
             initChecksdk()
             printLocalInfo()
@@ -64,169 +55,159 @@ class BleActivity : AppCompatActivity() {
     }
 
     private fun initBtns() {
-        binding.btnRequestDevice.setOnClickListener {
-            // crash S RequestMultiplePermissions; effect api bluetoothAdapter.bondedDevices
-            // java.lang.SecurityException: Permission Denial: starting Intent { act=android.bluetooth.adapter.action.REQUEST_ENABLE
-            requestBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
-        }
-
         binding.btnInfo.setOnClickListener {
             printLocalInfo()
         }
 
-        binding.btnRequestBonded.setOnClickListener {
-            device.requestBondedDevices()
-        }
         binding.btnRequestScan.setOnClickListener {
-            if (checkLocation()) {
-                checkLocationSwitch {
-                    device.requestScan()
-                }
-            } else {
-                requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-            }
+            bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
+            bluetoothAdapter.bluetoothLeScanner.startScan(
+                filterBuilder,
+                settingsBuilder,
+                scanCallback
+            )
+            binding.btnRequestScan.removeCallbacks(removeRunnable)
+            binding.btnRequestScan.postDelayed(removeRunnable, 5000)
         }
 
-        binding.btnWait.setOnClickListener {
-            // 启用可检测性 可被别人扫描匹配到
-            val discoverableIntent: Intent =
-                Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE).apply {
-                    putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300)
-                }
-            // 系统将显示对话框，请求用户允许将设备设为可检测到模式。如果用户响应“Yes”，则设备会变为可检测到模式，
-            // 并在指定时间内保持该模式。然后，您的 Activity 将会收到对 onActivityResult() 回调的调用
-            // 其结果代码等于设备可检测到的持续时间。如果用户响应“No”或出现错误，则结果代码为 RESULT_CANCELED。
-            startActivity(discoverableIntent)
+        binding.btnRequestStop.setOnClickListener {
+            binding.btnRequestScan.removeCallbacks(removeRunnable)
+            removeRunnable.run()
         }
 
-        binding.btnBindingForce.setOnClickListener {
-            val imei = binding.editImei.text.toString()
-            if (imei.isBlank()) {
-                printlnLogs("need IMEI")
-            } else {
-                try {
-                    bluetoothAdapter.getRemoteDevice(imei)?.let {
-                        getNoBondedDevice(it)
-                    }?.let {
-                        pairToDevice(it)
-                    }
-                } catch (e: IllegalArgumentException) {
-                    printlnLogs("getRemoteDevice: ${e.message}")
+        binding.btnBindingConnect.setOnClickListener {
+            try {
+                bluetoothAdapter.getRemoteDevice("3C:06:30:19:C2:DA")?.let {
+                    connect(it)
                 }
-            }
-        }
-
-        binding.btnBinding.setOnClickListener {
-            val imei = binding.editImei.text.toString()
-            if (imei.isBlank()) {
-                printlnLogs("need IMEI")
-            } else {
-                macSet[imei.uppercase()]?.let { targetDevice ->
-                    bluetoothAdapter.isDiscovering.let {
-                        if (it) {
-                            printlnLogs("isDiscovering true")
-                            if (bluetoothAdapter.cancelDiscovery()) {
-                                printlnLogs("cancelDiscovery")
-                                targetDevice
-                            } else {
-                                printlnLogs("cancelDiscovery failed")
-                                null
-                            }
-                        } else {
-                            targetDevice
-                        }
-                    }?.let {
-                        getNoBondedDevice(it)
-                    }?.let {
-                        pairToDevice(it)
-                    }
-
-                } ?: run {
-                    printlnLogs("not fount device is:$imei, scan first")
-                }
+            } catch (e: IllegalArgumentException) {
+                printlnLogs("getRemoteDevice: ${e.message}")
             }
         }
     }
 
-    fun getNoBondedDevice(device: BluetoothDevice): BluetoothDevice? {
-        if (device.bondState == BluetoothDevice.BOND_NONE) {
-            return device
+    val settingsBuilder = ScanSettings.Builder()
+        .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
+        .setReportDelay(0)
+        .build()
+
+    val filterBuilder = mutableListOf<ScanFilter>(
+        ScanFilter.Builder()
+            .setDeviceName("Time33333333")
+            .build()
+    )
+    private val removeRunnable = object : Runnable {
+        override fun run() {
+            printlnLogs("stopScan")
+            bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
         }
-        printlnLogs("$device, bonded!!!")
-        return null
     }
 
-    fun pairToDevice(bluetoothDevice: BluetoothDevice) {
-        printlnLogs("pairToDevice:$bluetoothDevice")
-        val create = bluetoothDevice.createBond()
-        printlnLogs("createBond:$create")
+    //time33333 4476205C-4A22-45BC-BC7C-94962223E7B8
+    private val scanCallback = object : ScanCallback() {
+        override fun onScanResult(callbackType: Int, result: ScanResult) {
+            val key = result.device.address
+            if (macSet.contains(key)) {
+                printlnLogs("Added:$callbackType, result:${result.device} , name:${result.device.name}, size:${macSet.size}")
+            } else {
+                macSet.put(key, result)
+            }
+        }
+        override fun onBatchScanResults(results: List<ScanResult?>) {
+            printlnLogs("onBatchScanResults: ${results.size}")
+        }
+
+        override fun onScanFailed(errorCode: Int) {
+            printlnLogs("onScanFailed: $errorCode")
+        }
     }
 
-    private val receiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (intent.action) {
-                BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
-                    val state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1)
-                    val prevState =
-                        intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, -1)
-                    printlnLogs(
-                        "onReceive state:${parseToString(prevState)} -> state:${
-                            parseToString(
-                                state
-                            )
-                        }"
+    private fun connect(bluetoothDevice: BluetoothDevice){
+        bluetoothDevice.connectGatt(this, false, bluetoothGattCallback)
+    }
+
+    private val bluetoothGattCallback = object : BluetoothGattCallback() {
+
+        override fun onPhyUpdate(gatt: BluetoothGatt, txPhy: Int, rxPhy: Int, status: Int) {
+            printlnLogs("onPhyUpdate")
+        }
+
+        override fun onPhyRead(gatt: BluetoothGatt, txPhy: Int, rxPhy: Int, status: Int) {
+            printlnLogs("onPhyRead")
+        }
+
+        override fun onConnectionStateChange(gatt: BluetoothGatt, status: Int, newState: Int) {
+            printlnLogs(
+                "onConnectionStateChange status(${gattConCode(status)}) -> newState(${
+                    profileConCode(
+                        newState
                     )
-                }
-                BluetoothDevice.ACTION_FOUND -> {
-                    // Discovery has found a device. Get the BluetoothDevice
-                    // object and its info from the Intent.
-                    val device: BluetoothDevice? =
-                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                })"
+            )
+        }
 
-                    device?.let {
-                        val macAddress = (device.address ?: "").uppercase()
+        override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
+            printlnLogs("onServicesDiscovered")
+        }
 
-                        if (macSet.containsKey(macAddress)) {
-                            printlnLogs("has contain:$macAddress")
-                        } else {
-                            macSet.put(macAddress, device)
-                            printlnLogs("${device.name}, $macAddress")
-                        }
-                    } ?: run {
-                        printlnLogs("onReceive null BluetoothDevice")
-                    }
-                }
-                BluetoothDevice.ACTION_NAME_CHANGED -> {
-                    val device: BluetoothDevice? =
-                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic?,
+            status: Int
+        ) {
+            printlnLogs("onCharacteristicRead")
+        }
 
-                    device?.let {
-                        val macAddress = (device.address ?: "").uppercase()
-                        if (macSet.containsKey(macAddress)) {
-                            // 名字改变的设备在结果中
-                            val oldName = macSet.get(macAddress)?.name ?: ""
-                            val newName = device.name ?: ""
-                            // 将新设备对象放入集合
-                            macSet.put(macAddress, device)
-                            printlnLogs("ACTION_NAME_CHANGED ($oldName) -> ($newName)")
-                        } else {
-                            // 名字变更的设备不在结果中， 直接放入集合
-                            macSet.put(macAddress, device)
-                            printlnLogs("ACTION_NAME_CHANGED add new device:${device.name}")
-                        }
-                    }
-                }
+        override fun onCharacteristicWrite(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic?,
+            status: Int
+        ) {
+            printlnLogs("onCharacteristicWrite")
+        }
 
-                /*BluetoothDevice.ACTION_PAIRING_REQUEST->{
-                    //
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic?
+        ) {
+            printlnLogs("onCharacteristicChanged")
+        }
 
-                }*/
-                else -> {
-                    printlnLogs("onReceive action:${intent.action}, ignore!!!")
-                }
-            }
+        override fun onDescriptorRead(
+            gatt: BluetoothGatt,
+            descriptor: BluetoothGattDescriptor?,
+            status: Int
+        ) {
+            printlnLogs("onDescriptorRead")
+        }
+
+        override fun onDescriptorWrite(
+            gatt: BluetoothGatt,
+            descriptor: BluetoothGattDescriptor?,
+            status: Int
+        ) {
+            printlnLogs("onDescriptorWrite")
+        }
+
+        override fun onReliableWriteCompleted(gatt: BluetoothGatt, status: Int) {
+            printlnLogs("onReliableWriteCompleted")
+        }
+
+        override fun onReadRemoteRssi(gatt: BluetoothGatt, rssi: Int, status: Int) {
+            printlnLogs("onReadRemoteRssi")
+        }
+
+        override fun onMtuChanged(gatt: BluetoothGatt, mtu: Int, status: Int) {
+            printlnLogs("onMtuChanged")
+        }
+
+        override fun onServiceChanged(gatt: BluetoothGatt) {
+            printlnLogs("onServiceChanged")
         }
     }
+
+
+    private fun printMain() = printlnLogs("isMain${Looper.getMainLooper()== Looper.myLooper()}")
 
     private fun printlnLogs(logs: String) {
         var newLogs = logs
@@ -237,49 +218,12 @@ class BleActivity : AppCompatActivity() {
         binding.textLogs.setText("${++logIndex}, $newLogs$oldLogs")
     }
 
-    private var requestBluetooth =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                //granted
-                printlnLogs("granted")
-            } else {
-                //deny
-                printlnLogs("deny")
-            }
-        }
 
 
     private fun initRegister() {
-        //ACTION_CONNECTION_STATE_CHANGED 连接变化
-        IntentFilter().apply {
-            this.addAction(BluetoothDevice.ACTION_FOUND)
-            this.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
-            this.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST)
-            this.addAction(BluetoothDevice.ACTION_NAME_CHANGED) // 远程设备名称更新
-            this.addAction(ACTION_DISCOVERY_STARTED) // 开始扫描
-            this.addAction(ACTION_DISCOVERY_FINISHED) // 扫描结束
-        }.let {
-            registerReceiver(receiver, it)
-        }
     }
 
-    fun checkLocation(): Boolean {
-        val t = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-        return t == PackageManager.PERMISSION_GRANTED
-    }
 
-    private fun checkLocationSwitch(callback: () -> Unit) {
-        if (LocationUtils.isLocationSwitchOpen(this)) {
-            // 有权限进入
-            callback.invoke()
-        } else {
-            // 显示权限请求对话框
-            LocationUtils.goLocationServiceSettingForBluetooth(this) {
-                // 无权限进入
-                printlnLogs("用户取消授权")
-            }
-        }
-    }
 
     fun printLocalInfo() {
         StringBuilder().let { info ->
@@ -297,7 +241,14 @@ class BleActivity : AppCompatActivity() {
         }
     }
 
+    fun PackageManager.missingSystemFeature(name: String): Boolean = !hasSystemFeature(name)
+
     private fun initBase(accessable: () -> Unit) {
+        packageManager.takeIf { it.missingSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) }?.also {
+            Toast.makeText(this, "蓝牙LE不可用", Toast.LENGTH_SHORT).show()
+            finish()
+        }
+
         val service = getSystemService(Context.BLUETOOTH_SERVICE)
         if (service is BluetoothManager && service.adapter != null) {
             bluetoothAdapter = service.adapter
@@ -312,33 +263,33 @@ class BleActivity : AppCompatActivity() {
         printlnLogs("Build.VERSION.SDK_INT = ${Build.VERSION.SDK_INT}")
     }
 
-    private fun initHelper() {
-        device = BluetoothHelper(listener, BluetoothHardwareImpl(bluetoothAdapter))
-    }
 
 
-    private fun parseToString(code: Int): String {
+    private fun gattConCode(code: Int): String {
         return when (code) {
-            10 -> "BOND_NONE"
-            11 -> "BOND_BONDING"
-            12 -> "BOND_BONDED"
+            GATT_SUCCESS -> "GATT_SUCCESS"
+            GATT_FAILURE -> "GATT_FAILURE"
             else -> "code:$code"
         }
     }
 
-    private var requestOnlyFinePermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
-            if (allGrants.values.all { it }) {
-                device.requestScan()
-            } else {
-                with(allGrants.keys.toString() + allGrants.values.toString()) {
-                    Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        unregisterReceiver(receiver)
+
+    private fun profileConCode(code: Int): String {
+        return when (code) {
+            STATE_CONNECTED -> "STATE_CONNECTED"
+            STATE_CONNECTING -> "STATE_CONNECTING"
+            STATE_DISCONNECTED -> "STATE_DISCONNECTED"
+            STATE_DISCONNECTING -> "STATE_DISCONNECTING"
+            else -> "code:$code"
+        }
     }
+
+
+
+
+/*    bluetoothAdapter?.takeIf { it.isDisabled }?.apply {
+        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
+    }*/
 }
