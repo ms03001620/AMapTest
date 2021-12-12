@@ -61,11 +61,12 @@ class BleActivity : AppCompatActivity() {
 
         binding.btnRequestScan.setOnClickListener {
             bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
-            bluetoothAdapter.bluetoothLeScanner.startScan(
+/*            bluetoothAdapter.bluetoothLeScanner.startScan(
                 filterBuilder,
                 settingsBuilder,
                 scanCallback
-            )
+            )    */
+            bluetoothAdapter.bluetoothLeScanner.startScan(scanCallback)
             binding.btnRequestScan.removeCallbacks(removeRunnable)
             binding.btnRequestScan.postDelayed(removeRunnable, 5000)
         }
