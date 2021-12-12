@@ -60,6 +60,7 @@ class BleActivity : AppCompatActivity() {
         }
 
         binding.btnRequestScan.setOnClickListener {
+            printlnLogs("startScan")
             bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
 /*            bluetoothAdapter.bluetoothLeScanner.startScan(
                 filterBuilder,
