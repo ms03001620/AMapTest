@@ -5,7 +5,7 @@
 
     <data />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#fff"
@@ -66,9 +66,9 @@
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:hint="IMEI"
-                    android:textColorHint="@color/base_color_75787B"
-                    android:textColor="#000"
                     android:text="@string/mac_address_macbook"
+                    android:textColor="#000"
+                    android:textColorHint="@color/base_color_75787B"
                     android:textSize="10sp" />
 
                 <Button
@@ -83,21 +83,20 @@
         </LinearLayout>
 
 
-        <ScrollView
+        <EditText
+            android:id="@+id/text_logs"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="20dp">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btns"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="#EFEFEF"
+            android:gravity="top"
+            android:text=""
+            android:textColor="#000"
+            android:textSize="10sp" />
 
-            <EditText
-                android:id="@+id/text_logs"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#EFEFEF"
-                android:text=""
-                android:textColor="#000"
-                android:textSize="10sp" />
 
-        </ScrollView>
-
-    </LinearLayout>
+    </RelativeLayout>
 </layout>

@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -66,6 +67,7 @@ class BleActivity : AppCompatActivity() {
         binding.btnBindingTo.setOnClickListener {
             try {
                 val imei = binding.editImei.text.toString()
+                printlnLogs("binding to:$imei")
                 if (imei.isBlank()) {
                     printlnLogs("need IMEI")
                 } else {
@@ -102,10 +104,17 @@ class BleActivity : AppCompatActivity() {
                     )
                 })"
             )
+
+            if (newState == STATE_CONNECTED) {
+                printlnLogs("discoverServices ${gatt.discoverServices()}")
+            }
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
-            printlnLogs("onServicesDiscovered")
+            printlnLogs("onServicesDiscovered: status:${gattConCode(status)}")
+            if (status == GATT_SUCCESS) {
+                printService()
+            }
         }
 
         override fun onCharacteristicRead(
@@ -164,6 +173,24 @@ class BleActivity : AppCompatActivity() {
         }
     }
 
+    private fun printService() {
+        printlnLogs("printService")
+        bluetoothGatt?.let { gatt ->
+            printlnLogs("service size:${gatt.services.size}")
+            gatt.services
+        }?.forEachIndexed { index, ser ->
+            val uuidString =  ser.uuid.toString()
+            printlnLogs(
+                "service idx:$index, ${
+                    SampleGattAttributes.lookup(
+                        uuidString,
+                        uuidString
+                    )
+                }"
+            )
+        }
+    }
+
     private val settingsBuilder = ScanSettings.Builder()
         .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
         .setReportDelay(0)
@@ -200,25 +227,21 @@ class BleActivity : AppCompatActivity() {
         }
     }
 
-    private fun connect(bluetoothDevice: BluetoothDevice) {
-
-    }
-
-    private fun printMain() = printlnLogs("isMain${Looper.getMainLooper() == Looper.myLooper()}")
+    private fun isMain() = Looper.getMainLooper() == Looper.myLooper()
 
     private fun printlnLogs(logs: String) {
-        var newLogs = logs
-        val oldLogs = binding.textLogs.text
-        if (oldLogs.isNullOrBlank().not()) {
-            newLogs += "\n"
+        runOnUiThread {
+            var newLogs = logs
+            val oldLogs = binding.textLogs.text
+            if (oldLogs.isNullOrBlank().not()) {
+                newLogs += "\n"
+            }
+            binding.textLogs.setText("${++logIndex}, $newLogs$oldLogs")
         }
-        binding.textLogs.setText("${++logIndex}, $newLogs$oldLogs")
     }
-
 
     private fun initRegister() {
     }
-
 
     fun printLocalInfo() {
         StringBuilder().let { info ->
