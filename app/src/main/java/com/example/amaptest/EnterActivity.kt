@@ -94,11 +94,11 @@ class EnterActivity : AppCompatActivity() {
     }
 
     fun attemptGotoBluetoothLePage() {
-        checkFeature{
+        checkFeature {
             checkBluetoothPermission {
-                checkBluetoothSwitch{
-                    checkBluetoothLocationPermission  {
-                        checkBluetoothLocationSwitch{
+                checkBluetoothSwitch {
+                    checkBluetoothLocationPermission {
+                        checkBluetoothLocationSwitch {
                             gotoBluetoothLe()
                         }
                     }
@@ -238,7 +238,6 @@ class EnterActivity : AppCompatActivity() {
     }
 
 
-
     private var requestBluetoothLePermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
             if (allGrants.values.all { it }) {
@@ -260,7 +259,6 @@ class EnterActivity : AppCompatActivity() {
                 }
             }
         }
-
 
 
     private var requestOnlyFinePermissionLauncher =
