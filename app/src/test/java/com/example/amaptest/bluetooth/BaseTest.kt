@@ -39,4 +39,41 @@ class BaseTest {
             uuid.toString()
         )
     }
+
+    @Test
+    fun papterTile() {
+        assertEquals(5, calcSameBitAtTile("pc12345", "abcd12345"))
+        assertEquals(3, calcSameBitAtTile("b123", "a123"))
+        assertEquals(2, calcSameBitAtTile("12", "312"))
+        assertEquals(1, calcSameBitAtTile("abcd1", "efgk1"))
+        assertEquals(5, calcSameBitAtTile("abcdef", "bcdef"))
+
+        assertEquals(0, calcSameBitAtTile("1234", "abcd"))
+        assertEquals(0, calcSameBitAtTile("1234", ""))
+        assertEquals(0, calcSameBitAtTile("", "1234"))
+        assertEquals(0, calcSameBitAtTile("12345678", "1234567"))
+        assertEquals(0, calcSameBitAtTile(null, null))
+    }
+
+
+    fun calcSameBitAtTile(source: String?, target: String?): Int {
+        if (source.isNullOrBlank() || target.isNullOrBlank()) {
+            return 0
+        }
+        var count = 0
+
+        var sourceLastIndex = source.lastIndex
+        var targetLastIndex = target.lastIndex
+
+        while (sourceLastIndex >= 0 && targetLastIndex >= 0) {
+            if (source[sourceLastIndex] == target[targetLastIndex]) {
+                count++
+                sourceLastIndex--
+                targetLastIndex--
+            } else {
+                break
+            }
+        }
+        return count
+    }
 }

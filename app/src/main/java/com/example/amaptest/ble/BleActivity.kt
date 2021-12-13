@@ -113,7 +113,7 @@ class BleActivity : AppCompatActivity() {
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
             printlnLogs("onServicesDiscovered: status:${gattConCode(status)}")
             if (status == GATT_SUCCESS) {
-                printService()
+                printService(gatt)
             }
         }
 
@@ -173,9 +173,9 @@ class BleActivity : AppCompatActivity() {
         }
     }
 
-    private fun printService() {
+    private fun printService(gatt: BluetoothGatt) {
         printlnLogs("printService")
-        bluetoothGatt?.let { gatt ->
+        gatt.let { gatt ->
             printlnLogs("service size:${gatt.services.size}")
             gatt.services
         }?.forEachIndexed { index, ser ->
