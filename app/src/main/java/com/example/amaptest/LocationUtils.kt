@@ -10,9 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 object LocationUtils {
 
     /**
-     * 判断GPS是否开启，GPS或者AGPS开启一个就认为是开启的
-     * @param context
-     * @return true 表示开启
+     * 判断定位开关是否开启
      */
     fun isLocationSwitchOpen(context: Context): Boolean {
         return with(context.getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager) {
@@ -33,6 +31,23 @@ object LocationUtils {
             context,
             context.getString(R.string.charging_open_settings),
             context.getString(R.string.cancel_scan),
+            leftCallback = leftCallback
+        ).create(
+            context.getString(R.string.bluetooth_pair_permission_prompt), {
+                try {
+                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                } catch (e: Exception) {
+                    context.startActivity(Intent(Settings.ACTION_SETTINGS))
+                }
+            })
+    }
+
+
+    fun goSettingForBluetooth(context: Context, leftCallback: (() -> Unit)? = null) {
+        CommonAskDialog.Builder(
+            context,
+            context.getString(R.string.charging_open_settings),
+            context.getString(R.string.cancel_option),
             leftCallback = leftCallback
         ).create(
             context.getString(R.string.bluetooth_pair_permission_prompt), {

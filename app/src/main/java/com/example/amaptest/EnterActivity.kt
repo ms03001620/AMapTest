@@ -1,6 +1,9 @@
 package com.example.amaptest
 
 import android.Manifest
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -83,24 +86,98 @@ class EnterActivity : AppCompatActivity() {
             }
         }
 
+        //   requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
         // 蓝牙LE
         findViewById<View>(R.id.btn_bluetooth_le).setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                if (checkBluetoothLocation()) {
-                    gotoBluetoothLe()
-                } else {
-                    requestBluetoothLePermissionLauncher.launch(
-                        arrayOf(
-                            Manifest.permission.BLUETOOTH_CONNECT,
-                            Manifest.permission.BLUETOOTH_SCAN
-                        )
-                    )
+            attemptGotoBluetoothLePage()
+        }
+    }
+
+    fun attemptGotoBluetoothLePage() {
+        checkFeature{
+            checkBluetoothPermission {
+                checkBluetoothSwitch{
+                    checkBluetoothLocationPermission  {
+                        checkBluetoothLocationSwitch{
+                            gotoBluetoothLe()
+                        }
+                    }
                 }
-            } else {
-                gotoBluetoothLe()
             }
         }
     }
+
+    private fun checkBluetoothLocationSwitch(callback: () -> Unit) {
+        if (LocationUtils.isLocationSwitchOpen(this)) {
+            // 有权限进入
+            callback.invoke()
+        } else {
+            // 显示权限请求对话框
+            LocationUtils.goSettingForBluetooth(this) {
+                Toast.makeText(this, "用户取消授权", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun checkBluetoothSwitch(callback: () -> Unit) {
+        val service = getSystemService(Context.BLUETOOTH_SERVICE)
+        if (service is BluetoothManager &&
+            service.adapter != null &&
+            service.adapter.isEnabled
+        ) {
+            callback.invoke()
+        } else {
+            requestBluetooth.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+        }
+    }
+
+
+    private fun checkFeature(callback: () -> Unit) {
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) &&
+            packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)
+        ) {
+            callback.invoke()
+        } else {
+            Toast.makeText(this, "蓝牙硬件不可用", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private var requestBluetooth =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                //granted
+                attemptGotoBluetoothLePage()
+            } else {
+                //deny
+                Toast.makeText(this, "未打开开关", Toast.LENGTH_LONG).show()
+            }
+        }
+
+    fun checkBluetoothLocationPermission(callback: () -> Unit) {
+        if (checkLocation()) {
+            callback.invoke()
+        } else {
+            requestBLEOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+        }
+    }
+
+    fun checkBluetoothPermission(callback: () -> Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (checkBluetoothLocation()) {
+                callback.invoke()
+            } else {
+                requestBluetoothLePermissionLauncher.launch(
+                    arrayOf(
+                        Manifest.permission.BLUETOOTH_CONNECT,
+                        Manifest.permission.BLUETOOTH_SCAN
+                    )
+                )
+            }
+        } else {
+            callback.invoke()
+        }
+    }
+
 
     fun checkLocation(): Boolean {
         val t = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -160,6 +237,32 @@ class EnterActivity : AppCompatActivity() {
         startActivity(Intent(this, BleActivity::class.java))
     }
 
+
+
+    private var requestBluetoothLePermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
+            if (allGrants.values.all { it }) {
+                attemptGotoBluetoothLePage()
+            } else {
+                with(allGrants.keys.toString() + allGrants.values.toString()) {
+                    Toast.makeText(applicationContext, "11111", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    private var requestBLEOnlyFinePermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
+            if (allGrants.values.all { it }) {
+                attemptGotoBluetoothLePage()
+            } else {
+                LocationUtils.goSettingForBluetooth(this) {
+                    Toast.makeText(this, "用户取消授权", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+
+
+
     private var requestOnlyFinePermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
             if (allGrants.values.all { it }) {
@@ -170,7 +273,6 @@ class EnterActivity : AppCompatActivity() {
                 }
             }
         }
-
     private var requestBluetoothPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
             if (allGrants.values.all { it }) {
@@ -182,14 +284,5 @@ class EnterActivity : AppCompatActivity() {
             }
         }
 
-    private var requestBluetoothLePermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
-            if (allGrants.values.all { it }) {
-                gotoBluetoothLe()
-            } else {
-                with(allGrants.keys.toString() + allGrants.values.toString()) {
-                    Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
+
 }
