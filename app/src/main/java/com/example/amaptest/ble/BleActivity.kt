@@ -19,29 +19,15 @@ import com.example.amaptest.bluetooth.BluetoothHelper
 import com.example.amaptest.databinding.ActivityBluetoothLeBinding
 import java.lang.RuntimeException
 
+/**
+ * https://developer.android.com/guide/topics/connectivity/bluetooth-le
+ */
 class BleActivity : AppCompatActivity() {
     lateinit var binding: ActivityBluetoothLeBinding
     var logIndex = 0
     val macSet = hashMapOf<String, ScanResult>()
-
     lateinit var bluetoothAdapter: BluetoothAdapter
-
-    val listener = object : BluetoothHelper.OnBluetoothEvent {
-        override fun onErrorNoBluetoothDevice() {
-            finish()
-        }
-
-        override fun onBondedDevices(bluetoothDevices: Set<BluetoothDevice>) {
-            if (bluetoothDevices.isEmpty()) {
-                printlnLogs("bluetoothDevices: 0")
-            } else {
-                bluetoothDevices.forEach {
-                    printlnLogs(it.toString())
-                }
-            }
-        }
-    }
-
+    var bluetoothGatt: BluetoothGatt? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,55 +63,25 @@ class BleActivity : AppCompatActivity() {
             removeRunnable.run()
         }
 
-        binding.btnBindingConnect.setOnClickListener {
+        binding.btnBindingTo.setOnClickListener {
             try {
-                bluetoothAdapter.getRemoteDevice("3C:06:30:19:C2:DA")?.let {
-                    connect(it)
+                val imei = binding.editImei.text.toString()
+                if (imei.isBlank()) {
+                    printlnLogs("need IMEI")
+                } else {
+                    bluetoothAdapter.getRemoteDevice(imei.uppercase())?.let {
+                        bluetoothGatt = it.connectGatt(this, false, bluetoothGattCallback)
+                    }
                 }
             } catch (e: IllegalArgumentException) {
                 printlnLogs("getRemoteDevice: ${e.message}")
             }
         }
-    }
 
-    private val settingsBuilder = ScanSettings.Builder()
-        .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
-        .setReportDelay(0)
-        .build()
-
-    private val filterBuilder = mutableListOf<ScanFilter>(
-        ScanFilter.Builder()
-            .setDeviceName("Time33333333")
-            .build()
-    )
-
-    private val removeRunnable = Runnable {
-        printlnLogs("stopScan")
-        bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
-    }
-
-    //time33333 4476205C-4A22-45BC-BC7C-94962223E7B8
-    private val scanCallback = object : ScanCallback() {
-        override fun onScanResult(callbackType: Int, result: ScanResult) {
-            val key = result.device.address
-            if (macSet.contains(key)) {
-                printlnLogs("Added:$callbackType, result:${result.device} , name:${result.device.name}, size:${macSet.size}")
-            } else {
-                macSet.put(key, result)
-            }
+        binding.btnBindingDel.setOnClickListener {
+            printlnLogs("do disconnect")
+            bluetoothGatt?.disconnect()
         }
-
-        override fun onBatchScanResults(results: List<ScanResult?>) {
-            printlnLogs("onBatchScanResults: ${results.size}")
-        }
-
-        override fun onScanFailed(errorCode: Int) {
-            printlnLogs("onScanFailed: $errorCode")
-        }
-    }
-
-    private fun connect(bluetoothDevice: BluetoothDevice) {
-        bluetoothDevice.connectGatt(this, false, bluetoothGattCallback)
     }
 
     private val bluetoothGattCallback = object : BluetoothGattCallback() {
@@ -208,6 +164,45 @@ class BleActivity : AppCompatActivity() {
         }
     }
 
+    private val settingsBuilder = ScanSettings.Builder()
+        .setScanMode(ScanSettings.SCAN_MODE_BALANCED)
+        .setReportDelay(0)
+        .build()
+
+    private val filterBuilder = mutableListOf<ScanFilter>(
+        ScanFilter.Builder()
+            .setDeviceName("Time33333333")
+            .build()
+    )
+
+    private val removeRunnable = Runnable {
+        printlnLogs("stopScan")
+        bluetoothAdapter.bluetoothLeScanner.stopScan(scanCallback)
+    }
+
+    //time33333 4476205C-4A22-45BC-BC7C-94962223E7B8
+    private val scanCallback = object : ScanCallback() {
+        override fun onScanResult(callbackType: Int, result: ScanResult) {
+            val key = result.device.address
+            if (macSet.contains(key)) {
+                printlnLogs("Added:$callbackType, result:${result.device} , name:${result.device.name}, size:${macSet.size}")
+            } else {
+                macSet.put(key, result)
+            }
+        }
+
+        override fun onBatchScanResults(results: List<ScanResult?>) {
+            printlnLogs("onBatchScanResults: ${results.size}")
+        }
+
+        override fun onScanFailed(errorCode: Int) {
+            printlnLogs("onScanFailed: $errorCode")
+        }
+    }
+
+    private fun connect(bluetoothDevice: BluetoothDevice) {
+
+    }
 
     private fun printMain() = printlnLogs("isMain${Looper.getMainLooper() == Looper.myLooper()}")
 

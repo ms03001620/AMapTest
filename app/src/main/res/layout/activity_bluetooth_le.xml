@@ -31,14 +31,6 @@
                     android:layout_height="wrap_content"
                     android:text="INFO_LE" />
 
-
-                <Button
-                    android:id="@+id/btn_request_bonded"
-                    style="@style/Button_sign"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bonded" />
-
                 <Button
                     android:id="@+id/btn_request_scan"
                     style="@style/Button_sign"
@@ -63,7 +55,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btn_binding"
+                    android:id="@+id/btn_binding_to"
                     style="@style/Button_sign"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,11 +72,11 @@
                     android:textSize="10sp" />
 
                 <Button
-                    android:id="@+id/btn_binding_connect"
+                    android:id="@+id/btn_binding_del"
                     style="@style/Button_sign"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="连接Time33333" />
+                    android:text="解除绑定" />
 
 
             </LinearLayout>
@@ -93,13 +85,13 @@
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginBottom="20dp">
 
             <EditText
                 android:id="@+id/text_logs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="#EFEFEF"
                 android:text=""
                 android:textColor="#000"
