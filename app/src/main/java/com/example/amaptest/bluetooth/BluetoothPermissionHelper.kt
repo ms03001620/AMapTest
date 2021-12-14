@@ -164,7 +164,8 @@ class BluetoothPermissionHelper(
 
     private fun checkBluetoothPermission(callback: () -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // setup targetSdk 31; show system dialog
+            // must check and request bluetooth permission when targetSdk 31(VERSION_CODES.S)
+            // before targetSdk 31(VERSION_CODES.S), bluetooth permission always enabled
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_SCAN)
                 == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_CONNECT)
