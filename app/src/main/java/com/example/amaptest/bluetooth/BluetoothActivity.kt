@@ -12,6 +12,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.os.ParcelUuid
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -246,11 +247,12 @@ class BluetoothActivity : AppCompatActivity() {
                         }
                     }
                 }
-
-                /*BluetoothDevice.ACTION_PAIRING_REQUEST->{
-                    //
-
-                }*/
+                BluetoothDevice.ACTION_UUID -> {
+                    val uuid = intent.getParcelableExtra<ParcelUuid>(BluetoothDevice.EXTRA_UUID)
+                    val device: BluetoothDevice? =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                    printlnLogs("ACTION_UUID :${uuid}, device:${device?.name ?: ""}")
+                }
                 else -> {
                     printlnLogs("onReceive action:${intent.action}, ignore!!!")
                 }
@@ -282,6 +284,7 @@ class BluetoothActivity : AppCompatActivity() {
     private fun initRegister() {
         //ACTION_CONNECTION_STATE_CHANGED 连接变化
         IntentFilter().apply {
+            this.addAction(BluetoothDevice.ACTION_UUID)
             this.addAction(BluetoothDevice.ACTION_FOUND)
             this.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
             this.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST)
