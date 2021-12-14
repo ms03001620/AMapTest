@@ -254,9 +254,32 @@ class BluetoothActivity : AppCompatActivity() {
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     printlnLogs("ACTION_UUID :${uuid}, device:${device?.name ?: ""}")
                 }
+                BluetoothDevice.ACTION_PAIRING_REQUEST -> {
+                    // https://blog.csdn.net/zrf1335348191/article/details/54020225/
+                    printlnLogs("ACTION_PAIRING_REQUEST")
+                    val type = intent.getIntExtra(BluetoothDevice.EXTRA_PAIRING_VARIANT, BluetoothDevice.ERROR)
+
+                    when(type){
+                        BluetoothDevice.PAIRING_VARIANT_PASSKEY_CONFIRMATION -> {
+                            printlnLogs("ACTION_PAIRING_REQUEST type: PASSKEY_CONFIRMATION")
+                        }
+                        BluetoothDevice.PAIRING_VARIANT_PIN -> {
+                            printlnLogs("ACTION_PAIRING_REQUEST type: PAIRING_VARIANT_PIN")
+                        }
+                        else -> {
+                            printlnLogs("ACTION_PAIRING_REQUEST type:$type")
+                        }
+                    }
+
+                    val pairingkey = intent.getIntExtra(BluetoothDevice.EXTRA_PAIRING_KEY, BluetoothDevice.ERROR)
+                    printlnLogs("ACTION_PAIRING_REQUEST pairingkey:$pairingkey")
+                }
                 else -> {
                     printlnLogs("onReceive action:${intent.action}, ignore!!!")
                 }
+
+               // public static final String EXTRA_PAIRING_KEY = "android.bluetooth.device.extra.PAIRING_KEY";
+                //    public static final String EXTRA_PAIRING_VARIANT = "android.bluetooth.device.extra.PAIRING_VARIANT";
             }
         }
     }
