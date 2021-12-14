@@ -16,6 +16,9 @@
     <string name="charging_location_permission_prompt">需要打开系统定位开关，\n才能够精确的定位和加载地\n图。</string>
     <string name="bluetooth_pair_permission_prompt">需要打开系统定位开关，\n才能够进行蓝牙配对</string>
 
+    <string name="permission_prompt_location">需要打开系统定位开关，\n才能够进行蓝牙配对</string>
+    <string name="permission_prompt_bluetooth">需要开启蓝牙权限，\n才能够进行蓝牙配对</string>
+
     <string name="charging_open_settings">去设置</string>
     <string name="charging_not_open_for_now">暂不开启</string>
     <string name="cancel_scan">取消扫描</string>
