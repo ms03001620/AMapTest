@@ -44,7 +44,7 @@ class BluetoothPermissionHelper(
                 attemptGotoBluetoothLePage()
             } else {
                 //deny
-                Toast.makeText(activity, "未打开开关", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "蓝牙已关闭", Toast.LENGTH_LONG).show()
             }
         }
 
