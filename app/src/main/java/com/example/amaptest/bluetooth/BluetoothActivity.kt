@@ -248,6 +248,7 @@ class BluetoothActivity : AppCompatActivity() {
                     }
                 }
                 BluetoothDevice.ACTION_UUID -> {
+                    printlnLogs("ACTION_UUID")
                     val uuid = intent.getParcelableExtra<ParcelUuid>(BluetoothDevice.EXTRA_UUID)
                     val device: BluetoothDevice? =
                         intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
