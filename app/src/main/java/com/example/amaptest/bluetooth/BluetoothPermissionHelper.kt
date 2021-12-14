@@ -16,6 +16,8 @@ import com.example.amaptest.LocationUtils
 class BluetoothPermissionHelper(
     private val activity: AppCompatActivity
 ) {
+    private var callback: (() -> Unit)? = null
+
     private var requestBluetoothLePermissionLauncher =
         activity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
             if (allGrants.values.all { it }) {
@@ -46,8 +48,6 @@ class BluetoothPermissionHelper(
                 Toast.makeText(activity, "蓝牙已关闭", Toast.LENGTH_LONG).show()
             }
         }
-
-    private var callback: (() -> Unit)? = null
 
     fun attemptRunCallback(callback: (() -> Unit)?) {
         this.callback = callback
