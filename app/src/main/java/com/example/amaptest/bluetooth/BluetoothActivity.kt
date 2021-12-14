@@ -153,7 +153,30 @@ class BluetoothActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.btnBindingName.setOnClickListener {
+            val name = binding.editName.text.toString()
+            findByName(name)?.let {
+                getNoBondedDevice(it)?.let {
+                    pairToDevice(it)
+                }
+            } ?: run {
+                printlnLogs("not found:$name in macSet")
+            }
+        }
     }
+
+    fun findByName(name: String): BluetoothDevice? {
+        var reslut: BluetoothDevice? = null
+        macSet.forEach {
+            if (BluetoothUtils.calcSameBitAtTile(it.value.name, name) > 4) {
+                reslut = it.value
+                return@forEach
+            }
+        }
+        return reslut
+    }
+
 
     fun getNoBondedDevice(device: BluetoothDevice): BluetoothDevice? {
         if (device.bondState == BluetoothDevice.BOND_NONE) {

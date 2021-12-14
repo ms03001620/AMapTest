@@ -94,6 +94,31 @@
 
 
             </LinearLayout>
+
+            <!-- group 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_binding_name"
+                    style="@style/Button_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="绑定到" />
+
+                <EditText
+                    android:id="@+id/edit_name"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:hint="匹配名字尾部"
+                    android:textColorHint="@color/base_color_75787B"
+                    android:textColor="#000"
+                    android:text="MacBook Pro"
+                    android:textSize="10sp" />
+
+            </LinearLayout>
         </LinearLayout>
 
 
