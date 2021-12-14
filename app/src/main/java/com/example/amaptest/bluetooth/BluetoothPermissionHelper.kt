@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.amaptest.LocationUtils
@@ -93,13 +92,11 @@ class BluetoothPermissionHelper(
         }
     }
 
-    private fun checkLocation() = ContextCompat.checkSelfPermission(
-        activity,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    ) == PackageManager.PERMISSION_GRANTED
 
     private fun checkBluetoothLocationPermission(callback: () -> Unit) {
-        if (checkLocation()) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
             callback.invoke()
         } else {
             requestBLEOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
@@ -120,7 +117,11 @@ class BluetoothPermissionHelper(
 
     private fun checkBluetoothPermission(callback: () -> Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (checkBluetoothLocation()) {
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_SCAN)
+                == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(activity, Manifest.permission.BLUETOOTH_CONNECT)
+                == PackageManager.PERMISSION_GRANTED
+            ) {
                 callback.invoke()
             } else {
                 requestBluetoothLePermissionLauncher.launch(
@@ -135,16 +136,4 @@ class BluetoothPermissionHelper(
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun checkBluetoothLocation(): Boolean {
-        val p1 = ContextCompat.checkSelfPermission(
-            activity,
-            Manifest.permission.BLUETOOTH_SCAN
-        ) == PackageManager.PERMISSION_GRANTED
-        val p2 = ContextCompat.checkSelfPermission(
-            activity,
-            Manifest.permission.BLUETOOTH_CONNECT
-        ) == PackageManager.PERMISSION_GRANTED
-        return p1 && p2
-    }
 }
