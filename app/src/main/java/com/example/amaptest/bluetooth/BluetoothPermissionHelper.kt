@@ -21,7 +21,7 @@ class BluetoothPermissionHelper(
             if (allGrants.values.all { it }) {
                 attemptGotoBluetoothLePage()
             } else {
-                Toast.makeText(activity, "已取消授权", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "已取消蓝牙授权", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -31,7 +31,7 @@ class BluetoothPermissionHelper(
                 attemptGotoBluetoothLePage()
             } else {
                 LocationUtils.goSettingForBluetooth(activity) {
-                    Toast.makeText(activity, "已取消授权", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "已取消位置授权", Toast.LENGTH_LONG).show()
                 }
             }
         }
@@ -87,7 +87,7 @@ class BluetoothPermissionHelper(
         } else {
             // 显示权限请求对话框
             LocationUtils.goSettingForBluetooth(activity) {
-                Toast.makeText(activity, "已取消授权", Toast.LENGTH_LONG).show()
+                Toast.makeText(activity, "无位置权限", Toast.LENGTH_LONG).show()
             }
         }
     }
