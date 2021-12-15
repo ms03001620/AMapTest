@@ -13,6 +13,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.ParcelUuid
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -183,7 +184,7 @@ class BluetoothActivity : AppCompatActivity() {
         if (device.bondState == BluetoothDevice.BOND_NONE) {
             return device
         }
-        printlnLogs("$device, bonded!!!")
+        printlnLogs("$device, ${parseToString(device.bondState)}")
         return null
     }
 
