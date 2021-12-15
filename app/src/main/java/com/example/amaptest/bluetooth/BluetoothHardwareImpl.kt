@@ -17,6 +17,7 @@ class BluetoothHardwareImpl(val bluetoothAdapter: BluetoothAdapter) : BluetoothD
         return try {
             bluetoothAdapter.getRemoteDevice(address).createBond()
         } catch (e: Exception) {
+            e.printStackTrace()
             false
         }
     }

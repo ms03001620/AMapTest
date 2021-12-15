@@ -6,8 +6,8 @@ import java.lang.UnsupportedOperationException
 interface BluetoothDevices {
 
     fun bondedDevices(): Set<BluetoothDevice>
-    fun startDiscovery():Boolean
+    fun startDiscovery(): Boolean
     fun isDiscovering(): Boolean
-    fun bindDevice(address: String?):Boolean
+    fun bindDevice(address: String?): Boolean
     fun cancelDiscovery(): Boolean
 }
