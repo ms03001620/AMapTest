@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import com.example.amaptest.ble.BleActivity
 import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.bluetooth.BluetoothPermissionHelper
+import com.example.amaptest.bluetooth.BluetoothSampleActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.marker.MarkerActionActivity
 
@@ -88,6 +89,13 @@ class EnterActivity : AppCompatActivity() {
                 gotoBluetoothLe()
             }
         }
+
+        findViewById<View>(R.id.btn_bluetooth_sample).setOnClickListener {
+            //attemptGotoBluetoothLePage()
+            helper.attemptRunCallback {
+                gotoBluetoothSample()
+            }
+        }
     }
 
     private fun checkLocation() = ContextCompat.checkSelfPermission(
@@ -134,6 +142,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoBluetoothLe() {
         startActivity(Intent(this, BleActivity::class.java))
+    }
+
+    fun gotoBluetoothSample() {
+        startActivity(Intent(this, BluetoothSampleActivity::class.java))
     }
 
 }
