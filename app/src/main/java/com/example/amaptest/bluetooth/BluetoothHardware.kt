@@ -5,7 +5,7 @@ import java.lang.UnsupportedOperationException
 
 interface BluetoothHardware {
 
-    fun isEnable(): Boolean
     fun bondedDevices(): Set<BluetoothDevice>
     fun startDiscovery():Boolean
+    fun isDiscovering(): Boolean
 }

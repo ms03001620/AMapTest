@@ -117,7 +117,7 @@ class BluetoothPermissionHelper(
         }
     }
 
-    private fun checkFeature(callback: () -> Unit) {
+    fun checkFeature(callback: () -> Unit) {
         if (activity.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH_LE) &&
             activity.packageManager.hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)
         ) {
@@ -183,6 +183,14 @@ class BluetoothPermissionHelper(
         } else {
             callback.invoke()
         }
+    }
+
+    fun getAdapter(): BluetoothAdapter {
+        val service = activity.getSystemService(Context.BLUETOOTH_SERVICE)
+        if (service is BluetoothManager && service.adapter != null) {
+            return service.adapter
+        }
+        throw IllegalStateException("checkFeature first")
     }
 
 }

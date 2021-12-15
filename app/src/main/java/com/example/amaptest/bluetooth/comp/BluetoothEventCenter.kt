@@ -1,0 +1,116 @@
+package com.example.amaptest.bluetooth.comp
+
+import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.os.ParcelUuid
+import android.util.Log
+import com.example.amaptest.bluetooth.BluetoothUtils
+
+class BluetoothEventCenter(
+    private val deviceName: String
+) : ScanCenter() {
+    override val receiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (intent.action) {
+                BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
+                    val state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1)
+                    val prevState =
+                        intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, -1)
+                    printlnLogs(
+                        "onReceive state:${parseToString(prevState)} -> state:${
+                            parseToString(
+                                state
+                            )
+                        }"
+                    )
+                }
+                BluetoothDevice.ACTION_FOUND -> {
+                    printlnLogs("ACTION_FOUND")
+                    checkDevice(intent)
+                }
+                BluetoothDevice.ACTION_NAME_CHANGED -> {
+                    printlnLogs("ACTION_NAME_CHANGED")
+                    checkDevice(intent)
+                }
+                BluetoothDevice.ACTION_UUID -> {
+                    printlnLogs("ACTION_UUID")
+                    val uuid = intent.getParcelableExtra<ParcelUuid>(BluetoothDevice.EXTRA_UUID)
+                    val device: BluetoothDevice? =
+                        intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+                    printlnLogs("ACTION_UUID :${uuid}, device:${device?.name ?: ""}")
+                }
+                BluetoothDevice.ACTION_PAIRING_REQUEST -> {
+                    // https://blog.csdn.net/zrf1335348191/article/details/54020225/
+                    printlnLogs("ACTION_PAIRING_REQUEST")
+                    val type = intent.getIntExtra(
+                        BluetoothDevice.EXTRA_PAIRING_VARIANT,
+                        BluetoothDevice.ERROR
+                    )
+
+                    when (type) {
+                        BluetoothDevice.PAIRING_VARIANT_PASSKEY_CONFIRMATION -> {
+                            printlnLogs("ACTION_PAIRING_REQUEST type: PASSKEY_CONFIRMATION")
+                        }
+                        BluetoothDevice.PAIRING_VARIANT_PIN -> {
+                            printlnLogs("ACTION_PAIRING_REQUEST type: PAIRING_VARIANT_PIN")
+                        }
+                        else -> {
+                            printlnLogs("ACTION_PAIRING_REQUEST type:$type")
+                        }
+                    }
+
+                    val pairingkey =
+                        intent.getIntExtra(BluetoothDevice.EXTRA_PAIRING_KEY, BluetoothDevice.ERROR)
+                    printlnLogs("ACTION_PAIRING_REQUEST pairingkey:$pairingkey")
+                }
+                BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
+                    bluetoothCallback?.onEvent(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
+                    printlnLogs("ACTION_DISCOVERY_STARTED")
+                }
+                BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
+                    bluetoothCallback?.onEvent(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+                    printlnLogs("ACTION_DISCOVERY_FINISHED")
+                }
+                else -> {
+                    printlnLogs("onReceive action:${intent.action}, ignore!!!")
+                }
+
+                // public static final String EXTRA_PAIRING_KEY = "android.bluetooth.device.extra.PAIRING_KEY";
+                //    public static final String EXTRA_PAIRING_VARIANT = "android.bluetooth.device.extra.PAIRING_VARIANT";
+            }
+        }
+    }
+
+
+    private fun parseToString(code: Int): String {
+        return when (code) {
+            10 -> "BOND_NONE"
+            11 -> "BOND_BONDING"
+            12 -> "BOND_BONDED"
+            else -> "code:$code"
+        }
+    }
+
+    fun checkDevice(intent: Intent) {
+        val device: BluetoothDevice? = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
+        device?.let {
+            val address = it.address
+            if (isTargetDevice(device, deviceName)) {
+                super.address = address
+                bluetoothCallback?.onFoundDevice(address)
+            }
+        }
+    }
+
+
+    fun isTargetDevice(device: BluetoothDevice?, deviceName: String): Boolean {
+        return BluetoothUtils.calcSameBitAtTile(device?.name, deviceName) >= 6
+    }
+
+    private fun printlnLogs(log: String) {
+        Log.d("printlnLogs:", log)
+    }
+}
