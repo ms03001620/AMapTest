@@ -1,6 +1,7 @@
 package com.example.amaptest.bluetooth
 
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import java.lang.Exception
 
 class BluetoothHardwareImpl(val bluetoothAdapter: BluetoothAdapter) : BluetoothDevices {
@@ -13,12 +14,16 @@ class BluetoothHardwareImpl(val bluetoothAdapter: BluetoothAdapter) : BluetoothD
 
     override fun isDiscovering() = bluetoothAdapter.isDiscovering
 
-    override fun bindDevice(address: String?):Boolean {
+    override fun bindDevice(address: String?): Int {
         return try {
-            bluetoothAdapter.getRemoteDevice(address).createBond()
+            val device = bluetoothAdapter.getRemoteDevice(address)
+            if (device?.bondState == BluetoothDevice.BOND_NONE) {
+                device.createBond()
+            }
+            return device?.bondState ?: -1
         } catch (e: Exception) {
             e.printStackTrace()
-            false
+            -2
         }
     }
 }

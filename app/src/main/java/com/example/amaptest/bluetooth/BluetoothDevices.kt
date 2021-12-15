@@ -8,6 +8,6 @@ interface BluetoothDevices {
     fun bondedDevices(): Set<BluetoothDevice>
     fun startDiscovery(): Boolean
     fun isDiscovering(): Boolean
-    fun bindDevice(address: String?): Boolean
+    fun bindDevice(address: String?): Int
     fun cancelDiscovery(): Boolean
 }

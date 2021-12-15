@@ -36,6 +36,11 @@ android {
         }
     }
 
+    testOptions {
+        // for android.util.Log not mocked
+        unitTests.returnDefaultValues = true
+    }
+
     buildFeatures{
         dataBinding = true
     }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.IntentFilter
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.example.amaptest.bluetooth.BluetoothDevices
 
@@ -67,10 +68,8 @@ class BluetoothLogic(
                 }
             }
             TaskStep.BIND -> {
-                if (devices.bindDevice(scanCenter.address).not()) {
-                    // 启动绑定失败
-                    uiCallback?.onNotFound(2)
-                }
+                val result = devices.bindDevice(scanCenter.address)
+                Log.d("BluetoothLogic", "bindDevice:$result")
             }
         }
     }

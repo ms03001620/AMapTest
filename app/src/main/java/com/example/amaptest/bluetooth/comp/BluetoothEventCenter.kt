@@ -13,6 +13,9 @@ class BluetoothEventCenter(
     private val nameMatchLength: Int,
     private val deviceName: String
 ) : ScanCenter() {
+
+    var flagForDiscovery = ""
+
     override val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (intent.action) {
@@ -69,12 +72,16 @@ class BluetoothEventCenter(
                     printlnLogs("ACTION_PAIRING_REQUEST pairingkey:$pairingkey")
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
-                    bluetoothCallback?.onScanStart()
-                    printlnLogs("ACTION_DISCOVERY_STARTED")
+                    if (flagForDiscovery != BluetoothAdapter.ACTION_DISCOVERY_STARTED) {
+                        flagForDiscovery = BluetoothAdapter.ACTION_DISCOVERY_STARTED
+                        bluetoothCallback?.onScanStart()
+                    }
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
-                    bluetoothCallback?.onScanFinish()
-                    printlnLogs("ACTION_DISCOVERY_FINISHED")
+                    if (flagForDiscovery != BluetoothAdapter.ACTION_DISCOVERY_FINISHED) {
+                        flagForDiscovery = BluetoothAdapter.ACTION_DISCOVERY_FINISHED
+                        bluetoothCallback?.onScanFinish()
+                    }
                 }
                 else -> {
                     printlnLogs("onReceive action:${intent.action}, ignore!!!")

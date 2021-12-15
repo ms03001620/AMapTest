@@ -29,9 +29,9 @@ class BluetoothLogicTest {
             return true
         }
 
-        override fun bindDevice(address: String?): Boolean {
+        override fun bindDevice(address: String?): Int {
             defStubStringDevice = "bindDevice"
-            return true
+            return 0
         }
 
         override fun cancelDiscovery(): Boolean {
@@ -97,9 +97,9 @@ class BluetoothLogicTest {
                 return true
             }
 
-            override fun bindDevice(address: String?): Boolean {
+            override fun bindDevice(address: String?): Int {
                 stubString += "d"
-                return true
+                return 0
             }
 
         }
