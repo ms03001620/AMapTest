@@ -73,7 +73,6 @@ class BluetoothEventCenter(
                     printlnLogs("ACTION_DISCOVERY_STARTED")
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
-                    bluetoothCallback?.onEvent(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
                     bluetoothCallback?.onScanFinish()
                     printlnLogs("ACTION_DISCOVERY_FINISHED")
                 }
