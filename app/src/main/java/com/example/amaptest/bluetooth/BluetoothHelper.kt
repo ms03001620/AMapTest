@@ -4,7 +4,7 @@ import android.bluetooth.BluetoothDevice
 
 class BluetoothHelper(
     private val listener: OnBluetoothEvent?,
-    private val hardware: BluetoothHardware?
+    private val devices: BluetoothDevices?
 ) {
     interface OnBluetoothEvent {
         fun onErrorNoBluetoothDevice()
@@ -12,12 +12,12 @@ class BluetoothHelper(
     }
 
     fun requestBondedDevices() {
-        hardware?.bondedDevices()?.let {
+        devices?.bondedDevices()?.let {
             listener?.onBondedDevices(it)
         }
     }
 
     fun requestScan() {
-        hardware?.startDiscovery()
+        devices?.startDiscovery()
     }
 }

@@ -5,8 +5,8 @@ import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.amaptest.R
-import com.example.amaptest.bluetooth.comp.BluetoothCallback
 import com.example.amaptest.bluetooth.comp.BluetoothLogic
+import com.example.amaptest.bluetooth.comp.BluetoothUiCallback
 import com.example.amaptest.databinding.ActivityBluetoothSampleBinding
 
 class BluetoothSampleActivity: AppCompatActivity() {
@@ -29,17 +29,34 @@ class BluetoothSampleActivity: AppCompatActivity() {
     }
 
     private fun ininBluetoothLogic() {
-        val deviceName = intent.getStringExtra(EXTRA_DEVICE_NAME) ?: "MacBook Pro"
+        val deviceName = intent.getStringExtra(EXTRA_DEVICE_NAME) ?: TEST_DEVICE_NAME
         bluetoothLogic = BluetoothLogic(
             deviceName,
+            NAME_MATCH_LENGTH,
             BluetoothHardwareImpl(permissionHelper.getAdapter()),
             bluetoothCallback
         )
     }
 
-    val bluetoothCallback = object : BluetoothCallback {
+    val bluetoothCallback = object : BluetoothUiCallback {
         override fun onEvent(action: String) {
             printlnLogs(action)
+        }
+
+        override fun onNotFound(reasonCode: Int) {
+            printlnLogs("onNotFound reason:$reasonCode")
+        }
+
+        override fun requestPairing() {
+            printlnLogs("requestPairing")
+        }
+
+        override fun onScanFinish() {
+            printlnLogs("onScanFinish")
+        }
+
+        override fun onScanStart() {
+            printlnLogs("onScanStart")
         }
     }
 
@@ -76,5 +93,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
 
     companion object{
         const val EXTRA_DEVICE_NAME = "intent_extra_device_name"
+        const val TEST_DEVICE_NAME  = "Mark的MacBook Pro"
+        const val NAME_MATCH_LENGTH = 16
     }
 }

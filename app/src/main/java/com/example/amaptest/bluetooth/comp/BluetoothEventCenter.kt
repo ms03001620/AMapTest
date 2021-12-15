@@ -10,6 +10,7 @@ import android.util.Log
 import com.example.amaptest.bluetooth.BluetoothUtils
 
 class BluetoothEventCenter(
+    private val nameMatchLength: Int,
     private val deviceName: String
 ) : ScanCenter() {
     override val receiver = object : BroadcastReceiver() {
@@ -43,6 +44,7 @@ class BluetoothEventCenter(
                     printlnLogs("ACTION_UUID :${uuid}, device:${device?.name ?: ""}")
                 }
                 BluetoothDevice.ACTION_PAIRING_REQUEST -> {
+                    bluetoothCallback?.requestPairing()
                     // https://blog.csdn.net/zrf1335348191/article/details/54020225/
                     printlnLogs("ACTION_PAIRING_REQUEST")
                     val type = intent.getIntExtra(
@@ -67,11 +69,12 @@ class BluetoothEventCenter(
                     printlnLogs("ACTION_PAIRING_REQUEST pairingkey:$pairingkey")
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
-                    bluetoothCallback?.onEvent(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
+                    bluetoothCallback?.onScanStart()
                     printlnLogs("ACTION_DISCOVERY_STARTED")
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
                     bluetoothCallback?.onEvent(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)
+                    bluetoothCallback?.onScanFinish()
                     printlnLogs("ACTION_DISCOVERY_FINISHED")
                 }
                 else -> {
@@ -107,7 +110,8 @@ class BluetoothEventCenter(
 
 
     fun isTargetDevice(device: BluetoothDevice?, deviceName: String): Boolean {
-        return BluetoothUtils.calcSameBitAtTile(device?.name, deviceName) >= 6
+        printlnLogs("isTargetDevice: $deviceName, ${device?.name}")
+        return BluetoothUtils.calcSameBitAtTile(device?.name, deviceName) >= nameMatchLength
     }
 
     private fun printlnLogs(log: String) {

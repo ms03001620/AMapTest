@@ -4,25 +4,51 @@ import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.IntentFilter
-import com.example.amaptest.bluetooth.BluetoothHardware
+import androidx.annotation.VisibleForTesting
+import com.example.amaptest.bluetooth.BluetoothDevices
 
 class BluetoothLogic(
     private val deviceName: String,
-    private val bluetoothAdapter: BluetoothHardware,
-    private val bluetoothCallback: BluetoothCallback? = null,
-    private val bluetoothEventCenter: ScanCenter = BluetoothEventCenter(deviceName)
+    private val nameMatchLength: Int,
+    private val devices: BluetoothDevices,
+    private var uiCallback: BluetoothUiCallback? = null,
+    private val scanCenter: ScanCenter = BluetoothEventCenter(nameMatchLength, deviceName)
 ) {
     init {
-        bluetoothEventCenter.setCallback(object : BluetoothCallback {
+        scanCenter.setCallback(object : BluetoothCallback {
             override fun onEvent(action: String) {
-                bluetoothCallback?.onEvent(action)
+                uiCallback?.onEvent(action)
             }
 
             override fun onFoundDevice(address: String) {
-                bluetoothEventCenter.address = address
+                // found device close scanner immediately
+                devices.cancelDiscovery()
+                scanCenter.address = address
                 step = TaskStep.BIND
             }
+
+            override fun onScanStart() {
+                uiCallback?.onScanStart()
+            }
+
+            override fun onScanFinish() {
+                uiCallback?.onScanFinish()
+                scanCenter.address?.let {
+                    doBluetoothTask()
+                } ?: run {
+                    uiCallback?.onNotFound(3)
+                }
+            }
+
+            override fun requestPairing() {
+                uiCallback?.requestPairing()
+            }
         })
+    }
+
+    @VisibleForTesting
+    fun setUiCallback(uiCallback: BluetoothUiCallback) {
+        this.uiCallback = uiCallback
     }
 
     var step = TaskStep.SCAN
@@ -33,12 +59,18 @@ class BluetoothLogic(
     fun doBluetoothTask() {
         when (step) {
             TaskStep.SCAN -> {
-                if (bluetoothAdapter.isDiscovering().not()) {
-                    bluetoothAdapter.startDiscovery()
+                if (devices.isDiscovering().not()) {
+                    if (devices.startDiscovery().not()) {
+                        // 启动扫描失败
+                        uiCallback?.onNotFound(1)
+                    }
                 }
             }
             TaskStep.BIND -> {
-
+                if (devices.bindDevice(scanCenter.address).not()) {
+                    // 启动绑定失败
+                    uiCallback?.onNotFound(2)
+                }
             }
         }
     }
@@ -54,15 +86,12 @@ class BluetoothLogic(
             this.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED) // 开始扫描
             this.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED) // 扫描结束
         }.let {
-            activity.registerReceiver(bluetoothEventCenter.receiver, it)
+            activity.registerReceiver(scanCenter.receiver, it)
         }
     }
 
     fun unregisterReceiver(activity: Activity) {
-        activity.unregisterReceiver(bluetoothEventCenter.receiver)
+        activity.unregisterReceiver(scanCenter.receiver)
     }
 
-    private fun initRegister() {
-
-    }
 }
