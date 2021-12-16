@@ -11,6 +11,8 @@ plugins {
     const val ndkVersion = "23.0.7599858"
 */
 
+apply from: '../jacoco.gradle'
+
 android {
     compileSdk 31
 

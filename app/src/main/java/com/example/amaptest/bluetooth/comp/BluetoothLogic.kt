@@ -23,10 +23,10 @@ class BluetoothLogic(
                 uiCallback?.onEvent(action)
             }
 
-            override fun onFoundDevice(address: String) {
+            override fun onFoundDevice() {
                 // found device close scanner immediately
                 devices.cancelDiscovery()
-                scanCenter.address = address
+                //scanCenter.address = address
                 step = TaskStep.BIND
             }
 
@@ -55,10 +55,10 @@ class BluetoothLogic(
 
             override fun onScanFinish() {
                 uiCallback?.onScanFinish()
-                scanCenter.address?.let {
-                    doBluetoothTask()
-                } ?: run {
+                if (scanCenter.address.isNullOrBlank()) {
                     uiCallback?.onNotFound(3)
+                } else {
+                    doBluetoothTask()
                 }
             }
 

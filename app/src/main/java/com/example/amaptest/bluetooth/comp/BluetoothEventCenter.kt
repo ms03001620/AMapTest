@@ -88,13 +88,9 @@ class BluetoothEventCenter(
                 else -> {
                     printlnLogs("onReceive action:${intent.action}, ignore!!!")
                 }
-
-                // public static final String EXTRA_PAIRING_KEY = "android.bluetooth.device.extra.PAIRING_KEY";
-                //    public static final String EXTRA_PAIRING_VARIANT = "android.bluetooth.device.extra.PAIRING_VARIANT";
             }
         }
     }
-
 
     private fun parseToString(code: Int): String {
         return BluetoothUtils.parseToString(code)
@@ -106,7 +102,7 @@ class BluetoothEventCenter(
             val address = it.address
             if (isTargetDevice(device, deviceName)) {
                 super.address = address
-                bluetoothCallback?.onFoundDevice(address)
+                bluetoothCallback?.onFoundDevice()
             }
         }
     }
