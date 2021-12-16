@@ -68,6 +68,10 @@ class BluetoothSampleActivity: AppCompatActivity() {
             printlnLogs("onScanStart")
         }
 
+        override fun onBondedSuccess() {
+            printlnLogs("onBondedSuccess")
+        }
+
         override fun onRequestReBinding() {
             printlnLogs("onRetry")
             showRetryDialog(this@BluetoothSampleActivity, leftCallback = {

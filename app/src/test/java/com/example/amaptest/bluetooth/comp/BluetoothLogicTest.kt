@@ -100,12 +100,15 @@ class BluetoothLogicTest {
                 stubString += "d"
                 return 0
             }
-
         }
 
         logic = BluetoothLogic("mockName", 6, mockDevice, object : BluetoothUiCallback {
             override fun requestPairing() {
                 defStubStringUiCallback = "requestPairing"
+            }
+
+            override fun onBondedSuccess() {
+                defStubStringUiCallback = "onBondedSuccess"
             }
         }, eventCenter)
 
@@ -119,6 +122,11 @@ class BluetoothLogicTest {
         //mock request pair
         eventCenter.getCallback()?.requestPairing()
         assertEquals("requestPairing", defStubStringUiCallback)
+
+        //mock BOND_BONDED success
+        eventCenter.getCallback()?.onBindStatusChange(BluetoothDevice.BOND_BONDING, BluetoothDevice.BOND_BONDED)
+        assertEquals(TaskStep.BONDED, logic.getStep())
+        assertEquals("onBondedSuccess", defStubStringUiCallback)
     }
 
 

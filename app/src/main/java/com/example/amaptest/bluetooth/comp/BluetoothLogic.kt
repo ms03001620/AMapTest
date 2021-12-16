@@ -38,6 +38,7 @@ class BluetoothLogic(
                 when (new) {
                     BluetoothDevice.BOND_BONDED -> {
                         step = TaskStep.BONDED
+                        uiCallback?.onBondedSuccess()
                     }
                     BluetoothDevice.BOND_NONE -> {
                         if (old == BluetoothDevice.BOND_BONDING) {
@@ -92,9 +93,8 @@ class BluetoothLogic(
                 val result = devices.bindDevice(scanCenter.address)
                 Log.d("BluetoothLogic", "bindDevice:$result")
             }
-            TaskStep.REQUEST_RETRY -> {
-                // wait user click retry
-                Log.d("BluetoothLogic", "REQUEST_RETRY")
+            else -> {
+                Log.d("BluetoothLogic", "ignore:$step")
             }
         }
     }
