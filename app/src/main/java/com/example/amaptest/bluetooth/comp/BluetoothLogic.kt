@@ -22,7 +22,6 @@ class BluetoothLogic(
             override fun onFoundDevice() {
                 // found device close scanner immediately
                 devices.cancelDiscovery()
-                //scanCenter.address = address
                 step = TaskStep.BIND
             }
 

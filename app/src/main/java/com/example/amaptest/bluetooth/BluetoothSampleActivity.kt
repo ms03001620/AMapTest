@@ -24,13 +24,9 @@ class BluetoothSampleActivity: AppCompatActivity() {
 
         permissionHelper.checkFeature {
             ininBluetoothLogic()
-            initRegister()
         }
     }
 
-    private fun initRegister() {
-        bluetoothLogic.registerReceiver(this)
-    }
 
     private fun ininBluetoothLogic() {
         val deviceName = intent.getStringExtra(EXTRA_DEVICE_NAME) ?: TEST_DEVICE_NAME
@@ -39,6 +35,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
             bluetoothCallback,
             BluetoothEventCenter(NAME_MATCH_LENGTH, deviceName)
         )
+        bluetoothLogic.registerReceiver(this)
     }
 
     val bluetoothCallback = object : BluetoothUiCallback {
