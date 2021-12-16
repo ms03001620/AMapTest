@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.amaptest.R
 import com.example.amaptest.bluetooth.BluetoothHelper
+import com.example.amaptest.bluetooth.BluetoothUtils
 import com.example.amaptest.databinding.ActivityBluetoothLeBinding
 import java.lang.RuntimeException
 
@@ -287,22 +288,12 @@ class BleActivity : AppCompatActivity() {
 
 
     private fun gattConCode(code: Int): String {
-        return when (code) {
-            GATT_SUCCESS -> "GATT_SUCCESS"
-            GATT_FAILURE -> "GATT_FAILURE"
-            else -> "code:$code"
-        }
+        return BluetoothUtils.gattConCode(code)
     }
 
 
     private fun profileConCode(code: Int): String {
-        return when (code) {
-            STATE_CONNECTED -> "STATE_CONNECTED"
-            STATE_CONNECTING -> "STATE_CONNECTING"
-            STATE_DISCONNECTED -> "STATE_DISCONNECTED"
-            STATE_DISCONNECTING -> "STATE_DISCONNECTING"
-            else -> "code:$code"
-        }
+        return BluetoothUtils.profileConCode(code)
     }
 
 }
