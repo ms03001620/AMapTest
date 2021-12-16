@@ -1,7 +1,8 @@
-package com.example.amaptest.bluetooth
+package com.example.amaptest.bluetooth.comp
 
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
+import com.example.amaptest.bluetooth.BluetoothDevices
 import java.lang.Exception
 
 class BluetoothHardwareImpl(val bluetoothAdapter: BluetoothAdapter) : BluetoothDevices {

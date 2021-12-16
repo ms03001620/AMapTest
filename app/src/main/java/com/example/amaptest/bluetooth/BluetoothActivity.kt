@@ -13,7 +13,6 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.ParcelUuid
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.amaptest.LocationUtils
 import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
+import com.example.amaptest.bluetooth.comp.BluetoothHardwareImpl
 import com.example.amaptest.databinding.ActivityBluetoothBinding
 import java.lang.StringBuilder
 import java.util.*

@@ -9,6 +9,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.amaptest.CommonAskDialog
 import com.example.amaptest.R
 import com.example.amaptest.bluetooth.comp.BluetoothEventCenter
+import com.example.amaptest.bluetooth.comp.BluetoothHardwareImpl
 import com.example.amaptest.bluetooth.comp.BluetoothLogic
 import com.example.amaptest.bluetooth.comp.BluetoothUiCallback
 import com.example.amaptest.databinding.ActivityBluetoothSampleBinding
