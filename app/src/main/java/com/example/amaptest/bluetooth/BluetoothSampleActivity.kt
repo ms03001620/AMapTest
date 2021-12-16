@@ -9,7 +9,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.amaptest.CommonAskDialog
 import com.example.amaptest.R
 import com.example.amaptest.bluetooth.comp.BluetoothEventCenter
-import com.example.amaptest.bluetooth.comp.BluetoothHardwareImpl
+import com.example.amaptest.bluetooth.comp.BluetoothClassicImpl
 import com.example.amaptest.bluetooth.comp.BluetoothLogic
 import com.example.amaptest.bluetooth.comp.BluetoothUiCallback
 import com.example.amaptest.databinding.ActivityBluetoothSampleBinding
@@ -32,7 +32,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
     private fun ininBluetoothLogic() {
         val deviceName = intent.getStringExtra(EXTRA_DEVICE_NAME) ?: TEST_DEVICE_NAME
         bluetoothLogic = BluetoothLogic(
-            BluetoothHardwareImpl(permissionHelper.getAdapter()),
+            BluetoothClassicImpl(permissionHelper.getAdapter()),
             bluetoothCallback,
             BluetoothEventCenter(NAME_MATCH_LENGTH, deviceName)
         )

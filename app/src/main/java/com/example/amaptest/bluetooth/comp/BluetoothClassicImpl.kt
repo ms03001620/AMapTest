@@ -5,7 +5,7 @@ import android.bluetooth.BluetoothDevice
 import com.example.amaptest.bluetooth.BluetoothDevices
 import java.lang.Exception
 
-class BluetoothHardwareImpl(val bluetoothAdapter: BluetoothAdapter) : BluetoothDevices {
+class BluetoothClassicImpl(val bluetoothAdapter: BluetoothAdapter) : BluetoothDevices {
 
     override fun bondedDevices() = bluetoothAdapter.bondedDevices
 

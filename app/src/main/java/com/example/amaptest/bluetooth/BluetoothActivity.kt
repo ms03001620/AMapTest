@@ -22,7 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.amaptest.LocationUtils
 import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
-import com.example.amaptest.bluetooth.comp.BluetoothHardwareImpl
+import com.example.amaptest.bluetooth.comp.BluetoothClassicImpl
 import com.example.amaptest.databinding.ActivityBluetoothBinding
 import java.lang.StringBuilder
 import java.util.*
@@ -371,7 +371,7 @@ class BluetoothActivity : AppCompatActivity() {
     }
 
     private fun initHelper() {
-        device = BluetoothHelper(listener, BluetoothHardwareImpl(bluetoothAdapter))
+        device = BluetoothHelper(listener, BluetoothClassicImpl(bluetoothAdapter))
     }
 
 
