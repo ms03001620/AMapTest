@@ -12,7 +12,6 @@ class BluetoothLogicTest {
 
     var defStubStringDevice = ""
 
-
     val mockDevice = object : BluetoothDevices {
         override fun bondedDevices(): Set<BluetoothDevice> {
             defStubStringDevice = "bondedDevices"
@@ -48,7 +47,7 @@ class BluetoothLogicTest {
 
     @Test
     fun initTest() {
-        assertEquals(TaskStep.SCAN, logic.step)
+        assertEquals(TaskStep.SCAN, logic.getStep())
     }
 
     @Test
@@ -67,7 +66,7 @@ class BluetoothLogicTest {
     fun callbackFoundTest() {
         assertNull(eventCenter.address)
         eventCenter.getCallback()?.onFoundDevice("0F:01")
-        assertEquals(TaskStep.BIND, logic.step)
+        assertEquals(TaskStep.BIND, logic.getStep())
         assertEquals("0F:01", eventCenter.address)
     }
 
@@ -110,9 +109,9 @@ class BluetoothLogicTest {
             }
         }, eventCenter)
 
-        assertEquals(TaskStep.SCAN, logic.step)
+        assertEquals(TaskStep.SCAN, logic.getStep())
         logic.doBluetoothTask()
-        assertEquals(TaskStep.BIND, logic.step)
+        assertEquals(TaskStep.BIND, logic.getStep())
         assertEquals("0F:02", eventCenter.address)
         eventCenter.getCallback()?.onScanFinish()
         assertEquals("abcd", stubString)

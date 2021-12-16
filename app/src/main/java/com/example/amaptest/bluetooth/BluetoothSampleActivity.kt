@@ -1,9 +1,12 @@
 package com.example.amaptest.bluetooth
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Looper
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import com.example.amaptest.CommonAskDialog
 import com.example.amaptest.R
 import com.example.amaptest.bluetooth.comp.BluetoothLogic
 import com.example.amaptest.bluetooth.comp.BluetoothUiCallback
@@ -45,6 +48,12 @@ class BluetoothSampleActivity: AppCompatActivity() {
 
         override fun onNotFound(reasonCode: Int) {
             printlnLogs("onNotFound reason:$reasonCode")
+            showRetryScanDialog(this@BluetoothSampleActivity, leftCallback = {
+            }, rightCallback = {
+                permissionHelper.attemptRunCallback {
+                    bluetoothLogic.doBluetoothTask()
+                }
+            })
         }
 
         override fun requestPairing() {
@@ -61,8 +70,16 @@ class BluetoothSampleActivity: AppCompatActivity() {
 
         override fun onRequestReBinding() {
             printlnLogs("onRetry")
+            showRetryDialog(this@BluetoothSampleActivity, leftCallback = {
+                Toast.makeText(applicationContext, "已放弃绑定", Toast.LENGTH_SHORT).show()
+            }, rightCallback = {
+                permissionHelper.attemptRunCallback {
+                    bluetoothLogic.doRetryBind()
+                }
+            })
         }
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -92,7 +109,36 @@ class BluetoothSampleActivity: AppCompatActivity() {
         super.onDestroy()
         permissionHelper.checkFeature {
             bluetoothLogic.unregisterReceiver(this)
+            bluetoothLogic.stop()
         }
+    }
+
+    private fun showRetryDialog(
+        context: Context,
+        leftCallback: (() -> Unit)? = null,
+        rightCallback: (() -> Unit)? = null
+    ) {
+        CommonAskDialog.Builder(
+            context,
+            "重试",
+            "放弃",
+            leftCallback = leftCallback
+        ).create(
+            "重新绑定蓝牙设备", listener = { rightCallback?.invoke() })
+    }
+
+    private fun showRetryScanDialog(
+        context: Context,
+        leftCallback: (() -> Unit)? = null,
+        rightCallback: (() -> Unit)? = null
+    ) {
+        CommonAskDialog.Builder(
+            context,
+            "重新搜索",
+            "放弃",
+            leftCallback = leftCallback
+        ).create(
+            "重新搜索蓝牙设备", listener = { rightCallback?.invoke() })
     }
 
     companion object{

@@ -15,6 +15,8 @@ class BluetoothLogic(
     private var uiCallback: BluetoothUiCallback? = null,
     private val scanCenter: ScanCenter = BluetoothEventCenter(nameMatchLength, deviceName)
 ) {
+    private var step = TaskStep.SCAN
+
     init {
         scanCenter.setCallback(object : BluetoothCallback {
             override fun onEvent(action: String) {
@@ -34,9 +36,6 @@ class BluetoothLogic(
 
             override fun onBindStatusChange(old: Int, new: Int) {
                 when (new) {
-                    BluetoothDevice.BOND_BONDING -> {
-                        //step = TaskStep.BINDING
-                    }
                     BluetoothDevice.BOND_BONDED -> {
                         step = TaskStep.BONDED
                     }
@@ -68,12 +67,13 @@ class BluetoothLogic(
         })
     }
 
-    @VisibleForTesting
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun setUiCallback(uiCallback: BluetoothUiCallback) {
         this.uiCallback = uiCallback
     }
 
-    var step = TaskStep.SCAN
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun getStep() = TaskStep.valueOf(step.name)
 
     /**
      * scan -> find device -> binding; callback
@@ -97,6 +97,15 @@ class BluetoothLogic(
                 Log.d("BluetoothLogic", "REQUEST_RETRY")
             }
         }
+    }
+
+    fun doRetryBind() {
+        step = TaskStep.BONDED
+        doBluetoothTask()
+    }
+
+    fun stop(){
+        devices.cancelDiscovery()
     }
 
     fun registerReceiver(activity: Activity) {
