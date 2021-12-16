@@ -82,13 +82,18 @@ class BluetoothLogic(
             TaskStep.SCAN -> {
                 if (devices.isDiscovering().not()) {
                     if (devices.startDiscovery().not()) {
-                        // 启动扫描失败
+                        // start failed
                         uiCallback?.onNotFound(1)
                     }
                 }
             }
             TaskStep.BIND -> {
                 val result = devices.bindDevice(scanCenter.address)
+                if (result == BluetoothDevice.BOND_BONDED) {
+                    // device was BONDED
+                    step = TaskStep.BONDED
+                    uiCallback?.onBondedSuccess()
+                }
                 Log.d("BluetoothLogic", "bindDevice:$result")
             }
             else -> {

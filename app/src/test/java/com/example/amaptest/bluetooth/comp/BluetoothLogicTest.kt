@@ -185,6 +185,31 @@ class BluetoothLogicTest {
     }
 
     @Test
+    fun wasBonded() {
+        var defStubStringUiCallback = ""
+        logic = BluetoothLogic(object : BluetoothDevices {
+            override fun bondedDevices(): Set<BluetoothDevice> = emptySet<BluetoothDevice>()
+
+            override fun startDiscovery() = true
+
+            override fun isDiscovering() = false
+
+            override fun bindDevice(address: String?) = 12
+
+            override fun cancelDiscovery() = true
+
+        }, object : BluetoothUiCallback {
+            override fun onBondedSuccess() {
+                defStubStringUiCallback = "onBondedSuccess"
+            }
+        }, eventCenter)
+
+        logic.doRetryBind()
+        assertEquals("onBondedSuccess", defStubStringUiCallback)
+        assertEquals(TaskStep.BONDED, logic.getStep())
+    }
+
+    @Test
     fun stop() {
         logic = BluetoothLogic(mockDevice, null, eventCenter)
         logic.stop()
