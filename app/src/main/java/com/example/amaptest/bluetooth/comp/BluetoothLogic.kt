@@ -1,9 +1,7 @@
 package com.example.amaptest.bluetooth.comp
 
 import android.app.Activity
-import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
-import android.content.IntentFilter
 import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.example.amaptest.bluetooth.BluetoothDevices
@@ -37,6 +35,9 @@ class BluetoothLogic(
                     BluetoothDevice.BOND_BONDED -> {
                         step = TaskStep.BONDED
                         uiCallback?.onBondedSuccess()
+                    }
+                    BluetoothDevice.BOND_BONDING -> {
+                        step = TaskStep.BOND_BONDING
                     }
                     BluetoothDevice.BOND_NONE -> {
                         if (old == BluetoothDevice.BOND_BONDING) {
@@ -106,23 +107,11 @@ class BluetoothLogic(
         devices.cancelDiscovery()
     }
 
-    fun registerReceiver(activity: Activity) {
-        //ACTION_CONNECTION_STATE_CHANGED 连接变化
-        IntentFilter().apply {
-            this.addAction(BluetoothDevice.ACTION_UUID)
-            this.addAction(BluetoothDevice.ACTION_FOUND)
-            this.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
-            this.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST)
-            this.addAction(BluetoothDevice.ACTION_NAME_CHANGED) // 远程设备名称更新
-            this.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED) // 开始扫描
-            this.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED) // 扫描结束
-        }.let {
-            activity.registerReceiver(scanCenter.receiver, it)
-        }
+    fun registerReceiver(activity: Activity?) {
+        scanCenter.registerReceiver(activity)
     }
 
-    fun unregisterReceiver(activity: Activity) {
-        activity.unregisterReceiver(scanCenter.receiver)
+    fun unregisterReceiver(activity: Activity?) {
+        scanCenter.unregisterReceiver(activity)
     }
-
 }

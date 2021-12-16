@@ -1,10 +1,12 @@
 package com.example.amaptest.bluetooth.comp
 
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.ParcelUuid
 import android.util.Log
 import com.example.amaptest.bluetooth.BluetoothUtils
@@ -92,6 +94,23 @@ class BluetoothEventCenter(
         }
     }
 
+    override fun registerReceiver(activity: Activity?) {
+        // ACTION_CONNECTION_STATE_CHANGED 连接变化
+        activity?.registerReceiver(receiver, IntentFilter().apply {
+            this.addAction(BluetoothDevice.ACTION_UUID)
+            this.addAction(BluetoothDevice.ACTION_FOUND)
+            this.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
+            this.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST)
+            this.addAction(BluetoothDevice.ACTION_NAME_CHANGED) // 远程设备名称更新
+            this.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED) // 开始扫描
+            this.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED) // 扫描结束
+        })
+    }
+
+    override fun unregisterReceiver(activity: Activity?) {
+        activity?.unregisterReceiver(receiver)
+    }
+
     private fun parseToString(code: Int): String {
         return BluetoothUtils.parseToString(code)
     }
@@ -108,7 +127,7 @@ class BluetoothEventCenter(
     }
 
 
-    fun isTargetDevice(device: BluetoothDevice?, deviceName: String): Boolean {
+    private fun isTargetDevice(device: BluetoothDevice?, deviceName: String): Boolean {
         printlnLogs("isTargetDevice: $deviceName, ${device?.name}")
         return BluetoothUtils.calcSameBitAtTile(device?.name, deviceName) >= nameMatchLength
     }

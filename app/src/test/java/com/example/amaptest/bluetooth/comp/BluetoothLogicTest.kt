@@ -1,5 +1,6 @@
 package com.example.amaptest.bluetooth.comp
 
+import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import com.example.amaptest.bluetooth.BluetoothDevices
 import org.junit.Assert.*
@@ -190,5 +191,28 @@ class BluetoothLogicTest {
         assertEquals("cancelDiscovery", defStubStringDevice)
     }
 
+    @Test
+    fun registerReceiver() {
+        var stubString = ""
+        logic = BluetoothLogic(mockDevice, null, object : ScanCenter() {
+            override fun registerReceiver(activity: Activity?) {
+                stubString = "registerReceiver"
+            }
+        })
+        logic.registerReceiver(null)
+        assertEquals("registerReceiver", stubString)
+    }
+
+    @Test
+    fun unregisterReceiver() {
+        var stubString = ""
+        logic = BluetoothLogic(mockDevice, null, object : ScanCenter() {
+            override fun unregisterReceiver(activity: Activity?) {
+                stubString = "unregisterReceiver"
+            }
+        })
+        logic.unregisterReceiver(null)
+        assertEquals("unregisterReceiver", stubString)
+    }
 
 }

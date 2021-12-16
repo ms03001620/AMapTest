@@ -1,5 +1,6 @@
 package com.example.amaptest.bluetooth.comp
 
+import android.app.Activity
 import android.content.BroadcastReceiver
 
 open class ScanCenter {
@@ -14,4 +15,8 @@ open class ScanCenter {
     }
 
     fun getCallback() = bluetoothCallback
+
+    open fun registerReceiver(activity: Activity?) {}
+
+    open fun unregisterReceiver(activity: Activity?) {}
 }
