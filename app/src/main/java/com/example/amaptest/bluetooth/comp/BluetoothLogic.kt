@@ -4,7 +4,6 @@ import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.util.Log
 import androidx.annotation.VisibleForTesting
-import com.example.amaptest.bluetooth.BluetoothDevices
 
 class BluetoothLogic(
     private val devices: BluetoothDevices,

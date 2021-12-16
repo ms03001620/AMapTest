@@ -2,7 +2,6 @@ package com.example.amaptest.bluetooth.comp
 
 import android.app.Activity
 import android.bluetooth.BluetoothDevice
-import com.example.amaptest.bluetooth.BluetoothDevices
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test

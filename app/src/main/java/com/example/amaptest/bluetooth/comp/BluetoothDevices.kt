@@ -1,4 +1,4 @@
-package com.example.amaptest.bluetooth
+package com.example.amaptest.bluetooth.comp
 
 import android.bluetooth.BluetoothDevice
 import java.lang.UnsupportedOperationException
