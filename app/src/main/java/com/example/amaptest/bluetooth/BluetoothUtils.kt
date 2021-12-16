@@ -1,5 +1,7 @@
 package com.example.amaptest.bluetooth
 
+import android.bluetooth.BluetoothDevice
+
 object BluetoothUtils {
     fun calcSameBitAtTile(source: String?, target: String?): Int {
         if (source.isNullOrBlank() || target.isNullOrBlank()) {
@@ -20,5 +22,14 @@ object BluetoothUtils {
             }
         }
         return count
+    }
+
+    fun parseToString(code: Int): String {
+        return when (code) {
+            BluetoothDevice.BOND_NONE -> "BOND_NONE"
+            BluetoothDevice.BOND_BONDING -> "BOND_BONDING"
+            BluetoothDevice.BOND_BONDED -> "BOND_BONDED"
+            else -> "code:$code"
+        }
     }
 }

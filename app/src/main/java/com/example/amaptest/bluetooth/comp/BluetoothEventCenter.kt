@@ -23,6 +23,8 @@ class BluetoothEventCenter(
                     val state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, -1)
                     val prevState =
                         intent.getIntExtra(BluetoothDevice.EXTRA_PREVIOUS_BOND_STATE, -1)
+
+                    bluetoothCallback?.onBindStatusChange(prevState, state)
                     printlnLogs(
                         "onReceive state:${parseToString(prevState)} -> state:${
                             parseToString(
@@ -95,12 +97,7 @@ class BluetoothEventCenter(
 
 
     private fun parseToString(code: Int): String {
-        return when (code) {
-            10 -> "BOND_NONE"
-            11 -> "BOND_BONDING"
-            12 -> "BOND_BONDED"
-            else -> "code:$code"
-        }
+        return BluetoothUtils.parseToString(code)
     }
 
     fun checkDevice(intent: Intent) {

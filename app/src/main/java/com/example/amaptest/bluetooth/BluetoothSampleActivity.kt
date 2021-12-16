@@ -58,6 +58,10 @@ class BluetoothSampleActivity: AppCompatActivity() {
         override fun onScanStart() {
             printlnLogs("onScanStart")
         }
+
+        override fun onRequestReBinding() {
+            printlnLogs("onRetry")
+        }
     }
 
     override fun onResume() {

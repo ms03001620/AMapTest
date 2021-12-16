@@ -6,4 +6,5 @@ interface BluetoothCallback {
     fun onScanFinish()
     fun requestPairing()
     fun onScanStart()
+    fun onBindStatusChange(old: Int, new: Int)
 }

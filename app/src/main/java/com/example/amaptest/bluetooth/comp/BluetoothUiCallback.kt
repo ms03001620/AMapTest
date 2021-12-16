@@ -7,4 +7,5 @@ interface BluetoothUiCallback {
     fun requestPairing() {}
     fun onScanFinish() {}
     fun onScanStart() {}
+    fun onRequestReBinding(){}
 }
