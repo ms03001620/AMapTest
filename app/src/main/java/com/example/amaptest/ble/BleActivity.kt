@@ -73,7 +73,7 @@ class BleActivity : AppCompatActivity() {
                     printlnLogs("need IMEI")
                 } else {
                     bluetoothAdapter.getRemoteDevice(imei.uppercase())?.let {
-                        bluetoothGatt = it.connectGatt(this, false, bluetoothGattCallback)
+                        bluetoothGatt = it.connectGatt(this.applicationContext, false, bluetoothGattCallback)
                     }
                 }
             } catch (e: IllegalArgumentException) {
