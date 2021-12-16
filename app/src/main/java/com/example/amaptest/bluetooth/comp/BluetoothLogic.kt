@@ -9,11 +9,9 @@ import androidx.annotation.VisibleForTesting
 import com.example.amaptest.bluetooth.BluetoothDevices
 
 class BluetoothLogic(
-    private val deviceName: String,
-    private val nameMatchLength: Int,
     private val devices: BluetoothDevices,
     private var uiCallback: BluetoothUiCallback? = null,
-    private val scanCenter: ScanCenter = BluetoothEventCenter(nameMatchLength, deviceName)
+    private val scanCenter: ScanCenter
 ) {
     private var step = TaskStep.SCAN
 
@@ -104,7 +102,7 @@ class BluetoothLogic(
         doBluetoothTask()
     }
 
-    fun stop(){
+    fun stop() {
         devices.cancelDiscovery()
     }
 

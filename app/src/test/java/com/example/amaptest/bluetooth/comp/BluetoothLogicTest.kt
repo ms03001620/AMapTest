@@ -42,7 +42,7 @@ class BluetoothLogicTest {
 
     @Before
     fun setup() {
-        logic = BluetoothLogic("mockName", 6, mockDevice, null, eventCenter)
+        logic = BluetoothLogic( mockDevice, null, eventCenter)
     }
 
     @Test
@@ -89,7 +89,7 @@ class BluetoothLogicTest {
     @Test
     fun callbackNotFoundTest() {
         var stubString = ""
-        logic = BluetoothLogic("mockName", 6, mockDevice, object : BluetoothUiCallback {
+        logic = BluetoothLogic( mockDevice, object : BluetoothUiCallback {
             override fun onNotFound(reasonCode: Int) {
                 stubString = "onNotFound"
             }
@@ -137,7 +137,7 @@ class BluetoothLogicTest {
             }
         }
 
-        logic = BluetoothLogic("mockName", 6, mockDevice, object : BluetoothUiCallback {
+        logic = BluetoothLogic(mockDevice, object : BluetoothUiCallback {
             override fun requestPairing() {
                 defStubStringUiCallback = "requestPairing"
             }
@@ -168,7 +168,7 @@ class BluetoothLogicTest {
     @Test
     fun doRetryBind() {
         var defStubStringUiCallback = ""
-        logic = BluetoothLogic("mockName", 6, mockDevice, object : BluetoothUiCallback {
+        logic = BluetoothLogic(mockDevice, object : BluetoothUiCallback {
             override fun onRequestReBinding() {
                 defStubStringUiCallback = "onRequestReBinding"
             }
@@ -185,7 +185,7 @@ class BluetoothLogicTest {
 
     @Test
     fun stop() {
-        logic = BluetoothLogic("mockName", 6, mockDevice, null, eventCenter)
+        logic = BluetoothLogic(mockDevice, null, eventCenter)
         logic.stop()
         assertEquals("cancelDiscovery", defStubStringDevice)
     }
