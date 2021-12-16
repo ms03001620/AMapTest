@@ -100,7 +100,7 @@ class BluetoothLogic(
     }
 
     fun doRetryBind() {
-        step = TaskStep.BONDED
+        step = TaskStep.BIND
         doBluetoothTask()
     }
 

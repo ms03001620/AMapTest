@@ -130,4 +130,23 @@ class BluetoothLogicTest {
     }
 
 
+    @Test
+    fun doRetryBind() {
+        var defStubStringUiCallback = ""
+        logic = BluetoothLogic("mockName", 6, mockDevice, object : BluetoothUiCallback {
+            override fun onRequestReBinding() {
+                defStubStringUiCallback = "onRequestReBinding"
+            }
+        }, eventCenter)
+
+        eventCenter.getCallback()?.onBindStatusChange(BluetoothDevice.BOND_BONDING, BluetoothDevice.BOND_NONE)
+        assertEquals(TaskStep.REQUEST_RETRY, logic.getStep())
+
+        logic.doRetryBind()
+        assertEquals(TaskStep.BIND, logic.getStep())
+        assertEquals("bindDevice", defStubStringDevice)
+        assertEquals("onRequestReBinding", defStubStringUiCallback)
+    }
+
+
 }
