@@ -3,7 +3,7 @@ package com.example.amaptest.bluetooth.comp
 import android.app.Activity
 import android.content.BroadcastReceiver
 
-open class ScanCenter {
+open class OnScanEvent {
     open val receiver: BroadcastReceiver? = null
 
     open var address: String? = null

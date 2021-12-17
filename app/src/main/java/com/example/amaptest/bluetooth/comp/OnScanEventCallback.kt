@@ -1,6 +1,6 @@
 package com.example.amaptest.bluetooth.comp
 
-interface BluetoothUiCallback {
+interface OnScanEventCallback {
     fun onEvent(action: String) {}
     fun onFoundDevice(address: String) {}
     fun onNotFound(reasonCode: Int) {}

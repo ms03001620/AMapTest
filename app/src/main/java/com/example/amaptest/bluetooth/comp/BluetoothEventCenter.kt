@@ -14,7 +14,7 @@ import com.example.amaptest.bluetooth.BluetoothUtils
 class BluetoothEventCenter(
     private val nameMatchLength: Int,
     private val deviceName: String
-) : ScanCenter() {
+) : OnScanEvent() {
 
     var flagForDiscovery = ""
 

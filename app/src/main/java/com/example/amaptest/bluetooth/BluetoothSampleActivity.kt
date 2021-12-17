@@ -37,7 +37,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
         bluetoothLogic.registerReceiver(this)
     }
 
-    val bluetoothCallback = object : BluetoothUiCallback {
+    val bluetoothCallback = object : OnScanEventCallback {
         override fun onEvent(action: String) {
             printlnLogs(action)
         }

@@ -7,13 +7,13 @@ import androidx.annotation.VisibleForTesting
 
 class BluetoothLogic(
     private val devices: BluetoothDevices,
-    private var uiCallback: BluetoothUiCallback? = null,
-    private val scanCenter: ScanCenter
+    private var uiCallback: OnScanEventCallback? = null,
+    private val onScanEvent: OnScanEvent
 ) {
     private var step = TaskStep.SCAN
 
     init {
-        scanCenter.setCallback(object : BluetoothCallback {
+        onScanEvent.setCallback(object : BluetoothCallback {
             override fun onEvent(action: String) {
                 uiCallback?.onEvent(action)
             }
@@ -52,7 +52,7 @@ class BluetoothLogic(
 
             override fun onScanFinish() {
                 uiCallback?.onScanFinish()
-                if (scanCenter.address.isNullOrBlank()) {
+                if (onScanEvent.address.isNullOrBlank()) {
                     uiCallback?.onNotFound(3)
                 } else {
                     doBluetoothTask()
@@ -66,7 +66,7 @@ class BluetoothLogic(
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun setUiCallback(uiCallback: BluetoothUiCallback) {
+    fun setUiCallback(uiCallback: OnScanEventCallback) {
         this.uiCallback = uiCallback
     }
 
@@ -87,7 +87,7 @@ class BluetoothLogic(
                 }
             }
             TaskStep.BIND -> {
-                val result = devices.bindDevice(scanCenter.address)
+                val result = devices.bindDevice(onScanEvent.address)
                 if (result == BluetoothDevice.BOND_BONDED) {
                     // device was BONDED
                     step = TaskStep.BONDED
@@ -111,10 +111,10 @@ class BluetoothLogic(
     }
 
     fun registerReceiver(activity: Activity?) {
-        scanCenter.registerReceiver(activity)
+        onScanEvent.registerReceiver(activity)
     }
 
     fun unregisterReceiver(activity: Activity?) {
-        scanCenter.unregisterReceiver(activity)
+        onScanEvent.unregisterReceiver(activity)
     }
 }

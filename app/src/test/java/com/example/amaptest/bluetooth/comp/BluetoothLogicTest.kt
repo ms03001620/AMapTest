@@ -7,7 +7,7 @@ import org.junit.Before
 import org.junit.Test
 
 class BluetoothLogicTest {
-    val eventCenter = ScanCenter()
+    val eventCenter = OnScanEvent()
     lateinit var logic: BluetoothLogic
 
     var defStubStringDevice = ""
@@ -53,7 +53,7 @@ class BluetoothLogicTest {
     @Test
     fun callbackBaseTest() {
         var defStubStringUiCallback = ""
-        logic.setUiCallback(object:BluetoothUiCallback{
+        logic.setUiCallback(object:OnScanEventCallback{
             override fun onEvent(action: String) {
                 defStubStringUiCallback = action
             }
@@ -65,7 +65,7 @@ class BluetoothLogicTest {
     @Test
     fun scanStartTest() {
         var defStubStringUiCallback = ""
-        logic.setUiCallback(object : BluetoothUiCallback {
+        logic.setUiCallback(object : OnScanEventCallback {
             override fun onEvent(action: String) {
                 defStubStringUiCallback = action
             }
@@ -89,7 +89,7 @@ class BluetoothLogicTest {
     @Test
     fun callbackNotFoundTest() {
         var stubString = ""
-        logic = BluetoothLogic( mockDevice, object : BluetoothUiCallback {
+        logic = BluetoothLogic( mockDevice, object : OnScanEventCallback {
             override fun onNotFound(reasonCode: Int) {
                 stubString = "onNotFound"
             }
@@ -137,7 +137,7 @@ class BluetoothLogicTest {
             }
         }
 
-        logic = BluetoothLogic(mockDevice, object : BluetoothUiCallback {
+        logic = BluetoothLogic(mockDevice, object : OnScanEventCallback {
             override fun requestPairing() {
                 defStubStringUiCallback = "requestPairing"
             }
@@ -168,7 +168,7 @@ class BluetoothLogicTest {
     @Test
     fun doRetryBind() {
         var defStubStringUiCallback = ""
-        logic = BluetoothLogic(mockDevice, object : BluetoothUiCallback {
+        logic = BluetoothLogic(mockDevice, object : OnScanEventCallback {
             override fun onRequestReBinding() {
                 defStubStringUiCallback = "onRequestReBinding"
             }
@@ -197,7 +197,7 @@ class BluetoothLogicTest {
 
             override fun cancelDiscovery() = true
 
-        }, object : BluetoothUiCallback {
+        }, object : OnScanEventCallback {
             override fun onBondedSuccess() {
                 defStubStringUiCallback = "onBondedSuccess"
             }
@@ -218,7 +218,7 @@ class BluetoothLogicTest {
     @Test
     fun registerReceiver() {
         var stubString = ""
-        logic = BluetoothLogic(mockDevice, null, object : ScanCenter() {
+        logic = BluetoothLogic(mockDevice, null, object : OnScanEvent() {
             override fun registerReceiver(activity: Activity?) {
                 stubString = "registerReceiver"
             }
@@ -230,7 +230,7 @@ class BluetoothLogicTest {
     @Test
     fun unregisterReceiver() {
         var stubString = ""
-        logic = BluetoothLogic(mockDevice, null, object : ScanCenter() {
+        logic = BluetoothLogic(mockDevice, null, object : OnScanEvent() {
             override fun unregisterReceiver(activity: Activity?) {
                 stubString = "unregisterReceiver"
             }
