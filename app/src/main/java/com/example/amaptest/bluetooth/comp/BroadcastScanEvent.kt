@@ -11,7 +11,7 @@ import android.os.ParcelUuid
 import android.util.Log
 import com.example.amaptest.bluetooth.BluetoothUtils
 
-class BluetoothEventCenter(
+class BroadcastScanEvent(
     private val nameMatchLength: Int,
     private val deviceName: String
 ) : OnScanEvent() {

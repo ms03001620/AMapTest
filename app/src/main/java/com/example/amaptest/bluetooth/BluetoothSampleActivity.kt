@@ -31,13 +31,13 @@ class BluetoothSampleActivity: AppCompatActivity() {
         bluetoothLogic = BluetoothLogic(
 /*            BluetoothClassicImpl(permissionHelper.getAdapter()),*/
             BluetoothLeImpl(this, permissionHelper.getAdapter()),
-            bluetoothCallback,
-            BluetoothEventCenter(NAME_MATCH_LENGTH, deviceName)
+            uiCallback,
+            BroadcastScanEvent(NAME_MATCH_LENGTH, deviceName)
         )
         bluetoothLogic.registerReceiver(this)
     }
 
-    val bluetoothCallback = object : OnScanEventCallback {
+    private val uiCallback = object : OnScanEventCallback {
         override fun onEvent(action: String) {
             printlnLogs(action)
         }
