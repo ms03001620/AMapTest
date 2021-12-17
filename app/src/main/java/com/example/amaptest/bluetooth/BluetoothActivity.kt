@@ -166,6 +166,16 @@ class BluetoothActivity : AppCompatActivity() {
                 printlnLogs("not found:$name in macSet")
             }
         }
+
+        binding.btnBindingRemove.setOnClickListener {
+            val imei = binding.editImei.text.toString()
+            if (imei.isBlank()) {
+                printlnLogs("need IMEI")
+            } else {
+                val result = BluetoothUtils.removeBond(bluetoothAdapter.getRemoteDevice(imei))
+                printlnLogs("remove: $imei, result:$result")
+            }
+        }
     }
 
     fun findByName(name: String): BluetoothDevice? {

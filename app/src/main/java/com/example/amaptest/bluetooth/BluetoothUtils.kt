@@ -52,4 +52,14 @@ object BluetoothUtils {
             else -> "code:$code"
         }
     }
+
+    fun removeBond(device: BluetoothDevice): Boolean {
+        return try {
+            device::class.java.getMethod("removeBond").invoke(device)
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
 }
