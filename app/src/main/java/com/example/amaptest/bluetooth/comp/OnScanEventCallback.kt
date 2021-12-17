@@ -4,7 +4,7 @@ interface OnScanEventCallback {
     fun onEvent(action: String) {}
     fun onFoundDevice(address: String) {}
     fun onNotFound(reasonCode: Int) {}
-    fun requestPairing() {}
+    fun onRequestPairing() {}
     fun onScanFinish() {}
     fun onScanStart() {}
     fun onRequestReBinding(){}

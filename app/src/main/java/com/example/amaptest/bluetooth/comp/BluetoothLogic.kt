@@ -60,7 +60,7 @@ class BluetoothLogic(
             }
 
             override fun requestPairing() {
-                uiCallback?.requestPairing()
+                uiCallback?.onRequestPairing()
             }
         })
     }

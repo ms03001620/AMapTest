@@ -138,7 +138,7 @@ class BluetoothLogicTest {
         }
 
         logic = BluetoothLogic(mockDevice, object : OnScanEventCallback {
-            override fun requestPairing() {
+            override fun onRequestPairing() {
                 defStubStringUiCallback = "requestPairing"
             }
 

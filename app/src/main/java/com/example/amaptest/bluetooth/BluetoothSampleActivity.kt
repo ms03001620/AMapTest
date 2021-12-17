@@ -52,7 +52,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
             })
         }
 
-        override fun requestPairing() {
+        override fun onRequestPairing() {
             printlnLogs("requestPairing")
         }
 
