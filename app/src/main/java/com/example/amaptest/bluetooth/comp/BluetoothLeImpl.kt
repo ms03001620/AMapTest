@@ -10,7 +10,7 @@ class BluetoothLeImpl(
     private val bluetoothAdapter: BluetoothAdapter
 ) : BluetoothDevices {
 
-    override fun bondedDevices() = bluetoothAdapter.bondedDevices
+    override fun bondedDevices(): Set<BluetoothDevice> = bluetoothAdapter.bondedDevices
 
     override fun startDiscovery() = bluetoothAdapter.startDiscovery()
 
@@ -20,11 +20,11 @@ class BluetoothLeImpl(
 
     override fun bindDevice(address: String?): Int {
         val device = bluetoothAdapter.getRemoteDevice(address)
-        if (device.bondState == BluetoothDevice.BOND_BONDED) {
-            return BluetoothDevice.BOND_BONDED
+        return if (device.bondState == BluetoothDevice.BOND_BONDED) {
+            BluetoothDevice.BOND_BONDED
         } else {
             device.connectGatt(context.applicationContext, false, bluetoothGattCallback)
-            return BluetoothDevice.BOND_BONDING
+            BluetoothDevice.BOND_BONDING
         }
     }
 

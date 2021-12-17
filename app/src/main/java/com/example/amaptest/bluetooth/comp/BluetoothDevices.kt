@@ -1,7 +1,6 @@
 package com.example.amaptest.bluetooth.comp
 
 import android.bluetooth.BluetoothDevice
-import java.lang.UnsupportedOperationException
 
 interface BluetoothDevices {
 

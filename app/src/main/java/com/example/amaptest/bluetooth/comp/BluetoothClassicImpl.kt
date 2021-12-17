@@ -4,9 +4,9 @@ import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import java.lang.Exception
 
-class BluetoothClassicImpl(val bluetoothAdapter: BluetoothAdapter) : BluetoothDevices {
+class BluetoothClassicImpl(private val bluetoothAdapter: BluetoothAdapter) : BluetoothDevices {
 
-    override fun bondedDevices() = bluetoothAdapter.bondedDevices
+    override fun bondedDevices(): Set<BluetoothDevice> = bluetoothAdapter.bondedDevices
 
     override fun startDiscovery() = bluetoothAdapter.startDiscovery()
 

@@ -71,9 +71,9 @@ class BluetoothEventCenter(
                         }
                     }
 
-                    val pairingkey =
+                    val pairKey =
                         intent.getIntExtra(BluetoothDevice.EXTRA_PAIRING_KEY, BluetoothDevice.ERROR)
-                    printlnLogs("ACTION_PAIRING_REQUEST pairingkey:$pairingkey")
+                    printlnLogs("ACTION_PAIRING_REQUEST pairKey:$pairKey")
                 }
                 BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
                     if (flagForDiscovery != BluetoothAdapter.ACTION_DISCOVERY_STARTED) {
