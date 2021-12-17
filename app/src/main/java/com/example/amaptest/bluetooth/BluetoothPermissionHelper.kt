@@ -25,19 +25,23 @@ class BluetoothPermissionHelper(
 
     private var requestMultiplePermissionLauncher =
         activity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
-            if (allGrants.values.all { it }) {
-                attemptGotoBluetoothLePage()
-            } else {
-                onEnterSettingPage?.onEnterPositionSetting()
+            if (allGrants.keys.isNotEmpty()) {
+                if (allGrants.values.all { it }) {
+                    attemptGotoBluetoothLePage()
+                } else {
+                    onEnterSettingPage?.onEnterPositionSetting()
+                }
             }
         }
 
     private var requestMultipleBPermissionLauncher =
         activity.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
-            if (allGrants.values.all { it }) {
-                attemptGotoBluetoothLePage()
-            } else {
-                onEnterSettingPage?.onEnterNearbySetting()
+            if (allGrants.keys.isNotEmpty()) {
+                if (allGrants.values.all { it }) {
+                    attemptGotoBluetoothLePage()
+                } else {
+                    onEnterSettingPage?.onEnterNearbySetting()
+                }
             }
         }
 
@@ -85,10 +89,7 @@ class BluetoothPermissionHelper(
             // 有权限进入
             callback.invoke()
         } else {
-            // 显示权限请求对话框
-            LocationUtils.goSettingForBluetooth(activity) {
-                Toast.makeText(activity, "无位置权限", Toast.LENGTH_LONG).show()
-            }
+            onEnterSettingPage?.onEnterPositionSetting()
         }
     }
 

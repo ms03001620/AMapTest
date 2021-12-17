@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -59,6 +60,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("_____", "onCreate")
         binding = DataBindingUtil.setContentView(this, R.layout.activity_bluetooth_sample)
 
         permissionHelper.checkFeature {
@@ -126,6 +128,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        Log.d("_____", "onResume")
         doBluetoothTask()
     }
 
