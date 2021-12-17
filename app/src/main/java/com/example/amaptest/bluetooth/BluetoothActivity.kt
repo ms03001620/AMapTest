@@ -24,6 +24,9 @@ import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
 import com.example.amaptest.bluetooth.comp.BluetoothClassicImpl
 import com.example.amaptest.databinding.ActivityBluetoothBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.lang.StringBuilder
 import java.util.*
 
@@ -172,8 +175,14 @@ class BluetoothActivity : AppCompatActivity() {
             if (imei.isBlank()) {
                 printlnLogs("need IMEI")
             } else {
-                val result = BluetoothUtils.removeBond(bluetoothAdapter.getRemoteDevice(imei))
-                printlnLogs("remove: $imei, result:$result")
+                val adapter = bluetoothAdapter.getRemoteDevice(imei)
+                Thread{
+                    val result = BluetoothUtils.removeBond(adapter)
+                    runOnUiThread {
+                        printlnLogs("remove: $imei, result:$result")
+                    }
+                }.start()
+
             }
         }
     }

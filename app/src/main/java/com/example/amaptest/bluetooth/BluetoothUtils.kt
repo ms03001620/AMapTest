@@ -2,6 +2,8 @@ package com.example.amaptest.bluetooth
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
+import com.example.amaptest.bluetooth.comp.UUU
+import java.lang.reflect.Method
 
 object BluetoothUtils {
     fun calcSameBitAtTile(source: String?, target: String?): Int {
@@ -54,12 +56,24 @@ object BluetoothUtils {
     }
 
     fun removeBond(device: BluetoothDevice): Boolean {
-        return try {
+        return UUU.unpairDevice(device)
+/*        return try {
             device::class.java.getMethod("removeBond").invoke(device)
             true
         } catch (e: Exception) {
             e.printStackTrace()
             false
+        }*/
+    }
+
+    private fun unpairDevice(device: BluetoothDevice):Boolean {
+        try {
+            val m: Method = device.javaClass
+                .getMethod("removeBond", null)
+            m.invoke(device, null as Array<Any?>?)
+            return true
+        } catch (e: java.lang.Exception) {
+            return false
         }
     }
 }
