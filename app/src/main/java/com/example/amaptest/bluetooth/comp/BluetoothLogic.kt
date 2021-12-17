@@ -22,8 +22,8 @@ class BluetoothLogic(
 
             override fun onFoundDevice() {
                 // found device close scanner immediately
-                devices.cancelDiscovery()
                 step = TaskStep.BIND
+                devices.cancelDiscovery()
             }
 
             override fun onScanStart() {
