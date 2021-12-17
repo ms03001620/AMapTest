@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothDevice
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
+import java.lang.Exception
 
 class BluetoothLogicTest {
     val eventCenter = OnScanEvent()
@@ -237,6 +238,41 @@ class BluetoothLogicTest {
         })
         logic.unregisterReceiver(null)
         assertEquals("unregisterReceiver", stubString)
+    }
+
+    @Test
+    fun doBluetoothTaskException() {
+        var stubString = ""
+        logic = BluetoothLogic(object : BluetoothDevices {
+            override fun bondedDevices(): Set<BluetoothDevice> {
+                return emptySet<BluetoothDevice>()
+            }
+
+            override fun startDiscovery(): Boolean {
+                throw Exception("mock error")
+            }
+
+            override fun isDiscovering(): Boolean {
+                return false
+            }
+
+            override fun bindDevice(address: String?): Int {
+                return 0
+            }
+
+            override fun cancelDiscovery(): Boolean {
+                return true
+            }
+        }, object : OnScanEventCallback {
+            override fun onNotFound(reasonCode: Int) {
+                stubString = "onNotFound"
+                super.onNotFound(reasonCode)
+            }
+
+        }, eventCenter)
+
+        logic.doBluetoothTask()
+        assertEquals("onNotFound", stubString)
     }
 
 }

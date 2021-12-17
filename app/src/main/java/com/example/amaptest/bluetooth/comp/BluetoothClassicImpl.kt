@@ -15,15 +15,10 @@ class BluetoothClassicImpl(private val bluetoothAdapter: BluetoothAdapter) : Blu
     override fun isDiscovering() = bluetoothAdapter.isDiscovering
 
     override fun bindDevice(address: String?): Int {
-        return try {
-            val device = bluetoothAdapter.getRemoteDevice(address)
-            if (device?.bondState == BluetoothDevice.BOND_NONE) {
-                device.createBond()
-            }
-            return device?.bondState ?: -1
-        } catch (e: Exception) {
-            e.printStackTrace()
-            -2
+        val device = bluetoothAdapter.getRemoteDevice(address)
+        if (device?.bondState == BluetoothDevice.BOND_NONE) {
+            device.createBond()
         }
+        return device?.bondState ?: -1
     }
 }

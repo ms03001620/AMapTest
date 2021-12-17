@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.example.amaptest.bluetooth.comp.OnScanEventCallback.Companion.REASON_EMPTY_RESULT
 import com.example.amaptest.bluetooth.comp.OnScanEventCallback.Companion.REASON_START_FAILED
+import java.lang.Exception
 
 class BluetoothLogic(
     private val devices: BluetoothDevices,
@@ -79,26 +80,34 @@ class BluetoothLogic(
      * scan -> find device -> binding; callback
      */
     fun doBluetoothTask() {
-        when (step) {
-            TaskStep.SCAN -> {
-                if (devices.isDiscovering().not()) {
-                    if (devices.startDiscovery().not()) {
-                        // start failed
-                        uiCallback?.onNotFound(REASON_START_FAILED)
+        try {
+            when (step) {
+                TaskStep.SCAN -> {
+                    if (devices.isDiscovering().not()) {
+                        if (devices.startDiscovery().not()) {
+                            // start failed
+                            uiCallback?.onNotFound(REASON_START_FAILED)
+                        }
                     }
                 }
-            }
-            TaskStep.BIND -> {
-                val result = devices.bindDevice(onScanEvent.address)
-                if (result == BluetoothDevice.BOND_BONDED) {
-                    // device was BONDED
-                    step = TaskStep.BONDED
-                    uiCallback?.onBondedSuccess()
+                TaskStep.BIND -> {
+                    val result = devices.bindDevice(onScanEvent.address)
+                    if (result == BluetoothDevice.BOND_BONDED) {
+                        // device was BONDED
+                        step = TaskStep.BONDED
+                        uiCallback?.onBondedSuccess()
+                    }
+                    Log.d("BluetoothLogic", "bindDevice:$result")
                 }
-                Log.d("BluetoothLogic", "bindDevice:$result")
+                else -> {
+                    Log.d("BluetoothLogic", "ignore:$step")
+                }
             }
-            else -> {
-                Log.d("BluetoothLogic", "ignore:$step")
+        } catch (e: Exception) {
+            Log.e("BluetoothLogic", "doBluetoothTask", e)
+            when (step) {
+                TaskStep.SCAN -> uiCallback?.onNotFound(REASON_START_FAILED)
+                else -> uiCallback?.onRequestReBinding()
             }
         }
     }
