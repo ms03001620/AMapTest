@@ -1,10 +1,13 @@
 package com.example.amaptest
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,7 +31,44 @@ class EnterActivity : AppCompatActivity() {
             }
         }
 
-    private val helper = BluetoothPermissionHelper(this)
+    private val helper =         BluetoothPermissionHelper(this, object : BluetoothPermissionHelper.OnEnterSettingPage {
+        override fun onEnterPositionSetting() {
+            showAlertDialog(
+                getActivity(),
+                R.string.permission_prompt_location,
+                leftCallback = {
+                    Toast.makeText(getActivity(), "已取消定位授权", Toast.LENGTH_LONG).show()
+                },
+                rightCallback = {
+                    try {
+                        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    } catch (e: Exception) {
+                        startActivity(Intent(Settings.ACTION_SETTINGS))
+                    }
+                })
+        }
+
+        override fun onEnterNearbySetting() {
+            showAlertDialog(
+                getActivity(),
+                R.string.permission_prompt_bluetooth,
+                leftCallback = {
+                    Toast.makeText(getActivity(), "已取消蓝牙授权", Toast.LENGTH_LONG).show()
+                },
+                rightCallback = {
+                    try {
+                        Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", packageName, null)
+                        ).let {
+                            startActivity(it)
+                        }
+                    } catch (e: Exception) {
+                        //ignore
+                    }
+                })
+        }
+    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +142,23 @@ class EnterActivity : AppCompatActivity() {
         this,
         Manifest.permission.ACCESS_FINE_LOCATION
     ) == PackageManager.PERMISSION_GRANTED
+
+    private fun getActivity() = this
+
+    private fun showAlertDialog(
+        context: Context,
+        messageResId: Int,
+        leftCallback: (() -> Unit)? = null,
+        rightCallback: (() -> Unit)? = null
+    ) {
+        CommonAskDialog.Builder(
+            context,
+            context.getString(R.string.charging_open_settings),
+            context.getString(R.string.cancel_option),
+            leftCallback = leftCallback
+        ).create(
+            context.getString(messageResId), listener = { rightCallback?.invoke() })
+    }
 
 
     fun gotoMap() {

@@ -6,20 +6,21 @@ import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
-import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.example.amaptest.CommonAskDialog
 import com.example.amaptest.LocationUtils
-import com.example.amaptest.R
 
 class BluetoothPermissionHelper(
-    private val activity: AppCompatActivity
+    private val activity: AppCompatActivity,
+    private val onEnterSettingPage: OnEnterSettingPage? = null
 ) {
+    interface OnEnterSettingPage {
+        fun onEnterPositionSetting()
+        fun onEnterNearbySetting()
+    }
     private var callback: (() -> Unit)? = null
 
     private var requestMultiplePermissionLauncher =
@@ -27,19 +28,7 @@ class BluetoothPermissionHelper(
             if (allGrants.values.all { it }) {
                 attemptGotoBluetoothLePage()
             } else {
-                showAlertDialog(
-                    activity,
-                    R.string.permission_prompt_location,
-                    leftCallback = {
-                        Toast.makeText(activity, "已取消定位授权", Toast.LENGTH_LONG).show()
-                    },
-                    rightCallback = {
-                        try {
-                            activity.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                        } catch (e: Exception) {
-                            activity.startActivity(Intent(Settings.ACTION_SETTINGS))
-                        }
-                    })
+                onEnterSettingPage?.onEnterPositionSetting()
             }
         }
 
@@ -48,51 +37,15 @@ class BluetoothPermissionHelper(
             if (allGrants.values.all { it }) {
                 attemptGotoBluetoothLePage()
             } else {
-                showAlertDialog(
-                    activity,
-                    R.string.permission_prompt_bluetooth,
-                    leftCallback = {
-                        Toast.makeText(activity, "已取消蓝牙授权", Toast.LENGTH_LONG).show()
-                    },
-                    rightCallback = {
-                        try {
-                            Intent(
-                                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                Uri.fromParts("package", activity.packageName, null)
-                            ).let {
-                                activity.startActivity(it)
-                            }
-                        } catch (e: Exception) {
-                            //ignore
-                        }
-                    })
+                onEnterSettingPage?.onEnterNearbySetting()
             }
         }
-
-    private fun showAlertDialog(
-        context: Context,
-        messageResId: Int,
-        leftCallback: (() -> Unit)? = null,
-        rightCallback: (() -> Unit)? = null
-    ) {
-        CommonAskDialog.Builder(
-            context,
-            context.getString(R.string.charging_open_settings),
-            context.getString(R.string.cancel_option),
-            leftCallback = leftCallback
-        ).create(
-            context.getString(messageResId), listener = { rightCallback?.invoke() })
-    }
-
 
     private var requestBluetooth =
         activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == AppCompatActivity.RESULT_OK) {
                 //granted
                 attemptGotoBluetoothLePage()
-            } else {
-                //deny
-                Toast.makeText(activity, "蓝牙已关闭", Toast.LENGTH_LONG).show()
             }
         }
 
@@ -190,7 +143,7 @@ class BluetoothPermissionHelper(
         if (service is BluetoothManager && service.adapter != null) {
             return service.adapter
         }
-        throw IllegalStateException("checkFeature first")
+        throw IllegalStateException("cal fun checkFeature first")
     }
 
 }
