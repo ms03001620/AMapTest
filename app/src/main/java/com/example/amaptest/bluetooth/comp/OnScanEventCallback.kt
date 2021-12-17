@@ -8,4 +8,9 @@ interface OnScanEventCallback {
     fun onScanStart() {}
     fun onRequestReBinding(){}
     fun onBondedSuccess() {}
+
+    companion object{
+        const val REASON_START_FAILED = 1
+        const val REASON_EMPTY_RESULT = 3
+    }
 }

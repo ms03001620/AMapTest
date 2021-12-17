@@ -4,6 +4,8 @@ import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import android.util.Log
 import androidx.annotation.VisibleForTesting
+import com.example.amaptest.bluetooth.comp.OnScanEventCallback.Companion.REASON_EMPTY_RESULT
+import com.example.amaptest.bluetooth.comp.OnScanEventCallback.Companion.REASON_START_FAILED
 
 class BluetoothLogic(
     private val devices: BluetoothDevices,
@@ -53,7 +55,7 @@ class BluetoothLogic(
             override fun onScanFinish() {
                 uiCallback?.onScanFinish()
                 if (onScanEvent.address.isNullOrBlank()) {
-                    uiCallback?.onNotFound(3)
+                    uiCallback?.onNotFound(REASON_EMPTY_RESULT)
                 } else {
                     doBluetoothTask()
                 }
@@ -82,7 +84,7 @@ class BluetoothLogic(
                 if (devices.isDiscovering().not()) {
                     if (devices.startDiscovery().not()) {
                         // start failed
-                        uiCallback?.onNotFound(1)
+                        uiCallback?.onNotFound(REASON_START_FAILED)
                     }
                 }
             }
