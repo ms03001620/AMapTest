@@ -241,7 +241,7 @@ class BluetoothLogicTest {
     }
 
     @Test
-    fun doBluetoothTaskException() {
+    fun doBluetoothTaskScanException() {
         var stubString = ""
         logic = BluetoothLogic(object : BluetoothDevices {
             override fun bondedDevices(): Set<BluetoothDevice> {
@@ -273,6 +273,41 @@ class BluetoothLogicTest {
 
         logic.doBluetoothTask()
         assertEquals("onNotFound", stubString)
+    }
+
+    @Test
+    fun doBluetoothTaskBindingException() {
+        var stubString = ""
+        logic = BluetoothLogic(object : BluetoothDevices {
+            override fun bondedDevices(): Set<BluetoothDevice> {
+                return emptySet<BluetoothDevice>()
+            }
+
+            override fun startDiscovery(): Boolean {
+                return true
+            }
+
+            override fun isDiscovering(): Boolean {
+                return false
+            }
+
+            override fun bindDevice(address: String?): Int {
+                throw Exception("mock exception")
+            }
+
+            override fun cancelDiscovery(): Boolean {
+                return true
+            }
+        }, object : OnScanEventCallback {
+            override fun onRequestReBinding() {
+                stubString = "onRequestReBinding"
+            }
+        }, eventCenter)
+
+        eventCenter.getCallback()?.onFoundDevice()
+        assertEquals(TaskStep.BIND, logic.getStep())
+        logic.doBluetoothTask()
+        assertEquals("onRequestReBinding", stubString)
     }
 
 }
