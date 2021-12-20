@@ -11,15 +11,12 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.example.amaptest.R
-import com.example.amaptest.bluetooth.BluetoothHelper
-import com.example.amaptest.bluetooth.BluetoothUtils
+import com.example.amaptest.bluetooth.comp.BluetoothUtils
 import com.example.amaptest.databinding.ActivityBluetoothLeBinding
-import java.lang.RuntimeException
 
 /**
  * https://developer.android.com/guide/topics/connectivity/bluetooth-le

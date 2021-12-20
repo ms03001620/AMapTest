@@ -3,7 +3,6 @@ package com.example.amaptest.bluetooth.comp
 import android.bluetooth.*
 import android.content.Context
 import android.util.Log
-import com.example.amaptest.bluetooth.BluetoothUtils
 
 class BluetoothLeImpl(
     private val context: Context,

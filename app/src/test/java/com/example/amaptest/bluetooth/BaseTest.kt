@@ -1,5 +1,6 @@
 package com.example.amaptest.bluetooth
 
+import com.example.amaptest.bluetooth.comp.BluetoothUtils
 import junit.framework.Assert.*
 import org.junit.Test
 import java.util.*

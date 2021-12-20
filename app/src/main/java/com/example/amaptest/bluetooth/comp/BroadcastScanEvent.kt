@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.ParcelUuid
 import android.util.Log
-import com.example.amaptest.bluetooth.BluetoothUtils
 
 class BroadcastScanEvent(
     private val nameMatchLength: Int,

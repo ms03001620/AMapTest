@@ -23,10 +23,8 @@ import com.example.amaptest.LocationUtils
 import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
 import com.example.amaptest.bluetooth.comp.BluetoothClassicImpl
+import com.example.amaptest.bluetooth.comp.BluetoothUtils
 import com.example.amaptest.databinding.ActivityBluetoothBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import java.lang.StringBuilder
 import java.util.*
 

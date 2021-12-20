@@ -1,8 +1,8 @@
-package com.example.amaptest.bluetooth
+package com.example.amaptest.bluetooth.comp
 
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
-import com.example.amaptest.bluetooth.comp.UUU
+import java.lang.Exception
 import java.lang.reflect.Method
 
 object BluetoothUtils {
@@ -56,14 +56,18 @@ object BluetoothUtils {
     }
 
     fun removeBond(device: BluetoothDevice): Boolean {
-        return UUU.unpairDevice(device)
-/*        return try {
-            device::class.java.getMethod("removeBond").invoke(device)
-            true
+        return try {
+            val removeBondMethod = BluetoothDevice::class.java.getMethod("removeBond")
+            val result = removeBondMethod.invoke(device)
+            if (result is Boolean) {
+                result
+            } else {
+                false
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             false
-        }*/
+        }
     }
 
     private fun unpairDevice(device: BluetoothDevice):Boolean {
