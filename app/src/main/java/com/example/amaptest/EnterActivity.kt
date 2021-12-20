@@ -154,7 +154,7 @@ class EnterActivity : AppCompatActivity() {
         CommonAskDialog.Builder(
             context,
             context.getString(R.string.charging_open_settings),
-            context.getString(R.string.cancel_option),
+            context.getString(R.string.base_cancel),
             leftCallback = leftCallback
         ).create(
             context.getString(messageResId), listener = { rightCallback?.invoke() })
