@@ -8,12 +8,12 @@ import org.junit.Test
 import java.lang.Exception
 
 class BluetoothLogicTest {
-    val eventCenter = OnScanEvent()
-    lateinit var logic: BluetoothLogic
+    private val eventCenter = OnScanEvent()
+    private lateinit var logic: BluetoothLogic
 
-    var defStubStringDevice = ""
+    private var defStubStringDevice = ""
 
-    val mockDevice = object : BluetoothDevices {
+    private val mockDevice = object : BluetoothDevices {
         override fun bondedDevices(): Set<BluetoothDevice> {
             defStubStringDevice = "bondedDevices"
             return emptySet<BluetoothDevice>()
@@ -143,8 +143,8 @@ class BluetoothLogicTest {
                 defStubStringUiCallback = "requestPairing"
             }
 
-            override fun onBondedSuccess() {
-                defStubStringUiCallback = "onBondedSuccess"
+            override fun onBondedSuccess(macAddress: String?) {
+                defStubStringUiCallback = "onBondedSuccessaaa"
             }
         }, eventCenter)
 
@@ -163,7 +163,7 @@ class BluetoothLogicTest {
         //mock BOND_BONDED success
         eventCenter.getCallback()?.onBindStatusChange(BluetoothDevice.BOND_BONDING, BluetoothDevice.BOND_BONDED)
         assertEquals(TaskStep.BONDED, logic.getStep())
-        assertEquals("onBondedSuccess", defStubStringUiCallback)
+        assertEquals("onBondedSuccessaaa", defStubStringUiCallback)
     }
 
     @Test
@@ -199,7 +199,7 @@ class BluetoothLogicTest {
             override fun cancelDiscovery() = true
 
         }, object : OnScanEventCallback {
-            override fun onBondedSuccess() {
+            override fun onBondedSuccess(macAddress: String?) {
                 defStubStringUiCallback = "onBondedSuccess"
             }
         }, eventCenter)

@@ -7,7 +7,7 @@ interface OnScanEventCallback {
     fun onScanFinish() {}
     fun onScanStart() {}
     fun onRequestReBinding(){}
-    fun onBondedSuccess() {}
+    fun onBondedSuccess(macAddress: String?) {}
 
     companion object{
         const val REASON_START_FAILED = 1

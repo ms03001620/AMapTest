@@ -35,7 +35,7 @@ class BluetoothLogic(
                 when (new) {
                     BluetoothDevice.BOND_BONDED -> {
                         step = TaskStep.BONDED
-                        uiCallback?.onBondedSuccess()
+                        uiCallback?.onBondedSuccess(onScanEvent.address)
                     }
                     BluetoothDevice.BOND_BONDING -> {
                         step = TaskStep.BOND_BONDING
@@ -94,7 +94,7 @@ class BluetoothLogic(
                     if (result == BluetoothDevice.BOND_BONDED) {
                         // device was BONDED
                         step = TaskStep.BONDED
-                        uiCallback?.onBondedSuccess()
+                        uiCallback?.onBondedSuccess(onScanEvent.address)
                     }
                     Log.d("BluetoothLogic", "bindDevice:$result")
                 }

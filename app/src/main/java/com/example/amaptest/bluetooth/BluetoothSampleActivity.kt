@@ -2,6 +2,7 @@ package com.example.amaptest.bluetooth
 
 import android.content.Context
 import android.content.Intent
+import android.net.MacAddress
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
@@ -109,8 +110,8 @@ class BluetoothSampleActivity: AppCompatActivity() {
             printlnLogs("onScanStart")
         }
 
-        override fun onBondedSuccess() {
-            printlnLogs("onBondedSuccess")
+        override fun onBondedSuccess(macAddress: String?) {
+            printlnLogs("onBondedSuccess: $macAddress")
         }
 
         override fun onRequestReBinding() {
