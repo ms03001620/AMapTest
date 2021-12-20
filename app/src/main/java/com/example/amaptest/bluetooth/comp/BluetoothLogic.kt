@@ -64,10 +64,6 @@ class BluetoothLogic(
                     doBluetoothTask()
                 }
             }
-
-            override fun requestPairing() {
-                //uiCallback?.onRequestPairing()
-            }
         })
     }
 
