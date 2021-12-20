@@ -23,7 +23,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
             override fun onEnterPositionSetting() {
                 showAlertDialog(
                     getActivity(),
-                    R.string.permission_prompt_location,
+                    R.string.cs_permission_prompt_location,
                     leftCallback = {
                         Toast.makeText(getActivity(), "已取消定位授权", Toast.LENGTH_LONG).show()
                     },
@@ -39,7 +39,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
             override fun onEnterNearbySetting() {
                 showAlertDialog(
                     getActivity(),
-                    R.string.permission_prompt_bluetooth,
+                    R.string.cs_permission_prompt_bluetooth,
                     leftCallback = {
                         Toast.makeText(getActivity(), "已取消蓝牙授权", Toast.LENGTH_LONG).show()
                     },
