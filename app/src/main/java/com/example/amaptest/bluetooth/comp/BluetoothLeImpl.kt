@@ -23,7 +23,7 @@ class BluetoothLeImpl(
         return if (device.bondState == BluetoothDevice.BOND_BONDED) {
             BluetoothDevice.BOND_BONDED
         } else {
-            device.connectGatt(context.applicationContext, false, bluetoothGattCallback)
+            device.connectGatt(context, false, bluetoothGattCallback)
             BluetoothDevice.BOND_BONDING
         }
     }

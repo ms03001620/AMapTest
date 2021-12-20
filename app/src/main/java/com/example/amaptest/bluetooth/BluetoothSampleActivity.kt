@@ -73,7 +73,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
         val deviceName = intent.getStringExtra(EXTRA_DEVICE_NAME) ?: TEST_DEVICE_NAME
         bluetoothLogic = BluetoothLogic(
 /*            BluetoothClassicImpl(permissionHelper.getAdapter()),*/
-            BluetoothLeImpl(this, permissionHelper.getAdapter()),
+            BluetoothLeImpl(this.applicationContext, permissionHelper.getAdapter()),
             uiCallback,
             BroadcastScanEvent(NAME_MATCH_LENGTH, deviceName)
         )
