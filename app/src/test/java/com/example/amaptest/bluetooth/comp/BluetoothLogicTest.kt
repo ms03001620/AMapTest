@@ -157,7 +157,7 @@ class BluetoothLogicTest {
         assertEquals("abcd", stubString)
 
         //mock request pair
-        eventCenter.getCallback()?.requestPairing()
+        eventCenter.getCallback()?.onBindStatusChange(BluetoothDevice.BOND_NONE, BluetoothDevice.BOND_BONDING)
         assertEquals("requestPairing", defStubStringUiCallback)
 
         //mock BOND_BONDED success

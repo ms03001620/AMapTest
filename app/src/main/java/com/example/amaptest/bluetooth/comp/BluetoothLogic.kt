@@ -39,6 +39,9 @@ class BluetoothLogic(
                     }
                     BluetoothDevice.BOND_BONDING -> {
                         step = TaskStep.BOND_BONDING
+                        if (old == BluetoothDevice.BOND_NONE) {
+                            uiCallback?.onRequestPairing()
+                        }
                     }
                     BluetoothDevice.BOND_NONE -> {
                         if (old == BluetoothDevice.BOND_BONDING) {
@@ -63,7 +66,7 @@ class BluetoothLogic(
             }
 
             override fun requestPairing() {
-                uiCallback?.onRequestPairing()
+                //uiCallback?.onRequestPairing()
             }
         })
     }

@@ -51,7 +51,6 @@ class BroadcastScanEvent(
                     printlnLogs("ACTION_UUID :${uuid}, device:${device?.name ?: ""}")
                 }
                 BluetoothDevice.ACTION_PAIRING_REQUEST -> {
-                    bluetoothCallback?.requestPairing()
                     // https://blog.csdn.net/zrf1335348191/article/details/54020225/
                     printlnLogs("ACTION_PAIRING_REQUEST")
                     val type = intent.getIntExtra(
