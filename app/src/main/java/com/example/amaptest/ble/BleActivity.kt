@@ -250,6 +250,10 @@ class BleActivity : AppCompatActivity() {
                 info.append("\n\t")
                 info.append("isDiscovering:${adapter.isDiscovering}")
                 info.append("\n\t")
+                info.append("小米333 04:D1:3A:55:5F:F9")
+                info.append("\n\t")
+                info.append("Pixel 5 58:24:29:8D:7B:8C")
+                info.append("\n\t")
                 info.append("state:${adapter.state}")
             }
         }.let {
