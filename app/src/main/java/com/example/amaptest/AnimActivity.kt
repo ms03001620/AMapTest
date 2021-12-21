@@ -49,7 +49,7 @@ class AnimActivity : AppCompatActivity() {
         initScanAnim()
     }
 
-    val anim by lazy {
+    private val scanAnim by lazy {
         ObjectAnimator.ofFloat(
             binding.layoutMain.layoutScan,
             "rotation",
@@ -64,18 +64,18 @@ class AnimActivity : AppCompatActivity() {
 
     private fun initScanAnim(){
         binding.layoutMain.btnAnimStart.setOnClickListener {
-            if (anim.isPaused) {
-                anim.resume()
+            if (scanAnim.isPaused) {
+                scanAnim.resume()
                 return@setOnClickListener
             }
 
-            if (!anim.isRunning) {
-                anim.start()
+            if (!scanAnim.isRunning) {
+                scanAnim.start()
                 return@setOnClickListener
             }
         }
         binding.layoutMain.btnAnimPause.setOnClickListener {
-            anim.pause()
+            scanAnim.pause()
         }
     }
 
