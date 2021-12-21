@@ -210,7 +210,12 @@ class BleActivity : AppCompatActivity() {
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             val key = result.device.address
             if (macSet.contains(key)) {
-                printlnLogs("Added:$callbackType, result:${result.device} , name:${result.device.name}, size:${macSet.size}")
+                if (result.device.name.isNullOrBlank()) {
+                    printlnLogs("Added:$callbackType, result:${result.device} , size:${macSet.size}")
+                } else {
+                    printlnLogs("Added:$callbackType, result:${result.device} , name:${result.device.name}, size:${macSet.size}")
+                }
+
             } else {
                 macSet.put(key, result)
             }
