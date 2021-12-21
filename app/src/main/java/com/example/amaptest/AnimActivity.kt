@@ -1,6 +1,9 @@
 package com.example.amaptest
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -41,6 +44,38 @@ class AnimActivity : AppCompatActivity() {
                 else -> "id$it.id"
             }
             Toast.makeText(applicationContext, string, Toast.LENGTH_SHORT).show()
+        }
+
+        initScanAnim()
+    }
+
+    val anim by lazy {
+        ObjectAnimator.ofFloat(
+            binding.layoutMain.layoutScan,
+            "rotation",
+            0f,
+            360f
+        ).also {
+            it.duration = 2500
+            it.interpolator = LinearInterpolator()
+            it.repeatCount = Animation.INFINITE
+        }
+    }
+
+    private fun initScanAnim(){
+        binding.layoutMain.btnAnimStart.setOnClickListener {
+            if (anim.isPaused) {
+                anim.resume()
+                return@setOnClickListener
+            }
+
+            if (!anim.isRunning) {
+                anim.start()
+                return@setOnClickListener
+            }
+        }
+        binding.layoutMain.btnAnimPause.setOnClickListener {
+            anim.pause()
         }
     }
 
