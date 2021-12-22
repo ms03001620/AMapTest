@@ -3,8 +3,6 @@ package com.example.amaptest.bluetooth.comp
 import android.app.Activity
 import android.bluetooth.BluetoothDevice
 import androidx.annotation.VisibleForTesting
-import com.example.amaptest.bluetooth.comp.OnScanEventCallback.Companion.REASON_EMPTY_RESULT
-import com.example.amaptest.bluetooth.comp.OnScanEventCallback.Companion.REASON_START_FAILED
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
 import java.lang.Exception
@@ -61,7 +59,7 @@ class BluetoothLogic(
                 if (onScanEvent.address.isNullOrBlank()) {
                     step = TaskStep.SCAN_FINISHED
                     uiCallback?.onScanFinish()
-                    uiCallback?.onNotFound(REASON_EMPTY_RESULT)
+                    uiCallback?.onNotFound(OnScanEventCallback.REASON_EMPTY_RESULT)
                 } else {
                     step = TaskStep.BIND
                     doBluetoothTask()
@@ -88,7 +86,7 @@ class BluetoothLogic(
                     if (devices.isDiscovering().not()) {
                         if (devices.startDiscovery().not()) {
                             // start failed
-                            uiCallback?.onNotFound(REASON_START_FAILED)
+                            uiCallback?.onNotFound(OnScanEventCallback.REASON_START_FAILED)
                         }
                     }
                 }
@@ -108,7 +106,7 @@ class BluetoothLogic(
         } catch (e: Exception) {
             loge("doBluetoothTask", TAG, e)
             when (step) {
-                TaskStep.SCAN -> uiCallback?.onNotFound(REASON_START_FAILED)
+                TaskStep.SCAN -> uiCallback?.onNotFound(OnScanEventCallback.REASON_START_FAILED)
                 else -> uiCallback?.onRequestReBinding()
             }
         }
