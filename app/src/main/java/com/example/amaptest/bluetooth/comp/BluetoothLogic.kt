@@ -56,9 +56,9 @@ class BluetoothLogic(
             }
 
             override fun onScanFinish() {
+                uiCallback?.onScanFinish()
                 if (onScanEvent.address.isNullOrBlank()) {
                     step = TaskStep.SCAN_FINISHED
-                    uiCallback?.onScanFinish()
                     uiCallback?.onNotFound(OnScanEventCallback.REASON_EMPTY_RESULT)
                 } else {
                     step = TaskStep.BIND
