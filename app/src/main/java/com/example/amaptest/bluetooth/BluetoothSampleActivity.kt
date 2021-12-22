@@ -93,7 +93,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
             showRetryScanDialog(this@BluetoothSampleActivity, leftCallback = {
             }, rightCallback = {
                 permissionHelper.attemptRunCallback {
-                    bluetoothLogic.doBluetoothTask()
+                    bluetoothLogic.doRetryScan()
                 }
             })
         }

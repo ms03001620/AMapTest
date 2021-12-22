@@ -100,7 +100,7 @@ class BluetoothLogicTest {
         eventCenter.address = ""
         eventCenter.getCallback()?.onFoundDevice()
         eventCenter.getCallback()?.onScanFinish()
-        assertEquals(TaskStep.BIND, logic.getStep())
+        assertEquals(TaskStep.SCAN_FINISHED, logic.getStep())
         assertEquals("", eventCenter.address)
         assertEquals("onNotFound", stubString)
     }

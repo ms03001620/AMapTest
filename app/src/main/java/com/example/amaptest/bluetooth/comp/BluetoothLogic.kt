@@ -2,10 +2,11 @@ package com.example.amaptest.bluetooth.comp
 
 import android.app.Activity
 import android.bluetooth.BluetoothDevice
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.example.amaptest.bluetooth.comp.OnScanEventCallback.Companion.REASON_EMPTY_RESULT
 import com.example.amaptest.bluetooth.comp.OnScanEventCallback.Companion.REASON_START_FAILED
+import com.polestar.base.utils.logd
+import com.polestar.base.utils.loge
 import java.lang.Exception
 
 class BluetoothLogic(
@@ -51,16 +52,18 @@ class BluetoothLogic(
                         }
                     }
                     else -> {
-                        Log.d("BluetoothLogic", "ignore old$old, new:$new")
+                        logd("ignore old$old, new:$new", TAG)
                     }
                 }
             }
 
             override fun onScanFinish() {
-                uiCallback?.onScanFinish()
                 if (onScanEvent.address.isNullOrBlank()) {
+                    step = TaskStep.SCAN_FINISHED
+                    uiCallback?.onScanFinish()
                     uiCallback?.onNotFound(REASON_EMPTY_RESULT)
                 } else {
+                    step = TaskStep.BIND
                     doBluetoothTask()
                 }
             }
@@ -96,19 +99,24 @@ class BluetoothLogic(
                         step = TaskStep.BONDED
                         uiCallback?.onBondedSuccess(onScanEvent.address)
                     }
-                    Log.d("BluetoothLogic", "bindDevice:$result")
+                    logd("bindDevice:$result", TAG)
                 }
                 else -> {
-                    Log.d("BluetoothLogic", "ignore:$step")
+                    logd("ignore:$step", TAG)
                 }
             }
         } catch (e: Exception) {
-            Log.e("BluetoothLogic", "doBluetoothTask", e)
+            loge("doBluetoothTask", TAG, e)
             when (step) {
                 TaskStep.SCAN -> uiCallback?.onNotFound(REASON_START_FAILED)
                 else -> uiCallback?.onRequestReBinding()
             }
         }
+    }
+
+    fun doRetryScan() {
+        step = TaskStep.SCAN
+        doBluetoothTask()
     }
 
     fun doRetryBind() {
@@ -126,5 +134,9 @@ class BluetoothLogic(
 
     fun unregisterReceiver(activity: Activity?) {
         onScanEvent.unregisterReceiver(activity)
+    }
+
+    companion object{
+        const val TAG = "BluetoothLogic"
     }
 }
