@@ -185,6 +185,28 @@ class BluetoothLogicTest {
     }
 
     @Test
+    fun doRetryScan() {
+        var stubString = ""
+        logic = BluetoothLogic( mockDevice, object : OnScanEventCallback {
+            override fun onNotFound(reasonCode: Int) {
+                stubString = "onNotFound"
+            }
+        }, eventCenter)
+        assertNull(eventCenter.address)
+
+        eventCenter.address = ""
+        eventCenter.getCallback()?.onFoundDevice()
+        eventCenter.getCallback()?.onScanFinish()
+        assertEquals(TaskStep.SCAN_FINISHED, logic.getStep())
+        assertEquals("", eventCenter.address)
+        assertEquals("onNotFound", stubString)
+
+        logic.doRetryScan()
+        assertEquals(TaskStep.SCAN, logic.getStep())
+        assertEquals("isDiscovering", defStubStringDevice)
+    }
+
+    @Test
     fun wasBonded() {
         var defStubStringUiCallback = ""
         logic = BluetoothLogic(object : BluetoothDevices {
