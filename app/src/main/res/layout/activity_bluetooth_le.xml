@@ -45,6 +45,14 @@
                     android:layout_height="wrap_content"
                     android:text="STOP" />
 
+
+                <Button
+                    android:id="@+id/btn_blue_setting"
+                    style="@style/Button_sign"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="bluetoothSetting" />
+
             </LinearLayout>
 
 

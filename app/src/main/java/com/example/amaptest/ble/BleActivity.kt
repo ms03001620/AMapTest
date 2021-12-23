@@ -7,10 +7,12 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.provider.Settings
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -81,6 +83,10 @@ class BleActivity : AppCompatActivity() {
         binding.btnBindingDel.setOnClickListener {
             printlnLogs("do disconnect")
             bluetoothGatt?.disconnect()
+        }
+
+        binding.btnBlueSetting.setOnClickListener {
+            startActivity(Intent(Settings.ACTION_BLUETOOTH_SETTINGS));
         }
     }
 
