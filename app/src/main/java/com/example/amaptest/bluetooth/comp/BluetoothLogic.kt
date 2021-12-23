@@ -16,13 +16,7 @@ class BluetoothLogic(
 
     init {
         onScanEvent.setCallback(object : BluetoothCallback {
-            override fun onEvent(action: String) {
-                uiCallback?.onEvent(action)
-            }
-
             override fun onFoundDevice() {
-                // found device close scanner immediately
-                step = TaskStep.BIND
                 devices.cancelDiscovery()
             }
 
@@ -33,18 +27,14 @@ class BluetoothLogic(
             override fun onBindStatusChange(old: Int, new: Int) {
                 when (new) {
                     BluetoothDevice.BOND_BONDED -> {
-                        step = TaskStep.BONDED
                         uiCallback?.onBondedSuccess(onScanEvent.address)
                     }
                     BluetoothDevice.BOND_BONDING -> {
-                        step = TaskStep.BOND_BONDING
-                        if (old == BluetoothDevice.BOND_NONE) {
-                            uiCallback?.onRequestPairing()
-                        }
+                        uiCallback?.onRequestPairing()
                     }
                     BluetoothDevice.BOND_NONE -> {
                         if (old == BluetoothDevice.BOND_BONDING) {
-                            step = TaskStep.REQUEST_RETRY
+                            step = TaskStep.IDLE
                             // retry when from binding -> bind none
                             uiCallback?.onRequestReBinding()
                         }
@@ -58,7 +48,7 @@ class BluetoothLogic(
             override fun onScanFinish() {
                 uiCallback?.onScanFinish()
                 if (onScanEvent.address.isNullOrBlank()) {
-                    step = TaskStep.SCAN_FINISHED
+                    step = TaskStep.IDLE
                     uiCallback?.onNotFound(OnScanEventCallback.REASON_EMPTY_RESULT)
                 } else {
                     step = TaskStep.BIND
@@ -94,7 +84,7 @@ class BluetoothLogic(
                     val result = devices.bindDevice(onScanEvent.address)
                     if (result == BluetoothDevice.BOND_BONDED) {
                         // device was BONDED
-                        step = TaskStep.BONDED
+                        step = TaskStep.IDLE
                         uiCallback?.onBondedSuccess(onScanEvent.address)
                     }
                     logd("bindDevice:$result", TAG)
