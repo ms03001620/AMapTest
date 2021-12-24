@@ -43,7 +43,7 @@ class BluetoothLogicTest {
 
     @Before
     fun setup() {
-        logic = BluetoothLogic( mockDevice, null, eventCenter)
+        logic = BluetoothLogic(mockDevice, null, eventCenter)
     }
 
     @Test
@@ -77,7 +77,7 @@ class BluetoothLogicTest {
     @Test
     fun callbackNotFoundTest() {
         var stubString = ""
-        logic = BluetoothLogic( mockDevice, object : OnScanEventCallback {
+        logic = BluetoothLogic(mockDevice, object : OnScanEventCallback {
             override fun onNotFound(reasonCode: Int) {
                 stubString = "onNotFound"
             }
@@ -87,7 +87,7 @@ class BluetoothLogicTest {
         eventCenter.address = ""
         eventCenter.getCallback()?.onFoundDevice()
         eventCenter.getCallback()?.onScanFinish()
-        assertEquals(TaskStep.IDLE, logic.getStep())
+        assertEquals(TaskStep.SCAN, logic.getStep())
         assertEquals("", eventCenter.address)
         assertEquals("onNotFound", stubString)
     }
@@ -144,11 +144,13 @@ class BluetoothLogicTest {
         assertEquals("abcd", stubString)
 
         //mock request pair
-        eventCenter.getCallback()?.onBindStatusChange(BluetoothDevice.BOND_NONE, BluetoothDevice.BOND_BONDING)
+        eventCenter.getCallback()
+            ?.onBindStatusChange(BluetoothDevice.BOND_NONE, BluetoothDevice.BOND_BONDING)
         assertEquals("requestPairing", defStubStringUiCallback)
 
         //mock BOND_BONDED success
-        eventCenter.getCallback()?.onBindStatusChange(BluetoothDevice.BOND_BONDING, BluetoothDevice.BOND_BONDED)
+        eventCenter.getCallback()
+            ?.onBindStatusChange(BluetoothDevice.BOND_BONDING, BluetoothDevice.BOND_BONDED)
         assertEquals("onBondedSuccessaaa", defStubStringUiCallback)
     }
 
@@ -161,11 +163,11 @@ class BluetoothLogicTest {
             }
         }, eventCenter)
 
-        eventCenter.getCallback()?.onBindStatusChange(BluetoothDevice.BOND_BONDING, BluetoothDevice.BOND_NONE)
-        assertEquals(TaskStep.IDLE, logic.getStep())
-
-        logic.doRetryBind()
+        eventCenter.getCallback()
+            ?.onBindStatusChange(BluetoothDevice.BOND_BONDING, BluetoothDevice.BOND_NONE)
         assertEquals(TaskStep.BIND, logic.getStep())
+
+        logic.doBluetoothTask()
         assertEquals("bindDevice", defStubStringDevice)
         assertEquals("onRequestReBinding", defStubStringUiCallback)
     }
@@ -173,7 +175,7 @@ class BluetoothLogicTest {
     @Test
     fun doRetryScan() {
         var stubString = ""
-        logic = BluetoothLogic( mockDevice, object : OnScanEventCallback {
+        logic = BluetoothLogic(mockDevice, object : OnScanEventCallback {
             override fun onNotFound(reasonCode: Int) {
                 stubString = "onNotFound"
             }
@@ -183,11 +185,11 @@ class BluetoothLogicTest {
         eventCenter.address = ""
         eventCenter.getCallback()?.onFoundDevice()
         eventCenter.getCallback()?.onScanFinish()
-        assertEquals(TaskStep.IDLE, logic.getStep())
+        assertEquals(TaskStep.SCAN, logic.getStep())
         assertEquals("", eventCenter.address)
         assertEquals("onNotFound", stubString)
 
-        logic.doRetryScan()
+        logic.doBluetoothTask()
         assertEquals(TaskStep.SCAN, logic.getStep())
         assertEquals("isDiscovering", defStubStringDevice)
     }
@@ -212,7 +214,9 @@ class BluetoothLogicTest {
             }
         }, eventCenter)
 
-        logic.doRetryBind()
+        eventCenter.address = "abc"
+        eventCenter.getCallback()?.onScanFinish()
+        logic.doBluetoothTask()
         assertEquals("onBondedSuccess", defStubStringUiCallback)
     }
 
@@ -311,7 +315,7 @@ class BluetoothLogicTest {
             }
         }, eventCenter)
 
-        eventCenter.address="abc"
+        eventCenter.address = "abc"
         eventCenter.getCallback()?.onScanFinish()
         assertEquals(TaskStep.BIND, logic.getStep())
         logic.doBluetoothTask()

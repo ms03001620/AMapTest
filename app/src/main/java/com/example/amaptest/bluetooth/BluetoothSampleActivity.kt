@@ -92,9 +92,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
             printlnLogs("onNotFound reason:$reasonCode")
             showRetryScanDialog(this@BluetoothSampleActivity, leftCallback = {
             }, rightCallback = {
-                permissionHelper.attemptRunCallback {
-                    bluetoothLogic.doRetryScan()
-                }
+                doBluetoothTask()
             })
         }
 
@@ -119,9 +117,7 @@ class BluetoothSampleActivity: AppCompatActivity() {
             showRetryDialog(this@BluetoothSampleActivity, leftCallback = {
                 Toast.makeText(applicationContext, "已放弃绑定", Toast.LENGTH_SHORT).show()
             }, rightCallback = {
-                permissionHelper.attemptRunCallback {
-                    bluetoothLogic.doRetryBind()
-                }
+                doBluetoothTask()
             })
         }
     }

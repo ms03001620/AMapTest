@@ -27,6 +27,7 @@ class BluetoothLogic(
             override fun onBindStatusChange(old: Int, new: Int) {
                 when (new) {
                     BluetoothDevice.BOND_BONDED -> {
+                        step = TaskStep.IDLE
                         uiCallback?.onBondedSuccess(onScanEvent.address)
                     }
                     BluetoothDevice.BOND_BONDING -> {
@@ -34,7 +35,7 @@ class BluetoothLogic(
                     }
                     BluetoothDevice.BOND_NONE -> {
                         if (old == BluetoothDevice.BOND_BONDING) {
-                            step = TaskStep.IDLE
+                            step = TaskStep.BIND
                             // retry when from binding -> bind none
                             uiCallback?.onRequestReBinding()
                         }
@@ -48,7 +49,7 @@ class BluetoothLogic(
             override fun onScanFinish() {
                 uiCallback?.onScanFinish()
                 if (onScanEvent.address.isNullOrBlank()) {
-                    step = TaskStep.IDLE
+                    step = TaskStep.SCAN
                     uiCallback?.onNotFound(OnScanEventCallback.REASON_EMPTY_RESULT)
                 } else {
                     step = TaskStep.BIND
@@ -100,16 +101,6 @@ class BluetoothLogic(
                 else -> uiCallback?.onRequestReBinding()
             }
         }
-    }
-
-    fun doRetryScan() {
-        step = TaskStep.SCAN
-        doBluetoothTask()
-    }
-
-    fun doRetryBind() {
-        step = TaskStep.BIND
-        doBluetoothTask()
     }
 
     fun stop() {
