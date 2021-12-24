@@ -58,15 +58,6 @@ class MarkerActionActivity : AppCompatActivity() {
             data.filterIsInstance<MarkerCluster>().forEach {
                 markerAction.addCluster(it)
             }
-
-
-
-/*           data.forEach { cluster ->
-                addMarkToMap(
-                    cluster,
-                    mMapView.map
-                )
-            }*/
         }
 
         override fun onClusterCreateAndMoveTo(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {

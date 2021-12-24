@@ -16,20 +16,13 @@ class ClusterAdapter(val action: OnClusterAction?) {
     var prev: MutableList<BaseMarkerData>? = null
 
     fun queue(set: MutableList<BaseMarkerData>?) {
-        set?.let {
-            action?.noChange(it)
-        }
-
-/*
-        set?.let {
-            process(it)
-        }*/
+        process(set!!)
     }
 
     fun process(curr: MutableList<BaseMarkerData>) {
-        prev?.let {
-            action?.onClusterCreateAndMoveTo(createExpTask(it, curr))
-        } ?: run {
+        if (prev != null) {
+            action?.onClusterCreateAndMoveTo(createExpTask(prev!!, curr))
+        } else {
             prev = curr
             action?.noChange(curr)
         }

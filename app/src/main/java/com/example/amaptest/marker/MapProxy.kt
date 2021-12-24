@@ -21,6 +21,19 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return null
     }
 
+    /**
+     * latLng is start position
+     */
+    fun addMarker(station: StationDetail, latLng: LatLng): Marker? {
+        val id = station.id!!
+        if (set.containsKey(id).not()) {
+            return addMarker(stationToMarkerOptions(station, latLng))?.also {
+                set.put(id, it)
+            }
+        }
+        return null
+    }
+
     fun addCluster(id: String, size: Int, latLng: LatLng?): Marker? {
         latLng?.let { latLng ->
             if (set.containsKey(id).not()) {
@@ -53,14 +66,14 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return BitmapDescriptorFactory.fromView(view)
     }
 
-    private fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
+    fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.charging_layout_marker_cluster, null, false)
         view.findViewById<TextView>(R.id.text_cluster).text = clusterSize.toString()
         return BitmapDescriptorFactory.fromView(view)
     }
 
-    private fun stationToClusterOptions(size: Int, latLng: LatLng) = MarkerOptions()
+    fun stationToClusterOptions(size: Int, latLng: LatLng) = MarkerOptions()
         .position(latLng)
         .icon(getClusterBitmapDescriptor(size))
         .infoWindowEnable(true)
@@ -71,8 +84,17 @@ class MapProxy(private val map: AMap, private val context: Context) {
         .icon(getCollapsedBitmapDescriptor((station.acTotal ?: 0 + station.dcTotal!!).toString()))
         .infoWindowEnable(true)
 
+    private fun stationToMarkerOptions(station: StationDetail, latLng: LatLng) = MarkerOptions()
+        .position(latLng)
+        .icon(getCollapsedBitmapDescriptor((station.acTotal ?: 0 + station.dcTotal!!).toString()))
+        .infoWindowEnable(true)
+
     fun getMarker(stationDetail: StationDetail): Marker? {
         return set.getOrDefault(stationDetail.id, null)
+    }
+
+    fun getMarker(cluster: MarkerCluster): Marker? {
+        return set.getOrDefault(cluster.getId(), null)
     }
 
     fun remove(marker: Marker) {

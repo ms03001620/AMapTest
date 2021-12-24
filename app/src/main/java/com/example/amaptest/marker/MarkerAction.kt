@@ -7,6 +7,7 @@ import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
 import com.polestar.repository.data.charging.StationDetail
+import com.polestar.repository.data.charging.toLatLng
 
 class MarkerAction(val map: MapProxy) {
 
@@ -14,11 +15,21 @@ class MarkerAction(val map: MapProxy) {
         return map.addCluster(cluster.getId(), cluster.getSize(), cluster.getLatlng())
     }
 
+    fun addCluster(cluster: MarkerCluster, latLng: LatLng): Marker? {
+        return map.addCluster(cluster.getId(), cluster.getSize(), latLng)
+    }
+
     fun addMarker(stationDetail: StationDetail): Marker? {
         return map.addMarker(stationDetail)
     }
 
+    fun addMarker(stationDetail: StationDetail, latLng: LatLng): Marker? {
+        return map.addMarker(stationDetail, latLng)
+    }
+
     fun getMarker(stationDetail: StationDetail) = map.getMarker(stationDetail)
+
+    fun getMarker(cluster: MarkerCluster) = map.getMarker(cluster)
 
     fun transfer(from: StationDetail, to: StationDetail, removeAtEnd: Boolean) {
         map.getMarker(from)?.let {
@@ -26,7 +37,50 @@ class MarkerAction(val map: MapProxy) {
         }
     }
 
+    fun transfer(from: StationDetail, to: LatLng, removeAtEnd: Boolean) {
+        map.getMarker(from)?.let {
+            transfer(from.id, it, to, removeAtEnd)
+        }
+    }
+
+    fun transfer(from: MarkerCluster, to: LatLng, removeAtEnd: Boolean) {
+        map.getMarker(from)?.let {
+            transfer(from.getId(), it, to, removeAtEnd)
+        }
+    }
+
     fun exp(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
+        map.forEach {
+            val fromLatLng = it.key
+            it.value.forEach { itemCluster ->
+                when(itemCluster){
+                    is MarkerCluster -> {
+                        val mark = addCluster(itemCluster, fromLatLng)
+                        if (mark == null) {
+                            // cluster已存在，刷新
+                            this.map.stationToClusterOptions(itemCluster.getSize(), itemCluster.getLatlng()!!).let {
+                                getMarker(itemCluster)?.setMarkerOptions(it)
+                            }
+                        } else {
+                            // cluster不存在，创建并播放动画
+                            itemCluster.getStation()?.let {
+                                transfer(itemCluster, it.toLatLng(), false)
+                            }
+                        }
+                    }
+                    is MarkerSingle -> {
+                        addMarker(itemCluster.stationDetail, fromLatLng)
+                        transfer(
+                            itemCluster.stationDetail,
+                            itemCluster.stationDetail.toLatLng(),
+                            false
+                        )
+                    }
+                }
+            }
+        }
+
+        println(map)
 
     }
 

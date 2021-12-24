@@ -3,6 +3,7 @@ package com.example.amaptest.marker
 import com.amap.api.maps.model.LatLng
 import com.polestar.charging.ui.cluster.base.Cluster
 import com.polestar.charging.ui.cluster.base.ClusterItem
+import com.polestar.charging.ui.cluster.base.StaticCluster
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.repository.data.charging.StationDetail
 
@@ -18,6 +19,15 @@ interface BaseMarkerData {
 
 class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
     override fun getStation(): StationDetail? {
+        if (list is StaticCluster<ClusterItem>) {
+            val items = list.items
+            if (items is LinkedHashSet) {
+                val firstItem = items.first()
+                if (firstItem is StationClusterItem) {
+                    return firstItem.stationDetail
+                }
+            }
+        }
         return null
     }
 
