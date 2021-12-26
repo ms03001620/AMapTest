@@ -65,12 +65,15 @@ class MarkerAction(val map: MapProxy) {
         map.forEach {
             val fromLatLng = it.key
             it.value.forEach { itemCluster ->
-                when(itemCluster){
+                when (itemCluster) {
                     is MarkerCluster -> {
                         val mark = addCluster(itemCluster, fromLatLng)
                         if (mark == null) {
                             // cluster已存在，刷新
-                            this.map.stationToClusterOptions(itemCluster.getSize(), itemCluster.getLatlng()!!).let {
+                            this.map.stationToClusterOptions(
+                                itemCluster.getSize(),
+                                itemCluster.getLatlng()!!
+                            ).let {
                                 getMarker(itemCluster)?.setMarkerOptions(it)
                             }
                         } else {
@@ -104,8 +107,8 @@ class MarkerAction(val map: MapProxy) {
         val set = AnimationSet(true)
         set.addAnimation(TranslateAnimation(moveTo).apply {
             this.setInterpolator(AccelerateInterpolator())
-            this.setDuration(1000)
-            if(removeAtEnd){
+            this.setDuration(CLUSTER_MOVE_ANIM)
+            if (removeAtEnd) {
                 this.setAnimationListener(object : Animation.AnimationListener {
                     override fun onAnimationStart() {
                     }
@@ -128,4 +131,7 @@ class MarkerAction(val map: MapProxy) {
         LatLng(stationDetail.lat ?: Double.NaN, stationDetail.lng ?: Double.NaN)
 
 
+    companion object {
+        const val CLUSTER_MOVE_ANIM = 300L
+    }
 }
