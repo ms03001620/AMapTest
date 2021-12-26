@@ -1,11 +1,13 @@
 package com.example.amaptest.marker
 
+import android.util.Log
 import android.view.animation.AccelerateInterpolator
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.Marker
 import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
+import com.polestar.base.utils.logd
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.toLatLng
 
@@ -49,6 +51,16 @@ class MarkerAction(val map: MapProxy) {
         }
     }
 
+    fun removed(removed: MutableList<BaseMarkerData>) {
+        removed.forEach { removedItem ->
+            when (removedItem) {
+                is MarkerCluster -> {
+                    map.deleteMarker(removedItem.getId())
+                }
+            }
+        }
+    }
+
     fun exp(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
         map.forEach {
             val fromLatLng = it.key
@@ -69,12 +81,16 @@ class MarkerAction(val map: MapProxy) {
                         }
                     }
                     is MarkerSingle -> {
-                        addMarker(itemCluster.stationDetail, fromLatLng)
-                        transfer(
-                            itemCluster.stationDetail,
-                            itemCluster.stationDetail.toLatLng(),
-                            false
-                        )
+                        val t = addMarker(itemCluster.stationDetail, fromLatLng)
+                        logd("MarkerSingle t:$t")
+                        if (t != null) {
+                            transfer(
+                                itemCluster.stationDetail,
+                                itemCluster.stationDetail.toLatLng(),
+                                false
+                            )
+                        }
+
                     }
                 }
             }
@@ -110,5 +126,6 @@ class MarkerAction(val map: MapProxy) {
 
     fun stationDetailToLatLng(stationDetail: StationDetail) =
         LatLng(stationDetail.lat ?: Double.NaN, stationDetail.lng ?: Double.NaN)
+
 
 }

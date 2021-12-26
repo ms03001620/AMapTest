@@ -25,6 +25,9 @@ class ClusterAdapterTest {
             override fun onClusterCreateAndMoveTo(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
                 result = map
             }
+
+            override fun onClusterRemoved(removed: MutableList<BaseMarkerData>) {
+            }
         })
 
         // 1聚合点 -> 2小聚合点
@@ -49,6 +52,30 @@ class ClusterAdapterTest {
 
         assertEquals(1, expTask.size)
         assertTrue(expTask.containsKey(prevCluster[0].getLatlng()))
+    }
+
+    @Test
+    fun createRemoveTaskNoRemove() {
+        val prevCluster = mock(stationsList)
+        val currCluster = mock(stationsList.subList(0, 10), stationsList.subList(11, 19))
+        val removedTask = ClusterAdapter(null).createRemoveTask(prevCluster, currCluster)
+        assertEquals(0, removedTask.size)
+    }
+
+    @Test
+    fun createRemoveTaskClusterTo2Sigle() {
+        val prevCluster = mock(stationsList.subList(0, 2))
+        val currCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2))
+        val removedTask = ClusterAdapter(null).createRemoveTask(prevCluster, currCluster)
+        assertEquals(1, removedTask.size)
+    }
+
+    @Test
+    fun createRemoveTaskClusterTo3Sigle() {
+        val prevCluster = mock(stationsList.subList(0, 3))
+        val currCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
+        val removedTask = ClusterAdapter(null).createRemoveTask(prevCluster, currCluster)
+        assertEquals(1, removedTask.size)
     }
 
     @Test

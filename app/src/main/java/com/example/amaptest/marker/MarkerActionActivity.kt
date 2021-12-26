@@ -63,6 +63,10 @@ class MarkerActionActivity : AppCompatActivity() {
         override fun onClusterCreateAndMoveTo(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
             markerAction.exp(map)
         }
+
+        override fun onClusterRemoved(removed: MutableList<BaseMarkerData>) {
+            markerAction.removed(removed)
+        }
     }
 
     val adapter = ClusterAdapter(onClusterAction)
@@ -71,13 +75,17 @@ class MarkerActionActivity : AppCompatActivity() {
         viewModel.loadDefault(this)
         viewModel.clustersLiveData.observe(this) { set ->
             adapter.queue(set)
-/*            mMapView.map.clear(true)
-            set.forEach { cluster ->
-                addMarkToMap(
-                    cluster,
-                    mMapView.map
-                )
-            }*/
+            //clearAndReDraw(set)
+        }
+    }
+
+    private fun clearAndReDraw(set: MutableList<BaseMarkerData>) {
+        mMapView.map.clear(true)
+        set.forEach { cluster ->
+            addMarkToMap(
+                cluster,
+                mMapView.map
+            )
         }
     }
 

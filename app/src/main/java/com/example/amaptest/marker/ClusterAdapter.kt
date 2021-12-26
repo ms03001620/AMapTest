@@ -1,7 +1,6 @@
 package com.example.amaptest.marker
 
 import com.amap.api.maps.model.LatLng
-import com.example.amaptest.logd
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import kotlin.collections.HashMap
@@ -11,6 +10,7 @@ class ClusterAdapter(val action: OnClusterAction?) {
     interface OnClusterAction {
         fun noChange(data: MutableList<BaseMarkerData>)
         fun onClusterCreateAndMoveTo(map: HashMap<LatLng, MutableList<BaseMarkerData>>)
+        fun onClusterRemoved(removed: MutableList<BaseMarkerData>)
     }
 
     var prev: MutableList<BaseMarkerData>? = null
@@ -21,11 +21,37 @@ class ClusterAdapter(val action: OnClusterAction?) {
 
     fun process(curr: MutableList<BaseMarkerData>) {
         if (prev != null) {
-            action?.onClusterCreateAndMoveTo(createExpTask(prev!!, curr))
+
+            val exp = createExpTask(prev!!, curr)
+
+            val removed = createRemoveTask(prev!!, curr)
+
+            action?.onClusterCreateAndMoveTo(exp)
+            action?.onClusterRemoved(removed)
         } else {
             prev = curr
             action?.noChange(curr)
         }
+    }
+
+    fun createRemoveTask(
+        prev: MutableList<BaseMarkerData>,
+        exp: MutableList<BaseMarkerData>
+    ): MutableList<BaseMarkerData> {
+        val removedList = mutableListOf<BaseMarkerData>()
+
+        prev.filterIsInstance<MarkerCluster>().forEach { targetCluster ->
+            var hasIn = false
+            exp.filterIsInstance<MarkerCluster>().forEach {
+                if (targetCluster.getId() == it.getId()) {
+                    hasIn = true
+                }
+            }
+            if (hasIn.not()) {
+                removedList.add(targetCluster)
+            }
+        }
+        return removedList
     }
 
     fun createExpTask(
@@ -35,8 +61,8 @@ class ClusterAdapter(val action: OnClusterAction?) {
         val expTask = HashMap<LatLng, MutableList<BaseMarkerData>>()
 
         curr.forEach { currCluster ->
-            val latlng = findPrevLatLng(prev, currCluster)
-            latlng?.let {
+            val latLng = findPrevLatLng(prev, currCluster)
+            latLng?.let {
                 findOrCreateClusterList(expTask, it).add(currCluster)
             }
         }
