@@ -14,9 +14,33 @@ class ClusterAdapter(val action: OnClusterAction?) {
     }
 
     var prev: MutableList<BaseMarkerData>? = null
+    var lastZoom = 0f
 
-    fun queue(set: MutableList<BaseMarkerData>?) {
-        process(set!!)
+    fun queue(set: MutableList<BaseMarkerData>?, zoom: Float) {
+        val isZoomIn = zoom> lastZoom
+        lastZoom = zoom
+
+        set?.let {
+            if (isZoomIn) {
+                process(it)
+            } else {
+                processZoomOut(it)
+            }
+        }
+    }
+
+    //TODO 缩小时合并成cluster的计算和动画
+    fun processZoomOut(curr: MutableList<BaseMarkerData>) {
+        prev?.let {
+            val exp = createExpTask(it, curr)
+            val removed = createRemoveTask(it, curr)
+
+            action?.onClusterCreateAndMoveTo(exp)
+            action?.onClusterRemoved(removed)
+        } ?: run {
+            action?.noChange(curr)
+        }
+        prev = curr
     }
 
     fun process(curr: MutableList<BaseMarkerData>) {
@@ -31,6 +55,7 @@ class ClusterAdapter(val action: OnClusterAction?) {
         }
         prev = curr
     }
+
 
     fun createRemoveTask(
         prev: MutableList<BaseMarkerData>,

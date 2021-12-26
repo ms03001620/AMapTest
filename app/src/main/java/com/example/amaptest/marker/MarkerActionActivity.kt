@@ -70,7 +70,7 @@ class MarkerActionActivity : AppCompatActivity() {
     private fun initObserver() {
         viewModel.loadDefault(this)
         viewModel.clustersLiveData.observe(this) { set ->
-            adapter.queue(set)
+            adapter.queue(set, mMapView.map.cameraPosition.zoom)
             //clearAndReDraw(set)
         }
     }
