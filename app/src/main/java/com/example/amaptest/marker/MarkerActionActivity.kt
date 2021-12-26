@@ -191,7 +191,8 @@ class MarkerActionActivity : AppCompatActivity() {
 
     private fun moveCameraToDataArea() {
         mMapView.map.moveCamera(
-            CameraUpdateFactory.newLatLngZoom(LatLng(DEFAULT_LAT,DEFAULT_LNG), 13f)
+            // 12f -> 13f  cluster(1->2)
+            CameraUpdateFactory.newLatLngZoom(LatLng(DEFAULT_LAT,DEFAULT_LNG), 12f)
         )
     }
 
