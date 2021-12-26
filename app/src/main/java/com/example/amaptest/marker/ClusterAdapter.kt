@@ -20,15 +20,13 @@ class ClusterAdapter(val action: OnClusterAction?) {
     }
 
     fun process(curr: MutableList<BaseMarkerData>) {
-        if (prev != null) {
-
-            val exp = createExpTask(prev!!, curr)
-
-            val removed = createRemoveTask(prev!!, curr)
+        prev?.let {
+            val exp = createExpTask(it, curr)
+            val removed = createRemoveTask(it, curr)
 
             action?.onClusterCreateAndMoveTo(exp)
             action?.onClusterRemoved(removed)
-        } else {
+        } ?: run {
             prev = curr
             action?.noChange(curr)
         }
