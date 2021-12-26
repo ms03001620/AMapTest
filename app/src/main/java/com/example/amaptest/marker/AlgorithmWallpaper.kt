@@ -22,12 +22,17 @@ class AlgorithmWallpaper(private val impl: BaseClusterAlgorithm) : BaseClusterAl
             logd("distanceMerge: skip: $distanceInfo", "clusterEvent")
             return // skip same
         }
+
+        val od = lastDistanceMerge?.cameraPosition?.zoom ?: 0f
+        val no = distanceInfo.cameraPosition?.zoom?:0f
+        val zoomOut = od < no
+
         lastDistanceMerge = distanceInfo
 
         val start = System.currentTimeMillis()
         impl.calc(distanceInfo, callback)
         logd(
-            "calc: ${System.currentTimeMillis() - start}, ${impl.javaClass.simpleName}",
+            "calc: ${System.currentTimeMillis() - start}, ${impl.javaClass.simpleName}, zoomOut: $zoomOut",
             "clusterEvent"
         )
     }
