@@ -27,9 +27,9 @@ class ClusterAdapter(val action: OnClusterAction?) {
             action?.onClusterCreateAndMoveTo(exp)
             action?.onClusterRemoved(removed)
         } ?: run {
-            prev = curr
             action?.noChange(curr)
         }
+        prev = curr
     }
 
     fun createRemoveTask(
