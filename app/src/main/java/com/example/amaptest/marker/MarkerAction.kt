@@ -13,6 +13,23 @@ import com.polestar.repository.data.charging.toLatLng
 
 class MarkerAction(val map: MapProxy) {
 
+    fun addList(data: MutableList<BaseMarkerData>) {
+        data.forEach {
+            when (it) {
+                is MarkerCluster -> {
+                    addCluster(it)
+                }
+                is MarkerSingle -> {
+                    addCluster(it)
+                }
+            }
+        }
+    }
+
+    fun addCluster(markerSingle: MarkerSingle): Marker? {
+        return addMarker(markerSingle.stationDetail)
+    }
+
     fun addCluster(cluster: MarkerCluster): Marker? {
         return map.addCluster(cluster.getId(), cluster.getSize(), cluster.getLatlng())
     }

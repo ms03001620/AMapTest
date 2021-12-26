@@ -50,14 +50,10 @@ class MarkerActionActivity : AppCompatActivity() {
         initObserver()
     }
 
-    val onClusterAction = object : ClusterAdapter.OnClusterAction {
+    private val onClusterAction = object : ClusterAdapter.OnClusterAction {
         override fun noChange(data: MutableList<BaseMarkerData>) {
             mMapView.map.clear(true)
-
-            //TODO 绘制cluster点，并处理测试id 并用id移除或更新cluster
-            data.filterIsInstance<MarkerCluster>().forEach {
-                markerAction.addCluster(it)
-            }
+            markerAction.addList(data)
         }
 
         override fun onClusterCreateAndMoveTo(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
@@ -192,7 +188,7 @@ class MarkerActionActivity : AppCompatActivity() {
     private fun moveCameraToDataArea() {
         mMapView.map.moveCamera(
             // 12f -> 13f  cluster(1->2)
-            CameraUpdateFactory.newLatLngZoom(LatLng(DEFAULT_LAT,DEFAULT_LNG), 12f)
+            CameraUpdateFactory.newLatLngZoom(LatLng(DEFAULT_LAT,DEFAULT_LNG), 15f)
         )
     }
 
