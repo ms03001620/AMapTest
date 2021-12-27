@@ -112,7 +112,8 @@ class MarkerAction(val map: MapProxy) {
         }
     }
 
-    fun exp(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
+    fun exp(removed: MutableList<BaseMarkerData>,map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
+        removed(removed)
         map.forEach {
             val fromLatLng = it.key
             it.value.forEach { itemCluster ->

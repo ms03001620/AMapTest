@@ -56,17 +56,13 @@ class MarkerActionActivity : AppCompatActivity() {
             markerAction.addList(data)
         }
 
-        override fun onClusterCreateAndMoveTo(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
-            markerAction.exp(map)
+        override fun onClusterCreateAndMoveTo(removed: MutableList<BaseMarkerData>, map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
+            markerAction.exp(removed, map)
         }
 
         override fun onClusterMoveToAndRemove(map: HashMap<LatLng, MutableList<BaseMarkerData>>,
                                               added: MutableList<BaseMarkerData>) {
             markerAction.cosp(map, added)
-        }
-
-        override fun onClusterRemoved(removed: MutableList<BaseMarkerData>) {
-            markerAction.removed(removed)
         }
     }
 

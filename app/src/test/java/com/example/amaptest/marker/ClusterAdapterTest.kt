@@ -22,7 +22,10 @@ class ClusterAdapterTest {
             override fun noChange(data: MutableList<BaseMarkerData>) {
             }
 
-            override fun onClusterCreateAndMoveTo(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
+            override fun onClusterCreateAndMoveTo(
+                removed: MutableList<BaseMarkerData>,
+                map: HashMap<LatLng, MutableList<BaseMarkerData>>
+            ) {
                 result = map
             }
 
@@ -30,9 +33,6 @@ class ClusterAdapterTest {
                 map: HashMap<LatLng, MutableList<BaseMarkerData>>,
                 added: MutableList<BaseMarkerData>
             ) {
-            }
-
-            override fun onClusterRemoved(removed: MutableList<BaseMarkerData>) {
             }
         })
 

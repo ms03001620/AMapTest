@@ -9,9 +9,8 @@ class ClusterAdapter(val action: OnClusterAction?) {
 
     interface OnClusterAction {
         fun noChange(data: MutableList<BaseMarkerData>)
-        fun onClusterCreateAndMoveTo(map: HashMap<LatLng, MutableList<BaseMarkerData>>)
+        fun onClusterCreateAndMoveTo(removed: MutableList<BaseMarkerData>, map: HashMap<LatLng, MutableList<BaseMarkerData>>)
         fun onClusterMoveToAndRemove(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>)
-        fun onClusterRemoved(removed: MutableList<BaseMarkerData>)
     }
 
     var prev: MutableList<BaseMarkerData>? = null
@@ -44,9 +43,7 @@ class ClusterAdapter(val action: OnClusterAction?) {
         prev?.let {
             val exp = createExpTask(it, curr)
             val removed = createRemoveTask(it, curr)
-
-            action?.onClusterCreateAndMoveTo(exp)
-            action?.onClusterRemoved(removed)
+            action?.onClusterCreateAndMoveTo(removed, exp)
         } ?: run {
             action?.noChange(curr)
         }
