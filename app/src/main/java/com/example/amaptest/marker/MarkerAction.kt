@@ -12,7 +12,8 @@ import com.polestar.repository.data.charging.toLatLng
 
 class MarkerAction(val map: MapProxy) {
 
-    fun addList(data: MutableList<BaseMarkerData>) {
+    fun setList(data: MutableList<BaseMarkerData>) {
+        map.clear()
         data.forEach {
             when (it) {
                 is MarkerCluster -> {

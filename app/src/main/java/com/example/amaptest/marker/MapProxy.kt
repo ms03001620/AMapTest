@@ -102,4 +102,9 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return set.getOrDefault(cluster.getId(), null)
     }
 
+    fun clear() {
+        set.clear()
+        map.clear(true)
+    }
+
 }

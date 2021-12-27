@@ -26,7 +26,7 @@ class MarkerActionViewModel : ViewModel() {
                 data.map {
                     StationClusterItem(it)
                 }.let {
-                    clusterAlgorithm.feed(it.subList(0, 3))
+                    clusterAlgorithm.feed(it.subList(0, 8))
                     //clusterAlgorithm.feed(it)
                 }
             }

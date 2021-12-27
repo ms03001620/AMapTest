@@ -52,16 +52,14 @@ class MarkerActionActivity : AppCompatActivity() {
 
     private val onClusterAction = object : ClusterAdapter.OnClusterAction {
         override fun noChange(data: MutableList<BaseMarkerData>) {
-            mMapView.map.clear(true)
-            markerAction.addList(data)
+            markerAction.setList(data)
         }
 
         override fun onClusterCreateAndMoveTo(removed: MutableList<BaseMarkerData>, map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
             markerAction.exp(removed, map)
         }
 
-        override fun onClusterMoveToAndRemove(map: HashMap<LatLng, MutableList<BaseMarkerData>>,
-                                              added: MutableList<BaseMarkerData>) {
+        override fun onClusterMoveToAndRemove(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>) {
             markerAction.cosp(map, added)
         }
     }
