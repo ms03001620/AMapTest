@@ -31,17 +31,13 @@ class MarkerAction(val map: MapProxy) {
         return map.createOrUpdateCluster(cluster.getId(), cluster.getSize(), latLng)
     }
 
-    fun addMarker(stationDetail: StationDetail): Marker? {
-        return map.createMarker(stationDetail)
-    }
-
-    fun addMarker(stationDetail: StationDetail, latLng: LatLng): Marker? {
+    fun addMarker(stationDetail: StationDetail, latLng: LatLng? = null): Marker? {
         return map.createMarker(stationDetail, latLng)
     }
 
-    fun transfer(id: String, to: StationDetail, removeAtEnd: Boolean) {
+    fun transfer(id: String, to: LatLng, removeAtEnd: Boolean) {
         map.getMarker(id)?.let {
-            transfer(id, it, stationDetailToLatLng(to), removeAtEnd)
+            transfer(id, it, to, removeAtEnd)
         }
     }
 
@@ -131,10 +127,6 @@ class MarkerAction(val map: MapProxy) {
     fun delete(stationDetail: StationDetail) {
         map.deleteMarker(stationDetail)
     }
-
-    fun stationDetailToLatLng(stationDetail: StationDetail) =
-        LatLng(stationDetail.lat ?: Double.NaN, stationDetail.lng ?: Double.NaN)
-
 
     companion object {
         const val CLUSTER_MOVE_ANIM = 300L

@@ -11,24 +11,12 @@ import com.polestar.repository.data.charging.StationDetail
 class MapProxy(private val map: AMap, private val context: Context) {
     val set = HashMap<String, Marker>()
 
-    fun createMarker(station: StationDetail): Marker? {
-        val id = station.id!!
-        if (set.containsKey(id).not()) {
-            return createMarker(stationToMarkerOptions(station))?.also {
-                set.put(id, it)
-            }
-        }
-        return null
-    }
-
-    /**
-     * latLng is start position
-     */
-    fun createMarker(station: StationDetail, latLng: LatLng): Marker? {
-        val id = station.id!!
-        if (set.containsKey(id).not()) {
-            return createMarker(stationToMarkerOptions(station, latLng))?.also {
-                set.put(id, it)
+    fun createMarker(station: StationDetail, latLng: LatLng? = null): Marker? {
+        station.id?.let { id ->
+            if (set.containsKey(id).not()) {
+                return createMarker(stationToMarkerOptions(station, latLng))?.also {
+                    set[id] = it
+                }
             }
         }
         return null
@@ -71,29 +59,24 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return BitmapDescriptorFactory.fromView(view)
     }
 
-    fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
+    private fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.charging_layout_marker_cluster, null, false)
         view.findViewById<TextView>(R.id.text_cluster).text = clusterSize.toString()
         return BitmapDescriptorFactory.fromView(view)
     }
 
-    fun stationToClusterOptions(size: Int, latLng: LatLng) = MarkerOptions()
-        .position(latLng)
-        .icon(getClusterBitmapDescriptor(size))
-        .infoWindowEnable(true)
+    private fun stationToClusterOptions(size: Int, latLng: LatLng) =
+        MarkerOptions()
+            .position(latLng)
+            .icon(getClusterBitmapDescriptor(size))
+            .infoWindowEnable(true)
 
-
-    private fun stationToMarkerOptions(station: StationDetail) = MarkerOptions()
-        .position(LatLng(station.lat ?: Double.NaN, station.lng ?: Double.NaN))
-        .icon(getCollapsedBitmapDescriptor((station.acTotal ?: 0 + station.dcTotal!!).toString()))
-        .infoWindowEnable(true)
-
-    private fun stationToMarkerOptions(station: StationDetail, latLng: LatLng) = MarkerOptions()
-        .position(latLng)
-        .icon(getCollapsedBitmapDescriptor((station.acTotal ?: 0 + station.dcTotal!!).toString()))
-        .infoWindowEnable(true)
-
+    private fun stationToMarkerOptions(station: StationDetail, latLng: LatLng? = null) =
+        MarkerOptions()
+            .position(latLng ?: LatLng(station.lat ?: Double.NaN, station.lng ?: Double.NaN))
+            .icon(getCollapsedBitmapDescriptor((station.acTotal ?: 0 + station.dcTotal!!).toString()))
+            .infoWindowEnable(true)
 
     fun getMarker(id: String): Marker? {
         return set.getOrDefault(id, null)
@@ -107,5 +90,4 @@ class MapProxy(private val map: AMap, private val context: Context) {
         set.clear()
         map.clear(true)
     }
-
 }

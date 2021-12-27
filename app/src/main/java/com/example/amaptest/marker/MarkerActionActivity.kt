@@ -92,11 +92,11 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_move).setOnClickListener {
-            markerAction.transfer(stations[0].id!!, stations[1], false)
+            markerAction.transfer(stations[0].id!!, stationDetailToLatLng(stations[1]), false)
         }
 
         findViewById<View>(R.id.btn_move_delete).setOnClickListener {
-            markerAction.transfer(stations[0].id!!, stations[1], true)
+            markerAction.transfer(stations[0].id!!, stationDetailToLatLng(stations[1]), true)
         }
 
         findViewById<View>(R.id.btn_del).setOnClickListener {
@@ -218,6 +218,9 @@ class MarkerActionActivity : AppCompatActivity() {
             }
         }
     }
+
+    fun stationDetailToLatLng(stationDetail: StationDetail) =
+        LatLng(stationDetail.lat ?: Double.NaN, stationDetail.lng ?: Double.NaN)
 
     private fun initZoomBtn() {
         findViewById<View>(R.id.btn_zoom_in)?.setOnClickListener {
