@@ -58,16 +58,11 @@ class MarkerAction(val map: MapProxy) {
         return map.createMarker(stationDetail, latLng)
     }
 
-    fun getMarker(stationDetail: StationDetail) = map.getMarker(stationDetail)
-
-    fun getMarker(cluster: MarkerCluster) = map.getMarker(cluster)
-
     fun transfer(from: StationDetail, to: StationDetail, removeAtEnd: Boolean) {
         map.getMarker(from)?.let {
             transfer(from.id, it, stationDetailToLatLng(to), removeAtEnd)
         }
     }
-
 
     fun transfer(from: BaseMarkerData, to: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
         when (from) {
@@ -142,9 +137,6 @@ class MarkerAction(val map: MapProxy) {
                 }
             }
         }
-
-        println(map)
-
     }
 
     fun transfer(id: String?, marker: Marker, moveTo: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
