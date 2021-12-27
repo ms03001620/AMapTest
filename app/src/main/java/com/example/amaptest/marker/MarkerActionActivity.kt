@@ -50,27 +50,22 @@ class MarkerActionActivity : AppCompatActivity() {
         initObserver()
     }
 
-    private val onClusterAction = object : ClusterAdapter.OnClusterAction {
-        override fun noChange(data: MutableList<BaseMarkerData>) {
-            markerAction.setList(data)
-        }
-
-        override fun onClusterCreateAndMoveTo(removed: MutableList<BaseMarkerData>, map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
-            markerAction.exp(removed, map)
-        }
-
-        override fun onClusterMoveToAndRemove(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>) {
-            markerAction.cosp(map, added)
-        }
-    }
-
-    val adapter = ClusterAdapter(onClusterAction)
-
     private fun initObserver() {
         viewModel.loadDefault(this)
         viewModel.clustersLiveData.observe(this) { set ->
-            adapter.queue(set, mMapView.map.cameraPosition.zoom)
-            //clearAndReDraw(set)
+            clearAndReDraw(set)
+        }
+
+        viewModel.noChangeLiveData.observe(this) {
+            markerAction.setList(it)
+        }
+
+        viewModel.onClusterCreateAndMoveTo.observe(this) {
+            markerAction.exp(it.first, it.second)
+        }
+
+        viewModel.onClusterMoveToAndRemove.observe(this) {
+            markerAction.cosp(it.second, it.first)
         }
     }
 
