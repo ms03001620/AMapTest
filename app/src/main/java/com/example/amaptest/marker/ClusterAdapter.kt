@@ -10,6 +10,7 @@ class ClusterAdapter(val action: OnClusterAction?) {
     interface OnClusterAction {
         fun noChange(data: MutableList<BaseMarkerData>)
         fun onClusterCreateAndMoveTo(map: HashMap<LatLng, MutableList<BaseMarkerData>>)
+        fun onClusterMoveToAndRemove(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>)
         fun onClusterRemoved(removed: MutableList<BaseMarkerData>)
     }
 
@@ -29,14 +30,10 @@ class ClusterAdapter(val action: OnClusterAction?) {
         }
     }
 
-    //TODO 缩小时合并成cluster的计算和动画
-    fun processZoomOut(curr: MutableList<BaseMarkerData>) {
+    private fun processZoomOut(curr: MutableList<BaseMarkerData>) {
         prev?.let {
-            val exp = createExpTask(it, curr)
-            val removed = createRemoveTask(it, curr)
-
-            action?.onClusterCreateAndMoveTo(exp)
-            action?.onClusterRemoved(removed)
+            val collapsed = createCollapsedTask(it, curr)
+            action?.onClusterMoveToAndRemove(collapsed, curr)
         } ?: run {
             action?.noChange(curr)
         }
@@ -59,13 +56,13 @@ class ClusterAdapter(val action: OnClusterAction?) {
 
     fun createRemoveTask(
         prev: MutableList<BaseMarkerData>,
-        exp: MutableList<BaseMarkerData>
+        curr: MutableList<BaseMarkerData>
     ): MutableList<BaseMarkerData> {
         val removedList = mutableListOf<BaseMarkerData>()
 
         prev.filterIsInstance<MarkerCluster>().forEach { targetCluster ->
             var hasIn = false
-            exp.filterIsInstance<MarkerCluster>().forEach {
+            curr.filterIsInstance<MarkerCluster>().forEach {
                 if (targetCluster.getId() == it.getId()) {
                     hasIn = true
                 }
@@ -75,6 +72,22 @@ class ClusterAdapter(val action: OnClusterAction?) {
             }
         }
         return removedList
+    }
+
+    fun createCollapsedTask(
+        prev: MutableList<BaseMarkerData>,
+        curr: MutableList<BaseMarkerData>
+    ): HashMap<LatLng, MutableList<BaseMarkerData>> {
+        val collapsedTask = HashMap<LatLng, MutableList<BaseMarkerData>>()
+
+        prev.forEach { currCluster ->
+            val latLng = findPrevLatLng(curr, currCluster)
+            latLng?.let {
+                findOrCreateClusterList(collapsedTask, it).add(currCluster)
+            }
+        }
+
+        return collapsedTask
     }
 
     fun createExpTask(

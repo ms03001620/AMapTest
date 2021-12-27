@@ -26,6 +26,12 @@ class ClusterAdapterTest {
                 result = map
             }
 
+            override fun onClusterMoveToAndRemove(
+                map: HashMap<LatLng, MutableList<BaseMarkerData>>,
+                added: MutableList<BaseMarkerData>
+            ) {
+            }
+
             override fun onClusterRemoved(removed: MutableList<BaseMarkerData>) {
             }
         })
@@ -68,6 +74,48 @@ class ClusterAdapterTest {
         val currCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2))
         val removedTask = ClusterAdapter(null).createRemoveTask(prevCluster, currCluster)
         assertEquals(1, removedTask.size)
+    }
+
+    @Test
+    fun createCollapsedTask() {
+        val prevCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
+        val currCluster = mock(stationsList.subList(0, 3))
+        val task = ClusterAdapter(null).createCollapsedTask(prevCluster, currCluster)
+
+        assertEquals(1, task.size)
+        assertEquals(3, task.values.first().size)
+    }
+
+    @Test
+    fun createCollapsedTaskNoChange() {
+        val prevCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
+        val currCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
+        val task = ClusterAdapter(null).createCollapsedTask(prevCluster, currCluster)
+
+        assertEquals(0, task.size)
+    }
+
+    @Test
+    fun createCollapsedTask2Cluster() {
+        val prevCluster =
+            mock(
+                stationsList.subList(0, 1),
+                stationsList.subList(1, 2),
+                stationsList.subList(2, 3),
+                stationsList.subList(10, 11),
+                stationsList.subList(11, 12),
+                stationsList.subList(12, 13),
+                stationsList.subList(13, 14),
+            )
+        val currCluster = mock(
+            stationsList.subList(0, 3),
+            stationsList.subList(10, 14)
+        )
+        val task = ClusterAdapter(null).createCollapsedTask(prevCluster, currCluster)
+
+        assertEquals(2, task.size)
+        assertEquals(4, task.values.first().size)
+        assertEquals(3, task.values.last().size)
     }
 
     @Test

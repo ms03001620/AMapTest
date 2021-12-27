@@ -1,6 +1,5 @@
 package com.example.amaptest.marker
 
-import android.util.Log
 import android.view.animation.AccelerateInterpolator
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.Marker
@@ -26,24 +25,36 @@ class MarkerAction(val map: MapProxy) {
         }
     }
 
+    fun addCluster(markerSingle: MutableList<BaseMarkerData>): List<Marker?> {
+        return markerSingle.map {
+            addCluster(it)
+        }
+    }
+
+    fun addCluster(markerSingle: BaseMarkerData): Marker? {
+        return when(markerSingle){
+            is MarkerSingle -> addCluster(markerSingle)
+            is MarkerCluster -> addCluster(markerSingle)
+            else -> null
+        }
+    }
+
+
     fun addCluster(markerSingle: MarkerSingle): Marker? {
         return addMarker(markerSingle.stationDetail)
     }
 
-    fun addCluster(cluster: MarkerCluster): Marker? {
-        return map.addCluster(cluster.getId(), cluster.getSize(), cluster.getLatlng())
-    }
-
-    fun addCluster(cluster: MarkerCluster, latLng: LatLng): Marker? {
-        return map.addCluster(cluster.getId(), cluster.getSize(), latLng)
+    fun addCluster(cluster: MarkerCluster, redirectLatLng: LatLng? = null): Marker? {
+        val latLng = redirectLatLng ?: cluster.getLatlng()
+        return map.createOrUpdateCluster(cluster.getId(), cluster.getSize(), latLng)
     }
 
     fun addMarker(stationDetail: StationDetail): Marker? {
-        return map.addMarker(stationDetail)
+        return map.createMarker(stationDetail)
     }
 
     fun addMarker(stationDetail: StationDetail, latLng: LatLng): Marker? {
-        return map.addMarker(stationDetail, latLng)
+        return map.createMarker(stationDetail, latLng)
     }
 
     fun getMarker(stationDetail: StationDetail) = map.getMarker(stationDetail)
@@ -56,15 +67,23 @@ class MarkerAction(val map: MapProxy) {
         }
     }
 
-    fun transfer(from: StationDetail, to: LatLng, removeAtEnd: Boolean) {
-        map.getMarker(from)?.let {
-            transfer(from.id, it, to, removeAtEnd)
+
+    fun transfer(from: BaseMarkerData, to: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
+        when (from) {
+            is MarkerCluster -> transfer(from, to, removeAtEnd, listener)
+            is MarkerSingle -> transfer(from.stationDetail, to, removeAtEnd, listener)
         }
     }
 
-    fun transfer(from: MarkerCluster, to: LatLng, removeAtEnd: Boolean) {
+    fun transfer(from: StationDetail, to: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
         map.getMarker(from)?.let {
-            transfer(from.getId(), it, to, removeAtEnd)
+            transfer(from.id, it, to, removeAtEnd, listener)
+        }
+    }
+
+    fun transfer(from: MarkerCluster, to: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
+        map.getMarker(from)?.let {
+            transfer(from.getId(), it, to, removeAtEnd, listener)
         }
     }
 
@@ -78,6 +97,21 @@ class MarkerAction(val map: MapProxy) {
         }
     }
 
+    fun cosp(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>) {
+        map.forEach {
+            val toLatLng = it.key
+            it.value.forEach { itemCluster ->
+                transfer(itemCluster, toLatLng, true, object : Animation.AnimationListener{
+                    override fun onAnimationStart() {
+                    }
+                    override fun onAnimationEnd() {
+                        addCluster(added)
+                    }
+                })
+            }
+        }
+    }
+
     fun exp(map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
         map.forEach {
             val fromLatLng = it.key
@@ -85,15 +119,7 @@ class MarkerAction(val map: MapProxy) {
                 when (itemCluster) {
                     is MarkerCluster -> {
                         val mark = addCluster(itemCluster, fromLatLng)
-                        if (mark == null) {
-                            // cluster已存在，刷新
-                            this.map.stationToClusterOptions(
-                                itemCluster.getSize(),
-                                itemCluster.getLatlng()!!
-                            ).let {
-                                getMarker(itemCluster)?.setMarkerOptions(it)
-                            }
-                        } else {
+                        if (mark != null) {
                             // cluster不存在，创建并播放动画
                             itemCluster.getStation()?.let {
                                 transfer(itemCluster, it.toLatLng(), false)
@@ -110,7 +136,6 @@ class MarkerAction(val map: MapProxy) {
                                 false
                             )
                         }
-
                     }
                 }
             }
@@ -120,7 +145,7 @@ class MarkerAction(val map: MapProxy) {
 
     }
 
-    fun transfer(id: String?, marker: Marker, moveTo: LatLng, removeAtEnd: Boolean) {
+    fun transfer(id: String?, marker: Marker, moveTo: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
         val set = AnimationSet(true)
         set.addAnimation(TranslateAnimation(moveTo).apply {
             this.setInterpolator(AccelerateInterpolator())
@@ -132,6 +157,7 @@ class MarkerAction(val map: MapProxy) {
 
                     override fun onAnimationEnd() {
                         map.deleteMarker(id)
+                        listener?.onAnimationEnd()
                     }
                 })
             }

@@ -11,10 +11,10 @@ import com.polestar.repository.data.charging.StationDetail
 class MapProxy(private val map: AMap, private val context: Context) {
     val set = HashMap<String, Marker>()
 
-    fun addMarker(station: StationDetail): Marker? {
+    fun createMarker(station: StationDetail): Marker? {
         val id = station.id!!
         if (set.containsKey(id).not()) {
-            return addMarker(stationToMarkerOptions(station))?.also {
+            return createMarker(stationToMarkerOptions(station))?.also {
                 set.put(id, it)
             }
         }
@@ -24,22 +24,27 @@ class MapProxy(private val map: AMap, private val context: Context) {
     /**
      * latLng is start position
      */
-    fun addMarker(station: StationDetail, latLng: LatLng): Marker? {
+    fun createMarker(station: StationDetail, latLng: LatLng): Marker? {
         val id = station.id!!
         if (set.containsKey(id).not()) {
-            return addMarker(stationToMarkerOptions(station, latLng))?.also {
+            return createMarker(stationToMarkerOptions(station, latLng))?.also {
                 set.put(id, it)
             }
         }
         return null
     }
 
-    fun addCluster(id: String, size: Int, latLng: LatLng?): Marker? {
-        latLng?.let { latLng ->
+    fun createOrUpdateCluster(id: String, size: Int, latLng: LatLng?): Marker? {
+        latLng?.let { latLngNotNull ->
             if (set.containsKey(id).not()) {
-                return addMarker(stationToClusterOptions(size, latLng))?.also {
-                    set.put(id, it)
+                // add
+                return createMarker(stationToClusterOptions(size, latLngNotNull))?.also {
+                    set[id] = it
                 }
+            } else {
+                // update
+                set[id]?.setMarkerOptions(stationToClusterOptions(size, latLngNotNull))
+                return null
             }
         }
         return null
@@ -55,7 +60,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
         }
     }
 
-    private fun addMarker(markerOptions: MarkerOptions): Marker? {
+    private fun createMarker(markerOptions: MarkerOptions): Marker? {
         return map.addMarker(markerOptions)
     }
 

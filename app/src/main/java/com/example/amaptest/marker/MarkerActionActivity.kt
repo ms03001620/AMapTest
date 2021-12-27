@@ -60,6 +60,11 @@ class MarkerActionActivity : AppCompatActivity() {
             markerAction.exp(map)
         }
 
+        override fun onClusterMoveToAndRemove(map: HashMap<LatLng, MutableList<BaseMarkerData>>,
+                                              added: MutableList<BaseMarkerData>) {
+            markerAction.cosp(map, added)
+        }
+
         override fun onClusterRemoved(removed: MutableList<BaseMarkerData>) {
             markerAction.removed(removed)
         }
