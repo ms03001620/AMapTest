@@ -22,12 +22,12 @@ class MarkerActionViewModel : ViewModel() {
 
     fun loadDefault(context: Context){
         viewModelScope.launch(Dispatchers.IO) {
-            AssetsReadUtils.mockStation(context, "json_stations.json")?.let { data->
+            AssetsReadUtils.mockStation(context, "json_stations570.json")?.let { data->
                 data.map {
                     StationClusterItem(it)
                 }.let {
-                    clusterAlgorithm.feed(it.subList(0, 8))
-                    //clusterAlgorithm.feed(it)
+                    //clusterAlgorithm.feed(it.subList(0, 8))
+                    clusterAlgorithm.feed(it)
                 }
             }
         }

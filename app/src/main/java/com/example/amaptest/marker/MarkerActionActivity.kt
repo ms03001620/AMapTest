@@ -100,7 +100,7 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_del).setOnClickListener {
-            markerAction.delete(stations[0])
+            markerAction.delete(stations[0].id!!)
         }
     }
 
@@ -187,7 +187,7 @@ class MarkerActionActivity : AppCompatActivity() {
     private fun moveCameraToDataArea() {
         mMapView.map.moveCamera(
             // 12f -> 13f  cluster(1->2)
-            CameraUpdateFactory.newLatLngZoom(LatLng(DEFAULT_LAT,DEFAULT_LNG), 15f)
+            CameraUpdateFactory.newLatLngZoom(LatLng(DEFAULT_LAT,DEFAULT_LNG), 10f)
         )
     }
 

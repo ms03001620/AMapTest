@@ -9,7 +9,7 @@ import com.example.amaptest.R
 import com.polestar.repository.data.charging.StationDetail
 
 class MapProxy(private val map: AMap, private val context: Context) {
-    val set = HashMap<String, Marker>()
+    private val set = HashMap<String, Marker>()
 
     fun createMarker(station: StationDetail, latLng: LatLng? = null): Marker? {
         station.id?.let { id ->
@@ -38,14 +38,8 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return null
     }
 
-    fun deleteMarker(station: StationDetail) {
-        deleteMarker(station.id)
-    }
-
     fun deleteMarker(id: String?) {
-        set.remove(id)?.let {
-            it.remove()
-        }
+        set.remove(id)?.remove()
     }
 
     private fun createMarker(markerOptions: MarkerOptions): Marker? {

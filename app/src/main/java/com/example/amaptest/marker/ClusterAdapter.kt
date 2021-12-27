@@ -2,6 +2,7 @@ package com.example.amaptest.marker
 
 import androidx.annotation.VisibleForTesting
 import com.amap.api.maps.model.LatLng
+import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import kotlin.collections.HashMap
@@ -17,12 +18,16 @@ class ClusterAdapter(val action: OnClusterAction?) {
     var prev: MutableList<BaseMarkerData>? = null
     var lastZoom = 0f
 
-    fun queue(set: MutableList<BaseMarkerData>?, zoom: Float) {
+
+    fun process(set: MutableList<BaseMarkerData>?, zoom: Float) {
         val isZoomIn = zoom> lastZoom
         lastZoom = zoom
 
         set?.let {
-            if (prev == null) {
+            if (prev == null || isSameData(prev!!, set)) {
+                prev?.let {
+                    logd("same:${isSameData(it, set)}", "queue")
+                }
                 action?.noChange(it)
             } else {
                 if (isZoomIn) {
@@ -33,6 +38,12 @@ class ClusterAdapter(val action: OnClusterAction?) {
             }
             prev = it
         }
+    }
+
+    fun queue(set: MutableList<BaseMarkerData>?, zoom: Float) {
+        val start = System.currentTimeMillis()
+        process(set, zoom)
+        logd("queue spend:${System.currentTimeMillis() - start}")
     }
 
     private fun processZoomOut(curr: MutableList<BaseMarkerData>) {

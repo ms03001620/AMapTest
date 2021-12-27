@@ -124,8 +124,8 @@ class MarkerAction(val map: MapProxy) {
         marker.startAnimation()
     }
 
-    fun delete(stationDetail: StationDetail) {
-        map.deleteMarker(stationDetail)
+    fun delete(id: String) {
+        map.deleteMarker(id)
     }
 
     companion object {
