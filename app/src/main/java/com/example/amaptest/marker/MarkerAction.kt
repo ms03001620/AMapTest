@@ -14,35 +14,17 @@ class MarkerAction(val map: MapProxy) {
 
     fun setList(data: MutableList<BaseMarkerData>) {
         map.clear()
-        data.forEach {
-            when (it) {
-                is MarkerCluster -> {
-                    addCluster(it)
-                }
-                is MarkerSingle -> {
-                    addCluster(it)
-                }
+        addCluster(data)
+    }
+
+    fun addCluster(baseMarkerDataList: MutableList<BaseMarkerData>): List<Marker?> {
+        return baseMarkerDataList.map {
+            when(it){
+                is MarkerSingle -> addMarker(it.stationDetail)
+                is MarkerCluster -> addCluster(it)
+                else -> null
             }
         }
-    }
-
-    fun addCluster(markerSingle: MutableList<BaseMarkerData>): List<Marker?> {
-        return markerSingle.map {
-            addCluster(it)
-        }
-    }
-
-    fun addCluster(markerSingle: BaseMarkerData): Marker? {
-        return when(markerSingle){
-            is MarkerSingle -> addCluster(markerSingle)
-            is MarkerCluster -> addCluster(markerSingle)
-            else -> null
-        }
-    }
-
-
-    fun addCluster(markerSingle: MarkerSingle): Marker? {
-        return addMarker(markerSingle.stationDetail)
     }
 
     fun addCluster(cluster: MarkerCluster, redirectLatLng: LatLng? = null): Marker? {
