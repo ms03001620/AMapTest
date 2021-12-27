@@ -92,11 +92,11 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_move).setOnClickListener {
-            markerAction.transfer(stations[0], stations[1], false)
+            markerAction.transfer(stations[0].id!!, stations[1], false)
         }
 
         findViewById<View>(R.id.btn_move_delete).setOnClickListener {
-            markerAction.transfer(stations[0], stations[1], true)
+            markerAction.transfer(stations[0].id!!, stations[1], true)
         }
 
         findViewById<View>(R.id.btn_del).setOnClickListener {

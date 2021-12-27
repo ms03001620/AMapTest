@@ -94,12 +94,13 @@ class MapProxy(private val map: AMap, private val context: Context) {
         .icon(getCollapsedBitmapDescriptor((station.acTotal ?: 0 + station.dcTotal!!).toString()))
         .infoWindowEnable(true)
 
-    fun getMarker(stationDetail: StationDetail): Marker? {
-        return set.getOrDefault(stationDetail.id, null)
+
+    fun getMarker(id: String): Marker? {
+        return set.getOrDefault(id, null)
     }
 
-    fun getMarker(cluster: MarkerCluster): Marker? {
-        return set.getOrDefault(cluster.getId(), null)
+    fun getMarker(baseMarkerData: BaseMarkerData): Marker? {
+        return set.getOrDefault(baseMarkerData.getId(), null)
     }
 
     fun clear() {

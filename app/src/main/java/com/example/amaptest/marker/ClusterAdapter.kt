@@ -1,5 +1,6 @@
 package com.example.amaptest.marker
 
+import androidx.annotation.VisibleForTesting
 import com.amap.api.maps.model.LatLng
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.StationClusterItem
@@ -21,11 +22,16 @@ class ClusterAdapter(val action: OnClusterAction?) {
         lastZoom = zoom
 
         set?.let {
-            if (isZoomIn) {
-                process(it)
+            if (prev == null) {
+                action?.noChange(it)
             } else {
-                processZoomOut(it)
+                if (isZoomIn) {
+                    processZoomIn(it)
+                } else {
+                    processZoomOut(it)
+                }
             }
+            prev = it
         }
     }
 
@@ -33,23 +39,31 @@ class ClusterAdapter(val action: OnClusterAction?) {
         prev?.let {
             val collapsed = createCollapsedTask(it, curr)
             action?.onClusterMoveToAndRemove(collapsed, curr)
-        } ?: run {
-            action?.noChange(curr)
         }
-        prev = curr
     }
 
-    fun process(curr: MutableList<BaseMarkerData>) {
+    fun processZoomIn(curr: MutableList<BaseMarkerData>) {
         prev?.let {
             val exp = createExpTask(it, curr)
             val removed = createRemoveTask(it, curr)
             action?.onClusterCreateAndMoveTo(removed, exp)
-        } ?: run {
-            action?.noChange(curr)
         }
-        prev = curr
     }
 
+    fun isSameData(
+        prev: MutableList<BaseMarkerData>,
+        curr: MutableList<BaseMarkerData>
+    ): Boolean {
+        if (prev.size == curr.size) {
+            val clusterPrev = prev.filterIsInstance<MarkerCluster>()
+            val clusterCurr = curr.filterIsInstance<MarkerCluster>()
+
+            if(clusterPrev.size == clusterCurr.size){
+                return true
+            }
+        }
+        return false
+    }
 
     fun createRemoveTask(
         prev: MutableList<BaseMarkerData>,
@@ -187,6 +201,11 @@ class ClusterAdapter(val action: OnClusterAction?) {
         }.containsAll(childIds).let {
             return it
         }
+    }
+
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun setPrevData(prevCluster: MutableList<BaseMarkerData>) {
+        prev = prevCluster
     }
 
 }

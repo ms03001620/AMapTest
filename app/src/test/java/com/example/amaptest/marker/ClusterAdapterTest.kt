@@ -43,8 +43,8 @@ class ClusterAdapterTest {
             stationsList.subList(1, 20)
         )
 
-        adapter.process(prevCluster)
-        adapter.process(currentCluster)
+        adapter.setPrevData(prevCluster)
+        adapter.processZoomIn(currentCluster)
         assertEquals(1, result?.size ?: 0)
         assertEquals(2, (result?.get(prevCluster[0].getLatlng())?.size ?: 0))
     }
@@ -84,6 +84,40 @@ class ClusterAdapterTest {
 
         assertEquals(1, task.size)
         assertEquals(3, task.values.first().size)
+    }
+
+    @Test
+    fun isSameData() {
+        assertFalse(
+            ClusterAdapter(null).isSameData(
+                mock(stationsList.subList(0, 1)),
+                mock(stationsList.subList(0, 2))
+            )
+        )
+
+        assertFalse(
+            ClusterAdapter(null).isSameData(
+                mock(
+                    stationsList.subList(0, 1),
+                    stationsList.subList(1, 2),
+                    stationsList.subList(2, 3)
+                ), mock(stationsList.subList(0, 3))
+            )
+        )
+
+        assertTrue(
+            ClusterAdapter(null).isSameData(
+                mock(stationsList.subList(0, 3)),
+                mock(stationsList.subList(0, 3))
+            )
+        )
+
+        assertTrue(
+            ClusterAdapter(null).isSameData(
+                mock(stationsList.subList(0, 1)),
+                mock(stationsList.subList(0, 1))
+            )
+        )
     }
 
     @Test

@@ -17,12 +17,11 @@ class MarkerAction(val map: MapProxy) {
         addCluster(data)
     }
 
-    fun addCluster(baseMarkerDataList: MutableList<BaseMarkerData>): List<Marker?> {
-        return baseMarkerDataList.map {
-            when(it){
+    fun addCluster(baseMarkerDataList: MutableList<BaseMarkerData>) {
+        baseMarkerDataList.forEach {
+            when (it) {
                 is MarkerSingle -> addMarker(it.stationDetail)
                 is MarkerCluster -> addCluster(it)
-                else -> null
             }
         }
     }
@@ -40,26 +39,13 @@ class MarkerAction(val map: MapProxy) {
         return map.createMarker(stationDetail, latLng)
     }
 
-    fun transfer(from: StationDetail, to: StationDetail, removeAtEnd: Boolean) {
-        map.getMarker(from)?.let {
-            transfer(from.id, it, stationDetailToLatLng(to), removeAtEnd)
+    fun transfer(id: String, to: StationDetail, removeAtEnd: Boolean) {
+        map.getMarker(id)?.let {
+            transfer(id, it, stationDetailToLatLng(to), removeAtEnd)
         }
     }
 
     fun transfer(from: BaseMarkerData, to: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
-        when (from) {
-            is MarkerCluster -> transfer(from, to, removeAtEnd, listener)
-            is MarkerSingle -> transfer(from.stationDetail, to, removeAtEnd, listener)
-        }
-    }
-
-    fun transfer(from: StationDetail, to: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
-        map.getMarker(from)?.let {
-            transfer(from.id, it, to, removeAtEnd, listener)
-        }
-    }
-
-    fun transfer(from: MarkerCluster, to: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
         map.getMarker(from)?.let {
             transfer(from.getId(), it, to, removeAtEnd, listener)
         }
@@ -110,7 +96,7 @@ class MarkerAction(val map: MapProxy) {
                         logd("MarkerSingle t:$t")
                         if (t != null) {
                             transfer(
-                                itemCluster.stationDetail,
+                                itemCluster,
                                 itemCluster.stationDetail.toLatLng(),
                                 false
                             )
