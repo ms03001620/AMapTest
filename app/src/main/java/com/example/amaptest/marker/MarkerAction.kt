@@ -10,10 +10,10 @@ import com.polestar.base.utils.logd
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.toLatLng
 
-class MarkerAction(val map: MapProxy) {
+class MarkerAction(val mapProxy: MapProxy) {
 
     fun setList(data: MutableList<BaseMarkerData>) {
-        map.clear()
+        mapProxy.clear()
         addCluster(data)
     }
 
@@ -28,11 +28,11 @@ class MarkerAction(val map: MapProxy) {
 
     fun addCluster(cluster: MarkerCluster, redirectLatLng: LatLng? = null): Marker? {
         val latLng = redirectLatLng ?: cluster.getLatlng()
-        return map.createOrUpdateCluster(cluster.getId(), cluster.getSize(), latLng)
+        return mapProxy.createOrUpdateCluster(cluster.getId(), cluster.getSize(), latLng)
     }
 
     fun addMarker(stationDetail: StationDetail, latLng: LatLng? = null): Marker? {
-        return map.createMarker(stationDetail, latLng)
+        return mapProxy.createMarker(stationDetail, latLng)
     }
 
     fun transfer(
@@ -41,7 +41,7 @@ class MarkerAction(val map: MapProxy) {
         removeAtEnd: Boolean,
         listener: Animation.AnimationListener? = null
     ) {
-        map.getMarker(from)?.let {
+        mapProxy.getMarker(from)?.let {
             transfer(from.getId(), it, to, removeAtEnd, listener)
         }
     }
@@ -50,7 +50,7 @@ class MarkerAction(val map: MapProxy) {
         removed.forEach { removedItem ->
             when (removedItem) {
                 is MarkerCluster -> {
-                    map.deleteMarker(removedItem.getId())
+                    mapProxy.deleteMarker(removedItem.getId())
                 }
             }
         }
@@ -151,7 +151,7 @@ class MarkerAction(val map: MapProxy) {
                     }
 
                     override fun onAnimationEnd() {
-                        map.deleteMarker(id)
+                        mapProxy.deleteMarker(id)
                         listener?.onAnimationEnd()
                     }
                 })
