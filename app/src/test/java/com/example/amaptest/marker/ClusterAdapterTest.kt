@@ -2,6 +2,7 @@ package com.example.amaptest.marker
 
 import com.amap.api.maps.model.LatLng
 import com.example.amaptest.JsonTestUtil
+import com.example.amaptest.JsonTestUtil.mock
 import com.polestar.charging.ui.cluster.base.Cluster
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.StaticCluster
@@ -310,26 +311,6 @@ class ClusterAdapterTest {
         assertTrue(mock(stationsList.subList(0, 1))[0] is MarkerSingle)
         assertTrue(mock(stationsList.subList(0, 2))[0] is MarkerCluster)
         assertTrue(mock(stationsList, stationsList).size == 2)
-    }
-
-    private fun mock(vararg paramList: List<StationDetail>): MutableList<BaseMarkerData> {
-        hashSetOf<Cluster<ClusterItem>>().also { hash ->
-            paramList.forEach { list ->
-                var staticCluster: StaticCluster<ClusterItem>? = null
-                list.map { stationDetail ->
-                    StationClusterItem(stationDetail)
-                }.forEach { stationClusterItem ->
-                    staticCluster?.add(stationClusterItem)
-                        ?: StaticCluster<ClusterItem>(stationClusterItem.position).let {
-                            it.add(stationClusterItem)
-                            hash.add(it)
-                            staticCluster = it
-                        }
-                }
-            }
-        }.let {
-            return MarkerDataFactory.create(it)
-        }
     }
 
     private fun mockJsonData() = JsonTestUtil.readStation("json_stations.json")

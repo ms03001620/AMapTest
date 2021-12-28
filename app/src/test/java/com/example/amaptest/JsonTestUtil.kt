@@ -1,14 +1,17 @@
 package com.example.amaptest
 
 import com.amap.api.maps.model.LatLng
+import com.example.amaptest.marker.BaseMarkerData
+import com.example.amaptest.marker.MarkerDataFactory
 import com.google.gson.Gson
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.repository.data.charging.StationDetail
 import org.json.JSONArray
 import java.util.*
 import com.google.gson.reflect.TypeToken
-
-
+import com.polestar.charging.ui.cluster.base.Cluster
+import com.polestar.charging.ui.cluster.base.StaticCluster
+import com.polestar.charging.ui.cluster.base.StationClusterItem
 
 
 object JsonTestUtil {
@@ -42,6 +45,27 @@ object JsonTestUtil {
         val stream = JsonTestUtil::class.java.classLoader.getResourceAsStream(fileName)
         val json = Scanner(stream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next()
         return AssetsReadUtils.jsonToStations(json)
+    }
+
+
+    fun mock(vararg paramList: List<StationDetail>): MutableList<BaseMarkerData> {
+        hashSetOf<Cluster<ClusterItem>>().also { hash ->
+            paramList.forEach { list ->
+                var staticCluster: StaticCluster<ClusterItem>? = null
+                list.map { stationDetail ->
+                    StationClusterItem(stationDetail)
+                }.forEach { stationClusterItem ->
+                    staticCluster?.add(stationClusterItem)
+                        ?: StaticCluster<ClusterItem>(stationClusterItem.position).let {
+                            it.add(stationClusterItem)
+                            hash.add(it)
+                            staticCluster = it
+                        }
+                }
+            }
+        }.let {
+            return MarkerDataFactory.create(it)
+        }
     }
 
     class TestClusterItem(
