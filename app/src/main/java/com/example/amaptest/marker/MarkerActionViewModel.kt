@@ -26,14 +26,14 @@ class MarkerActionViewModel : ViewModel() {
             noChangeLiveData.postValue(data)
         }
 
-        override fun onClusterCreateAndMoveTo(
+        override fun exp(
             removed: MutableList<BaseMarkerData>,
             map: HashMap<LatLng, MutableList<BaseMarkerData>>
         ) {
             onClusterCreateAndMoveTo.postValue(Pair(removed, map))
         }
 
-        override fun onClusterMoveToAndRemove(
+        override fun cosp(
             map: HashMap<LatLng, MutableList<BaseMarkerData>>,
             added: MutableList<BaseMarkerData>
         ) {

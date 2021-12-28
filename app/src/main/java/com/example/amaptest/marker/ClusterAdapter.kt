@@ -16,13 +16,13 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
          * 展开，removed原节点消失， map latLng原节点地址 list各自终点
          * 原来节点先消失，然后从改节点分裂出子节点，并通过动画移动到各自终点（终点如果已存在则更新最终节点）
          */
-        fun onClusterCreateAndMoveTo(removed: MutableList<BaseMarkerData>, map: HashMap<LatLng, MutableList<BaseMarkerData>>)
+        fun exp(removed: MutableList<BaseMarkerData>, map: HashMap<LatLng, MutableList<BaseMarkerData>>)
 
         /**
          * 合拢，added合拢后形成的新节点， map LatLng合拢节点的终点， list各自的起点
          * 子节点从各自节点通过动画移动到合拢节点，消失，然后创建合拢节点
          */
-        fun onClusterMoveToAndRemove(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>)
+        fun cosp(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>)
     }
 
     var prev: MutableList<BaseMarkerData>? = null
@@ -59,7 +59,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     private fun processZoomOut(curr: MutableList<BaseMarkerData>) {
         prev?.let {
             val collapsed = createCollapsedTask(it, curr)
-            action?.onClusterMoveToAndRemove(collapsed, curr)
+            action?.cosp(collapsed, curr)
         }
     }
 
@@ -67,7 +67,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         prev?.let {
             val exp = createExpTask(it, curr)
             val removed = createRemoveTask(it, curr)
-            action?.onClusterCreateAndMoveTo(removed, exp)
+            action?.exp(removed, exp)
         }
     }
 

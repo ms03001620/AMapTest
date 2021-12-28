@@ -86,6 +86,9 @@ class MarkerAction(val mapProxy: MapProxy) {
             //合拢节点
             val toLatLng = it.key
             it.value.forEach { itemCluster ->
+
+                logd("___ ${itemCluster.getLatlng()}, to $toLatLng, ${itemCluster.javaClass.simpleName}")
+
                 transfer(
                     itemCluster,
                     toLatLng,
