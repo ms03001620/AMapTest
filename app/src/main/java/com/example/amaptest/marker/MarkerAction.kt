@@ -9,6 +9,7 @@ import com.amap.api.maps.model.animation.TranslateAnimation
 import com.polestar.base.utils.logd
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.toLatLng
+import java.lang.UnsupportedOperationException
 
 class MarkerAction(val mapProxy: MapProxy) {
 
@@ -47,12 +48,11 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     fun removed(removed: MutableList<BaseMarkerData>) {
-        removed.forEach { removedItem ->
-            when (removedItem) {
-                is MarkerCluster -> {
-                    mapProxy.deleteMarker(removedItem.getId())
-                }
+        removed.forEach {
+            if(it is MarkerSingle){
+                throw UnsupportedOperationException("new case")
             }
+            mapProxy.deleteMarker(it.getId())
         }
     }
 
