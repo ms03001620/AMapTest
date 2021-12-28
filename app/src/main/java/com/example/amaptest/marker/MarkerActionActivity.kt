@@ -35,18 +35,14 @@ class MarkerActionActivity : AppCompatActivity() {
 
     lateinit var mMapView: MapView
     lateinit var mMapProxy: MapProxy
-    lateinit var stations: List<StationDetail>
     lateinit var markerAction: MarkerAction
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_marker_action)
-        initData()
         setupMap(savedInstanceState)
         initZoomBtn()
         moveCameraToDataArea()
-        initBtns()
-        initClusterBtns()
         initObserver()
     }
 
@@ -77,68 +73,6 @@ class MarkerActionActivity : AppCompatActivity() {
                 mMapView.map
             )
         }
-    }
-
-    var currcentMarker: Marker? = null
-
-    fun initBtns() {
-        findViewById<View>(R.id.btn_add).setOnClickListener {
-            currcentMarker = markerAction.addMarker(stations[0])
-        }
-
-        findViewById<View>(R.id.btn_move).setOnClickListener {
-            markerAction.transfer(stations[0].id!!, stationDetailToLatLng(stations[1]), false)
-        }
-
-        findViewById<View>(R.id.btn_move_delete).setOnClickListener {
-            markerAction.transfer(stations[0].id!!, stationDetailToLatLng(stations[1]), true)
-        }
-
-        findViewById<View>(R.id.btn_del).setOnClickListener {
-            markerAction.delete(stations[0].id!!)
-        }
-    }
-
-    fun initClusterBtns() {
-        findViewById<View>(R.id.btn_add_cluster).setOnClickListener {
-            mutableListOf<StationDetail>().also {
-                it.add(stations[0])
-            }.map {
-                StationClusterItem(it)
-            }.first().let {
-                val ss = it
-                hashSetOf<Cluster<ClusterItem>>().also { hash ->
-                    StaticCluster<ClusterItem>(it.position).let {
-                        it.add(ss)
-                        hash.add(it)
-                    }
-                }
-            }.let {
-                MarkerCluster(it.first())
-            }.let {
-                markerAction.addCluster(it)
-            }
-        }
-
-        findViewById<View>(R.id.btn_move_cluster).setOnClickListener {
-            //markerAction.transfer(stations[0], stations[1], false)
-        }
-
-        findViewById<View>(R.id.btn_move_delete_cluster).setOnClickListener {
-            //markerAction.transfer(stations[0], stations[1], true)
-        }
-
-        findViewById<View>(R.id.btn_del_cluster).setOnClickListener {
-            //markerAction.delete(stations[0])
-        }
-    }
-
-
-    fun initData() {
-        AssetsReadUtils.mockStation(this, "json_stations.json")?.let {
-            stations = it.subList(0, 2)
-        }
-        Log.d("MainActivity", "stations:$stations")
     }
 
     fun setupMap(savedInstanceState: Bundle?) {
@@ -213,9 +147,6 @@ class MarkerActionActivity : AppCompatActivity() {
             }
         }
     }
-
-    fun stationDetailToLatLng(stationDetail: StationDetail) =
-        LatLng(stationDetail.lat ?: Double.NaN, stationDetail.lng ?: Double.NaN)
 
     private fun initZoomBtn() {
         findViewById<View>(R.id.btn_zoom_in)?.setOnClickListener {
