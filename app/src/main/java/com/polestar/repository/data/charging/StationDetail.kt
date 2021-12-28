@@ -88,6 +88,8 @@ fun StationDetail.isValid() = status == VALUE_VALID
 
 fun StationDetail.freeAcDcAll() = (freeAcTotal ?: 0) + (freeDcTotal ?: 0)
 
+fun StationDetail.showMarker() = (acTotal ?: 0 + dcTotal!!).toString()
+
 fun StationDetail.getDetailImages(): MutableList<StationImage> {
     val data = mutableListOf<StationImage>()
     imgList?.filterNot {

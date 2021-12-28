@@ -7,6 +7,7 @@ import com.amap.api.maps.AMap
 import com.amap.api.maps.model.*
 import com.example.amaptest.R
 import com.polestar.repository.data.charging.StationDetail
+import com.polestar.repository.data.charging.showMarker
 
 class MapProxy(private val map: AMap, private val context: Context) {
     private val set = HashMap<String, Marker>()
@@ -69,7 +70,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
     private fun stationToMarkerOptions(station: StationDetail, latLng: LatLng? = null) =
         MarkerOptions()
             .position(latLng ?: LatLng(station.lat ?: Double.NaN, station.lng ?: Double.NaN))
-            .icon(getCollapsedBitmapDescriptor((station.acTotal ?: 0 + station.dcTotal!!).toString()))
+            .icon(getCollapsedBitmapDescriptor(station.showMarker()))
             .infoWindowEnable(true)
 
     fun getMarker(id: String): Marker? {
