@@ -145,21 +145,26 @@ class ClusterAdapter(val action: OnClusterAction?) {
     }
 
     fun findPrevLatLng(prev: MutableList<BaseMarkerData>, target: BaseMarkerData): LatLng? {
-        prev.forEach { element ->
-            val fromLatLng = element.getLatlng()
-            when (element) {
+        prev.forEach { prevElement ->
+            val fromLatLng = prevElement.getLatlng()
+            when (prevElement) {
                 is MarkerCluster -> {
                     when (target) {
                         is MarkerSingle -> {
-                            if (isAllInBaseMarker(element.list.items, target)) {
+                            if (isAllInBaseMarker(prevElement.list.items, target)) {
                                 return fromLatLng
                             }
                         }
                         is MarkerCluster -> {
-                            if (isAllInTarget(element.list.items, target.list.items)) {
+                            if (isAllInTarget(prevElement.list.items, target.list.items)) {
                                 return fromLatLng
                             }
                         }
+                    }
+                }
+                is MarkerSingle -> {
+                    if (prevElement.getId() == target.getId()) {
+                        return fromLatLng
                     }
                 }
             }
@@ -170,24 +175,22 @@ class ClusterAdapter(val action: OnClusterAction?) {
 
     fun isAllInBaseMarker(
         parent: MutableCollection<ClusterItem>?,
-        child: BaseMarkerData?
+        child: MarkerSingle?
     ): Boolean {
         if (parent == null || child == null) {
             return false
         }
 
-        if (child is MarkerSingle) {
-            child.stationDetail.id?.let { targetId ->
-                parent.filter {
-                    (it as StationClusterItem).stationDetail.id != null
-                }.map {
-                    (it as StationClusterItem).stationDetail.id!!
-                }.contains(targetId).let {
-                    return it
-                }
+        child.stationDetail.id?.let { targetId ->
+            parent.filter {
+                (it as StationClusterItem).stationDetail.id != null
+            }.map {
+                (it as StationClusterItem).stationDetail.id!!
+            }.contains(targetId).let {
+                return it
             }
-
         }
+
         return false
     }
 

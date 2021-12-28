@@ -1,0 +1,676 @@
+[
+  {
+    "id": "daf05c39-dd82-4bcc-9358-c67510b6b71d",
+    "stationid": "GWDD-310101MA002TMQX0018",
+    "providerNo": "GWDD",
+    "providerName": "国网电动",
+    "stationNo": "310101MA002TMQX0018",
+    "stationName": "上海黄浦区领展企业广场（B2）电动汽车充电站",
+    "lng": 121.476231,
+    "lat": 31.22128,
+    "acTotal": 0,
+    "dcTotal": 8,
+    "address": "湖滨路222号（B2）",
+    "regionCode": "310000",
+    "imgList": [],
+    "serviceTime": "00:00:00-23:59:59",
+    "stubGroupType": 0,
+    "stubGroupStatus": 1,
+    "parkingFeeInfo": "15元/时（参照停车场实际费用）",
+    "electricFee": [
+      {
+        "endTime": "24:00",
+        "startTime": "00:00",
+        "outFeeService": 80,
+        "outFeeElectric": 70
+      }
+    ],
+    "supportCarType": 0,
+    "parkingFeeType": 0,
+    "distance": 1056.51310193,
+    "price": 150,
+    "isFree": true,
+    "creator": 1,
+    "updater": 1,
+    "createDate": "2021-11-03T20:35:03.063Z",
+    "updateDate": "2021-11-23T20:35:07.210Z",
+    "gunKw": [
+      {
+        "kw": 60,
+        "type": 1
+      }
+    ],
+    "status": 1,
+    "freeAcTotal": 0,
+    "freeDcTotal": 8,
+    "favorites": 0,
+    "tagList": ""
+  },
+  {
+    "id": "b5528ed2-63ce-4613-b486-5b29b67b06fc",
+    "stationid": "OPEN_TLD-3101010054",
+    "providerNo": "OPEN_TLD",
+    "providerName": "特来电新能源",
+    "stationNo": "3101010054",
+    "stationName": "上海新天地湖滨道购物中心充电站",
+    "lng": 121.478865,
+    "lat": 31.221485,
+    "acTotal": 0,
+    "dcTotal": 4,
+    "address": "上海市市辖区黄浦区湖滨路150号",
+    "regionCode": "310000",
+    "imgList": [
+      "https://resource.teld.cn/teldimage/134/4f790c46ae254ac286677d508aa5ea71.jpg"
+    ],
+    "serviceTime": "周一至周日00:00-24:00",
+    "stubGroupType": 0,
+    "stubGroupStatus": 1,
+    "parkingFeeInfo": "停车收费,20元/小时",
+    "electricFee": [
+      {
+        "endTime": "24:00",
+        "startTime": "00:00",
+        "outFeeService": 80,
+        "outFeeElectric": 112
+      }
+    ],
+    "supportCarType": 0,
+    "parkingFeeType": 0,
+    "distance": 1120.14501882,
+    "price": 192,
+    "isFree": true,
+    "creator": 1,
+    "updater": 1,
+    "createDate": "2021-11-03T20:35:03.063Z",
+    "updateDate": "2021-11-23T20:35:13.298Z",
+    "gunKw": [
+      {
+        "kw": 150,
+        "type": 1
+      }
+    ],
+    "status": 1,
+    "freeAcTotal": 0,
+    "freeDcTotal": 4,
+    "favorites": 0,
+    "tagList": ""
+  },
+  {
+    "id": "54e0ffa6-25ca-4175-88af-cc57e0b29f46",
+    "stationid": "GWDD-310101MA002TMQX0002",
+    "providerNo": "GWDD",
+    "providerName": "国网电动",
+    "stationNo": "310101MA002TMQX0002",
+    "stationName": "上海黄浦区企业天地电动汽车充电站",
+    "lng": 121.477279,
+    "lat": 31.220805,
+    "acTotal": 8,
+    "dcTotal": 8,
+    "address": "湖滨路150号企业天地2期地下三层停车场",
+    "regionCode": "310000",
+    "imgList": [],
+    "serviceTime": "00:00:00-23:59:59",
+    "stubGroupType": 0,
+    "stubGroupStatus": 1,
+    "parkingFeeInfo": "20元/小时（参照停车场实际费用）",
+    "electricFee": [
+      {
+        "endTime": "06:00",
+        "startTime": "00:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "08:00",
+        "startTime": "06:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "11:00",
+        "startTime": "08:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "13:00",
+        "startTime": "11:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "15:00",
+        "startTime": "13:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "18:00",
+        "startTime": "15:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "21:00",
+        "startTime": "18:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "22:00",
+        "startTime": "21:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "24:00",
+        "startTime": "22:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      }
+    ],
+    "supportCarType": 0,
+    "parkingFeeType": 0,
+    "distance": 1134.07369446,
+    "price": 144.5,
+    "isFree": true,
+    "creator": 1,
+    "updater": 1,
+    "createDate": "2021-11-03T20:35:03.063Z",
+    "updateDate": "2021-11-23T20:35:07.210Z",
+    "gunKw": [
+      {
+        "kw": 60,
+        "type": 1
+      },
+      {
+        "kw": 7,
+        "type": 0
+      }
+    ],
+    "status": 1,
+    "freeAcTotal": 8,
+    "freeDcTotal": 8,
+    "favorites": 0,
+    "tagList": ""
+  },
+  {
+    "id": "c2c84c7d-4f86-4d54-9b19-c2bf6a4bf4d3",
+    "stationid": "GWDD-310101MA002TMQX0030",
+    "providerNo": "GWDD",
+    "providerName": "国网电动",
+    "stationNo": "310101MA002TMQX0030",
+    "stationName": "上海黄浦区湖滨道电动汽车充电点",
+    "lng": 121.478971,
+    "lat": 31.220984,
+    "acTotal": 0,
+    "dcTotal": 5,
+    "address": "湖滨路150号B3地库",
+    "regionCode": "310000",
+    "imgList": [],
+    "serviceTime": "00:00:00-23:59:59",
+    "stubGroupType": 0,
+    "stubGroupStatus": 1,
+    "parkingFeeInfo": "15元/时（参照停车场实际费用）",
+    "electricFee": [
+      {
+        "endTime": "06:00",
+        "startTime": "00:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "08:00",
+        "startTime": "06:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "11:00",
+        "startTime": "08:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "13:00",
+        "startTime": "11:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "15:00",
+        "startTime": "13:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "18:00",
+        "startTime": "15:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "21:00",
+        "startTime": "18:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "22:00",
+        "startTime": "21:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "24:00",
+        "startTime": "22:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      }
+    ],
+    "supportCarType": 0,
+    "parkingFeeType": 0,
+    "distance": 1174.68799018,
+    "price": 194.5,
+    "isFree": true,
+    "creator": 1,
+    "updater": 1,
+    "createDate": "2021-11-03T20:35:03.063Z",
+    "updateDate": "2021-11-23T20:35:10.257Z",
+    "gunKw": [
+      {
+        "kw": 60,
+        "type": 1
+      }
+    ],
+    "status": 1,
+    "freeAcTotal": 0,
+    "freeDcTotal": 5,
+    "favorites": 0,
+    "tagList": ""
+  },
+  {
+    "id": "1452441f-2fca-44f2-adf1-fce7007707cc",
+    "stationid": "GWDD-310101MA002TMQX0027",
+    "providerNo": "GWDD",
+    "providerName": "国网电动",
+    "stationNo": "310101MA002TMQX0027",
+    "stationName": "上海黄浦区新天地南里2号电动汽车充电点",
+    "lng": 121.474778,
+    "lat": 31.219555,
+    "acTotal": 0,
+    "dcTotal": 1,
+    "address": "马当路179号南里车库",
+    "regionCode": "310000",
+    "imgList": [],
+    "serviceTime": "08:30:00-17:00:00",
+    "stubGroupType": 0,
+    "stubGroupStatus": 1,
+    "parkingFeeInfo": "20元/小时（参照停车场实际费用）",
+    "electricFee": [
+      {
+        "endTime": "06:00",
+        "startTime": "00:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "08:00",
+        "startTime": "06:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "11:00",
+        "startTime": "08:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "13:00",
+        "startTime": "11:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "15:00",
+        "startTime": "13:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "18:00",
+        "startTime": "15:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "21:00",
+        "startTime": "18:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "22:00",
+        "startTime": "21:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "24:00",
+        "startTime": "22:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      }
+    ],
+    "supportCarType": 0,
+    "parkingFeeType": 0,
+    "distance": 1224.37603813,
+    "price": 194.5,
+    "isFree": true,
+    "creator": 1,
+    "updater": 1,
+    "createDate": "2021-11-03T20:35:03.063Z",
+    "updateDate": "2021-11-23T20:35:10.257Z",
+    "gunKw": [
+      {
+        "kw": 60,
+        "type": 1
+      }
+    ],
+    "status": 1,
+    "freeAcTotal": 0,
+    "freeDcTotal": 1,
+    "favorites": 0,
+    "tagList": ""
+  },
+  {
+    "id": "bb6e762c-8a65-4707-a786-74a98174a81e",
+    "stationid": "GWDD-310101MA002TMQX0010",
+    "providerNo": "GWDD",
+    "providerName": "国网电动",
+    "stationNo": "310101MA002TMQX0010",
+    "stationName": "上海黄浦区新天地南里电动汽车充电站",
+    "lng": 121.474778,
+    "lat": 31.219555,
+    "acTotal": 7,
+    "dcTotal": 8,
+    "address": "马当路179号南里车库",
+    "regionCode": "310000",
+    "imgList": [],
+    "serviceTime": "08:30:00-17:00:00",
+    "stubGroupType": 0,
+    "stubGroupStatus": 1,
+    "parkingFeeInfo": "20元小时（参照停车场实际费用）",
+    "electricFee": [
+      {
+        "endTime": "06:00",
+        "startTime": "00:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "08:00",
+        "startTime": "06:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "11:00",
+        "startTime": "08:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "13:00",
+        "startTime": "11:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "15:00",
+        "startTime": "13:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "18:00",
+        "startTime": "15:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "21:00",
+        "startTime": "18:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "22:00",
+        "startTime": "21:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "24:00",
+        "startTime": "22:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      }
+    ],
+    "supportCarType": 0,
+    "parkingFeeType": 0,
+    "distance": 1224.37603813,
+    "price": 144.5,
+    "isFree": true,
+    "creator": 1,
+    "updater": 1,
+    "createDate": "2021-11-03T20:35:03.063Z",
+    "updateDate": "2021-11-23T20:35:10.257Z",
+    "gunKw": [
+      {
+        "kw": 7,
+        "type": 0
+      },
+      {
+        "kw": 60,
+        "type": 1
+      }
+    ],
+    "status": 1,
+    "freeAcTotal": 7,
+    "freeDcTotal": 8,
+    "favorites": 0,
+    "tagList": ""
+  },
+  {
+    "id": "ea6a3946-5fbb-4149-b68f-30699bdd64c5",
+    "stationid": "GWDD-310101MA002TMQX0028",
+    "providerNo": "GWDD",
+    "providerName": "国网电动",
+    "stationNo": "310101MA002TMQX0028",
+    "stationName": "上海黄浦区太平桥电动汽车充电点",
+    "lng": 121.476741,
+    "lat": 31.218953,
+    "acTotal": 0,
+    "dcTotal": 3,
+    "address": "自忠路170号太平桥地下车库",
+    "regionCode": "310000",
+    "imgList": [],
+    "serviceTime": "00:00:00-23:59:59",
+    "stubGroupType": 0,
+    "stubGroupStatus": 1,
+    "parkingFeeInfo": "15元/时（参照停车场实际费用）",
+    "electricFee": [
+      {
+        "endTime": "06:00",
+        "startTime": "00:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "08:00",
+        "startTime": "06:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "11:00",
+        "startTime": "08:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "13:00",
+        "startTime": "11:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "15:00",
+        "startTime": "13:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "18:00",
+        "startTime": "15:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "21:00",
+        "startTime": "18:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "22:00",
+        "startTime": "21:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "24:00",
+        "startTime": "22:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      }
+    ],
+    "supportCarType": 0,
+    "parkingFeeType": 0,
+    "distance": 1319.53125039,
+    "price": 194.5,
+    "isFree": true,
+    "creator": 1,
+    "updater": 1,
+    "createDate": "2021-11-03T20:35:03.063Z",
+    "updateDate": "2021-11-23T20:35:10.257Z",
+    "gunKw": [
+      {
+        "kw": 60,
+        "type": 1
+      }
+    ],
+    "status": 1,
+    "freeAcTotal": 0,
+    "freeDcTotal": 3,
+    "favorites": 0,
+    "tagList": ""
+  },
+  {
+    "id": "53728bf5-cf5a-4b1f-a53d-4ff7b8cd5812",
+    "stationid": "GWDD-310101MA002TMQX0031",
+    "providerNo": "GWDD",
+    "providerName": "国网电动",
+    "stationNo": "310101MA002TMQX0031",
+    "stationName": "上海黄浦区新天地时尚电动汽车充电站",
+    "lng": 121.47488,
+    "lat": 31.216851,
+    "acTotal": 0,
+    "dcTotal": 8,
+    "address": "上海市黄浦区马当路425号",
+    "regionCode": "310000",
+    "imgList": [],
+    "serviceTime": "00:00:00-23:59:59",
+    "stubGroupType": 0,
+    "stubGroupStatus": 1,
+    "parkingFeeInfo": "20元/小时（参照停车场实际费用）",
+    "electricFee": [
+      {
+        "endTime": "06:00",
+        "startTime": "00:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "08:00",
+        "startTime": "06:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "11:00",
+        "startTime": "08:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "13:00",
+        "startTime": "11:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "15:00",
+        "startTime": "13:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "18:00",
+        "startTime": "15:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "21:00",
+        "startTime": "18:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "22:00",
+        "startTime": "21:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "24:00",
+        "startTime": "22:00",
+        "outFeeService": 130,
+        "outFeeElectric": 64.5
+      }
+    ],
+    "supportCarType": 0,
+    "parkingFeeType": 0,
+    "distance": 1524.85012511,
+    "price": 194.5,
+    "isFree": true,
+    "creator": 1,
+    "updater": 1,
+    "createDate": "2021-11-03T20:35:03.063Z",
+    "updateDate": "2021-11-23T20:35:10.257Z",
+    "gunKw": [
+      {
+        "kw": 60,
+        "type": 1
+      }
+    ],
+    "status": 1,
+    "freeAcTotal": 0,
+    "freeDcTotal": 8,
+    "favorites": 0,
+    "tagList": ""
+  }
+]

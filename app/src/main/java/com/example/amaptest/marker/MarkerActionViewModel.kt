@@ -47,14 +47,26 @@ class MarkerActionViewModel : ViewModel() {
     }
 
 
-    fun loadDefault(context: Context){
+/*    fun loadDefault(context: Context){
         viewModelScope.launch(Dispatchers.IO) {
             AssetsReadUtils.mockStation(context, "json_stations570.json")?.let { data->
                 data.map {
                     StationClusterItem(it)
                 }.let {
-                    clusterAlgorithm.feed(it.subList(20, 40))
+                    clusterAlgorithm.feed(it.subList(22, 34))
                     //clusterAlgorithm.feed(it)
+                }
+            }
+        }
+    }*/
+
+    fun loadDefault(context: Context){
+        viewModelScope.launch(Dispatchers.IO) {
+            AssetsReadUtils.mockStation(context, "json_stations8.json")?.let { data->
+                data.map {
+                    StationClusterItem(it)
+                }.let {
+                    clusterAlgorithm.feed(it)
                 }
             }
         }
@@ -66,7 +78,7 @@ class MarkerActionViewModel : ViewModel() {
                 clustersLiveData.postValue(MarkerDataFactory.create(it))
             }
         }
-    }   */
+    }*/
 
     fun calcClusters(distanceInfo: DistanceInfo) {
         viewModelScope.launch(Dispatchers.IO) {

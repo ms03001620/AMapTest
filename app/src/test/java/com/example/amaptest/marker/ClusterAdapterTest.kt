@@ -87,6 +87,46 @@ class ClusterAdapterTest {
     }
 
     @Test
+    fun findPrevLatLngBase() {
+        val prevCluster = mock(stationsList.subList(0, 2))
+        val currCluster = mock(stationsList.subList(0, 1))
+        val latLng = ClusterAdapter(null).findPrevLatLng(prevCluster, currCluster.first() as MarkerSingle)
+        assertEquals((prevCluster.first() as MarkerCluster).getLatlng(), latLng)
+    }
+
+    @Test
+    fun findPrevLatLngBaseSingle() {
+        val prevCluster = mock(stationsList.subList(0, 1))
+        val currCluster = mock(stationsList.subList(0, 1))
+        val latLng = ClusterAdapter(null).findPrevLatLng(prevCluster, currCluster.first())
+        assertEquals(prevCluster.first().getLatlng(), latLng)
+    }
+
+    @Test
+    fun findPrevLatLngNull() {
+        assertNull(
+            ClusterAdapter(null).findPrevLatLng(
+                mock(stationsList.subList(0, 1)),
+                mock(stationsList.subList(1, 2)).first()
+            )
+        )
+        assertNull(
+            ClusterAdapter(null).findPrevLatLng(
+                mock(stationsList.subList(0, 3)),
+                mock(stationsList.subList(3, 4)).first()
+            )
+        )
+
+        assertNull(
+            ClusterAdapter(null).findPrevLatLng(
+                mock(stationsList.subList(0, 3)),
+                mock(stationsList.subList(3, 5)).first()
+            )
+        )
+    }
+
+
+    @Test
     fun isSameData() {
         assertFalse(
             ClusterAdapter(null).isSameData(
@@ -118,15 +158,11 @@ class ClusterAdapterTest {
                 mock(stationsList.subList(0, 1))
             )
         )
-    }
 
-    @Test
-    fun createCollapsedTaskNoChange() {
         val prevCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
         val currCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
-        val task = ClusterAdapter(null).createCollapsedTask(prevCluster, currCluster)
 
-        assertEquals(0, task.size)
+        assertTrue(ClusterAdapter(null).isSameData(prevCluster, currCluster))
     }
 
     @Test
@@ -153,7 +189,7 @@ class ClusterAdapterTest {
     }
 
     @Test
-    fun createRemoveTaskClusterTo3Sigle() {
+    fun createRemoveTaskClusterTo3Single() {
         val prevCluster = mock(stationsList.subList(0, 3))
         val currCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
         val removedTask = ClusterAdapter(null).createRemoveTask(prevCluster, currCluster)
