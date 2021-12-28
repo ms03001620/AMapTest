@@ -41,7 +41,12 @@ class MarkerAction(val map: MapProxy) {
         }
     }
 
-    fun transfer(from: BaseMarkerData, to: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
+    fun transfer(
+        from: BaseMarkerData,
+        to: LatLng,
+        removeAtEnd: Boolean,
+        listener: Animation.AnimationListener? = null
+    ) {
         map.getMarker(from)?.let {
             transfer(from.getId(), it, to, removeAtEnd, listener)
         }
@@ -61,19 +66,27 @@ class MarkerAction(val map: MapProxy) {
      * 合拢，added合拢后形成的新节点， map LatLng合拢节点的终点， list各自的起点
      * 子节点从各自节点通过动画移动到合拢节点，消失，然后创建合拢节点
      */
-    fun cosp1(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>) {
+    fun cosp1(
+        map: HashMap<LatLng, MutableList<BaseMarkerData>>,
+        added: MutableList<BaseMarkerData>
+    ) {
         map.forEach {
             //合拢节点
             val toLatLng = it.key
             it.value.forEach { itemCluster ->
-                transfer(itemCluster, toLatLng, true/*移动到合拢节点，消失*/, object : Animation.AnimationListener{
-                    override fun onAnimationStart() {
-                    }
-                    override fun onAnimationEnd() {
-                        //然后创建合拢节点
-                        addCluster(added)
-                    }
-                })
+                transfer(
+                    itemCluster,
+                    toLatLng,
+                    true/*移动到合拢节点，消失*/,
+                    object : Animation.AnimationListener {
+                        override fun onAnimationStart() {
+                        }
+
+                        override fun onAnimationEnd() {
+                            //然后创建合拢节点
+                            addCluster(added)
+                        }
+                    })
             }
         }
     }
@@ -82,10 +95,13 @@ class MarkerAction(val map: MapProxy) {
      * 合拢，added合拢后形成的新节点， map LatLng合拢节点的终点， list各自的起点
      * 子节点从各自节点通过动画移动到合拢节点，消失，然后创建合拢节点
      */
-    fun cosp(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>) {
+    fun cosp(
+        map: HashMap<LatLng, MutableList<BaseMarkerData>>,
+        added: MutableList<BaseMarkerData>
+    ) {
         var total = 0
         map.forEach {
-            total +=it.value.size
+            total += it.value.size
         }
 
         val anim = object : Animation.AnimationListener {
@@ -119,7 +135,10 @@ class MarkerAction(val map: MapProxy) {
      * 展开，removed原节点消失， map latLng原节点地址 list各自终点
      * 原来节点先消失，然后从改节点分裂出子节点，并通过动画移动到各自终点（终点如果已存在则更新最终节点）
      */
-    fun exp(removed: MutableList<BaseMarkerData>,map: HashMap<LatLng, MutableList<BaseMarkerData>>) {
+    fun exp(
+        removed: MutableList<BaseMarkerData>,
+        map: HashMap<LatLng, MutableList<BaseMarkerData>>
+    ) {
         removed(removed)
         map.forEach {
             val fromLatLng = it.key
@@ -150,7 +169,13 @@ class MarkerAction(val map: MapProxy) {
         }
     }
 
-    fun transfer(id: String?, marker: Marker, moveTo: LatLng, removeAtEnd: Boolean, listener: Animation.AnimationListener? = null) {
+    fun transfer(
+        id: String?,
+        marker: Marker,
+        moveTo: LatLng,
+        removeAtEnd: Boolean,
+        listener: Animation.AnimationListener? = null
+    ) {
         val set = AnimationSet(true)
         set.addAnimation(TranslateAnimation(moveTo).apply {
             this.setInterpolator(AccelerateInterpolator())
