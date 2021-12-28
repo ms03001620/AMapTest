@@ -26,7 +26,7 @@ class MarkerActionViewModel : ViewModel() {
             noChangeLiveData.postValue(data)
         }
 
-        override fun exp(
+        override fun expansion(
             removed: MutableList<BaseMarkerData>,
             map: HashMap<LatLng, MutableList<BaseMarkerData>>
         ) {

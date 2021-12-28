@@ -23,7 +23,7 @@ class ClusterAdapterTest {
             override fun noChange(data: MutableList<BaseMarkerData>) {
             }
 
-            override fun exp(
+            override fun expansion(
                 removed: MutableList<BaseMarkerData>,
                 map: HashMap<LatLng, MutableList<BaseMarkerData>>
             ) {
