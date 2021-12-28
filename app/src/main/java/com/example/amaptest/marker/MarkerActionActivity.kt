@@ -207,6 +207,12 @@ class MarkerActionActivity : AppCompatActivity() {
         const val DEFAULT_LAT = 31.249051
 
         const val ZOOM = 12f
+
+/*        const val FILE = "json_stations570.json"
+        const val SUBLIST_START = -1 //-1 disable
+        const val SUBLIST_END = -1 //-1 disable*/
+
+
         const val FILE = "json_stations.json"
         const val SUBLIST_START = 0 //-1 disable
         const val SUBLIST_END = 5 //-1 disable
