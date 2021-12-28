@@ -35,12 +35,6 @@ class MarkerAction(val map: MapProxy) {
         return map.createMarker(stationDetail, latLng)
     }
 
-    fun transfer(id: String, to: LatLng, removeAtEnd: Boolean) {
-        map.getMarker(id)?.let {
-            transfer(id, it, to, removeAtEnd)
-        }
-    }
-
     fun transfer(
         from: BaseMarkerData,
         to: LatLng,
@@ -165,10 +159,6 @@ class MarkerAction(val map: MapProxy) {
         })
         marker.setAnimation(set)
         marker.startAnimation()
-    }
-
-    fun delete(id: String) {
-        map.deleteMarker(id)
     }
 
     companion object {

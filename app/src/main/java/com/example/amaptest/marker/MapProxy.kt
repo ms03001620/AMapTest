@@ -73,10 +73,6 @@ class MapProxy(private val map: AMap, private val context: Context) {
             .icon(getCollapsedBitmapDescriptor(station.showMarker()))
             .infoWindowEnable(true)
 
-    fun getMarker(id: String): Marker? {
-        return set.getOrDefault(id, null)
-    }
-
     fun getMarker(baseMarkerData: BaseMarkerData): Marker? {
         return set.getOrDefault(baseMarkerData.getId(), null)
     }
