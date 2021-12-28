@@ -30,7 +30,7 @@ class ClusterAdapterTest {
                 result = map
             }
 
-            override fun cosp(
+            override fun collapsed(
                 map: HashMap<LatLng, MutableList<BaseMarkerData>>,
                 added: MutableList<BaseMarkerData>
             ) {

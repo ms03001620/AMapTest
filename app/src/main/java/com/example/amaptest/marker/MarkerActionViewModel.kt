@@ -33,7 +33,7 @@ class MarkerActionViewModel : ViewModel() {
             onClusterCreateAndMoveTo.postValue(Pair(removed, map))
         }
 
-        override fun cosp(
+        override fun collapsed(
             map: HashMap<LatLng, MutableList<BaseMarkerData>>,
             added: MutableList<BaseMarkerData>
         ) {
