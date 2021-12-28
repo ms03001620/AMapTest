@@ -19,7 +19,7 @@ class MarkerActionViewModel : ViewModel() {
 
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
     val onClusterCreateAndMoveTo = SingleLiveEvent<Pair<MutableList<BaseMarkerData>, HashMap<LatLng, MutableList<BaseMarkerData>>>>()
-    val onClusterMoveToAndRemove = SingleLiveEvent<Pair<MutableList<BaseMarkerData>, HashMap<LatLng, MutableList<BaseMarkerData>>>>()
+    val onClusterMoveToAndRemove = SingleLiveEvent<Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>>()
 
     private val adapter = ClusterAdapter(object: ClusterAdapter.OnClusterAction{
         override fun noChange(data: MutableList<BaseMarkerData>) {
@@ -33,11 +33,9 @@ class MarkerActionViewModel : ViewModel() {
             onClusterCreateAndMoveTo.postValue(Pair(removed, map))
         }
 
-        override fun collapsed(
-            map: HashMap<LatLng, MutableList<BaseMarkerData>>,
-            added: MutableList<BaseMarkerData>
+        override fun collapsed(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>
         ) {
-            onClusterMoveToAndRemove.postValue(Pair(added, map))
+            onClusterMoveToAndRemove.postValue(pair)
         }
     })
 

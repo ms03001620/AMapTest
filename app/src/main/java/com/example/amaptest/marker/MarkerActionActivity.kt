@@ -61,7 +61,7 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         viewModel.onClusterMoveToAndRemove.observe(this) {
-            markerAction.cosp(it.second, it.first)
+            markerAction.cosp(it)
         }
     }
 

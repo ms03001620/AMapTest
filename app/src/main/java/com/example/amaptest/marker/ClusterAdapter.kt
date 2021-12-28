@@ -22,7 +22,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
          * 合拢，added合拢后形成的新节点， map LatLng合拢节点的终点， list各自的起点
          * 子节点从各自节点通过动画移动到合拢节点，消失，然后创建合拢节点
          */
-        fun collapsed(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>)
+        fun collapsed(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>)
     }
 
     var prev: MutableList<BaseMarkerData>? = null
@@ -58,8 +58,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
 
     private fun processZoomOut(curr: MutableList<BaseMarkerData>) {
         prev?.let {
-            val collapsed = createCollapsedTask(it, curr)
-            action?.collapsed(collapsed, curr)
+            action?.collapsed(createCollapsedTask(it, curr))
         }
     }
 
@@ -109,7 +108,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     fun createCollapsedTask(
         prev: MutableList<BaseMarkerData>,
         curr: MutableList<BaseMarkerData>
-    ): HashMap<LatLng, MutableList<BaseMarkerData>> {
+    ): Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>> {
         val collapsedTask = HashMap<LatLng, MutableList<BaseMarkerData>>()
 
         prev.forEach { currCluster ->
@@ -119,7 +118,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
             }
         }
 
-        return collapsedTask
+        return Pair(collapsedTask, curr)
     }
 
     fun createExpTask(
