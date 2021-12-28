@@ -77,6 +77,14 @@ class ClusterAdapterTest {
     }
 
     @Test
+    fun aaaaaaaa() {
+        val prevCluster = mock(stationsList.subList(0, 2))
+        val currCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2))
+
+
+    }
+
+    @Test
     fun createCollapsedTask() {
         val prevCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
         val currCluster = mock(stationsList.subList(0, 3))

@@ -51,7 +51,7 @@ class MarkerActionActivity : AppCompatActivity() {
     }
 
     private fun initObserver() {
-        viewModel.loadDefault(this)
+        viewModel.loadDefault(this, FILE, SUBLIST_START, SUBLIST_END)
         viewModel.clustersLiveData.observe(this) { set ->
             clearAndReDraw(set)
         }
@@ -182,7 +182,7 @@ class MarkerActionActivity : AppCompatActivity() {
     private fun moveCameraToDataArea() {
         mMapView.map.moveCamera(
             // 12f -> 13f  cluster(1->2)
-            CameraUpdateFactory.newLatLngZoom(LatLng(DEFAULT_LAT,DEFAULT_LNG), 13f)
+            CameraUpdateFactory.newLatLngZoom(LatLng(DEFAULT_LAT,DEFAULT_LNG), ZOOM)
         )
     }
 
@@ -274,6 +274,11 @@ class MarkerActionActivity : AppCompatActivity() {
         // 白玉兰位置
         const val DEFAULT_LNG = 121.497798
         const val DEFAULT_LAT = 31.249051
+
+        const val ZOOM = 12f
+        const val FILE = "json_stations.json"
+        const val SUBLIST_START = 0 //-1 disable
+        const val SUBLIST_END = 5 //-1 disable
     }
 
 }

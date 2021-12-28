@@ -7,7 +7,7 @@ import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import kotlin.collections.HashMap
 
-class ClusterAdapter(val action: OnClusterAction?) {
+class ClusterAdapter(val action: OnClusterAction? = null) {
 
     interface OnClusterAction {
         fun noChange(data: MutableList<BaseMarkerData>)

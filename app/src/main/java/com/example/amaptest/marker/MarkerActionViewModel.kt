@@ -60,13 +60,17 @@ class MarkerActionViewModel : ViewModel() {
         }
     }*/
 
-    fun loadDefault(context: Context){
+    fun loadDefault(context: Context, file: String, start: Int, end: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            AssetsReadUtils.mockStation(context, "json_stations8.json")?.let { data->
+            AssetsReadUtils.mockStation(context, file)?.let { data ->
                 data.map {
                     StationClusterItem(it)
                 }.let {
-                    clusterAlgorithm.feed(it)
+                    if (start != -1 && end != -1) {
+                        clusterAlgorithm.feed(it.subList(start, end))
+                    } else {
+                        clusterAlgorithm.feed(it)
+                    }
                 }
             }
         }

@@ -61,7 +61,7 @@ class MarkerAction(val map: MapProxy) {
      * 合拢，added合拢后形成的新节点， map LatLng合拢节点的终点， list各自的起点
      * 子节点从各自节点通过动画移动到合拢节点，消失，然后创建合拢节点
      */
-    fun cosp(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>) {
+    fun cosp1(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>) {
         map.forEach {
             //合拢节点
             val toLatLng = it.key
@@ -74,6 +74,40 @@ class MarkerAction(val map: MapProxy) {
                         addCluster(added)
                     }
                 })
+            }
+        }
+    }
+
+    /**
+     * 合拢，added合拢后形成的新节点， map LatLng合拢节点的终点， list各自的起点
+     * 子节点从各自节点通过动画移动到合拢节点，消失，然后创建合拢节点
+     */
+    fun cosp(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>) {
+        val addTask = object : Animation.AnimationListener {
+            override fun onAnimationStart() {
+            }
+
+            override fun onAnimationEnd() {
+                logd("onAnimationEnd", "cosp_____")
+                //然后创建合拢节点
+                addCluster(added)
+            }
+        }
+
+        var mapIndex = 0
+        map.forEach {
+            mapIndex++
+            val isEndMap = mapIndex == map.size
+            var listIndex = 0
+
+            //合拢节点
+            val toLatLng = it.key
+            it.value.forEach { itemCluster ->
+                listIndex++
+                val isListEnd = listIndex == it.value.size
+
+                val lastAnim = if (isEndMap && isListEnd) null else null
+                transfer(itemCluster, toLatLng, true/*移动到合拢节点，消失*/, lastAnim)
             }
         }
     }
