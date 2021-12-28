@@ -83,31 +83,34 @@ class MarkerAction(val map: MapProxy) {
      * 子节点从各自节点通过动画移动到合拢节点，消失，然后创建合拢节点
      */
     fun cosp(map: HashMap<LatLng, MutableList<BaseMarkerData>>, added: MutableList<BaseMarkerData>) {
-        val addTask = object : Animation.AnimationListener {
+        var total = 0
+        map.forEach {
+            total +=it.value.size
+        }
+
+        val anim = object : Animation.AnimationListener {
             override fun onAnimationStart() {
             }
 
             override fun onAnimationEnd() {
-                logd("onAnimationEnd", "cosp_____")
+                total--
                 //然后创建合拢节点
-                addCluster(added)
+                if (total == 0) {
+                    addCluster(added)
+                }
             }
         }
 
-        var mapIndex = 0
         map.forEach {
-            mapIndex++
-            val isEndMap = mapIndex == map.size
-            var listIndex = 0
-
             //合拢节点
             val toLatLng = it.key
             it.value.forEach { itemCluster ->
-                listIndex++
-                val isListEnd = listIndex == it.value.size
-
-                val lastAnim = if (isEndMap && isListEnd) null else null
-                transfer(itemCluster, toLatLng, true/*移动到合拢节点，消失*/, lastAnim)
+                transfer(
+                    itemCluster,
+                    toLatLng,
+                    true/*移动到合拢节点，消失*/,
+                    anim
+                )
             }
         }
     }
