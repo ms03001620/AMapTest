@@ -3,11 +3,6 @@ package com.example.amaptest.marker
 import com.amap.api.maps.model.LatLng
 import com.example.amaptest.JsonTestUtil
 import com.example.amaptest.JsonTestUtil.mock
-import com.polestar.charging.ui.cluster.base.Cluster
-import com.polestar.charging.ui.cluster.base.ClusterItem
-import com.polestar.charging.ui.cluster.base.StaticCluster
-import com.polestar.charging.ui.cluster.base.StationClusterItem
-import com.polestar.repository.data.charging.StationDetail
 import org.junit.Assert.*
 
 import org.junit.Test
@@ -75,15 +70,7 @@ class ClusterAdapterTest {
     }
 
     @Test
-    fun aaaaaaaa() {
-        val prevCluster = mock(stationsList.subList(0, 2))
-        val currCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2))
-
-
-    }
-
-    @Test
-    fun createCollapsedTask() {
+    fun createCollapsedTaskBase() {
         //Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>
         val prevCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
         val currCluster = mock(stationsList.subList(0, 3))
@@ -93,8 +80,9 @@ class ClusterAdapterTest {
         assertEquals(1, task.second.size)
     }
 
-/*    @Test
-    fun createCollapsedTask1() {
+    @Test
+    fun createCollapsedTask() {
+        //Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>
         val prevCluster = mock(
             stationsList.subList(0, 1),
             stationsList.subList(1, 2),
@@ -105,36 +93,113 @@ class ClusterAdapterTest {
 
         val task = ClusterAdapter().createCollapsedTask(prevCluster, currCluster)
 
-        assertEquals(1, task.size)
-        assertEquals(3, task.values.first().size)
-    }*/
-
-/*
-    @Test
-    fun createCollapsedTask2Cluster() {
-        val prevCluster =
-            mock(
-                stationsList.subList(0, 1),
-                stationsList.subList(1, 2),
-                stationsList.subList(2, 3),
-                stationsList.subList(10, 11),
-                stationsList.subList(11, 12),
-                stationsList.subList(12, 13),
-                stationsList.subList(13, 14),
-            )
-        val currCluster = mock(
-            stationsList.subList(0, 3),
-            stationsList.subList(10, 14)
-        )
-        val task = ClusterAdapter(null).createCollapsedTask(prevCluster, currCluster)
-
-        assertEquals(2, task.size)
-        assertEquals(4, task.values.first().size)
-        assertEquals(3, task.values.last().size)
+        assertEquals(3, task.first.values.first().size)
+        assertEquals(1, task.second.size)
     }
-*/
+
+    //TODO createCollapsedTask add more case
+
+    @Test
+    fun baseMarkerDataCollection() {
+        val prevCluster = mock(
+            stationsList.subList(0, 1),
+            stationsList.subList(3, 4)
+        )
+
+        val target = mock(
+            stationsList.subList(3, 4)
+        )
+
+        assertEquals(2, prevCluster.size)
+        prevCluster.remove(target.first())
+        assertEquals(1, prevCluster.size)
+    }
+
+    @Test
+    fun baseMarkerDataCollectionEquals() {
+        val source = mock(
+            stationsList.subList(0, 2)
+        )
+
+        val source1 = mock(
+            stationsList.subList(0, 2)
+        )
+
+        assertEquals(source1, source)
+
+        val target = mock(
+            stationsList.subList(0, 1)
+        )
+
+        val target1 = mock(
+            stationsList.subList(0, 1)
+        )
+
+        assertEquals(target1, target)
+        assertNotEquals(target, source)
+    }
+
+    @Test
+    fun baseMarkerDataCollectionNotEquals() {
+        val source = mock(
+            stationsList.subList(0, 2)
+        )
+        val source1 = mock(
+            stationsList.subList(0, 3)
+        )
+        assertNotEquals(source, source1)
+    }
+
+    @Test
+    fun baseMarkerDataCollectionRemove() {
+        val prevCluster = mock(
+            stationsList.subList(0, 2),
+            stationsList.subList(3, 4)
+        )
+
+        val target = mock(
+            stationsList.subList(3, 4)
+        )
 
 
+        prevCluster.removeAll(target)
+        assertEquals(1, prevCluster.size)
+        assertEquals(2, prevCluster.first().getSize())
+    }
+
+    @Test
+    fun delSame() {
+        val s1 = mock(
+            stationsList.subList(0, 2),
+            stationsList.subList(3, 4)
+        )
+
+        val s2 = mock(
+            stationsList.subList(3, 4)
+        )
+
+        ClusterAdapter().delSame(s1, s2)
+        assertEquals(1, s1.size)
+        assertEquals(0, s2.size)
+    }
+
+    @Test
+    fun delSameMulti() {
+        val s1 = mock(
+            stationsList.subList(0, 1),
+            stationsList.subList(1, 3),
+            stationsList.subList(3, 4)
+        )
+
+        val s2 = mock(
+            stationsList.subList(1, 3),
+            stationsList.subList(0, 1)
+        )
+
+        ClusterAdapter().delSame(s1, s2)
+        assertEquals(1, s1.size)
+        assertEquals(0, s2.size)
+    }
 
     @Test
     fun findPrevLatLngBase() {

@@ -106,10 +106,15 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     }
 
     fun createCollapsedTask(
-        prev: MutableList<BaseMarkerData>,
-        curr: MutableList<BaseMarkerData>
+        prev1: MutableList<BaseMarkerData>,
+        curr1: MutableList<BaseMarkerData>
     ): Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>> {
         val collapsedTask = HashMap<LatLng, MutableList<BaseMarkerData>>()
+
+        val prev = prev1.toMutableList()
+        val curr = curr1.toMutableList()
+
+        delSame(prev, curr)
 
         prev.forEach { currCluster ->
             val latLng = findPrevLatLng(curr, currCluster)
@@ -119,6 +124,15 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         }
 
         return Pair(collapsedTask, curr)
+    }
+
+    fun delSame(
+        prev: MutableList<BaseMarkerData>,
+        curr: MutableList<BaseMarkerData>
+    ){
+        val prevCopy = prev.toMutableList()
+        prev.removeAll(curr)
+        curr.removeAll(prevCopy)
     }
 
     fun createExpTask(
@@ -138,13 +152,13 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     }
 
     fun findOrCreateClusterList(
-        expTask: HashMap<LatLng, MutableList<BaseMarkerData>>,
+        collapsedTask: HashMap<LatLng, MutableList<BaseMarkerData>>,
         key: LatLng
     ): MutableList<BaseMarkerData> {
-        var result = expTask[key]
+        var result = collapsedTask[key]
         if (result == null) {
             result = mutableListOf<BaseMarkerData>()
-            expTask[key] = result
+            collapsedTask[key] = result
         }
         return result
     }
