@@ -12,4 +12,12 @@ class StationClusterItem(val stationDetail: StationDetail) : ClusterItem {
         get() = stationDetail.stationid ?: "NoneId"
     override val snippet: String
         get() = stationDetail.providerName + stationDetail.stationName
+
+    override fun hashCode(): Int {
+        return id.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return hashCode() == other?.hashCode() ?: 0
+    }
 }

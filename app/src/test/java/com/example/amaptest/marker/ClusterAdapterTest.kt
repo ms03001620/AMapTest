@@ -94,7 +94,7 @@ class ClusterAdapterTest {
         val task = ClusterAdapter().createCollapsedTask(prevCluster, currCluster)
 
         assertEquals(3, task.first.values.first().size)
-        assertEquals(1, task.second.size)
+        assertEquals(2, task.second.size)
     }
 
     //TODO createCollapsedTask add more case
@@ -149,6 +149,32 @@ class ClusterAdapterTest {
         )
         assertNotEquals(source, source1)
     }
+
+    @Test
+    fun markClusterCollectionNotEquals() {
+        val source = mock(
+            stationsList.subList(0, 2)
+        )
+
+        assertEquals(
+            source, mock(
+                listOf(
+                    stationsList.subList(0, 1).first(),
+                    stationsList.subList(1, 2).first()
+                )
+            )
+        )
+
+        assertNotEquals(
+            source, mock(
+                listOf(
+                    stationsList.subList(0, 1).first(),
+                    stationsList.subList(2, 3).first()
+                )
+            )
+        )
+    }
+
 
     @Test
     fun baseMarkerDataCollectionRemove() {
