@@ -165,13 +165,14 @@ class ClusterAdapterTest {
             )
         )
 
-        assertNotEquals(
-            source, mock(
-                listOf(
-                    stationsList.subList(0, 1).first(),
-                    stationsList.subList(2, 3).first()
-                )
+        val target = mock(
+            listOf(
+                stationsList.subList(0, 1).first(),
+                stationsList.subList(2, 3).first()
             )
+        )
+        assertNotEquals(
+            source, target
         )
     }
 
@@ -270,14 +271,14 @@ class ClusterAdapterTest {
     @Test
     fun isSameData() {
         assertFalse(
-            ClusterAdapter(null).isSameData(
+            ClusterAdapter().isSameData(
                 mock(stationsList.subList(0, 1)),
                 mock(stationsList.subList(0, 2))
             )
         )
 
         assertFalse(
-            ClusterAdapter(null).isSameData(
+            ClusterAdapter().isSameData(
                 mock(
                     stationsList.subList(0, 1),
                     stationsList.subList(1, 2),
@@ -287,14 +288,14 @@ class ClusterAdapterTest {
         )
 
         assertTrue(
-            ClusterAdapter(null).isSameData(
+            ClusterAdapter().isSameData(
                 mock(stationsList.subList(0, 3)),
                 mock(stationsList.subList(0, 3))
             )
         )
 
         assertTrue(
-            ClusterAdapter(null).isSameData(
+            ClusterAdapter().isSameData(
                 mock(stationsList.subList(0, 1)),
                 mock(stationsList.subList(0, 1))
             )
@@ -303,7 +304,21 @@ class ClusterAdapterTest {
         val prevCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
         val currCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
 
-        assertTrue(ClusterAdapter(null).isSameData(prevCluster, currCluster))
+        assertTrue(ClusterAdapter().isSameData(prevCluster, currCluster))
+
+        assertFalse(
+            ClusterAdapter().isSameData(
+                mock(
+                    stationsList.subList(0, 2)
+                ),
+                mock(
+                    listOf(
+                        stationsList.subList(0, 1).first(),
+                        stationsList.subList(2, 3).first()
+                    )
+                )
+            )
+        )
     }
 
 

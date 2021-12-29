@@ -29,6 +29,27 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     var lastZoom = 0f
 
 
+    fun process1(set: MutableList<BaseMarkerData>?, zoom: Float) {
+        val isZoomIn = zoom> lastZoom
+        lastZoom = zoom
+
+        set?.let {
+            if (prev == null || isSameData(prev, set)) {
+                prev?.let {
+                    logd("same:${isSameData(it, set)}", "queue")
+                }
+                action?.noChange(it)
+            } else {
+                if (isZoomIn) {
+                    processZoomIn(it)
+                } else {
+                    processZoomOut(it)
+                }
+            }
+            prev = it
+        }
+    }
+
     fun process(set: MutableList<BaseMarkerData>?, zoom: Float) {
         val isZoomIn = zoom> lastZoom
         lastZoom = zoom
@@ -40,11 +61,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
                 }
                 action?.noChange(it)
             } else {
-                if (isZoomIn) {
-                    processZoomIn(it)
-                } else {
-                    processZoomOut(it)
-                }
+
             }
             prev = it
         }
@@ -71,19 +88,9 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     }
 
     fun isSameData(
-        prev: MutableList<BaseMarkerData>,
+        prev: MutableList<BaseMarkerData>?,
         curr: MutableList<BaseMarkerData>
-    ): Boolean {
-        if (prev.size == curr.size) {
-            val clusterPrev = prev.filterIsInstance<MarkerCluster>()
-            val clusterCurr = curr.filterIsInstance<MarkerCluster>()
-
-            if(clusterPrev.size == clusterCurr.size){
-                return true
-            }
-        }
-        return false
-    }
+    ) = curr == prev
 
     fun createRemoveTask(
         prev: MutableList<BaseMarkerData>,
