@@ -114,7 +114,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         val prev = prev1.toMutableList()
         val curr = curr1.toMutableList()
 
-        delSame(prev, curr)
+        //delSame(prev, curr)
 
         prev.forEach { currCluster ->
             val latLng = findPrevLatLng(curr, currCluster)

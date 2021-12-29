@@ -214,8 +214,8 @@ class MarkerActionActivity : AppCompatActivity() {
 
 
         const val FILE = "json_stations.json"
-        const val SUBLIST_START = 0 //-1 disable
-        const val SUBLIST_END = 5 //-1 disable
+        const val SUBLIST_START = -1 //-1 disable
+        const val SUBLIST_END = -1 //-1 disable
     }
 
 }
