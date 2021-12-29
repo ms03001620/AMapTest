@@ -50,21 +50,23 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         }
     }
 
-    fun process(set: MutableList<BaseMarkerData>?, zoom: Float) {
-        val isZoomIn = zoom> lastZoom
-        lastZoom = zoom
-
-        set?.let {
-            if (prev == null || isSameData(prev!!, set)) {
-                prev?.let {
-                    logd("same:${isSameData(it, set)}", "queue")
-                }
-                action?.noChange(it)
-            } else {
-
-            }
-            prev = it
+    fun process(curr: MutableList<BaseMarkerData>?, zoom: Float) {
+        if (curr == null) {
+            throw IllegalAccessException("curr null")
         }
+
+        if (isSameData(prev, curr)) {
+            logd("same", "process noChange")
+            action?.noChange(curr)
+        } else {
+
+            val subPrev = prev!!.toMutableList()
+            val subCurr = curr.toMutableList()
+
+            delSame(subPrev, subCurr)
+
+        }
+        prev = curr
     }
 
     fun queue(set: MutableList<BaseMarkerData>?, zoom: Float) {
@@ -120,8 +122,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
 
         val prev = prev1.toMutableList()
         val curr = curr1.toMutableList()
-
-        //delSame(prev, curr)
 
         prev.forEach { currCluster ->
             val latLng = findPrevLatLng(curr, currCluster)

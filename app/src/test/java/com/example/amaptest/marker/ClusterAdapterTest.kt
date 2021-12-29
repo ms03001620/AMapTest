@@ -195,7 +195,7 @@ class ClusterAdapterTest {
     }
 
     @Test
-    fun delSame() {
+    fun delSameMarkSingle() {
         val s1 = mock(
             stationsList.subList(0, 2),
             stationsList.subList(3, 4)
@@ -206,12 +206,30 @@ class ClusterAdapterTest {
         )
 
         ClusterAdapter().delSame(s1, s2)
+
+        assertTrue(s1.first() is MarkerCluster)
         assertEquals(1, s1.size)
         assertEquals(0, s2.size)
     }
 
     @Test
-    fun delSameMulti() {
+    fun delSameMarkCluster() {
+        val s1 = mock(
+            stationsList.subList(0, 5),
+        )
+
+        val s2 = mock(
+            stationsList.subList(0, 5),
+            stationsList.subList(1, 3),
+        )
+
+        ClusterAdapter().delSame(s1, s2)
+        assertEquals(0, s1.size)
+        assertEquals(1, s2.size)
+    }
+
+    @Test
+    fun delSameMarkCluste1r() {
         val s1 = mock(
             stationsList.subList(0, 1),
             stationsList.subList(1, 3),
