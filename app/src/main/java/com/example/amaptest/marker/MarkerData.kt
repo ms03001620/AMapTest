@@ -41,11 +41,14 @@ class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
     override fun getId() = list.position.hashCode().toString()
 
     override fun hashCode(): Int {
-        return getId().hashCode() + list.hashCode()
+        return list.items.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
-        return hashCode() == other?.hashCode() ?: 0
+        if (other is MarkerCluster) {
+            return hashCode() == other.hashCode()
+        }
+        return false
     }
 
     override fun toString(): String {
@@ -69,7 +72,10 @@ class MarkerSingle(val stationDetail: StationDetail, val latLng: LatLng?) : Base
     }
 
     override fun equals(other: Any?): Boolean {
-        return hashCode() == other.hashCode()
+        if (other is MarkerSingle) {
+            return hashCode() == other.hashCode()
+        }
+        return false
     }
 
     override fun toString(): String {

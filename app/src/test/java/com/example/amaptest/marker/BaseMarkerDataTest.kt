@@ -60,7 +60,7 @@ class BaseMarkerDataTest {
     }
 
     @Test
-    fun markClusterCollectionNotEquals() {
+    fun markClusterCollectionEquals() {
         val source = JsonTestUtil.mock(
             stationsList.subList(0, 2)
         )
@@ -74,17 +74,40 @@ class BaseMarkerDataTest {
             )
         )
 
-        val target = JsonTestUtil.mock(
-            listOf(
-                stationsList.subList(0, 1).first(),
-                stationsList.subList(2, 3).first()
+        // order
+        Assert.assertEquals(
+            source, JsonTestUtil.mock(
+                listOf(
+                    stationsList.subList(1, 2).first(),
+                    stationsList.subList(0, 1).first()
+                )
             )
-        )
-        Assert.assertNotEquals(
-            source, target
         )
     }
 
+    @Test
+    fun markClusterCollectionNotEquals() {
+        Assert.assertNotEquals(
+            JsonTestUtil.mock(
+                stationsList.subList(0, 2)
+            ),
+            JsonTestUtil.mock(
+                stationsList.subList(1, 3)
+            )
+        )
+
+        Assert.assertNotEquals(
+            JsonTestUtil.mock(
+                stationsList.subList(0, 2)
+            ),
+            JsonTestUtil.mock(
+                listOf(
+                    stationsList.subList(0, 1).first(),
+                    stationsList.subList(2, 3).first()
+                )
+            )
+        )
+    }
 
     @Test
     fun baseMarkerDataCollectionRemove() {
