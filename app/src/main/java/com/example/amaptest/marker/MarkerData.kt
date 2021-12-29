@@ -6,6 +6,7 @@ import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.StaticCluster
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.repository.data.charging.StationDetail
+import com.polestar.repository.data.charging.showMarker
 
 interface BaseMarkerData {
     fun getStation(): StationDetail?
@@ -46,6 +47,10 @@ class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
     override fun equals(other: Any?): Boolean {
         return hashCode() == other?.hashCode() ?: 0
     }
+
+    override fun toString(): String {
+        return "c:${getSize()}"
+    }
 }
 
 class MarkerSingle(val stationDetail: StationDetail, val latLng: LatLng?) : BaseMarkerData {
@@ -65,6 +70,10 @@ class MarkerSingle(val stationDetail: StationDetail, val latLng: LatLng?) : Base
 
     override fun equals(other: Any?): Boolean {
         return hashCode() == other.hashCode()
+    }
+
+    override fun toString(): String {
+        return "s:${stationDetail.showMarker()}"
     }
 }
 

@@ -54,19 +54,26 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         if (curr == null) {
             throw IllegalAccessException("curr null")
         }
-
-        if (isSameData(prev, curr)) {
+        if (prev == null || isSameData(prev, curr)) {
             logd("same", "process noChange")
             action?.noChange(curr)
         } else {
-
             val subPrev = prev!!.toMutableList()
             val subCurr = curr.toMutableList()
 
             delSame(subPrev, subCurr)
+            assert(getMarkerListSize(subPrev) == getMarkerListSize(subCurr))
 
         }
         prev = curr
+    }
+
+    fun getMarkerListSize(list: MutableList<BaseMarkerData>?): Int {
+        var total = 0
+        list?.forEach {
+            total += it.getSize()
+        }
+        return total
     }
 
     fun queue(set: MutableList<BaseMarkerData>?, zoom: Float) {
