@@ -56,11 +56,16 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
+
+    fun cosp(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>) {
+        setList(pair.second)
+    }
+
     /**
      * 合拢，added合拢后形成的新节点， map LatLng合拢节点的终点， list各自的起点
      * 子节点从各自节点通过动画移动到合拢节点，消失，然后创建合拢节点
      */
-    fun cosp(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>) {
+    fun cosp1(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>) {
         val map = pair.first
         val added = pair.second
         var total = 0
@@ -85,9 +90,6 @@ class MarkerAction(val mapProxy: MapProxy) {
             //合拢节点
             val toLatLng = it.key
             it.value.forEach { itemCluster ->
-
-                logd("___ ${itemCluster.getLatlng()}, to $toLatLng, ${itemCluster.javaClass.simpleName}")
-
                 transfer(
                     itemCluster,
                     toLatLng,
