@@ -99,100 +99,6 @@ class ClusterAdapterTest {
 
     //TODO createCollapsedTask add more case
 
-    @Test
-    fun baseMarkerDataCollection() {
-        val prevCluster = mock(
-            stationsList.subList(0, 1),
-            stationsList.subList(3, 4)
-        )
-
-        val target = mock(
-            stationsList.subList(3, 4)
-        )
-
-        assertEquals(2, prevCluster.size)
-        prevCluster.remove(target.first())
-        assertEquals(1, prevCluster.size)
-    }
-
-    @Test
-    fun baseMarkerDataCollectionEquals() {
-        val source = mock(
-            stationsList.subList(0, 2)
-        )
-
-        val source1 = mock(
-            stationsList.subList(0, 2)
-        )
-
-        assertEquals(source1, source)
-
-        val target = mock(
-            stationsList.subList(0, 1)
-        )
-
-        val target1 = mock(
-            stationsList.subList(0, 1)
-        )
-
-        assertEquals(target1, target)
-        assertNotEquals(target, source)
-    }
-
-    @Test
-    fun baseMarkerDataCollectionNotEquals() {
-        val source = mock(
-            stationsList.subList(0, 2)
-        )
-        val source1 = mock(
-            stationsList.subList(0, 3)
-        )
-        assertNotEquals(source, source1)
-    }
-
-    @Test
-    fun markClusterCollectionNotEquals() {
-        val source = mock(
-            stationsList.subList(0, 2)
-        )
-
-        assertEquals(
-            source, mock(
-                listOf(
-                    stationsList.subList(0, 1).first(),
-                    stationsList.subList(1, 2).first()
-                )
-            )
-        )
-
-        val target = mock(
-            listOf(
-                stationsList.subList(0, 1).first(),
-                stationsList.subList(2, 3).first()
-            )
-        )
-        assertNotEquals(
-            source, target
-        )
-    }
-
-
-    @Test
-    fun baseMarkerDataCollectionRemove() {
-        val prevCluster = mock(
-            stationsList.subList(0, 2),
-            stationsList.subList(3, 4)
-        )
-
-        val target = mock(
-            stationsList.subList(3, 4)
-        )
-
-
-        prevCluster.removeAll(target)
-        assertEquals(1, prevCluster.size)
-        assertEquals(2, prevCluster.first().getSize())
-    }
 
     @Test
     fun delSameMarkSingle() {
@@ -250,7 +156,7 @@ class ClusterAdapterTest {
     fun findPrevLatLngBase() {
         val prevCluster = mock(stationsList.subList(0, 2))
         val currCluster = mock(stationsList.subList(0, 1))
-        val latLng = ClusterAdapter(null).findPrevLatLng(prevCluster, currCluster.first() as MarkerSingle)
+        val latLng = ClusterAdapter().findPrevLatLng(prevCluster, currCluster.first() as MarkerSingle)
         assertEquals((prevCluster.first() as MarkerCluster).getLatlng(), latLng)
     }
 
@@ -258,27 +164,27 @@ class ClusterAdapterTest {
     fun findPrevLatLngBaseSingle() {
         val prevCluster = mock(stationsList.subList(0, 1))
         val currCluster = mock(stationsList.subList(0, 1))
-        val latLng = ClusterAdapter(null).findPrevLatLng(prevCluster, currCluster.first())
+        val latLng = ClusterAdapter().findPrevLatLng(prevCluster, currCluster.first())
         assertEquals(prevCluster.first().getLatlng(), latLng)
     }
 
     @Test
     fun findPrevLatLngNull() {
         assertNull(
-            ClusterAdapter(null).findPrevLatLng(
+            ClusterAdapter().findPrevLatLng(
                 mock(stationsList.subList(0, 1)),
                 mock(stationsList.subList(1, 2)).first()
             )
         )
         assertNull(
-            ClusterAdapter(null).findPrevLatLng(
+            ClusterAdapter().findPrevLatLng(
                 mock(stationsList.subList(0, 3)),
                 mock(stationsList.subList(3, 4)).first()
             )
         )
 
         assertNull(
-            ClusterAdapter(null).findPrevLatLng(
+            ClusterAdapter().findPrevLatLng(
                 mock(stationsList.subList(0, 3)),
                 mock(stationsList.subList(3, 5)).first()
             )
