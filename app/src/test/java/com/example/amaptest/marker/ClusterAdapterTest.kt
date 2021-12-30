@@ -152,24 +152,78 @@ class ClusterAdapterTest {
         assertEquals(0, s2.size)
     }
 
+
     @Test
-    fun findPrevLatLngBase() {
-        val prevCluster = mock(stationsList.subList(0, 2))
-        val currCluster = mock(stationsList.subList(0, 1))
-        val latLng = ClusterAdapter().findLatLng(prevCluster, currCluster.first() as MarkerSingle)
-        assertEquals((prevCluster.first() as MarkerCluster).getLatlng(), latLng)
+    fun markSingleInMarkCluster() {
+        val list = mock(stationsList.subList(0, 5))
+
+        assertEquals(
+            list.first().getLatlng(), ClusterAdapter().findLatLng(
+                list,
+                mock(stationsList.subList(0, 1)).first()
+            )
+        )
+
+        assertEquals(
+            list.first().getLatlng(), ClusterAdapter().findLatLng(
+                list,
+                mock(stationsList.subList(1, 2)).first()
+            )
+        )
+
+        assertEquals(
+            list.first().getLatlng(), ClusterAdapter().findLatLng(
+                list,
+                mock(stationsList.subList(3, 4)).first()
+            )
+        )
     }
 
     @Test
-    fun findPrevLatLngBaseSingle() {
+    fun markClusterInMarkCluster() {
+        val list = mock(stationsList.subList(0, 5))
+
+        assertEquals(
+            list.first().getLatlng(), ClusterAdapter().findLatLng(
+                list,
+                mock(stationsList.subList(0, 2)).first()
+            )
+        )
+
+        assertEquals(
+            list.first().getLatlng(), ClusterAdapter().findLatLng(
+                list,
+                mock(stationsList.subList(2, 5)).first()
+            )
+        )
+
+        assertEquals(
+            list.first().getLatlng(), ClusterAdapter().findLatLng(
+                list,
+                mock(stationsList.subList(2, 4)).first()
+            )
+        )
+
+        assertEquals(
+            list.first().getLatlng(), ClusterAdapter().findLatLng(
+                list,
+                mock(stationsList.subList(0, 5)).first()
+            )
+        )
+    }
+
+    @Test
+    fun targetSameInList() {
         val prevCluster = mock(stationsList.subList(0, 1))
         val currCluster = mock(stationsList.subList(0, 1))
+        assertTrue(ClusterAdapter().isSameData(prevCluster, currCluster))
+
         val latLng = ClusterAdapter().findLatLng(prevCluster, currCluster.first())
         assertEquals(prevCluster.first().getLatlng(), latLng)
     }
 
     @Test
-    fun findPrevLatLngNull() {
+    fun findLatLngNull() {
         assertNull(
             ClusterAdapter().findLatLng(
                 mock(stationsList.subList(0, 1)),
@@ -190,7 +244,6 @@ class ClusterAdapterTest {
             )
         )
     }
-
 
     @Test
     fun isSameData() {

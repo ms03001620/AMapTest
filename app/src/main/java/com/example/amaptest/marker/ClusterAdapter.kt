@@ -184,16 +184,22 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     fun findLatLng(markDataList: MutableList<BaseMarkerData>, target: BaseMarkerData): LatLng? {
         markDataList.forEach { baseMarkerData ->
             val fromLatLng = baseMarkerData.getLatlng()
+            // list
             when (baseMarkerData) {
                 is MarkerCluster -> {
+
+                    val clusterItem = baseMarkerData.list.items
+
                     when (target) {
-                        is MarkerSingle -> {
-                            if (isAllInBaseMarker(baseMarkerData.list.items, target)) {
+                        // cluster in cluster
+                        is MarkerCluster -> {
+                            if (isAllInTarget(clusterItem, target.list.items)) {
                                 return fromLatLng
                             }
                         }
-                        is MarkerCluster -> {
-                            if (isAllInTarget(baseMarkerData.list.items, target.list.items)) {
+                        // single in cluster
+                        is MarkerSingle -> {
+                            if (isMarkSingleInList(clusterItem, target)) {
                                 return fromLatLng
                             }
                         }
@@ -210,25 +216,11 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         return null
     }
 
-    fun isAllInBaseMarker(
-        parent: MutableCollection<ClusterItem>?,
-        child: MarkerSingle?
+    fun isMarkSingleInList(
+        list: MutableCollection<ClusterItem>?,
+        markerSingle: MarkerSingle
     ): Boolean {
-        if (parent == null || child == null) {
-            return false
-        }
-
-        child.stationDetail.id?.let { targetId ->
-            parent.filter {
-                (it as StationClusterItem).stationDetail.id != null
-            }.map {
-                (it as StationClusterItem).stationDetail.id!!
-            }.contains(targetId).let {
-                return it
-            }
-        }
-
-        return false
+        return list?.map { it.id }?.contains(markerSingle.stationDetail.id) == true
     }
 
     fun isAllInTarget(
