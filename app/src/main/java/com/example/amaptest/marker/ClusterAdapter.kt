@@ -131,7 +131,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         val curr = curr1.toMutableList()
 
         prev.forEach { currCluster ->
-            val latLng = findPrevLatLng(curr, currCluster)
+            val latLng = findLatLng(curr, currCluster)
             latLng?.let {
                 findOrCreateClusterList(collapsedTask, it).add(currCluster)
             }
@@ -156,7 +156,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         val expTask = HashMap<LatLng, MutableList<BaseMarkerData>>()
 
         curr.forEach { currCluster ->
-            val latLng = findPrevLatLng(prev, currCluster)
+            val latLng = findLatLng(prev, currCluster)
             latLng?.let {
                 findOrCreateClusterList(expTask, it).add(currCluster)
             }
@@ -178,29 +178,29 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     }
 
     fun containInPrev(prev: MutableList<BaseMarkerData>, element: BaseMarkerData): Boolean {
-        return findPrevLatLng(prev, element) != null
+        return findLatLng(prev, element) != null
     }
 
-    fun findPrevLatLng(prev: MutableList<BaseMarkerData>, target: BaseMarkerData): LatLng? {
-        prev.forEach { prevElement ->
-            val fromLatLng = prevElement.getLatlng()
-            when (prevElement) {
+    fun findLatLng(markDataList: MutableList<BaseMarkerData>, target: BaseMarkerData): LatLng? {
+        markDataList.forEach { baseMarkerData ->
+            val fromLatLng = baseMarkerData.getLatlng()
+            when (baseMarkerData) {
                 is MarkerCluster -> {
                     when (target) {
                         is MarkerSingle -> {
-                            if (isAllInBaseMarker(prevElement.list.items, target)) {
+                            if (isAllInBaseMarker(baseMarkerData.list.items, target)) {
                                 return fromLatLng
                             }
                         }
                         is MarkerCluster -> {
-                            if (isAllInTarget(prevElement.list.items, target.list.items)) {
+                            if (isAllInTarget(baseMarkerData.list.items, target.list.items)) {
                                 return fromLatLng
                             }
                         }
                     }
                 }
                 is MarkerSingle -> {
-                    if (prevElement.getId() == target.getId()) {
+                    if (baseMarkerData.getId() == target.getId()) {
                         return fromLatLng
                     }
                 }

@@ -156,7 +156,7 @@ class ClusterAdapterTest {
     fun findPrevLatLngBase() {
         val prevCluster = mock(stationsList.subList(0, 2))
         val currCluster = mock(stationsList.subList(0, 1))
-        val latLng = ClusterAdapter().findPrevLatLng(prevCluster, currCluster.first() as MarkerSingle)
+        val latLng = ClusterAdapter().findLatLng(prevCluster, currCluster.first() as MarkerSingle)
         assertEquals((prevCluster.first() as MarkerCluster).getLatlng(), latLng)
     }
 
@@ -164,27 +164,27 @@ class ClusterAdapterTest {
     fun findPrevLatLngBaseSingle() {
         val prevCluster = mock(stationsList.subList(0, 1))
         val currCluster = mock(stationsList.subList(0, 1))
-        val latLng = ClusterAdapter().findPrevLatLng(prevCluster, currCluster.first())
+        val latLng = ClusterAdapter().findLatLng(prevCluster, currCluster.first())
         assertEquals(prevCluster.first().getLatlng(), latLng)
     }
 
     @Test
     fun findPrevLatLngNull() {
         assertNull(
-            ClusterAdapter().findPrevLatLng(
+            ClusterAdapter().findLatLng(
                 mock(stationsList.subList(0, 1)),
                 mock(stationsList.subList(1, 2)).first()
             )
         )
         assertNull(
-            ClusterAdapter().findPrevLatLng(
+            ClusterAdapter().findLatLng(
                 mock(stationsList.subList(0, 3)),
                 mock(stationsList.subList(3, 4)).first()
             )
         )
 
         assertNull(
-            ClusterAdapter().findPrevLatLng(
+            ClusterAdapter().findLatLng(
                 mock(stationsList.subList(0, 3)),
                 mock(stationsList.subList(3, 5)).first()
             )
