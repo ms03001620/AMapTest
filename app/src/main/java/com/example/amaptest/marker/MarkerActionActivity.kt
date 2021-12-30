@@ -52,11 +52,11 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         viewModel.noChangeLiveData.observe(this) {
-            markerAction.setList(it)
+            //markerAction.setList(it)
         }
 
         viewModel.onAnimTaskLiveData.observe(this) {
-            markerAction.onAnimTaskLiveData(it)
+            //markerAction.onAnimTaskLiveData(it)
         }
     }
 
@@ -208,7 +208,7 @@ class MarkerActionActivity : AppCompatActivity() {
         const val SUBLIST_END = -1 //-1 disable*/
 
 
-        const val FILE = "json_stations.json"
+        const val FILE = "json_stations570.json"
         const val SUBLIST_START = -1 //-1 disable
         const val SUBLIST_END = -1 //-1 disable
     }

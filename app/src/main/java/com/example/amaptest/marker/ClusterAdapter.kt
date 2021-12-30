@@ -1,13 +1,10 @@
 package com.example.amaptest.marker
 
-import androidx.annotation.VisibleForTesting
 import com.amap.api.maps.model.LatLng
 import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.ClusterItem
-import kotlin.collections.HashMap
 
 class ClusterAdapter(val action: OnClusterAction? = null) {
-
     interface OnClusterAction {
         fun noChange(data: MutableList<BaseMarkerData>)
         fun onAnimTask(animTaskData: AnimTaskData)
@@ -15,10 +12,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
 
     var prev: MutableList<BaseMarkerData>? = null
 
-    fun process(curr: MutableList<BaseMarkerData>?, zoom: Float) {
-        if (curr == null) {
-            throw IllegalAccessException("curr null")
-        }
+    fun process(curr: MutableList<BaseMarkerData>) {
         if (prev == null || isSameData(prev, curr)) {
             logd("same", "process noChange")
             action?.noChange(curr)
@@ -48,9 +42,9 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         return total
     }
 
-    fun queue(set: MutableList<BaseMarkerData>?, zoom: Float) {
+    fun queue(set: MutableList<BaseMarkerData>) {
         val start = System.currentTimeMillis()
-        process(set, zoom)
+        process(set)
         logd("queue spend:${System.currentTimeMillis() - start}")
     }
 
@@ -197,10 +191,4 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         }
         return false
     }
-
-    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    fun setPrevData(prevCluster: MutableList<BaseMarkerData>) {
-        prev = prevCluster
-    }
-
 }

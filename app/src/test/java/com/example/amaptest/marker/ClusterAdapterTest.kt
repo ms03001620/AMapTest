@@ -3,6 +3,10 @@ package com.example.amaptest.marker
 import com.amap.api.maps.model.LatLng
 import com.example.amaptest.JsonTestUtil
 import com.example.amaptest.JsonTestUtil.mock
+import com.polestar.charging.ui.cluster.base.ClusterItem
+import com.polestar.charging.ui.cluster.base.StationClusterItem
+import com.polestar.charging.ui.cluster.quadtree.DistanceBasedAlgorithm
+import com.polestar.repository.data.charging.StationDetail
 import org.junit.Assert.*
 
 import org.junit.Test
@@ -10,10 +14,18 @@ import java.lang.Exception
 
 class ClusterAdapterTest {
     private val stationsList = mockJsonData()
+    private val algorithm = DistanceBasedAlgorithm<ClusterItem>()
 
     @Test
     fun process() {
+        algorithm.addItems(stationsList.map { StationClusterItem(it) })
+        val adapter =  ClusterAdapter()
 
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(11f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(12f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(13f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(14f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(15f)))
     }
 
     @Test

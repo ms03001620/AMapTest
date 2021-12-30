@@ -52,7 +52,7 @@ class MarkerActionViewModel : ViewModel() {
     fun calcClusters(distanceInfo: DistanceInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             clusterAlgorithm.calc(distanceInfo) {
-                adapter.queue(MarkerDataFactory.create(it), distanceInfo.cameraPosition?.zoom ?: 0f)
+                adapter.queue(MarkerDataFactory.create(it)/*, distanceInfo.cameraPosition?.zoom ?: 0f*/)
             }
         }
     }
