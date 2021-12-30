@@ -56,19 +56,56 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
-
-    fun cosp(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>) {
-       // setList(pair.second)
-        cosp1(pair)
+    fun onAnimTaskLiveData(animTaskData: AnimTaskData) {
+        collapsed(animTaskData)
+        expansion(animTaskData)
     }
+
+    /**
+     * 展开，removed原节点消失， map latLng原节点地址 list各自终点
+     * 原来节点先消失，然后从改节点分裂出子节点，并通过动画移动到各自终点（终点如果已存在则更新最终节点）
+     */
+    fun expansion(
+        animTaskData: AnimTaskData
+    ) {
+        removed(animTaskData.deleteList)
+        animTaskData.expList.forEach {
+            val fromLatLng = it.key
+            it.value.forEach { itemCluster ->
+                when (itemCluster) {
+                    is MarkerCluster -> {
+                        val mark = addCluster(itemCluster, fromLatLng)
+                        if (mark != null) {
+                            // cluster不存在，创建并播放动画
+                            itemCluster.getStation()?.let {
+                                transfer(itemCluster, it.toLatLng(), false)
+                            }
+                        }
+                    }
+                    is MarkerSingle -> {
+                        val t = addMarker(itemCluster.stationDetail, fromLatLng)
+                        logd("MarkerSingle t:$t")
+                        if (t != null) {
+                            transfer(
+                                itemCluster,
+                                itemCluster.stationDetail.toLatLng(),
+                                false
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     /**
      * 合拢，added合拢后形成的新节点， map LatLng合拢节点的终点， list各自的起点
      * 子节点从各自节点通过动画移动到合拢节点，消失，然后创建合拢节点
      */
-    fun cosp1(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>) {
-        val map = pair.first
-        val added = pair.second
+    fun collapsed(animTaskData: AnimTaskData) {
+        val map = animTaskData.cospList
+        val added = animTaskData.addList
         var total = 0
         map.forEach {
             total += it.value.size
@@ -97,44 +134,6 @@ class MarkerAction(val mapProxy: MapProxy) {
                     true/*移动到合拢节点，消失*/,
                     anim
                 )
-            }
-        }
-    }
-
-    /**
-     * 展开，removed原节点消失， map latLng原节点地址 list各自终点
-     * 原来节点先消失，然后从改节点分裂出子节点，并通过动画移动到各自终点（终点如果已存在则更新最终节点）
-     */
-    fun exp(
-        removed: MutableList<BaseMarkerData>,
-        map: HashMap<LatLng, MutableList<BaseMarkerData>>
-    ) {
-        removed(removed)
-        map.forEach {
-            val fromLatLng = it.key
-            it.value.forEach { itemCluster ->
-                when (itemCluster) {
-                    is MarkerCluster -> {
-                        val mark = addCluster(itemCluster, fromLatLng)
-                        if (mark != null) {
-                            // cluster不存在，创建并播放动画
-                            itemCluster.getStation()?.let {
-                                transfer(itemCluster, it.toLatLng(), false)
-                            }
-                        }
-                    }
-                    is MarkerSingle -> {
-                        val t = addMarker(itemCluster.stationDetail, fromLatLng)
-                        logd("MarkerSingle t:$t")
-                        if (t != null) {
-                            transfer(
-                                itemCluster,
-                                itemCluster.stationDetail.toLatLng(),
-                                false
-                            )
-                        }
-                    }
-                }
             }
         }
     }

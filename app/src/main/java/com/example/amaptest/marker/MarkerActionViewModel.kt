@@ -15,27 +15,16 @@ import kotlinx.coroutines.launch
 
 class MarkerActionViewModel : ViewModel() {
     val clustersLiveData = MutableLiveData<MutableList<BaseMarkerData>>()
-
-
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
-    val onClusterCreateAndMoveTo = SingleLiveEvent<Pair<MutableList<BaseMarkerData>, HashMap<LatLng, MutableList<BaseMarkerData>>>>()
-    val onClusterMoveToAndRemove = SingleLiveEvent<Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>>()
+    val onAnimTaskLiveData = SingleLiveEvent<AnimTaskData>()
 
-    private val adapter = ClusterAdapter(object: ClusterAdapter.OnClusterAction{
+    private val adapter = ClusterAdapter(object : ClusterAdapter.OnClusterAction {
         override fun noChange(data: MutableList<BaseMarkerData>) {
             noChangeLiveData.postValue(data)
         }
 
-        override fun expansion(
-            removed: MutableList<BaseMarkerData>,
-            map: HashMap<LatLng, MutableList<BaseMarkerData>>
-        ) {
-            onClusterCreateAndMoveTo.postValue(Pair(removed, map))
-        }
-
-        override fun collapsed(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>
-        ) {
-            onClusterMoveToAndRemove.postValue(pair)
+        override fun onAnimTask(animTaskData: AnimTaskData) {
+            onAnimTaskLiveData.postValue(animTaskData)
         }
     })
 
@@ -43,20 +32,6 @@ class MarkerActionViewModel : ViewModel() {
         //AlgorithmWallpaper(DistanceAlgorithm())
         AlgorithmWallpaper(DistanceQuadTreeAlgorithm())
     }
-
-
-/*    fun loadDefault(context: Context){
-        viewModelScope.launch(Dispatchers.IO) {
-            AssetsReadUtils.mockStation(context, "json_stations570.json")?.let { data->
-                data.map {
-                    StationClusterItem(it)
-                }.let {
-                    clusterAlgorithm.feed(it.subList(22, 34))
-                    //clusterAlgorithm.feed(it)
-                }
-            }
-        }
-    }*/
 
     fun loadDefault(context: Context, file: String, start: Int, end: Int) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -74,14 +49,6 @@ class MarkerActionViewModel : ViewModel() {
         }
     }
 
-/*    fun calcClusters(distanceInfo: DistanceInfo) {
-        viewModelScope.launch(Dispatchers.IO) {
-            clusterAlgorithm.calc(distanceInfo) {
-                clustersLiveData.postValue(MarkerDataFactory.create(it))
-            }
-        }
-    }*/
-
     fun calcClusters(distanceInfo: DistanceInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             clusterAlgorithm.calc(distanceInfo) {
@@ -89,5 +56,4 @@ class MarkerActionViewModel : ViewModel() {
             }
         }
     }
-
 }

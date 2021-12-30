@@ -10,18 +10,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
 
     interface OnClusterAction {
         fun noChange(data: MutableList<BaseMarkerData>)
-
-        /**
-         * 展开，removed原节点消失， map latLng原节点地址 list各自终点
-         * 原来节点先消失，然后从改节点分裂出子节点，并通过动画移动到各自终点（终点如果已存在则更新最终节点）
-         */
-        fun expansion(removed: MutableList<BaseMarkerData>, map: HashMap<LatLng, MutableList<BaseMarkerData>>)
-
-        /**
-         * 合拢，added合拢后形成的新节点， map LatLng合拢节点的终点， list各自的起点
-         * 子节点从各自节点通过动画移动到合拢节点，消失，然后创建合拢节点
-         */
-        fun collapsed(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>)
+        fun onAnimTask(animTaskData: AnimTaskData)
     }
 
     var prev: MutableList<BaseMarkerData>? = null
@@ -48,16 +37,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         prev: MutableList<BaseMarkerData>,
         curr: MutableList<BaseMarkerData>
     ){
-        action?.let {callback ->
-            createAnimTaskData(prev, curr).let {
-                //fun expansion(removed: MutableList<BaseMarkerData>, map: HashMap<LatLng, MutableList<BaseMarkerData>>)
-                //fun collapsed(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>)
-
-
-                callback.expansion(it.deleteList, it.expList)
-                callback.collapsed(Pair(it.cospList, it.addList))
-            }
-        }
+        action?.onAnimTask(createAnimTaskData(prev, curr))
     }
 
     fun getMarkerListSize(list: MutableList<BaseMarkerData>?): Int {

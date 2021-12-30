@@ -2,7 +2,6 @@ package com.example.amaptest.marker
 
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -56,12 +55,8 @@ class MarkerActionActivity : AppCompatActivity() {
             markerAction.setList(it)
         }
 
-        viewModel.onClusterCreateAndMoveTo.observe(this) {
-            markerAction.exp(it.first, it.second)
-        }
-
-        viewModel.onClusterMoveToAndRemove.observe(this) {
-            markerAction.cosp(it)
+        viewModel.onAnimTaskLiveData.observe(this) {
+            markerAction.onAnimTaskLiveData(it)
         }
     }
 
