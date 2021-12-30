@@ -43,11 +43,40 @@ class ClusterAdapterTest {
     }
 
     @Test
+    fun animTaskData1To3() {
+        // p(0,3) c(0,1  1,2  2,3)
+        val p = mock(stationsList.subList(0, 3))
+        val c = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
+
+        val task = ClusterAdapter().createAnimTaskData(p, c)
+        assertEquals(0, task.addList.size)
+        assertEquals(1, task.deleteList.size)
+        assertEquals(0, task.cospList.size)
+        assertEquals(1, task.expList.size)
+        assertEquals(3, task.expList.values.first().size)
+    }
+
+    @Test
+    fun animTaskData3To1() {
+        // p(0,1  1,2  2,3)  c(0,3)
+        val p = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
+        val c = mock(stationsList.subList(0, 3))
+
+
+        val task = ClusterAdapter().createAnimTaskData(p, c)
+        assertEquals(1, task.addList.size)
+        assertEquals(0, task.deleteList.size)
+        assertEquals(1, task.cospList.size)
+        assertEquals(3, task.cospList.values.first().size)
+        assertEquals(0, task.expList.size)
+    }
+
+    @Test
     fun createExpTaskOneSubClusterInBigCluster() {
         val prevCluster = mock(stationsList)
         val currCluster = mock(stationsList.subList(0, 1))
 
-        val expTask = ClusterAdapter(null).createExpTask(prevCluster, currCluster)
+        val expTask = ClusterAdapter().createExpTask(prevCluster, currCluster)
 
         assertEquals(1, expTask.size)
         assertTrue(expTask.containsKey(prevCluster[0].getLatlng()))

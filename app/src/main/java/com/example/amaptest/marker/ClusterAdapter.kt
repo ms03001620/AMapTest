@@ -139,6 +139,46 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         return Pair(collapsedTask, curr)
     }
 
+    /*
+     * p(0,3) c(0,1  1,2  2,3)
+     * p(0,3) c(0,2  2,3)
+     * p(0,4) c(0,2  2,4)
+     */
+    fun createAnimTaskData(
+        prev: MutableList<BaseMarkerData>,
+        curr: MutableList<BaseMarkerData>
+    ): AnimTaskData {
+        val addList = mutableListOf<BaseMarkerData>()
+        val deleteList = mutableListOf<BaseMarkerData>()
+        val cospList = hashMapOf<LatLng, MutableList<BaseMarkerData>>()
+        val expList = hashMapOf<LatLng, MutableList<BaseMarkerData>>()
+
+        prev.forEach { node ->
+            val latLng = findLatLng(curr, node)
+
+            if (latLng == null) {
+                // node, 最新结果中已经找不到老的点，它已经分裂。加入删除任务
+                deleteList.add(node)
+            } else {
+                // node 最近结果中包含了该点，加入合并任务
+                findOrCreateClusterList(cospList, latLng).add(node)
+            }
+        }
+
+        curr.forEach { node ->
+            val latLng = findLatLng(prev, node)
+            if (latLng == null) {
+                addList.add(node)
+            } else {
+                // 新节点是包含在老节点内的数据, 加入展开任务
+                findOrCreateClusterList(expList, latLng).add(node)
+            }
+        }
+
+        return AnimTaskData(addList, deleteList, cospList, expList)
+    }
+
+
     fun delSame(
         prev: MutableList<BaseMarkerData>,
         curr: MutableList<BaseMarkerData>
@@ -170,7 +210,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     ): MutableList<BaseMarkerData> {
         var result = collapsedTask[key]
         if (result == null) {
-            result = mutableListOf<BaseMarkerData>()
+            result = mutableListOf()
             collapsedTask[key] = result
         }
         return result
