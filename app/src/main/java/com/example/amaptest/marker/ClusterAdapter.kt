@@ -174,6 +174,9 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
             }
         }
 
+        val emptyTask = cospList.size == 0 && expList.size == 0
+        assert(emptyTask.not())
+
         return AnimTaskData(addList, deleteList, cospList, expList)
     }
 

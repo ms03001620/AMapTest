@@ -6,6 +6,7 @@ import com.example.amaptest.JsonTestUtil.mock
 import org.junit.Assert.*
 
 import org.junit.Test
+import java.lang.Exception
 
 class ClusterAdapterTest {
     private val stationsList = mockJsonData()
@@ -43,7 +44,7 @@ class ClusterAdapterTest {
     }
 
     @Test
-    fun animTaskData1To3() {
+    fun animTaskData1To3Node() {
         // p(0,3) c(0,1  1,2  2,3)
         val p = mock(stationsList.subList(0, 3))
         val c = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
@@ -53,6 +54,93 @@ class ClusterAdapterTest {
         assertEquals(1, task.deleteList.size)
         assertEquals(0, task.cospList.size)
         assertEquals(1, task.expList.size)
+        assertEquals(3, task.expList.values.first().size)
+
+        assertEquals(p.first().getLatlng(), task.expList.keys.first())
+    }
+
+    @Test
+    fun animTaskData1To2Node() {
+        // p(0,3) c(0,2  2,3)
+        val p = mock(stationsList.subList(0, 3))
+        val c = mock(stationsList.subList(0, 2), stationsList.subList(2, 3))
+
+        val task = ClusterAdapter().createAnimTaskData(p, c)
+        assertEquals(0, task.addList.size)
+        assertEquals(1, task.deleteList.size)
+        assertEquals(0, task.cospList.size)
+        assertEquals(1, task.expList.size)
+        assertEquals(2, task.expList.values.first().size)
+        assertEquals(p.first().getLatlng(), task.expList.keys.first())
+    }
+
+    @Test
+    fun animTaskData2To1MarkerCluster() {
+        // p(0,2  2,3)  c(0,3)
+        val p = mock(stationsList.subList(0, 2), stationsList.subList(2, 3))
+        val c = mock(stationsList.subList(0, 3))
+
+        val task = ClusterAdapter().createAnimTaskData(p, c)
+        assertEquals(1, task.addList.size)
+        assertEquals(0, task.deleteList.size)
+        assertEquals(1, task.cospList.size)
+        assertEquals(0, task.expList.size)
+        assertEquals(2, task.cospList.values.first().size)
+        assertEquals(c.first().getLatlng(), task.cospList.keys.first())
+    }
+
+    @Test
+    fun animTaskData1To2MarkerCluster() {
+        // p(0,4) c(0,2  2,4)
+        val p = mock(stationsList.subList(0, 4))
+        val c = mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+
+        val task = ClusterAdapter().createAnimTaskData(p, c)
+        assertEquals(0, task.addList.size)
+        assertEquals(1, task.deleteList.size)
+        assertEquals(0, task.cospList.size)
+        assertEquals(1, task.expList.size)
+        assertEquals(2, task.expList.values.first().size)
+        assertEquals(p.first().getLatlng(), task.expList.keys.first())
+    }
+
+    @Test
+    fun animTaskData2ClusterTo1MarkerCluster() {
+        // p(0,2  2,4) c(0,4)
+        val p = mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+        val c = mock(stationsList.subList(0, 4))
+
+        val task = ClusterAdapter().createAnimTaskData(p, c)
+        assertEquals(1, task.addList.size)
+        assertEquals(0, task.deleteList.size)
+        assertEquals(1, task.cospList.size)
+        assertEquals(0, task.expList.size)
+        assertEquals(2, task.cospList.values.first().size)
+        assertEquals(p.first().getLatlng(), task.cospList.keys.first())
+    }
+
+    @Test
+    fun animTaskDataFullTask() {
+        // p(0,2  2,4  5,8)
+        // c(0,4  5,6  6,7  7,8)
+        val p = mock(
+            stationsList.subList(0, 2),//A
+            stationsList.subList(2, 4),//A
+            stationsList.subList(5, 8) //B
+        )
+        val c = mock(
+            stationsList.subList(0, 4),//A
+            stationsList.subList(5, 6),//B
+            stationsList.subList(6, 7),//B
+            stationsList.subList(7, 8),//B
+        )
+
+        val task = ClusterAdapter().createAnimTaskData(p, c)
+        assertEquals(1, task.addList.size)
+        assertEquals(1, task.deleteList.size)
+        assertEquals(1, task.cospList.size)
+        assertEquals(1, task.expList.size)
+        assertEquals(2, task.cospList.values.first().size)
         assertEquals(3, task.expList.values.first().size)
     }
 
