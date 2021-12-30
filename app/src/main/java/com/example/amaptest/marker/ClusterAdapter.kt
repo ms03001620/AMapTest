@@ -155,7 +155,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
 
         prev.forEach { node ->
             val latLng = findLatLng(curr, node)
-
             if (latLng == null) {
                 // node, 最新结果中已经找不到老的点，它已经分裂。加入删除任务
                 deleteList.add(node)
