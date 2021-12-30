@@ -59,26 +59,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         curr: MutableList<BaseMarkerData>
     ) = curr == prev
 
-    fun createRemoveTask(
-        prev: MutableList<BaseMarkerData>,
-        curr: MutableList<BaseMarkerData>
-    ): MutableList<BaseMarkerData> {
-        val removedList = mutableListOf<BaseMarkerData>()
-
-        prev.filterIsInstance<MarkerCluster>().forEach { targetCluster ->
-            var hasIn = false
-            curr.filterIsInstance<MarkerCluster>().forEach {
-                if (targetCluster.getId() == it.getId()) {
-                    hasIn = true
-                }
-            }
-            if (hasIn.not()) {
-                removedList.add(targetCluster)
-            }
-        }
-        return removedList
-    }
-
     /*
      * p(0,3) c(0,1  1,2  2,3)
      * p(0,3) c(0,2  2,3)
