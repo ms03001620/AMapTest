@@ -25,29 +25,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     }
 
     var prev: MutableList<BaseMarkerData>? = null
-    var lastZoom = 0f
-
-
-    fun process1(set: MutableList<BaseMarkerData>?, zoom: Float) {
-        val isZoomIn = zoom> lastZoom
-        lastZoom = zoom
-
-        set?.let {
-            if (prev == null || isSameData(prev, set)) {
-                prev?.let {
-                    logd("same:${isSameData(it, set)}", "queue")
-                }
-                action?.noChange(it)
-            } else {
-                if (isZoomIn) {
-                    processZoomIn(it)
-                } else {
-                    processZoomOut(it)
-                }
-            }
-            prev = it
-        }
-    }
 
     fun process(curr: MutableList<BaseMarkerData>?, zoom: Float) {
         if (curr == null) {
@@ -62,9 +39,25 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
 
             delSame(subPrev, subCurr)
             assert(getMarkerListSize(subPrev) == getMarkerListSize(subCurr))
-
+            installTask(subPrev, subCurr)
         }
         prev = curr
+    }
+
+    fun installTask(
+        prev: MutableList<BaseMarkerData>,
+        curr: MutableList<BaseMarkerData>
+    ){
+        action?.let {callback ->
+            createAnimTaskData(prev, curr).let {
+                //fun expansion(removed: MutableList<BaseMarkerData>, map: HashMap<LatLng, MutableList<BaseMarkerData>>)
+                //fun collapsed(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>)
+
+
+                callback.expansion(it.deleteList, it.expList)
+                callback.collapsed(Pair(it.cospList, it.addList))
+            }
+        }
     }
 
     fun getMarkerListSize(list: MutableList<BaseMarkerData>?): Int {
@@ -79,20 +72,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         val start = System.currentTimeMillis()
         process(set, zoom)
         logd("queue spend:${System.currentTimeMillis() - start}")
-    }
-
-    private fun processZoomOut(curr: MutableList<BaseMarkerData>) {
-        prev?.let {
-            action?.collapsed(createCollapsedTask(it, curr))
-        }
-    }
-
-    fun processZoomIn(curr: MutableList<BaseMarkerData>) {
-        prev?.let {
-            val exp = createExpTask(it, curr)
-            val removed = createRemoveTask(it, curr)
-            action?.expansion(removed, exp)
-        }
     }
 
     fun isSameData(
@@ -118,25 +97,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
             }
         }
         return removedList
-    }
-
-    fun createCollapsedTask(
-        prev1: MutableList<BaseMarkerData>,
-        curr1: MutableList<BaseMarkerData>
-    ): Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>> {
-        val collapsedTask = HashMap<LatLng, MutableList<BaseMarkerData>>()
-
-        val prev = prev1.toMutableList()
-        val curr = curr1.toMutableList()
-
-        prev.forEach { currCluster ->
-            val latLng = findLatLng(curr, currCluster)
-            latLng?.let {
-                findOrCreateClusterList(collapsedTask, it).add(currCluster)
-            }
-        }
-
-        return Pair(collapsedTask, curr)
     }
 
     /*

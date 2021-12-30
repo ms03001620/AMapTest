@@ -58,7 +58,8 @@ class MarkerAction(val mapProxy: MapProxy) {
 
 
     fun cosp(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>) {
-        setList(pair.second)
+       // setList(pair.second)
+        cosp1(pair)
     }
 
     /**

@@ -13,34 +13,7 @@ class ClusterAdapterTest {
 
     @Test
     fun process() {
-        var result: HashMap<LatLng, MutableList<BaseMarkerData>>? = null
 
-        val adapter = ClusterAdapter(object : ClusterAdapter.OnClusterAction {
-            override fun noChange(data: MutableList<BaseMarkerData>) {
-            }
-
-            override fun expansion(
-                removed: MutableList<BaseMarkerData>,
-                map: HashMap<LatLng, MutableList<BaseMarkerData>>
-            ) {
-                result = map
-            }
-
-            override fun collapsed(pair: Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>) {
-            }
-        })
-
-        // 1聚合点 -> 2小聚合点
-        val prevCluster = mock(stationsList)
-        val currentCluster = mock(
-            stationsList.subList(0, 1),
-            stationsList.subList(1, 20)
-        )
-
-        adapter.setPrevData(prevCluster)
-        adapter.processZoomIn(currentCluster)
-        assertEquals(1, result?.size ?: 0)
-        assertEquals(2, (result?.get(prevCluster[0].getLatlng())?.size ?: 0))
     }
 
     @Test
@@ -185,37 +158,6 @@ class ClusterAdapterTest {
         val removedTask = ClusterAdapter(null).createRemoveTask(prevCluster, currCluster)
         assertEquals(1, removedTask.size)
     }
-
-    @Test
-    fun createCollapsedTaskBase() {
-        //Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>
-        val prevCluster = mock(stationsList.subList(0, 1), stationsList.subList(1, 2), stationsList.subList(2, 3))
-        val currCluster = mock(stationsList.subList(0, 3))
-        val task = ClusterAdapter().createCollapsedTask(prevCluster, currCluster)
-
-        assertEquals(3, task.first.values.first().size)
-        assertEquals(1, task.second.size)
-    }
-
-    @Test
-    fun createCollapsedTask() {
-        //Pair<HashMap<LatLng, MutableList<BaseMarkerData>>, MutableList<BaseMarkerData>>
-        val prevCluster = mock(
-            stationsList.subList(0, 1),
-            stationsList.subList(1, 2),
-            stationsList.subList(2, 3),
-            stationsList.subList(3, 4)
-        )
-        val currCluster = mock(stationsList.subList(0, 3), stationsList.subList(3, 4))
-
-        val task = ClusterAdapter().createCollapsedTask(prevCluster, currCluster)
-
-        assertEquals(3, task.first.values.first().size)
-        assertEquals(2, task.second.size)
-    }
-
-    //TODO createCollapsedTask add more case
-
 
     @Test
     fun delSameMarkSingle() {
