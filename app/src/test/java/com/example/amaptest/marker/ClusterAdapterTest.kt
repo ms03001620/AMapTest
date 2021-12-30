@@ -372,7 +372,24 @@ class ClusterAdapterTest {
         val prev = (prevCluster[0] as MarkerCluster).list.items
         val child = (childCluster[0] as MarkerCluster).list.items
 
-        assertTrue(ClusterAdapter(null).isAllInTarget(prev, child))
+        assertTrue(ClusterAdapter().isListInList(prev, child))
+        assertFalse(ClusterAdapter().isListInList(child, prev))
+    }
+
+    @Test
+    fun testIsAllInTargetNoOrder() {
+        val prevCluster = mock(stationsList.subList(0, 4))
+
+        val childCluster = mock(listOf(
+            stationsList[2],
+            stationsList[0],
+        ))
+
+        val prev = (prevCluster[0] as MarkerCluster).list.items
+        val child = (childCluster[0] as MarkerCluster).list.items
+
+        assertTrue(ClusterAdapter().isListInList(prev, child))
+        assertFalse(ClusterAdapter().isListInList(child, prev))
     }
 
     @Test
@@ -382,15 +399,15 @@ class ClusterAdapterTest {
 
         val prev = (prevCluster[0] as MarkerCluster).list.items
         val child = (childCluster[0] as MarkerCluster).list.items
-        assertFalse(ClusterAdapter(null).isAllInTarget(prev, child))
+        assertFalse(ClusterAdapter(null).isListInList(prev, child))
     }
 
     @Test
     fun testIsAllInTargetNull() {
         val prevCluster = mock(stationsList.subList(0, 4))
         val prev = (prevCluster[0] as MarkerCluster).list.items
-        assertFalse(ClusterAdapter(null).isAllInTarget(null, prev))
-        assertFalse(ClusterAdapter(null).isAllInTarget(prev, null))
+        assertFalse(ClusterAdapter(null).isListInList(null, prev))
+        assertFalse(ClusterAdapter(null).isListInList(prev, null))
     }
 
     @Test

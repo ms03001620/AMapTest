@@ -4,7 +4,6 @@ import androidx.annotation.VisibleForTesting
 import com.amap.api.maps.model.LatLng
 import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.ClusterItem
-import com.polestar.charging.ui.cluster.base.StationClusterItem
 import kotlin.collections.HashMap
 
 class ClusterAdapter(val action: OnClusterAction? = null) {
@@ -187,13 +186,11 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
             // list
             when (baseMarkerData) {
                 is MarkerCluster -> {
-
                     val clusterItem = baseMarkerData.list.items
-
                     when (target) {
                         // cluster in cluster
                         is MarkerCluster -> {
-                            if (isAllInTarget(clusterItem, target.list.items)) {
+                            if (isListInList(clusterItem, target.list.items)) {
                                 return fromLatLng
                             }
                         }
@@ -223,27 +220,20 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         return list?.map { it.id }?.contains(markerSingle.stationDetail.id) == true
     }
 
-    fun isAllInTarget(
+    fun isListInList(
         parent: MutableCollection<ClusterItem>?,
         child: MutableCollection<ClusterItem>?
     ): Boolean {
-        if (parent == null || child == null) {
-            return false
+        child?.map {
+            it.id
+        }?.let { ids ->
+            parent?.map {
+                it.id
+            }?.containsAll(ids).let {
+                return it == true
+            }
         }
-
-        val childIds = child.filter {
-            (it as StationClusterItem).stationDetail.id != null
-        }.map {
-            (it as StationClusterItem).stationDetail.id!!
-        }
-
-        parent.filter {
-            (it as StationClusterItem).stationDetail.id != null
-        }.map {
-            (it as StationClusterItem).stationDetail.id!!
-        }.containsAll(childIds).let {
-            return it
-        }
+        return false
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
