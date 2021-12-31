@@ -83,6 +83,8 @@ class ClusterAdapterTest {
         val p = mock(stationsList.subList(0, 3))
         val c = mock(stationsList.subList(0, 2), stationsList.subList(2, 3))
 
+        //TODO 优化 展开的任务中有的只更新，加入更新任务并从展开任务中移除
+
         val task = ClusterAdapter().createAnimTaskData(p, c)
         assertEquals(0, task.addList.size)
         assertEquals(1, task.deleteList.size)
