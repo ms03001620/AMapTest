@@ -6,11 +6,9 @@ import com.example.amaptest.JsonTestUtil.mock
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.charging.ui.cluster.quadtree.DistanceBasedAlgorithm
-import com.polestar.repository.data.charging.StationDetail
 import org.junit.Assert.*
 
 import org.junit.Test
-import java.lang.Exception
 
 class ClusterAdapterTest {
     private val stationsList = mockJsonData()
@@ -24,18 +22,19 @@ class ClusterAdapterTest {
             }
 
             override fun onAnimTask(animTaskData: AnimTaskData) {
+                println(animTaskData)
             }
         })
 
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(11f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(12f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(13f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(14f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(15f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(14f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(13f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(12f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(11f)))
+        val zoomStart = 11
+        val zoomEnd = 16
+
+        for (i in zoomStart..zoomEnd) {
+            adapter.queue(MarkerDataFactory.create(algorithm.getClusters(i * 1.0f)))
+        }
+        for (i in zoomEnd - 1 downTo zoomStart) {
+            adapter.queue(MarkerDataFactory.create(algorithm.getClusters(i * 1.0f)))
+        }
     }
 
     @Test
@@ -49,15 +48,15 @@ class ClusterAdapterTest {
             }
         })
 
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(11f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(12f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(13f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(14f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(15f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(14f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(13f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(12f)))
-        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(11f)))
+        val zoomStart = 7
+        val zoomEnd = 16
+
+        for (i in zoomStart..zoomEnd) {
+            adapter.queue(MarkerDataFactory.create(algorithm.getClusters(i * 1.0f)))
+        }
+        for (i in zoomEnd - 1 downTo zoomStart) {
+            adapter.queue(MarkerDataFactory.create(algorithm.getClusters(i * 1.0f)))
+        }
     }
 
     @Test

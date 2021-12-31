@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MarkerActionViewModel : ViewModel() {
-    val clustersLiveData = MutableLiveData<MutableList<BaseMarkerData>>()
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
     val onAnimTaskLiveData = SingleLiveEvent<AnimTaskData>()
 

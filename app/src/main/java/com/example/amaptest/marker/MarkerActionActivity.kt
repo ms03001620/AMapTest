@@ -47,28 +47,15 @@ class MarkerActionActivity : AppCompatActivity() {
 
     private fun initObserver() {
         viewModel.loadDefault(this, FILE, SUBLIST_START, SUBLIST_END)
-        viewModel.clustersLiveData.observe(this) { set ->
-            clearAndReDraw(set)
-        }
-
         viewModel.noChangeLiveData.observe(this) {
-            //markerAction.setList(it)
+            markerAction.setList(it)
         }
 
         viewModel.onAnimTaskLiveData.observe(this) {
-            //markerAction.onAnimTaskLiveData(it)
+            markerAction.onAnimTaskLiveData(it)
         }
     }
 
-    private fun clearAndReDraw(set: MutableList<BaseMarkerData>) {
-        mMapView.map.clear(true)
-        set.forEach { cluster ->
-            addMarkToMap(
-                cluster,
-                mMapView.map
-            )
-        }
-    }
 
     fun setupMap(savedInstanceState: Bundle?) {
         mMapView = findViewById(R.id.map)
@@ -113,34 +100,6 @@ class MarkerActionActivity : AppCompatActivity() {
             // 12f -> 13f  cluster(1->2)
             CameraUpdateFactory.newLatLngZoom(LatLng(DEFAULT_LAT,DEFAULT_LNG), ZOOM)
         )
-    }
-
-    private fun addMarkToMap(
-        cluster: BaseMarkerData,
-        map: AMap
-    ): Marker? {
-        return with(cluster) {
-            when (this) {
-                is MarkerSingle -> {
-                    getCollapsedBitmapDescriptor(this.stationDetail)
-                }
-                is MarkerCluster -> {
-                    getClusterBitmapDescriptor(this.getSize())
-                }
-                else -> {
-                    null
-                }
-            }
-        }?.let {
-            MarkerOptions()
-                .position(cluster.getLatlng())
-                .icon(it)
-                .infoWindowEnable(true)
-        }.let { options ->
-            map.addMarker(options).also {
-                it.setObject(cluster)
-            }
-        }
     }
 
     private fun initZoomBtn() {
@@ -201,7 +160,7 @@ class MarkerActionActivity : AppCompatActivity() {
         const val DEFAULT_LNG = 121.497798
         const val DEFAULT_LAT = 31.249051
 
-        const val ZOOM = 12f
+        const val ZOOM = 11f
 
 /*        const val FILE = "json_stations570.json"
         const val SUBLIST_START = -1 //-1 disable
