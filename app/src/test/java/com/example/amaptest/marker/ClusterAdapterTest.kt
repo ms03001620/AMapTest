@@ -22,7 +22,9 @@ class ClusterAdapterTest {
             }
 
             override fun onAnimTask(animTaskData: AnimTaskData) {
-                println(animTaskData)
+                if (animTaskData.cospList.size > 0) {
+                    println(animTaskData)
+                }
             }
         })
 
