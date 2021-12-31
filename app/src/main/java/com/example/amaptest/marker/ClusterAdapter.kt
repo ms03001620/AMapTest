@@ -10,7 +10,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         fun onAnimTask(animTaskData: AnimTaskData)
     }
 
-    var prev: MutableList<BaseMarkerData>? = null
+    private var prev: MutableList<BaseMarkerData>? = null
 
     fun process(curr: MutableList<BaseMarkerData>) {
         if (prev == null || isSameData(prev, curr)) {
@@ -34,9 +34,9 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         action?.onAnimTask(createAnimTaskData(prev, curr))
     }
 
-    fun getMarkerListSize(list: MutableList<BaseMarkerData>?): Int {
+    fun getMarkerListSize(list: MutableList<BaseMarkerData>): Int {
         var total = 0
-        list?.forEach {
+        list.forEach {
             total += it.getSize()
         }
         return total
@@ -130,10 +130,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
             collapsedTask[key] = result
         }
         return result
-    }
-
-    fun containInPrev(prev: MutableList<BaseMarkerData>, element: BaseMarkerData): Boolean {
-        return findLatLng(prev, element) != null
     }
 
     fun findLatLng(markDataList: MutableList<BaseMarkerData>, target: BaseMarkerData): LatLng? {

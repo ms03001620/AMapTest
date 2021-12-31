@@ -19,13 +19,45 @@ class ClusterAdapterTest {
     @Test
     fun process() {
         algorithm.addItems(stationsList.map { StationClusterItem(it) })
-        val adapter =  ClusterAdapter()
+        val adapter = ClusterAdapter(object : ClusterAdapter.OnClusterAction {
+            override fun noChange(data: MutableList<BaseMarkerData>) {
+            }
+
+            override fun onAnimTask(animTaskData: AnimTaskData) {
+            }
+        })
 
         adapter.queue(MarkerDataFactory.create(algorithm.getClusters(11f)))
         adapter.queue(MarkerDataFactory.create(algorithm.getClusters(12f)))
         adapter.queue(MarkerDataFactory.create(algorithm.getClusters(13f)))
         adapter.queue(MarkerDataFactory.create(algorithm.getClusters(14f)))
         adapter.queue(MarkerDataFactory.create(algorithm.getClusters(15f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(14f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(13f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(12f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(11f)))
+    }
+
+    @Test
+    fun processBig() {
+        algorithm.addItems(JsonTestUtil.readStation("json_stations570.json").map { StationClusterItem(it) })
+        val adapter = ClusterAdapter(object : ClusterAdapter.OnClusterAction {
+            override fun noChange(data: MutableList<BaseMarkerData>) {
+            }
+
+            override fun onAnimTask(animTaskData: AnimTaskData) {
+            }
+        })
+
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(11f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(12f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(13f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(14f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(15f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(14f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(13f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(12f)))
+        adapter.queue(MarkerDataFactory.create(algorithm.getClusters(11f)))
     }
 
     @Test
@@ -454,14 +486,6 @@ class ClusterAdapterTest {
         val prev = (prevCluster[0] as MarkerCluster).list.items
         assertFalse(ClusterAdapter(null).isListInList(null, prev))
         assertFalse(ClusterAdapter(null).isListInList(prev, null))
-    }
-
-    @Test
-    fun containInPrev() {
-        val prevCluster = mock(stationsList)
-        val currCluster = mock(stationsList.subList(0, 1))
-
-        assertTrue(ClusterAdapter(null).containInPrev(prevCluster, currCluster[0]))
     }
 
     @Test
