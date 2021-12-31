@@ -56,7 +56,6 @@ class MarkerActionActivity : AppCompatActivity() {
         }
     }
 
-
     fun setupMap(savedInstanceState: Bundle?) {
         mMapView = findViewById(R.id.map)
         mMapView.onCreate(savedInstanceState)
@@ -82,7 +81,6 @@ class MarkerActionActivity : AppCompatActivity() {
         mMapView.map.uiSettings.isScaleControlsEnabled = true
         mMapView.map.uiSettings.isZoomControlsEnabled = false
         mMapView.map.isMyLocationEnabled = false
-        //mMapView.map.setOnMarkerClickListener(this)
         val myLocationStyle = MyLocationStyle()
         myLocationStyle.myLocationIcon(
             BitmapDescriptorFactory.fromResource(R.drawable.charging_pic_my_location_3x)
@@ -119,21 +117,6 @@ class MarkerActionActivity : AppCompatActivity() {
             mMapView.map.cameraPosition
         )
 
-
-    fun getCollapsedBitmapDescriptor(stationDetail: StationDetail): BitmapDescriptor? {
-        val view = LayoutInflater.from(this)
-            .inflate(R.layout.charging_layout_marker_collapsed, null, false)
-        view.findViewById<TextView>(R.id.tv).text = stationDetail.freeAcDcAll().toString()
-        return BitmapDescriptorFactory.fromView(view)
-    }
-
-    fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
-        val text = if (clusterSize > 999) "999+" else clusterSize.toString()
-        val view = LayoutInflater.from(this)
-            .inflate(R.layout.charging_layout_marker_cluster, null, false)
-        view.findViewById<TextView>(R.id.text_cluster).text = text
-        return BitmapDescriptorFactory.fromView(view)
-    }
 
     override fun onDestroy() {
         super.onDestroy()
