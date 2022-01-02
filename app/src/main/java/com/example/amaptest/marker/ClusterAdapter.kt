@@ -68,6 +68,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         val expList = hashMapOf<LatLng, MutableList<BaseMarkerData>>()
 
         prev.forEach { node ->
+            //curr中有一个数据和node一致
             val latLng = findLatLng(curr, node)
             if (latLng == null) {
                 // node, 最新结果中已经找不到老的点，它已经分裂。加入删除任务
@@ -118,40 +119,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         return result
     }
 
-    fun findLatLng1(markDataList: MutableList<BaseMarkerData>, target: BaseMarkerData): LatLng? {
-        markDataList.forEach { baseMarkerData ->
-            val fromLatLng = baseMarkerData.getLatlng()
-            // list
-            when (baseMarkerData) {
-                is MarkerCluster -> {
-                    val clusterItem = baseMarkerData.list.items
-                    when (target) {
-                        // cluster in cluster
-                        is MarkerCluster -> {
-                            // target所有数据都在 clusterItem中
-                            if (isClusterContainerItems(clusterItem, target.list.items)) {
-                                return fromLatLng
-                            }
-                        }
-                        // single in cluster
-                        is MarkerSingle -> {
-                            if (isMarkSingleInList(clusterItem, target)) {
-                                return fromLatLng
-                            }
-                        }
-                    }
-                }
-                is MarkerSingle -> {
-                    if (baseMarkerData.getId() == target.getId()) {
-                        return fromLatLng
-                    }
-                }
-            }
-
-        }
-        return null
-    }
-
     fun findLatLng(markDataList: MutableList<BaseMarkerData>, target: BaseMarkerData): LatLng? {
         markDataList.forEach { baseMarkerData ->
             val fromLatLng = baseMarkerData.getLatlng()
@@ -163,15 +130,9 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
                         // cluster in cluster
                         is MarkerCluster -> {
                             // target所有数据都在 clusterItem中
-                            val subItems = findItems(clusterItem, target.list.items)
-
-                            val sizeSub = subItems?.size
-                            val sizeTarget = target.list.items?.size
-
-                            if (sizeSub == sizeTarget) {
+                            if (isClusterContainerItems(clusterItem, target.list.items)) {
+                                //clusterItem中包含target全部数据            //TODO 可能只包含部分节点
                                 return fromLatLng
-                            }else{
-                                println("sub: ${sizeSub}, target:${sizeTarget}")
                             }
                         }
                         // single in cluster
