@@ -106,22 +106,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         curr.removeAll(prevCopy)
     }
 
-    fun createExpTask(
-        prev: MutableList<BaseMarkerData>,
-        curr: MutableList<BaseMarkerData>
-    ): HashMap<LatLng, MutableList<BaseMarkerData>> {
-        val expTask = HashMap<LatLng, MutableList<BaseMarkerData>>()
-
-        curr.forEach { currCluster ->
-            val latLng = findLatLng(prev, currCluster)
-            latLng?.let {
-                findOrCreateClusterList(expTask, it).add(currCluster)
-            }
-        }
-
-        return expTask
-    }
-
     fun findOrCreateClusterList(
         collapsedTask: HashMap<LatLng, MutableList<BaseMarkerData>>,
         key: LatLng
@@ -180,10 +164,14 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
                         is MarkerCluster -> {
                             // target所有数据都在 clusterItem中
                             val subItems = findItems(clusterItem, target.list.items)
-                            if (subItems?.size == target.list.items?.size) {
+
+                            val sizeSub = subItems?.size
+                            val sizeTarget = target.list.items?.size
+
+                            if (sizeSub == sizeTarget) {
                                 return fromLatLng
                             }else{
-                                println("sub: ${subItems?.size}, total:${target.list.items?.size}")
+                                println("sub: ${sizeSub}, target:${sizeTarget}")
                             }
                         }
                         // single in cluster
