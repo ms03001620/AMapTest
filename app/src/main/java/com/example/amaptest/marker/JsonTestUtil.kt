@@ -1,14 +1,11 @@
-package com.example.amaptest
+package com.example.amaptest.marker
 
 import com.amap.api.maps.model.LatLng
-import com.example.amaptest.marker.BaseMarkerData
-import com.example.amaptest.marker.MarkerDataFactory
-import com.google.gson.Gson
+import com.example.amaptest.AssetsReadUtils
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.repository.data.charging.StationDetail
 import org.json.JSONArray
 import java.util.*
-import com.google.gson.reflect.TypeToken
 import com.polestar.charging.ui.cluster.base.Cluster
 import com.polestar.charging.ui.cluster.base.StaticCluster
 import com.polestar.charging.ui.cluster.base.StationClusterItem

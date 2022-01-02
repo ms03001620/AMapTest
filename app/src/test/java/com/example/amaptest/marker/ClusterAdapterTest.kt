@@ -1,8 +1,7 @@
 package com.example.amaptest.marker
 
 import com.amap.api.maps.model.LatLng
-import com.example.amaptest.JsonTestUtil
-import com.example.amaptest.JsonTestUtil.mock
+import com.example.amaptest.marker.JsonTestUtil.mock
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.charging.ui.cluster.quadtree.DistanceBasedAlgorithm
@@ -138,7 +137,7 @@ class ClusterAdapterTest {
             )
         )
 
-        val task = ClusterAdapter().findLatLng(p, c[0])
+        val task = ClusterAdapter().createAnimTaskData(p, c)
 
         print(task)
 

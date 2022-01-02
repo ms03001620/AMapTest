@@ -1,9 +1,7 @@
 package com.example.amaptest.marker
 
-import com.example.amaptest.JsonTestUtil
-import com.example.amaptest.JsonTestUtil.mock
+import com.example.amaptest.marker.JsonTestUtil.mock
 import io.mockk.*
-import org.junit.Assert.*
 
 import org.junit.Test
 

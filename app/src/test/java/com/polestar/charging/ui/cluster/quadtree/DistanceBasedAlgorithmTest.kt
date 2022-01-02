@@ -1,7 +1,7 @@
 package com.polestar.charging.ui.cluster.quadtree
 
 import com.amap.api.maps.model.LatLng
-import com.example.amaptest.JsonTestUtil
+import com.example.amaptest.marker.JsonTestUtil
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import org.junit.Assert
 import org.junit.Assert.assertEquals

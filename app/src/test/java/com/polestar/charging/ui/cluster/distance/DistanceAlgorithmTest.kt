@@ -1,11 +1,10 @@
 package com.polestar.charging.ui.cluster.distance
 
-import com.example.amaptest.JsonTestUtil
+import com.example.amaptest.marker.JsonTestUtil
 import com.polestar.charging.ui.cluster.base.Cluster
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.DistanceInfo
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Test
 
 class DistanceAlgorithmTest {

@@ -1,6 +1,5 @@
 package com.example.amaptest.marker
 
-import com.example.amaptest.JsonTestUtil
 import org.junit.Assert
 import org.junit.Test
 

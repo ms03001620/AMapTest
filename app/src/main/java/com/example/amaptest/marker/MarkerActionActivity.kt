@@ -23,7 +23,7 @@ class MarkerActionActivity : AppCompatActivity() {
         ViewModelProvider(
             this,
             ViewModelFactory()
-        )[MarkerActionViewModel::class.java]
+        )[MarkerMockViewModel::class.java]
     }
     private val styleData by lazy {
         AssetsReadUtils.readBytes(this, "style.data")
@@ -143,7 +143,7 @@ class MarkerActionActivity : AppCompatActivity() {
         const val DEFAULT_LNG = 121.497798
         const val DEFAULT_LAT = 31.249051
 
-        const val ZOOM = 8f
+        const val ZOOM = 15f
 
 /*        const val FILE = "json_stations570.json"
         const val SUBLIST_START = -1 //-1 disable
