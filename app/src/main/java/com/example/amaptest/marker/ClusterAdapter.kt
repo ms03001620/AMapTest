@@ -79,6 +79,8 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         }
 
         curr.forEach { node ->
+            //   AB12 ->   a1, b2
+            // 当前节点内所有数据 都在某个老节点中
             val latLng = findLatLng(prev, node)
             if (latLng == null) {
                 addList.add(node)
@@ -132,6 +134,40 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         return result
     }
 
+    fun findLatLng1(markDataList: MutableList<BaseMarkerData>, target: BaseMarkerData): LatLng? {
+        markDataList.forEach { baseMarkerData ->
+            val fromLatLng = baseMarkerData.getLatlng()
+            // list
+            when (baseMarkerData) {
+                is MarkerCluster -> {
+                    val clusterItem = baseMarkerData.list.items
+                    when (target) {
+                        // cluster in cluster
+                        is MarkerCluster -> {
+                            // target所有数据都在 clusterItem中
+                            if (isClusterContainerItems(clusterItem, target.list.items)) {
+                                return fromLatLng
+                            }
+                        }
+                        // single in cluster
+                        is MarkerSingle -> {
+                            if (isMarkSingleInList(clusterItem, target)) {
+                                return fromLatLng
+                            }
+                        }
+                    }
+                }
+                is MarkerSingle -> {
+                    if (baseMarkerData.getId() == target.getId()) {
+                        return fromLatLng
+                    }
+                }
+            }
+
+        }
+        return null
+    }
+
     fun findLatLng(markDataList: MutableList<BaseMarkerData>, target: BaseMarkerData): LatLng? {
         markDataList.forEach { baseMarkerData ->
             val fromLatLng = baseMarkerData.getLatlng()
@@ -142,8 +178,12 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
                     when (target) {
                         // cluster in cluster
                         is MarkerCluster -> {
-                            if (isListInList(clusterItem, target.list.items)) {
+                            // target所有数据都在 clusterItem中
+                            val subItems = findItems(clusterItem, target.list.items)
+                            if (subItems?.size == target.list.items?.size) {
                                 return fromLatLng
+                            }else{
+                                println("sub: ${subItems?.size}, total:${target.list.items?.size}")
                             }
                         }
                         // single in cluster
@@ -172,10 +212,20 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         return list?.map { it.id }?.contains(markerSingle.stationDetail.id) == true
     }
 
-    fun isListInList(
+    fun findItems(
+        parent: MutableCollection<ClusterItem>?,
+        child: MutableCollection<ClusterItem>?
+    ) = child?.filter {
+        parent?.contains(it) == true
+    }
+
+    fun isClusterContainerItems(
         parent: MutableCollection<ClusterItem>?,
         child: MutableCollection<ClusterItem>?
     ): Boolean {
+        if ((child?.size ?: 0) > (parent?.size ?: 0)) {
+            return false
+        }
         child?.map {
             it.id
         }?.let { ids ->

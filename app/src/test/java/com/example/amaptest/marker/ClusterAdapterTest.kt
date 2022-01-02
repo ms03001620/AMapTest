@@ -77,6 +77,44 @@ class ClusterAdapterTest {
         assertEquals(p.first().getLatlng(), task.expList.keys.first())
     }
 
+    //exp
+    //cluster -> cluster, cluster
+    //cluster -> singles,
+    //cluster -> cluster, singles
+    //cluster -> cluster/half
+
+    // abcd -> {
+    // 1234 ->   ab12, cd34}
+    @Test
+    fun animTaskData1To3Node11111111() {
+        val p = mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+
+        val c = mock(
+            listOf(
+                stationsList.subList(0, 1).first(),
+                stationsList.subList(2, 3).first()
+            ),
+            listOf(
+                stationsList.subList(1, 2).first(),
+                stationsList.subList(3, 4).first()
+            )
+        )
+
+        val l = ClusterAdapter().findLatLng(p, c.first())
+
+        val prevCluster = mock(stationsList)
+        val childCluster = mock(stationsList.subList(0, 4))
+
+        val prev = (prevCluster[0] as MarkerCluster).list.items
+        val child = (childCluster[0] as MarkerCluster).list.items
+
+        assertTrue(ClusterAdapter().isClusterContainerItems(prev, child))
+        assertFalse(ClusterAdapter().isClusterContainerItems(child, prev))
+
+
+        //assertNotNull(l)
+    }
+
     @Test
     fun animTaskData1To2Node() {
         // p(0,3) c(0,2  2,3)
@@ -453,8 +491,8 @@ class ClusterAdapterTest {
         val prev = (prevCluster[0] as MarkerCluster).list.items
         val child = (childCluster[0] as MarkerCluster).list.items
 
-        assertTrue(ClusterAdapter().isListInList(prev, child))
-        assertFalse(ClusterAdapter().isListInList(child, prev))
+        assertTrue(ClusterAdapter().isClusterContainerItems(prev, child))
+        assertFalse(ClusterAdapter().isClusterContainerItems(child, prev))
     }
 
     @Test
@@ -469,8 +507,8 @@ class ClusterAdapterTest {
         val prev = (prevCluster[0] as MarkerCluster).list.items
         val child = (childCluster[0] as MarkerCluster).list.items
 
-        assertTrue(ClusterAdapter().isListInList(prev, child))
-        assertFalse(ClusterAdapter().isListInList(child, prev))
+        assertTrue(ClusterAdapter().isClusterContainerItems(prev, child))
+        assertFalse(ClusterAdapter().isClusterContainerItems(child, prev))
     }
 
     @Test
@@ -480,15 +518,15 @@ class ClusterAdapterTest {
 
         val prev = (prevCluster[0] as MarkerCluster).list.items
         val child = (childCluster[0] as MarkerCluster).list.items
-        assertFalse(ClusterAdapter(null).isListInList(prev, child))
+        assertFalse(ClusterAdapter(null).isClusterContainerItems(prev, child))
     }
 
     @Test
     fun testIsAllInTargetNull() {
         val prevCluster = mock(stationsList.subList(0, 4))
         val prev = (prevCluster[0] as MarkerCluster).list.items
-        assertFalse(ClusterAdapter(null).isListInList(null, prev))
-        assertFalse(ClusterAdapter(null).isListInList(prev, null))
+        assertFalse(ClusterAdapter(null).isClusterContainerItems(null, prev))
+        assertFalse(ClusterAdapter(null).isClusterContainerItems(prev, null))
     }
 
     @Test
@@ -503,6 +541,59 @@ class ClusterAdapterTest {
         assertTrue(mock(stationsList.subList(0, 1))[0] is MarkerSingle)
         assertTrue(mock(stationsList.subList(0, 2))[0] is MarkerCluster)
         assertTrue(mock(stationsList, stationsList).size == 2)
+    }
+
+    @Test
+    fun findItems() {
+        // AB12 ->   a1, b2
+        val prevCluster = mock(stationsList.subList(0, 2))
+        val childCluster = mock(
+            listOf(
+                stationsList.subList(1, 2).first(),
+                stationsList.subList(0, 1).first(),
+                stationsList.subList(2, 3).first(),
+                stationsList.subList(3, 4).first(),
+            )
+        )
+        assertTrue(
+            ClusterAdapter().findItems(
+                (prevCluster[0] as MarkerCluster).list.items,
+                (childCluster[0] as MarkerCluster).list.items
+            )?.size == 2
+        )
+
+        assertNull(ClusterAdapter().findItems(null, null))
+    }
+
+    @Test
+    fun findItemsAB12ToA1B2() {
+        // AB12 ->   a1, b2
+        val prevCluster = mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+
+        val childCluster = mock(
+            listOf(
+                stationsList.subList(0, 1).first(),
+                stationsList.subList(2, 3).first()
+            ),
+            listOf(
+                stationsList.subList(1, 2).first(),
+                stationsList.subList(3, 4).first()
+            )
+        )
+
+        assertTrue(
+            ClusterAdapter().findItems(
+                (prevCluster[0] as MarkerCluster).list.items,
+                (childCluster[0] as MarkerCluster).list.items
+            )?.size == 1
+        )
+
+        assertTrue(
+            ClusterAdapter().findItems(
+                (prevCluster[1] as MarkerCluster).list.items,
+                (childCluster[1] as MarkerCluster).list.items
+            )?.size == 1
+        )
     }
 
     private fun mockJsonData() = JsonTestUtil.readStation("json_stations.json")
