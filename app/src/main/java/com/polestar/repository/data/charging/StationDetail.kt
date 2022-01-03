@@ -78,7 +78,11 @@ data class StationDetail(
     val gunKw: List<GunKw>? = null,
     val imgList: List<String?>? = null,
     val status: String? = null
-) : Serializable
+) : Serializable{
+    override fun toString(): String {
+        return toLatLng().toString()
+    }
+}
 
 fun StationDetail.isFavorite() = favorites == VALUE_VALID
 

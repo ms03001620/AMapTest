@@ -17,20 +17,15 @@ import kotlinx.coroutines.launch
 
 class MarkerMockViewModel : ViewModel() {
     private lateinit var stationsList: List<StationDetail>
+
     val p = lazy {
         JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
     }
 
     val c = lazy{
         JsonTestUtil.mock(
-            listOf(
-                stationsList.subList(0, 1).first(),
-                stationsList.subList(1, 2).first(),
-                stationsList.subList(2, 3).first()
-            ),
-            listOf(
-                stationsList.subList(3, 4).first()
-            )
+            stationsList.subList(0, 3),
+            stationsList.subList(3, 4)
         )
     }
 
