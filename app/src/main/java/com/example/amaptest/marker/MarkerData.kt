@@ -9,6 +9,8 @@ import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.showMarker
 
 interface BaseMarkerData {
+    fun getCluster(): Cluster<ClusterItem>
+
     fun getStation(): StationDetail?
 
     fun getSize(): Int
@@ -19,6 +21,8 @@ interface BaseMarkerData {
 }
 
 class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
+    override fun getCluster() = list
+
     override fun getStation(): StationDetail? {
         if (list is StaticCluster<ClusterItem>) {
             val items = list.items
@@ -57,6 +61,19 @@ class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
 }
 
 class MarkerSingle(val stationDetail: StationDetail, val latLng: LatLng?) : BaseMarkerData {
+    lateinit var newResult : Cluster<ClusterItem>
+
+    init {
+        latLng?.let {
+            StaticCluster<ClusterItem>(latLng).let {
+                it.add(StationClusterItem(stationDetail))
+                newResult = it
+            }
+        }
+    }
+
+    override fun getCluster() = newResult
+
     override fun getStation() = stationDetail
 
     override fun getSize() = 1
@@ -97,5 +114,18 @@ object MarkerDataFactory {
         }
 
         return result
+    }
+
+    fun create(list: List<ClusterItem>, latLng: LatLng): BaseMarkerData {
+        return if (list.size == 1) {
+            val station = (list.first() as StationClusterItem).stationDetail
+            MarkerSingle(station, latLng)
+        } else {
+            val static = StaticCluster<ClusterItem>(latLng)
+            list.forEach {
+                static.add(it)
+            }
+            MarkerCluster(static)
+        }
     }
 }

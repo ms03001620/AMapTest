@@ -10,7 +10,7 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class ClusterAdapterTest {
-    private val stationsList = mockJsonData()
+    private val stationsList = JsonTestUtil.readStation("json_stations.json")
     private val algorithm = DistanceBasedAlgorithm<ClusterItem>()
 
     @Test
@@ -474,58 +474,5 @@ class ClusterAdapterTest {
         assertTrue(mock(stationsList, stationsList).size == 2)
     }
 
-    @Test
-    fun findItems() {
-        // AB12 ->   a1, b2
-        val prevCluster = mock(stationsList.subList(0, 2))
-        val childCluster = mock(
-            listOf(
-                stationsList.subList(1, 2).first(),
-                stationsList.subList(0, 1).first(),
-                stationsList.subList(2, 3).first(),
-                stationsList.subList(3, 4).first(),
-            )
-        )
-        assertTrue(
-            ClusterAdapter().findItems(
-                (prevCluster[0] as MarkerCluster).list.items,
-                (childCluster[0] as MarkerCluster).list.items
-            )?.size == 2
-        )
 
-        assertNull(ClusterAdapter().findItems(null, null))
-    }
-
-    @Test
-    fun findItemsAB12ToA1B2() {
-        // AB12 ->   a1, b2
-        val prevCluster = mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
-
-        val childCluster = mock(
-            listOf(
-                stationsList.subList(0, 1).first(),
-                stationsList.subList(2, 3).first()
-            ),
-            listOf(
-                stationsList.subList(1, 2).first(),
-                stationsList.subList(3, 4).first()
-            )
-        )
-
-        assertTrue(
-            ClusterAdapter().findItems(
-                (prevCluster[0] as MarkerCluster).list.items,
-                (childCluster[0] as MarkerCluster).list.items
-            )?.size == 1
-        )
-
-        assertTrue(
-            ClusterAdapter().findItems(
-                (prevCluster[1] as MarkerCluster).list.items,
-                (childCluster[1] as MarkerCluster).list.items
-            )?.size == 1
-        )
-    }
-
-    private fun mockJsonData() = JsonTestUtil.readStation("json_stations.json")
 }
