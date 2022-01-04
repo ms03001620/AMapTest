@@ -16,7 +16,7 @@ class ClusterUtilsTest {
             stationsList.subList(2, 3)
         )
         val t = ClusterUtils.createTrackData(p.first(), c)
-        assertEquals(3, t.pieces.size)
+        assertEquals(3, t.subNodeList.size)
     }
 
     @Test
@@ -27,7 +27,7 @@ class ClusterUtilsTest {
         )
         val c = JsonTestUtil.mock(stationsList.subList(0, 3))
 
-        assertEquals(2, ClusterUtils.createTrackData(c.first(), p).pieces.size)
+        assertEquals(2, ClusterUtils.createTrackData(c.first(), p).subNodeList.size)
     }
 
     @Test
@@ -38,7 +38,7 @@ class ClusterUtilsTest {
         )
         val c = JsonTestUtil.mock(stationsList.subList(0, 1))
 
-        assertEquals(1, ClusterUtils.createTrackData(c.first(), p).pieces.size)
+        assertEquals(1, ClusterUtils.createTrackData(c.first(), p).subNodeList.size)
     }
 
 

@@ -1,11 +1,7 @@
 package com.example.amaptest.marker
 
 import com.amap.api.maps.model.LatLng
-import com.example.amaptest.logd
-import com.polestar.charging.ui.cluster.base.Cluster
 import com.polestar.charging.ui.cluster.base.ClusterItem
-import com.polestar.charging.ui.cluster.base.StaticCluster
-import com.polestar.charging.ui.cluster.base.StationClusterItem
 
 object ClusterUtils {
 
@@ -21,23 +17,23 @@ object ClusterUtils {
      * 为新数据，生成所有老数据的信息
      */
     fun createTrackData(new: BaseMarkerData, prevList: MutableList<BaseMarkerData>): NodeTrack{
-        val pieces = mutableListOf<Piece>()
+        val pieces = mutableListOf<SubNode>()
         prevList.forEach { old ->
             val latLngPrev = old.getLatlng()!!
             // 新的是否包含了全部老的数据
             if (isAllIn(new, old)) {
-                var pieceType = PieceType.FULL_PARTY
+                var pieceType = NodeType.FULL_PARTY
                 if (old.getSize() == 1) {
-                    pieceType = PieceType.SINGLE
+                    pieceType = NodeType.SINGLE
                 }
-                pieces.add(Piece(latLngPrev, pieceType, old))
+                pieces.add(SubNode(latLngPrev, pieceType, old))
             } else {
                 // 老的部分在新的中
-                val pieceType = PieceType.PARTY
+                val pieceType = NodeType.PARTY
                 val items  = findItems(new.getCluster().items, old.getCluster().items)
                 if (items?.isNotEmpty()==true) {
                     pieces.add(
-                        Piece(
+                        SubNode(
                             latLngPrev,
                             pieceType,
                             MarkerDataFactory.create(items, latLngPrev)
@@ -78,19 +74,17 @@ object ClusterUtils {
         return false
     }
 
-
-
     /**
-     * node 最新点
-     * piece Latlng 老点坐标。BaseMarkerData 数据
+     * node 节点
+     * subNode 组成该节点的子节点
      */
-    data class NodeTrack(val node: BaseMarkerData, val pieces: MutableList<Piece>)
+    data class NodeTrack(val node: BaseMarkerData, val subNodeList: MutableList<SubNode>)
 
-    enum class PieceType {
+    enum class NodeType {
         SINGLE, FULL_PARTY, PARTY
     }
 
-    data class Piece(val latLngPrev: LatLng, val pieceType: PieceType, val baseMarkerData: BaseMarkerData)
+    data class SubNode(val parentLatLng: LatLng, val nodeType: NodeType, val subNode: BaseMarkerData)
 
 
     fun findSameLatlngNode(node: BaseMarkerData, lastList: MutableList<BaseMarkerData>) =
