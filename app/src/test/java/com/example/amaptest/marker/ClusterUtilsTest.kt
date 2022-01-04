@@ -41,6 +41,44 @@ class ClusterUtilsTest {
         assertEquals(1, ClusterUtils.createTrackData(c.first(), p).subNodeList.size)
     }
 
+    @Test
+    fun nodeTrackCase4To1() {
+        val p = JsonTestUtil.mock(
+            stationsList.subList(0, 1),//A
+            stationsList.subList(1, 2),//B
+            stationsList.subList(2, 4),//CD
+        )
+
+        val c = JsonTestUtil.mock(
+            stationsList.subList(0, 4)//ABCD
+        )
+
+        val node = ClusterUtils.createTrackData(c.first(), p)
+
+        assertEquals(3, node.subNodeList.size)
+        assertEquals(2, node.subNodeList.count {
+            it.nodeType == ClusterUtils.NodeType.SINGLE
+        })
+        assertEquals(1, node.subNodeList.count {
+            it.nodeType == ClusterUtils.NodeType.PARTY
+        })
+    }
+
+    @Test
+    fun nodeTrackCase4To1Revert() {
+        val p = JsonTestUtil.mock(
+            stationsList.subList(0, 4)//ABCD
+        )
+        val c = JsonTestUtil.mock(
+            stationsList.subList(0, 1),//A
+            stationsList.subList(1, 2),//B
+            stationsList.subList(2, 4),//CD
+        )
+
+        val result = c.map { ClusterUtils.createTrackData(it, p) }
+        assertEquals(3, result.size)
+    }
+
 
     @Test
     fun findItems() {

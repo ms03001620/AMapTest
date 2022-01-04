@@ -21,20 +21,20 @@ object ClusterUtils {
             val latLngPrev = prev.getLatlng()!!
             // 新的是否包含了全部老的数据
             if (isClusterContainerItems(curr.getCluster().items, prev.getCluster().items)) {
-                var pieceType = NodeType.FULL_PARTY
+                var nodeType = NodeType.PARTY
                 if (prev.getSize() == 1) {
-                    pieceType = NodeType.SINGLE
+                    nodeType = NodeType.SINGLE
                 }
-                subNodeList.add(SubNode(latLngPrev, pieceType, prev))
+                subNodeList.add(SubNode(latLngPrev, nodeType, prev))
             } else {
                 // 老的部分在新的中
-                val pieceType = NodeType.PARTY
+                val nodeType = NodeType.PIECE
                 val items = findItems(curr.getCluster().items, prev.getCluster().items)
                 if (items?.isNotEmpty() == true) {
                     subNodeList.add(
                         SubNode(
                             latLngPrev,
-                            pieceType,
+                            nodeType,
                             MarkerDataFactory.create(items, latLngPrev)
                         )
                     )
@@ -79,10 +79,10 @@ object ClusterUtils {
     /**
      * SINGLE, 独立
      * FULL_PARTY, 全同
-     * PARTY, 混杂
+     * PIECE, 混杂
      */
     enum class NodeType {
-        SINGLE, FULL_PARTY, PARTY
+        SINGLE, PARTY, PIECE
     }
 
     /**
