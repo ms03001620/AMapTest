@@ -78,7 +78,7 @@ object ClusterUtils {
 
     /**
      * SINGLE, 独立
-     * FULL_PARTY, 全同
+     * PARTY, 全同
      * PIECE, 混杂
      */
     enum class NodeType {
