@@ -77,6 +77,9 @@ class ClusterUtilsTest {
 
         val result = c.map { ClusterUtils.createTrackData(it, p) }
         assertEquals(3, result.size)
+        assertEquals(
+            3,
+            result.count { it.subNodeList.first().nodeType == ClusterUtils.NodeType.PARTY })
     }
 
 
