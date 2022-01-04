@@ -415,52 +415,6 @@ class ClusterAdapterTest {
     }
 
     @Test
-    fun testIsAllInTarget() {
-        val prevCluster = mock(stationsList)
-        val childCluster = mock(stationsList.subList(0, 4))
-
-        val prev = (prevCluster[0] as MarkerCluster).list.items
-        val child = (childCluster[0] as MarkerCluster).list.items
-
-        assertTrue(ClusterAdapter().isClusterContainerItems(prev, child))
-        assertFalse(ClusterAdapter().isClusterContainerItems(child, prev))
-    }
-
-    @Test
-    fun testIsAllInTargetNoOrder() {
-        val prevCluster = mock(stationsList.subList(0, 4))
-
-        val childCluster = mock(listOf(
-            stationsList[2],
-            stationsList[0],
-        ))
-
-        val prev = (prevCluster[0] as MarkerCluster).list.items
-        val child = (childCluster[0] as MarkerCluster).list.items
-
-        assertTrue(ClusterAdapter().isClusterContainerItems(prev, child))
-        assertFalse(ClusterAdapter().isClusterContainerItems(child, prev))
-    }
-
-    @Test
-    fun testIsAllInTargetFalse() {
-        val prevCluster = mock(stationsList.subList(0, 4))
-        val childCluster = mock(stationsList.subList(5, 8))
-
-        val prev = (prevCluster[0] as MarkerCluster).list.items
-        val child = (childCluster[0] as MarkerCluster).list.items
-        assertFalse(ClusterAdapter(null).isClusterContainerItems(prev, child))
-    }
-
-    @Test
-    fun testIsAllInTargetNull() {
-        val prevCluster = mock(stationsList.subList(0, 4))
-        val prev = (prevCluster[0] as MarkerCluster).list.items
-        assertFalse(ClusterAdapter(null).isClusterContainerItems(null, prev))
-        assertFalse(ClusterAdapter(null).isClusterContainerItems(prev, null))
-    }
-
-    @Test
     fun containInPrevAll() {
         val map = HashMap<LatLng, String>()
         map.put(LatLng(1.0, 1.0), "String")
@@ -473,6 +427,4 @@ class ClusterAdapterTest {
         assertTrue(mock(stationsList.subList(0, 2))[0] is MarkerCluster)
         assertTrue(mock(stationsList, stationsList).size == 2)
     }
-
-
 }

@@ -173,19 +173,5 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     fun isClusterContainerItems(
         parent: MutableCollection<ClusterItem>?,
         child: MutableCollection<ClusterItem>?
-    ): Boolean {
-        if ((child?.size ?: 0) > (parent?.size ?: 0)) {
-            return false
-        }
-        child?.map {
-            it.id
-        }?.let { ids ->
-            parent?.map {
-                it.id
-            }?.containsAll(ids).let {
-                return it == true
-            }
-        }
-        return false
-    }
+    ) = ClusterUtils.isClusterContainerItems(parent, child)
 }

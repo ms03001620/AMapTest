@@ -95,5 +95,53 @@ class ClusterUtilsTest {
         )
     }
 
+    @Test
+    fun testIsAllInTarget() {
+        val prevCluster = JsonTestUtil.mock(stationsList)
+        val childCluster = JsonTestUtil.mock(stationsList.subList(0, 4))
+
+        val prev = (prevCluster[0] as MarkerCluster).list.items
+        val child = (childCluster[0] as MarkerCluster).list.items
+
+        assertTrue(ClusterUtils.isClusterContainerItems(prev, child))
+        assertFalse(ClusterUtils.isClusterContainerItems(child, prev))
+    }
+
+    @Test
+    fun testIsAllInTargetNoOrder() {
+        val prevCluster = JsonTestUtil.mock(stationsList.subList(0, 4))
+
+        val childCluster = JsonTestUtil.mock(
+            listOf(
+                stationsList[2],
+                stationsList[0],
+            )
+        )
+
+        val prev = (prevCluster[0] as MarkerCluster).list.items
+        val child = (childCluster[0] as MarkerCluster).list.items
+
+        assertTrue(ClusterUtils.isClusterContainerItems(prev, child))
+        assertFalse(ClusterUtils.isClusterContainerItems(child, prev))
+    }
+
+    @Test
+    fun testIsAllInTargetFalse() {
+        val prevCluster = JsonTestUtil.mock(stationsList.subList(0, 4))
+        val childCluster = JsonTestUtil.mock(stationsList.subList(5, 8))
+
+        val prev = (prevCluster[0] as MarkerCluster).list.items
+        val child = (childCluster[0] as MarkerCluster).list.items
+        assertFalse(ClusterUtils.isClusterContainerItems(prev, child))
+    }
+
+    @Test
+    fun testIsAllInTargetNull() {
+        val prevCluster = JsonTestUtil.mock(stationsList.subList(0, 4))
+        val prev = (prevCluster[0] as MarkerCluster).list.items
+        assertFalse(ClusterUtils.isClusterContainerItems(null, prev))
+        assertFalse(ClusterUtils.isClusterContainerItems(prev, null))
+    }
+
 
 }
