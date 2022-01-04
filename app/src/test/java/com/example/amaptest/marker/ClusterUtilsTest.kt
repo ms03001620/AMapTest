@@ -74,6 +74,7 @@ class ClusterUtilsTest {
             stationsList.subList(1, 2),//B
             stationsList.subList(2, 4),//CD
         )
+        //TODO 分析createTrackData生成数据和其类型的关系，以便组织响应的动画
 
         val result = c.map { ClusterUtils.createTrackData(it, p) }
         assertEquals(3, result.size)
