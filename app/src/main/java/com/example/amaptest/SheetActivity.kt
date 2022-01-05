@@ -23,7 +23,7 @@ class SheetActivity : AppCompatActivity() {
 
             mutableListOf(
                 Plate("警AB12345", "vin1"),
-                Plate("警AB12346", "vin2"),
+                Plate("警AB1234", "vin2"),
          /*       Plate("警AB12347", "vin3"),*/
             ).let {
                 PlateInfo("vin2", it)

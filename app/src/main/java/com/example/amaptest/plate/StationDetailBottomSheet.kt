@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.amaptest.R
@@ -37,9 +38,9 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
 
     private fun initList() {
         binding.list.layoutManager = LinearLayoutManager(context)
-        val adapter = PlateSelectAdapter({
-
-        })
+        val adapter = PlateSelectAdapter{
+            Toast.makeText(context, "${it.string}", Toast.LENGTH_SHORT).show()
+        }
         adapter.submitList(plateInfo.plates)
 
         binding.list.adapter = adapter

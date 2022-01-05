@@ -19,4 +19,15 @@
         android:layout_height="wrap_content"
         android:text="show"/>
 
+
+    <TextView
+        android:id="@+id/text_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_plate1"
+        android:fontFamily="@font/polestarunica77_regular"
+        android:textColor="#000"
+        android:textSize="12sp"
+        android:text="沪A·D26688" />
+
 </LinearLayout>
