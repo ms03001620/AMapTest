@@ -17,6 +17,10 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
 
     private lateinit var plateInfo: PlateInfo
 
+    private var defaultVin: String? = null
+
+    lateinit var adapter: PlateSelectAdapter
+
     override fun getTheme() = R.style.StationDetailDialog
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,9 +31,14 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
             inflater,
             R.layout.fragment_station_detail_demo, container, false
         )
+        initDefaultVin()
         initArguments()
         initList()
         return binding.root
+    }
+
+    private fun initDefaultVin(){
+        defaultVin = null
     }
 
     private fun initArguments(){
@@ -38,13 +47,14 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
 
     private fun initList() {
         binding.list.layoutManager = LinearLayoutManager(context)
-        val adapter = PlateSelectAdapter{
-            Toast.makeText(context, "${it.string}", Toast.LENGTH_SHORT).show()
+        adapter = PlateSelectAdapter{
+            //Toast.makeText(context, "${it.string}", Toast.LENGTH_SHORT).show()
+            defaultVin = it.vin
+            adapter.updateDefaultVin(defaultVin)
         }
-        adapter.submitList(plateInfo.plates)
 
         binding.list.adapter = adapter
-
+        adapter.updatePlateInfo(plateInfo)
         setListHeight(calcListHeight(plateInfo.plates.size))
     }
 
@@ -60,13 +70,11 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
         }
     }
 
-
     private fun setListHeight(heightDp: Int) {
         val params: ViewGroup.LayoutParams = binding.list.getLayoutParams()
         params.height = heightDp.dp
         binding.list.layoutParams = params
     }
-
 
     companion object {
         const val TAG = "StationDetailBottomSheet"

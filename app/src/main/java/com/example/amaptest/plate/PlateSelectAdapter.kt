@@ -1,5 +1,6 @@
 package com.example.amaptest.plate
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
@@ -7,33 +8,34 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.amaptest.R
 
-class PlateSelectAdapter(private val onClick: (Plate) -> Unit) :
-    ListAdapter<Plate, PlateSelectAdapter.PlateViewHolder>(FlowerDiffCallback) {
+class PlateSelectAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.Adapter<PlateSelectAdapter.PlateViewHolder>() {
+    private var defaultVin: String? = null
+    private var data = mutableListOf<Plate>()
+
     class PlateViewHolder(itemView: View, val onClick: (Plate) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private val plateText: TextView = itemView.findViewById(R.id.text_plate)
         private val vinText: TextView = itemView.findViewById(R.id.text_vin)
         private val greenBg: ImageView = itemView.findViewById(R.id.bg_green)
         private val blueBg: ImageView = itemView.findViewById(R.id.bg_blue)
+        private val radioBg: ImageView = itemView.findViewById(R.id.image_radio)
         private var currentPlate: Plate? = null
 
         init {
-            plateText.setOnClickListener {
+            itemView.setOnClickListener {
                 currentPlate?.let {
                     onClick(it)
                 }
             }
         }
 
-        fun bind(plate: Plate) {
+        fun bind(plate: Plate, defaultVin: String?) {
             currentPlate = plate
-            vinText.text = "车架号：${plate.vin}"
-            plateText.text = plate.string
+            vinText.text = vinText.resources.getString(R.string.charging_vin_format, plate.vin)
+            plateText.text = formatPlate(plate) //警AB12345
 
             if (isEv(plate)) {
                 plateText.setTextColor(Color.BLACK)
@@ -44,7 +46,23 @@ class PlateSelectAdapter(private val onClick: (Plate) -> Unit) :
                 greenBg.isVisible = false
                 blueBg.isVisible = true
             }
+
+            if (isDefaultVin(plate, defaultVin)) {
+                radioBg.setImageResource(R.drawable.ic_light)
+            } else {
+                radioBg.setImageResource(R.drawable.ic_radio)
+            }
         }
+
+        private fun formatPlate(plate: Plate): String{
+            return if (plate.string.length > 2) {
+                plate.string.substring(0, 2) + "·" + plate.string.substring(2, plate.string.length)
+            } else {
+                plate.string
+            }
+        }
+
+        private fun isDefaultVin(plate: Plate, defaultVin: String?) = plate.vin == defaultVin
 
         private fun isEv(plate: Plate) = plate.string.length >= 8
     }
@@ -56,17 +74,25 @@ class PlateSelectAdapter(private val onClick: (Plate) -> Unit) :
     }
 
     override fun onBindViewHolder(holder: PlateViewHolder, position: Int) {
-        val plate = getItem(position)
-        holder.bind(plate)
+        holder.bind(data.get(position), defaultVin)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updatePlateInfo(info: PlateInfo) {
+        data.clear()
+        data.addAll(ArrayList(info.plates))
+        defaultVin = info.defaultVin
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int {
+        return data.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateDefaultVin(defaultVin: String?) {
+        this.defaultVin = defaultVin
+        notifyDataSetChanged()
     }
 }
 
-object FlowerDiffCallback : DiffUtil.ItemCallback<Plate>() {
-    override fun areItemsTheSame(oldItem: Plate, newItem: Plate): Boolean {
-        return oldItem == newItem
-    }
-
-    override fun areContentsTheSame(oldItem: Plate, newItem: Plate): Boolean {
-        return oldItem.vin == newItem.vin
-    }
-}
