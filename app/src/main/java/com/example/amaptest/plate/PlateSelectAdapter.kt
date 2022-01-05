@@ -78,10 +78,10 @@ class PlateSelectAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.Ad
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updatePlateInfo(info: PlateInfo) {
+    fun updatePlateInfo(info: List<Plate>) {
         data.clear()
-        data.addAll(ArrayList(info.plates))
-        defaultVin = info.defaultVin
+        data.addAll(ArrayList(info))
+        defaultVin = info.firstOrNull()?.vin
         notifyDataSetChanged()
     }
 

@@ -31,7 +31,7 @@ class SheetActivity : AppCompatActivity() {
                 it.text.toString().toInt()
             }.let { count ->
                 mutableListOf<Plate>().also { list ->
-                    for (i in 0..count) {
+                    for (i in 1..count) {
                         list.add(Plate("警AB1234" + i, "LYVPKBDTDLB00008" + i))
                     }
                 }.let {
@@ -47,13 +47,9 @@ class SheetActivity : AppCompatActivity() {
     }
 
     private fun showDialog(plates: List<Plate>) {
-        plates.let {
-            PlateInfo("vin2", it)
-        }.let {
-            bundleOf(
-                StationDetailBottomSheet.EXTRA_DATA_ARGUMENTS to it
-            )
-        }.let {
+        bundleOf(
+            StationDetailBottomSheet.EXTRA_DATA_ARGUMENTS to plates
+        ).let {
             val modalBottomSheet = StationDetailBottomSheet()
             modalBottomSheet.arguments = it
             modalBottomSheet.show(supportFragmentManager, TAG)

@@ -15,7 +15,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 class StationDetailBottomSheet : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentStationDetailDemoBinding
 
-    private lateinit var plateInfo: PlateInfo
+    private lateinit var plates: ArrayList<Plate>
 
     private var defaultVin: String? = null
 
@@ -34,7 +34,14 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
         initDefaultVin()
         initArguments()
         initList()
+        initPlateManagerBtn()
         return binding.root
+    }
+
+    private fun initPlateManagerBtn() {
+        binding.textPlateEdit.setOnClickListener {
+            Toast.makeText(context, "Enter PlateCenter", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun initDefaultVin(){
@@ -42,7 +49,7 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun initArguments(){
-        plateInfo = arguments?.get(EXTRA_DATA_ARGUMENTS) as PlateInfo
+        plates = arguments?.getParcelableArrayList(EXTRA_DATA_ARGUMENTS) ?: ArrayList<Plate>()
     }
 
     private fun initList() {
@@ -54,8 +61,8 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
         }
 
         binding.list.adapter = adapter
-        adapter.updatePlateInfo(plateInfo)
-        setListHeight(calcListHeight(plateInfo.plates.size))
+        adapter.updatePlateInfo(plates)
+        setListHeight(calcListHeight(plates.size))
     }
 
     private fun calcListHeight(size: Int): Int {
