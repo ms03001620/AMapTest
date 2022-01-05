@@ -45,12 +45,19 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
 
         binding.list.adapter = adapter
 
-        val h = if (plateInfo.plates.size > 0) {
-            100 * plateInfo.plates.size
-        } else {
-            LIST_HEIGHT_MIN
+        setListHeight(calcListHeight(plateInfo.plates.size))
+    }
+
+    private fun calcListHeight(size: Int): Int {
+        val max = 5
+        if (size == 0) {
+            return LIST_HEIGHT_MIN
         }
-        setListHeight(h)
+        return if (size >= max) {
+            LIST_ITEM_HEIGHT * max
+        } else {
+            LIST_ITEM_HEIGHT * size
+        }
     }
 
 
@@ -63,7 +70,8 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
 
     companion object {
         const val TAG = "StationDetailBottomSheet"
-        const val LIST_HEIGHT_MIN = 16
+        const val LIST_HEIGHT_MIN = 0
         const val EXTRA_DATA_ARGUMENTS = "data"
+        const val LIST_ITEM_HEIGHT = 64 //dp
     }
 }

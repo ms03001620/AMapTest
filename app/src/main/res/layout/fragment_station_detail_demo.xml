@@ -33,11 +33,11 @@
 
         <!-- main list -->
         <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="18dp"
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_info"
-            android:minHeight="16dp"
             android:overScrollMode="never" />
 
         <TextView

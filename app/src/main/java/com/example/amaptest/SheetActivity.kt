@@ -3,44 +3,61 @@ package com.example.amaptest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.EditText
 import androidx.core.os.bundleOf
 import com.example.amaptest.plate.Plate
 import com.example.amaptest.plate.PlateInfo
 import com.example.amaptest.plate.StationDetailBottomSheet
-import com.polestar.charging.utils.BottomMenuDialog
 
 class SheetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sheet)
 
-        findViewById<View>(R.id.btn_dialog).setOnClickListener {
-            showSheetDialog()
+        // normal
+        findViewById<View>(R.id.btn_show).setOnClickListener {
+            mutableListOf(
+                Plate("警AB12345", "LYVPKBDTDLB000080"),
+                Plate("警AB1234", "LYVPKBDTDLB000081"),
+                /*       Plate("警AB12347", "vin3"),*/
+            ).let {
+                showDialog(it)
+            }
         }
 
-        findViewById<View>(R.id.btn_show).setOnClickListener {
-            val modalBottomSheet = StationDetailBottomSheet()
-
-            mutableListOf(
-                Plate("警AB12345", "vin1"),
-                Plate("警AB1234", "vin2"),
-         /*       Plate("警AB12347", "vin3"),*/
-            ).let {
-                PlateInfo("vin2", it)
-            }.let {
-                bundleOf(
-                    StationDetailBottomSheet.EXTRA_DATA_ARGUMENTS to it
-                )
-            }.let {
-                modalBottomSheet.arguments = it
+        // byNubmer
+        findViewById<View>(R.id.btn_show_number).setOnClickListener {
+            findViewById<EditText>(R.id.edit_number).let {
+                it.text.toString().toInt()
+            }.let { count ->
+                mutableListOf<Plate>().also { list ->
+                    for (i in 0..count) {
+                        list.add(Plate("警AB1234" + i, "LYVPKBDTDLB00008" + i))
+                    }
+                }.let {
+                    showDialog(it)
+                }
             }
+        }
 
-            modalBottomSheet.show(supportFragmentManager, TAG)
+        // empty
+        findViewById<View>(R.id.btn_show_empty).setOnClickListener {
+            showDialog(emptyList())
         }
     }
 
-    fun showSheetDialog() {
-        BottomMenuDialog.Builder(this).create(null, null)
+    private fun showDialog(plates: List<Plate>) {
+        plates.let {
+            PlateInfo("vin2", it)
+        }.let {
+            bundleOf(
+                StationDetailBottomSheet.EXTRA_DATA_ARGUMENTS to it
+            )
+        }.let {
+            val modalBottomSheet = StationDetailBottomSheet()
+            modalBottomSheet.arguments = it
+            modalBottomSheet.show(supportFragmentManager, TAG)
+        }
     }
 
 

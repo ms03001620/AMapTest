@@ -17,6 +17,7 @@ class PlateSelectAdapter(private val onClick: (Plate) -> Unit) :
     class PlateViewHolder(itemView: View, val onClick: (Plate) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
         private val plateText: TextView = itemView.findViewById(R.id.text_plate)
+        private val vinText: TextView = itemView.findViewById(R.id.text_vin)
         private val greenBg: ImageView = itemView.findViewById(R.id.bg_green)
         private val blueBg: ImageView = itemView.findViewById(R.id.bg_blue)
         private var currentPlate: Plate? = null
@@ -31,6 +32,7 @@ class PlateSelectAdapter(private val onClick: (Plate) -> Unit) :
 
         fun bind(plate: Plate) {
             currentPlate = plate
+            vinText.text = "车架号：${plate.vin}"
             plateText.text = plate.string
 
             if (isEv(plate)) {

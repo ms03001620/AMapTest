@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="64dp"
     android:orientation="vertical">
 
-    <FrameLayout
+    <ImageView
+        android:layout_marginStart="24dp"
+        android:id="@+id/image_radio"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_light"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- plate -->
+    <FrameLayout
+        android:id="@+id/layout_plate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        app:layout_constraintStart_toEndOf="@id/image_radio"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/bg_green"
@@ -29,11 +43,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:fontFamily="@font/polestarunica77_regular"
             android:textColor="#000"
             android:textSize="16sp"
             tools:text="沪A·D26688" />
 
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/text_vin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/polestarunica77_regular"
+        android:textColor="@color/base_color_primary_opacity_60"
+        android:textSize="12sp"
+        app:layout_constraintStart_toEndOf="@id/image_radio"
+        app:layout_constraintTop_toBottomOf="@id/layout_plate"
+        tools:text="车架号：LYVPKBDTDLB000080" />
 
-</LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
