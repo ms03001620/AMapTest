@@ -1,27 +1,19 @@
 package com.example.amaptest
 
-import android.app.Dialog
-import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
-import android.os.Build
 import android.os.Bundle
-import android.util.DisplayMetrics
-import android.view.*
-import androidx.annotation.RequiresApi
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.example.amaptest.databinding.FragmentStationDetailDemoBinding
+import com.example.amaptest.ui.main.dp
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 
 class StationDetailBottomSheet : BottomSheetDialogFragment() {
     lateinit var binding: FragmentStationDetailDemoBinding
 
-    override fun getTheme(): Int {
-        return R.style.StationDetailDialog
-    }
+    override fun getTheme() = R.style.StationDetailDialog
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,18 +21,15 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_station_detail_demo, container, false)
-
-
-       // (dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
-
+        setListHeight(40)
         dialog?.setCanceledOnTouchOutside(true)
-        dialog?.setOnKeyListener(object : DialogInterface.OnKeyListener {
-            override fun onKey(p0: DialogInterface?, p1: Int, p2: KeyEvent?): Boolean {
-                return false
-            }
-        })
-
         return binding.root
+    }
+
+    private fun setListHeight(heightDp: Int){
+        val params: ViewGroup.LayoutParams = binding.list.getLayoutParams()
+        params.height = heightDp.dp
+        binding.list.layoutParams = params
     }
 
 
