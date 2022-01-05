@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/frame_container"
             android:layout_marginStart="24dp"
-            android:layout_marginBottom="21dp"
+            android:layout_marginBottom="41dp"
             android:drawableEnd="@drawable/icon_arrow_right"
             android:drawablePadding="5dp"
             android:text="管理车牌信息"
