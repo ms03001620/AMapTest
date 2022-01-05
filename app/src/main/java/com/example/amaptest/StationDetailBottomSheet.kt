@@ -43,31 +43,6 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
         return binding.root
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            //setWhiteNavigationBar(dialog);
-        }
-        return dialog
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private fun setWhiteNavigationBar(dialog: Dialog) {
-        val window: Window? = dialog.window
-        if (window != null) {
-            val metrics = DisplayMetrics()
-            window.getWindowManager().getDefaultDisplay().getMetrics(metrics)
-            val dimDrawable = GradientDrawable()
-            // ...customize your dim effect here
-            val navigationBarDrawable = GradientDrawable()
-            navigationBarDrawable.shape = GradientDrawable.RECTANGLE
-            navigationBarDrawable.setColor(Color.WHITE)
-            val layers = arrayOf<Drawable>(dimDrawable, navigationBarDrawable)
-            val windowBackground = LayerDrawable(layers)
-            windowBackground.setLayerInsetTop(1, metrics.heightPixels)
-            window.setBackgroundDrawable(windowBackground)
-        }
-    }
 
     companion object {
         const val TAG = "StationDetailBottomSheet"

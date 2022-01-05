@@ -6,60 +6,53 @@
 
     <data />
 
-    <LinearLayout
-        android:background="@drawable/charging_station_detail_bg"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@drawable/charging_station_detail_bg">
 
-        <TextView
-            android:id="@+id/text_title"
+        <ImageView
+            android:id="@+id/icon_handler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="abcd"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/icon_bar_handler" />
 
         <TextView
-            android:id="@+id/text_title1"
+            android:id="@+id/text_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="abcd"/>
-
-        <TextView
-            android:id="@+id/text_title2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="abcd"/>
-
-        <TextView
+            android:layout_below="@id/icon_handler"
+            android:layout_marginStart="24dp"
             android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
+            android:text="添加车牌后，部分站点充电后可享受停车优惠"
+            android:textColor="@color/base_color_primary_opacity_60"
+            android:textSize="16sp" />
+
+
+        <FrameLayout
+            android:id="@+id/frame_container"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="abcd"/>
+            android:layout_below="@id/text_info"
+            android:minHeight="16dp">
+
+
+        </FrameLayout>
+
 
         <TextView
-            android:layout_marginTop="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="abcd"/>
-
-        <TextView
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="abcd"/>
-
-        <TextView
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="abcd"/>
-
-        <TextView
-            android:layout_marginTop="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="abcd"/>
-
-
-    </LinearLayout>
+            android:layout_below="@id/frame_container"
+            android:layout_marginStart="24dp"
+            android:layout_marginBottom="21dp"
+            android:drawableEnd="@drawable/icon_arrow_right"
+            android:drawablePadding="5dp"
+            android:text="管理车牌信息"
+            android:textColor="@color/base_color_101820"
+            android:textSize="16sp" />
+    </RelativeLayout>
 </layout>
