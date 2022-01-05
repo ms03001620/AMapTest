@@ -3,8 +3,8 @@ package com.example.amaptest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.example.amaptest.plate.StationDetailBottomSheet
 import com.polestar.charging.utils.BottomMenuDialog
-import com.polestar.charging.utils.ItemViewOnClick
 
 // https://www.jianshu.com/p/1273effa2c55
 

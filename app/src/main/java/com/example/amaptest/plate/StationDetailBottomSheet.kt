@@ -1,10 +1,11 @@
-package com.example.amaptest
+package com.example.amaptest.plate
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import com.example.amaptest.R
 import com.example.amaptest.databinding.FragmentStationDetailDemoBinding
 import com.example.amaptest.ui.main.dp
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -20,7 +21,8 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_station_detail_demo, container, false)
+        binding = DataBindingUtil.inflate(inflater,
+            R.layout.fragment_station_detail_demo, container, false)
         setListHeight(40)
         dialog?.setCanceledOnTouchOutside(true)
         return binding.root
