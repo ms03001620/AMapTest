@@ -3,12 +3,12 @@ package com.example.amaptest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.core.os.bundleOf
+import com.example.amaptest.plate.Plate
+import com.example.amaptest.plate.PlateInfo
 import com.example.amaptest.plate.StationDetailBottomSheet
 import com.polestar.charging.utils.BottomMenuDialog
 
-// https://www.jianshu.com/p/1273effa2c55
-
-// https://material.io/develop/android/components/bottom-sheet-dialog-fragment
 class SheetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,11 +20,26 @@ class SheetActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_show).setOnClickListener {
             val modalBottomSheet = StationDetailBottomSheet()
+
+            mutableListOf(
+                Plate("警AB12345", "vin1"),
+                Plate("警AB12346", "vin2"),
+         /*       Plate("警AB12347", "vin3"),*/
+            ).let {
+                PlateInfo("vin2", it)
+            }.let {
+                bundleOf(
+                    StationDetailBottomSheet.EXTRA_DATA_ARGUMENTS to it
+                )
+            }.let {
+                modalBottomSheet.arguments = it
+            }
+
             modalBottomSheet.show(supportFragmentManager, TAG)
         }
     }
 
-    fun showSheetDialog(){
+    fun showSheetDialog() {
         BottomMenuDialog.Builder(this).create(null, null)
     }
 
