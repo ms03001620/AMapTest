@@ -2,17 +2,19 @@ package com.example.amaptest
 
 import android.app.Dialog
 import android.content.DialogInterface
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.os.Build
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.DisplayMetrics
+import android.view.*
+import androidx.annotation.RequiresApi
 import androidx.databinding.DataBindingUtil
-import com.example.amaptest.databinding.FragmentStationDetailBinding
 import com.example.amaptest.databinding.FragmentStationDetailDemoBinding
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+
 
 class StationDetailBottomSheet : BottomSheetDialogFragment() {
     lateinit var binding: FragmentStationDetailDemoBinding
@@ -31,7 +33,7 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
 
        // (dialog as BottomSheetDialog).behavior.state = BottomSheetBehavior.STATE_EXPANDED
 
-        dialog?.setCanceledOnTouchOutside(false)
+        dialog?.setCanceledOnTouchOutside(true)
         dialog?.setOnKeyListener(object : DialogInterface.OnKeyListener {
             override fun onKey(p0: DialogInterface?, p1: Int, p2: KeyEvent?): Boolean {
                 return false
@@ -39,6 +41,32 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
         })
 
         return binding.root
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            //setWhiteNavigationBar(dialog);
+        }
+        return dialog
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private fun setWhiteNavigationBar(dialog: Dialog) {
+        val window: Window? = dialog.window
+        if (window != null) {
+            val metrics = DisplayMetrics()
+            window.getWindowManager().getDefaultDisplay().getMetrics(metrics)
+            val dimDrawable = GradientDrawable()
+            // ...customize your dim effect here
+            val navigationBarDrawable = GradientDrawable()
+            navigationBarDrawable.shape = GradientDrawable.RECTANGLE
+            navigationBarDrawable.setColor(Color.WHITE)
+            val layers = arrayOf<Drawable>(dimDrawable, navigationBarDrawable)
+            val windowBackground = LayerDrawable(layers)
+            windowBackground.setLayerInsetTop(1, metrics.heightPixels)
+            window.setBackgroundDrawable(windowBackground)
+        }
     }
 
     companion object {
