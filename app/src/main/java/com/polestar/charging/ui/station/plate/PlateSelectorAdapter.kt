@@ -1,4 +1,4 @@
-package com.example.amaptest.plate
+package com.polestar.charging.ui.station.plate
 
 import android.annotation.SuppressLint
 import android.graphics.Color

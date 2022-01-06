@@ -5,8 +5,8 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import androidx.core.os.bundleOf
-import com.example.amaptest.plate.Plate
-import com.example.amaptest.plate.PlateSelectorBottomSheet
+import com.polestar.charging.ui.station.plate.Plate
+import com.polestar.charging.ui.station.plate.PlateSelectorBottomSheet
 
 class SheetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
