@@ -4,22 +4,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.amaptest.R
 import com.example.amaptest.databinding.FragmentStationDetailDemoBinding
+import com.example.amaptest.logd
 import com.example.amaptest.ui.main.dp
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
-class StationDetailBottomSheet : BottomSheetDialogFragment() {
+/**
+ * 车牌选择对话框
+ */
+class PlateSelectorBottomSheet : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentStationDetailDemoBinding
-
     private lateinit var plates: ArrayList<Plate>
-
+    private lateinit var adapter: PlateSelectorAdapter
     private var defaultVin: String? = null
-
-    lateinit var adapter: PlateSelectAdapter
 
     override fun getTheme() = R.style.StationDetailDialog
     override fun onCreateView(
@@ -31,33 +31,40 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
             inflater,
             R.layout.fragment_station_detail_demo, container, false
         )
-        initDefaultVin()
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loadDefaultVin()
         initArguments()
         initList()
         initPlateManagerBtn()
-        return binding.root
     }
 
     private fun initPlateManagerBtn() {
         binding.textPlateEdit.setOnClickListener {
-            Toast.makeText(context, "Enter PlateCenter", Toast.LENGTH_SHORT).show()
+            logd("textPlateEdit onClick", TAG)
         }
     }
 
-    private fun initDefaultVin(){
+    private fun loadDefaultVin() {
         defaultVin = null
     }
 
-    private fun initArguments(){
-        plates = arguments?.getParcelableArrayList(EXTRA_DATA_ARGUMENTS) ?: ArrayList<Plate>()
+    private fun saveDefaultVin(plate: Plate) {
+        defaultVin = plate.vin
+    }
+
+    private fun initArguments() {
+        plates = arguments?.getParcelableArrayList(EXTRA_DATA_ARGUMENTS) ?: ArrayList()
     }
 
     private fun initList() {
         binding.list.layoutManager = LinearLayoutManager(context)
-        adapter = PlateSelectAdapter{
-            //Toast.makeText(context, "${it.string}", Toast.LENGTH_SHORT).show()
-            defaultVin = it.vin
-            adapter.updateDefaultVin(defaultVin)
+        adapter = PlateSelectorAdapter {
+            saveDefaultVin(it)
+            adapter.updateDefaultVin(it.vin)
         }
 
         binding.list.adapter = adapter
@@ -66,7 +73,7 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun calcListHeight(size: Int): Int {
-        val max = 5
+        val max = LIST_MAX_DISPLAY
         if (size == 0) {
             return LIST_HEIGHT_MIN
         }
@@ -84,7 +91,8 @@ class StationDetailBottomSheet : BottomSheetDialogFragment() {
     }
 
     companion object {
-        const val TAG = "StationDetailBottomSheet"
+        const val TAG = "PlateSelectorBottomSheet"
+        const val LIST_MAX_DISPLAY = 5
         const val LIST_HEIGHT_MIN = 0
         const val EXTRA_DATA_ARGUMENTS = "data"
         const val LIST_ITEM_HEIGHT = 64 //dp

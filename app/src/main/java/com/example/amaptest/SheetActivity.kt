@@ -6,8 +6,7 @@ import android.view.View
 import android.widget.EditText
 import androidx.core.os.bundleOf
 import com.example.amaptest.plate.Plate
-import com.example.amaptest.plate.PlateInfo
-import com.example.amaptest.plate.StationDetailBottomSheet
+import com.example.amaptest.plate.PlateSelectorBottomSheet
 
 class SheetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,9 +47,9 @@ class SheetActivity : AppCompatActivity() {
 
     private fun showDialog(plates: List<Plate>) {
         bundleOf(
-            StationDetailBottomSheet.EXTRA_DATA_ARGUMENTS to plates
+            PlateSelectorBottomSheet.EXTRA_DATA_ARGUMENTS to plates
         ).let {
-            val modalBottomSheet = StationDetailBottomSheet()
+            val modalBottomSheet = PlateSelectorBottomSheet()
             modalBottomSheet.arguments = it
             modalBottomSheet.show(supportFragmentManager, TAG)
         }

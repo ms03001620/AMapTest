@@ -11,7 +11,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.amaptest.R
 
-class PlateSelectAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.Adapter<PlateSelectAdapter.PlateViewHolder>() {
+class PlateSelectorAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.Adapter<PlateSelectorAdapter.PlateViewHolder>() {
     private var defaultVin: String? = null
     private var data = mutableListOf<Plate>()
 
