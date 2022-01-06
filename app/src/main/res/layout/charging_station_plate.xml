@@ -29,14 +29,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_frame_1739323951" />
+            android:src="@drawable/charging_bg_ev" />
 
         <ImageView
             android:id="@+id/bg_blue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@drawable/ic_frame_17393239522222" />
+            android:src="@drawable/charging_bg_ev_not" />
 
         <TextView
             android:id="@+id/text_plate"
