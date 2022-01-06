@@ -79,32 +79,20 @@
         <item name="android:gravity">start|top</item>
     </style>
 
-    <style name="ModalBottomSheetDialog1" parent="Widget.MaterialComponents.BottomSheet.Modal">
+
+    <style name="ChargingPlateSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="backgroundTint">@android:color/transparent</item>
     </style>
 
-    <style name="StationDetailDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
+    <style name="ChargingPlateDetailDialog" parent="ThemeOverlay.MaterialComponents.BottomSheetDialog">
         <item name="actionModeSplitBackground">@android:color/transparent</item>
         <item name="android:colorBackground">@android:color/transparent</item>
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog1</item>
-
-<!--
-        <item name="bottomSheetStyle">@style/ModalBottomSheetDialog</item>
-
-        <item name="actionModeSplitBackground">@android:color/transparent</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:colorBackground">@android:color/transparent</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:backgroundDimAmount">0</item>
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowIsFloating">true</item>-->
+        <item name="bottomSheetStyle">@style/ChargingPlateSheetDialog</item>
     </style>
-
     <style name="BaseNoTitleDialogStyle" parent="@style/Theme.AppCompat.Light.Dialog.Alert">
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>

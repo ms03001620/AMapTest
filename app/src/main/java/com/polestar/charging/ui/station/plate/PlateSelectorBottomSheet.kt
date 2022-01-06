@@ -21,7 +21,7 @@ class PlateSelectorBottomSheet : BottomSheetDialogFragment() {
     private lateinit var adapter: PlateSelectorAdapter
     private var defaultVin: String? = null
 
-    override fun getTheme() = R.style.StationDetailDialog
+    override fun getTheme() = R.style.ChargingPlateDetailDialog
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -87,6 +87,7 @@ class PlateSelectorBottomSheet : BottomSheetDialogFragment() {
     private fun setListHeight(heightDp: Int) {
         val params: ViewGroup.LayoutParams = binding.list.getLayoutParams()
         params.height = heightDp.dp
+        com.polestar.base.utils.logd("setListHeight heightDp:${params.height}", TAG)
         binding.list.layoutParams = params
     }
 
