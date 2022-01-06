@@ -48,9 +48,9 @@ class PlateSelectorAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.
             }
 
             if (isDefaultVin(plate, defaultVin)) {
-                radioBg.setImageResource(R.drawable.ic_light)
+                radioBg.setImageResource(R.drawable.charging_radio_on)
             } else {
-                radioBg.setImageResource(R.drawable.ic_radio)
+                radioBg.setImageResource(R.drawable.charging_radio_off)
             }
         }
 

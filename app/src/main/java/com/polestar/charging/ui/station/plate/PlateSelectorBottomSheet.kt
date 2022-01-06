@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.amaptest.R
-import com.example.amaptest.databinding.FragmentStationDetailDemoBinding
+import com.example.amaptest.databinding.ChargingPlateSelectorBinding
 import com.example.amaptest.logd
 import com.example.amaptest.ui.main.dp
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -16,7 +16,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
  * 车牌选择对话框
  */
 class PlateSelectorBottomSheet : BottomSheetDialogFragment() {
-    private lateinit var binding: FragmentStationDetailDemoBinding
+    private lateinit var binding: ChargingPlateSelectorBinding
     private lateinit var plates: ArrayList<Plate>
     private lateinit var adapter: PlateSelectorAdapter
     private var defaultVin: String? = null
@@ -29,7 +29,7 @@ class PlateSelectorBottomSheet : BottomSheetDialogFragment() {
     ): View {
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_station_detail_demo, container, false
+            R.layout.charging_plate_selector, container, false
         )
         return binding.root
     }

@@ -18,7 +18,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="16dp"
-            android:src="@drawable/icon_bar_handler" />
+            android:src="@drawable/charging_icon_bar_handler" />
 
         <TextView
             android:id="@+id/text_info"
@@ -47,7 +47,7 @@
             android:layout_below="@id/list"
             android:layout_marginStart="24dp"
             android:layout_marginBottom="41dp"
-            android:drawableEnd="@drawable/icon_arrow_right"
+            android:drawableEnd="@drawable/charging_ic_arrow_right_orange"
             android:drawablePadding="5dp"
             android:text="管理车牌信息"
             android:textColor="@color/base_color_101820"
