@@ -34,7 +34,7 @@ class PlateSelectAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.Ad
 
         fun bind(plate: Plate, defaultVin: String?) {
             currentPlate = plate
-            vinText.text = vinText.resources.getString(R.string.charging_vin_format, plate.vin)
+            vinText.text = vinText.resources.getString(R.string.car_frame_number, plate.vin)
             plateText.text = formatPlate(plate) //警AB12345
 
             if (isEv(plate)) {
