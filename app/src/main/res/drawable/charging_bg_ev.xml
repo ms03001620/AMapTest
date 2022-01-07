@@ -1,26 +1,29 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="100dp"
-    android:height="24dp"
-    android:viewportWidth="100"
-    android:viewportHeight="24">
-  <path
-      android:pathData="M0,0h100v24h-100z">
-    <aapt:attr name="android:fillColor">
-      <gradient 
-          android:startY="0"
-          android:startX="50"
-          android:endY="24"
-          android:endX="50"
-          android:type="linear">
-        <item android:offset="0" android:color="#FFFFFFFF"/>
-        <item android:offset="1" android:color="#FF00EB6C"/>
-      </gradient>
-    </aapt:attr>
-  </path>
-  <path
-      android:pathData="M2.3,2.3h95.4v19.4h-95.4z"
-      android:strokeWidth="0.6"
-      android:fillColor="#00000000"
-      android:strokeColor="#000000"/>
-</vector>
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:angle="-90"
+                android:endColor="#00EB6C"
+                android:startColor="#FFFFFF" />
+        </shape>
+    </item>
+    <item
+        android:bottom="2dp"
+        android:left="2dp"
+        android:right="2dp"
+        android:top="2dp">
+        <shape android:shape="rectangle">
+            <!-- add bottom 1 offset for chinese char -->
+            <padding
+                android:bottom="3dp"
+                android:left="8dp"
+                android:right="8dp"
+                android:top="2dp" />
+            <stroke
+                android:width="1dp"
+                android:color="#000" />
+        </shape>
+    </item>
+</layer-list>

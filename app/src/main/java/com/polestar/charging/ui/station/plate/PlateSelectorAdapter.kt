@@ -5,22 +5,25 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.amaptest.R
 
-class PlateSelectorAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.Adapter<PlateSelectorAdapter.PlateViewHolder>() {
+class PlateSelectorAdapter(private val onClick: (Plate) -> Unit) :
+    RecyclerView.Adapter<PlateSelectorAdapter.PlateViewHolder>() {
+
     private var defaultVin: String? = null
     private var data = mutableListOf<Plate>()
 
     class PlateViewHolder(itemView: View, val onClick: (Plate) -> Unit) :
         RecyclerView.ViewHolder(itemView) {
+        private val layoutPlate: FrameLayout = itemView.findViewById(R.id.layout_plate)
         private val plateText: TextView = itemView.findViewById(R.id.text_plate)
         private val vinText: TextView = itemView.findViewById(R.id.text_vin)
-        private val greenBg: ImageView = itemView.findViewById(R.id.bg_green)
-        private val blueBg: ImageView = itemView.findViewById(R.id.bg_blue)
+        /*        private val greenBg: ImageView = itemView.findViewById(R.id.bg_green)
+                private val blueBg: ImageView = itemView.findViewById(R.id.bg_blue)*/
         private val radioBg: ImageView = itemView.findViewById(R.id.image_radio)
         private var currentPlate: Plate? = null
 
@@ -39,12 +42,14 @@ class PlateSelectorAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.
 
             if (isEv(plate)) {
                 plateText.setTextColor(Color.BLACK)
-                greenBg.isVisible = true
-                blueBg.isVisible = false
+                //greenBg.isVisible = true
+                //blueBg.isVisible = false
+                layoutPlate.setBackgroundResource(R.drawable.charging_bg_ev)
             } else {
                 plateText.setTextColor(Color.WHITE)
-                greenBg.isVisible = false
-                blueBg.isVisible = true
+                //greenBg.isVisible = false
+                //blueBg.isVisible = true
+                layoutPlate.setBackgroundResource(R.drawable.charging_bg_ev_not)
             }
 
             if (isDefaultVin(plate, defaultVin)) {
@@ -54,7 +59,7 @@ class PlateSelectorAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.
             }
         }
 
-        private fun formatPlate(plate: Plate): String{
+        private fun formatPlate(plate: Plate): String {
             return if (plate.string.length > 2) {
                 plate.string.substring(0, 2) + "·" + plate.string.substring(2, plate.string.length)
             } else {
@@ -78,10 +83,10 @@ class PlateSelectorAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updatePlateInfo(info: List<Plate>) {
+    fun updatePlateInfo(info: List<Plate>, defaultVin: String?) {
         data.clear()
         data.addAll(ArrayList(info))
-        defaultVin = info.firstOrNull()?.vin
+        this.defaultVin = defaultVin
         notifyDataSetChanged()
     }
 
@@ -95,4 +100,3 @@ class PlateSelectorAdapter(private val onClick: (Plate) -> Unit) : RecyclerView.
         notifyDataSetChanged()
     }
 }
-

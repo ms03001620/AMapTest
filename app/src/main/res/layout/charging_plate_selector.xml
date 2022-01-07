@@ -27,7 +27,7 @@
             android:layout_below="@id/icon_handler"
             android:layout_marginStart="24dp"
             android:layout_marginTop="20dp"
-            android:text="添加车牌后，部分站点充电后可享受停车优惠"
+            android:text="@string/cc_plate_desc"
             android:textColor="@color/base_color_primary_opacity_60"
             android:textSize="16sp" />
 
@@ -47,10 +47,10 @@
             android:layout_below="@id/list"
             android:layout_marginStart="24dp"
             android:layout_marginBottom="41dp"
-            android:drawableEnd="@drawable/charging_ic_arrow_right_orange"
             android:drawablePadding="5dp"
-            android:text="管理车牌信息"
+            android:text="@string/cc_plate_manager"
             android:textColor="@color/base_color_101820"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            app:drawableEndCompat="@drawable/charging_ic_arrow_right_orange" />
     </RelativeLayout>
 </layout>
