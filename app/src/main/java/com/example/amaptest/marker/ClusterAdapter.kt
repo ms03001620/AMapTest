@@ -67,8 +67,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         val cospList = hashMapOf<LatLng, MutableList<BaseMarkerData>>()
         val expList = hashMapOf<LatLng, MutableList<BaseMarkerData>>()
 
-        ClusterUtils.process(prev.toMutableList(), curr.toMutableList())
-
         prev.forEach { node ->
             //curr中有一个数据和node一致
             val latLng = findLatLng(curr, node)
