@@ -104,9 +104,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         prev: MutableList<BaseMarkerData>,
         curr: MutableList<BaseMarkerData>
     ){
-        val prevCopy = prev.toMutableList()
-        prev.removeAll(curr)
-        curr.removeAll(prevCopy)
+        ClusterUtils.delSame(prev, curr)
     }
 
     fun findOrCreateClusterList(
