@@ -84,46 +84,69 @@ class ClusterUtilsTest {
             result.count { it.subNodeList.first().nodeType == ClusterUtils.NodeType.SINGLE })
     }
 
+
     @Test
-    fun process() {
+    fun processBig() {
+        processBigImpl(true)
+        processBigImpl(false)
+    }
+
+    fun processBigImpl(enableDelSame: Boolean) {
         val algorithm = DistanceBasedAlgorithm<ClusterItem>()
-        algorithm.addItems(JsonTestUtil.readStation("json_stations570.json").map { StationClusterItem(it) })
+        algorithm.addItems(
+            JsonTestUtil.readStation("json_stations570.json").map { StationClusterItem(it) })
 
         val zoomStart = 7
         val zoomEnd = 16
 
         for (i in zoomStart..zoomEnd step 2) {
             val index1 = i * 1.0f
-            val index2 = (i+1) *1.0f
+            val index2 = (i + 1) * 1.0f
 
             println(index1)
             println(index2)
 
             val p = MarkerDataFactory.create(algorithm.getClusters(index1))
             val c = MarkerDataFactory.create(algorithm.getClusters(index2))
-            isSame(p, p)
+            val subPrev = p.toMutableList()
+            val subCurr = c.toMutableList()
+
+            if (enableDelSame) {
+                ClusterUtils.delSame(subPrev, subCurr)
+            }
+
+            isSame(subPrev, subCurr)
         }
         println("-----")
-/*        for (i in zoomEnd downTo zoomStart step 2) {
+        for (i in zoomEnd downTo zoomStart step 2) {
             val index1 = i * 1.0f
-            val index2 = (i-1) *1.0f
+            val index2 = (i - 1) * 1.0f
             println(index1)
             println(index2)
-        }*/
+
+            val p = MarkerDataFactory.create(algorithm.getClusters(index1))
+            val c = MarkerDataFactory.create(algorithm.getClusters(index2))
+            val subPrev = p.toMutableList()
+            val subCurr = c.toMutableList()
+
+            if (enableDelSame) {
+                ClusterUtils.delSame(subPrev, subCurr)
+            }
+            isSame(subPrev, subCurr)
+        }
     }
 
     fun isSame(p: MutableList<BaseMarkerData>, c: MutableList<BaseMarkerData>) {
         val result = c.map { ClusterUtils.createTrackData(it, p) }
         val pCount = p.sumOf { it.getSize() }
         val cCount = c.sumOf { it.getSize() }
-        val nCount = result.sumOf { it.node.getSize()}
-        val nSubCount = result.sumOf { it.subNodeList.sumOf { it.subNode.getSize() }}
-
+        val nCount = result.sumOf { it.node.getSize() }
+        val nSubCount = result.sumOf { it.subNodeList.sumOf { it.subNode.getSize() } }
+        println("-----pCount:$pCount")
         assertEquals(pCount, cCount)
         assertEquals(pCount, nCount)
         assertEquals(pCount, nSubCount)
     }
-
 
     @Test
     fun findItems() {
