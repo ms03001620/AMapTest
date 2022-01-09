@@ -1,5 +1,8 @@
 package com.example.amaptest.marker
 
+import com.polestar.charging.ui.cluster.base.ClusterItem
+import com.polestar.charging.ui.cluster.base.StationClusterItem
+import com.polestar.charging.ui.cluster.quadtree.DistanceBasedAlgorithm
 import org.junit.Assert.*
 
 import org.junit.Test
@@ -74,13 +77,51 @@ class ClusterUtilsTest {
             stationsList.subList(1, 2),//B
             stationsList.subList(2, 4),//CD
         )
-        //TODO 分析createTrackData生成数据和其类型的关系，以便组织响应的动画
-
         val result = c.map { ClusterUtils.createTrackData(it, p) }
         assertEquals(3, result.size)
         assertEquals(
-            3,
-            result.count { it.subNodeList.first().nodeType == ClusterUtils.NodeType.PARTY })
+            2,
+            result.count { it.subNodeList.first().nodeType == ClusterUtils.NodeType.SINGLE })
+    }
+
+    @Test
+    fun process() {
+        val algorithm = DistanceBasedAlgorithm<ClusterItem>()
+        algorithm.addItems(JsonTestUtil.readStation("json_stations570.json").map { StationClusterItem(it) })
+
+        val zoomStart = 7
+        val zoomEnd = 16
+
+        for (i in zoomStart..zoomEnd step 2) {
+            val index1 = i * 1.0f
+            val index2 = (i+1) *1.0f
+
+            println(index1)
+            println(index2)
+
+            val p = MarkerDataFactory.create(algorithm.getClusters(index1))
+            val c = MarkerDataFactory.create(algorithm.getClusters(index2))
+            isSame(p, p)
+        }
+        println("-----")
+/*        for (i in zoomEnd downTo zoomStart step 2) {
+            val index1 = i * 1.0f
+            val index2 = (i-1) *1.0f
+            println(index1)
+            println(index2)
+        }*/
+    }
+
+    fun isSame(p: MutableList<BaseMarkerData>, c: MutableList<BaseMarkerData>) {
+        val result = c.map { ClusterUtils.createTrackData(it, p) }
+        val pCount = p.sumOf { it.getSize() }
+        val cCount = c.sumOf { it.getSize() }
+        val nCount = result.sumOf { it.node.getSize()}
+        val nSubCount = result.sumOf { it.subNodeList.sumOf { it.subNode.getSize() }}
+
+        assertEquals(pCount, cCount)
+        assertEquals(pCount, nCount)
+        assertEquals(pCount, nSubCount)
     }
 
 
@@ -147,6 +188,59 @@ class ClusterUtilsTest {
 
         assertTrue(ClusterUtils.isClusterContainerItems(prev, child))
         assertFalse(ClusterUtils.isClusterContainerItems(child, prev))
+    }
+
+
+    @Test
+    fun delSameMarkSingle() {
+        val s1 = JsonTestUtil.mock(
+            stationsList.subList(0, 2),
+            stationsList.subList(3, 4)
+        )
+
+        val s2 = JsonTestUtil.mock(
+            stationsList.subList(3, 4)
+        )
+
+        ClusterUtils.delSame(s1, s2)
+
+        assertTrue(s1.first() is MarkerCluster)
+        assertEquals(1, s1.size)
+        assertEquals(0, s2.size)
+    }
+
+    @Test
+    fun delSameMarkCluster() {
+        val s1 = JsonTestUtil.mock(
+            stationsList.subList(0, 5),
+        )
+
+        val s2 = JsonTestUtil.mock(
+            stationsList.subList(0, 5),
+            stationsList.subList(1, 3),
+        )
+
+        ClusterUtils.delSame(s1, s2)
+        assertEquals(0, s1.size)
+        assertEquals(1, s2.size)
+    }
+
+    @Test
+    fun delSameMarkCluste1r() {
+        val s1 = JsonTestUtil.mock(
+            stationsList.subList(0, 1),
+            stationsList.subList(1, 3),
+            stationsList.subList(3, 4)
+        )
+
+        val s2 = JsonTestUtil.mock(
+            stationsList.subList(1, 3),
+            stationsList.subList(0, 1)
+        )
+
+        ClusterUtils.delSame(s1, s2)
+        assertEquals(1, s1.size)
+        assertEquals(0, s2.size)
     }
 
     @Test

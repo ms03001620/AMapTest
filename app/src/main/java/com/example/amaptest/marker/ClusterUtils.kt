@@ -20,12 +20,21 @@ object ClusterUtils {
         prevList.forEach { prev ->
             val latLngPrev = prev.getLatlng()!!
             // 新的是否包含了全部老的数据
+            // ABCD AB true
+            // A ABCD
             if (isClusterContainerItems(curr.getCluster().items, prev.getCluster().items)) {
                 var nodeType = NodeType.PARTY
                 if (prev.getSize() == 1) {
                     nodeType = NodeType.SINGLE
                 }
                 subNodeList.add(SubNode(latLngPrev, nodeType, prev))
+
+            } else if (isClusterContainerItems(prev.getCluster().items, curr.getCluster().items)) {
+                var nodeType = NodeType.PARTY
+                if (curr.getSize() == 1) {
+                    nodeType = NodeType.SINGLE
+                }
+                subNodeList.add(SubNode(latLngPrev, nodeType, curr))
             } else {
                 // 老的部分在新的中
                 val nodeType = NodeType.PIECE
@@ -68,6 +77,15 @@ object ClusterUtils {
             }
         }
         return false
+    }
+
+    fun delSame(
+        prev: MutableList<BaseMarkerData>,
+        curr: MutableList<BaseMarkerData>
+    ){
+        val prevCopy = prev.toMutableList()
+        prev.removeAll(curr)
+        curr.removeAll(prevCopy)
     }
 
     /**
