@@ -53,22 +53,6 @@ class MapProxy(private val map: AMap, private val context: Context) {
         marker.setMarkerOptions(createMarkerOptions(baseMarkerData, marker.position))
     }
 
-    fun createOrUpdateCluster(id: String, size: Int, latLng: LatLng?): Marker? {
-        latLng?.let { latLngNotNull ->
-            if (set.containsKey(id).not()) {
-                // add
-                return createMarker(stationToClusterOptions(size, latLngNotNull))?.also {
-                    set[id] = it
-                }
-            } else {
-                // update
-                set[id]?.setMarkerOptions(stationToClusterOptions(size, latLngNotNull))
-                return null
-            }
-        }
-        return null
-    }
-
     fun removeMarkers(remove: MutableList<BaseMarkerData>) {
         remove.forEach {
             set.remove(it.getId())?.remove()
