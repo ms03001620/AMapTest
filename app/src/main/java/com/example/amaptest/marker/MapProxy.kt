@@ -8,19 +8,49 @@ import com.amap.api.maps.model.*
 import com.example.amaptest.R
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.showMarker
+import java.lang.IllegalStateException
 
 class MapProxy(private val map: AMap, private val context: Context) {
     private val set = HashMap<String, Marker>()
 
-    fun createMarker(station: StationDetail, latLng: LatLng? = null): Marker? {
-        station.id?.let { id ->
+    fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
+        baseMarkerDataList.forEach {
+            createMarker(it, it.getLatlng())
+        }
+    }
+
+    fun createMarker(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker {
+        baseMarkerData.getId().let { id ->
             if (set.containsKey(id).not()) {
-                return createMarker(stationToMarkerOptions(station, latLng))?.also {
-                    set[id] = it
+                val option = createMarkerOptions(baseMarkerData, latLng)
+                val marker = createMarker(option)
+                if (marker != null) {
+                    set[id] = marker
+                } else {
+                    throw IllegalStateException("create marker failed")
                 }
+                return marker
+            } else {
+                throw IllegalStateException("111111")
             }
         }
-        return null
+    }
+
+    fun createMarkerOptions(baseMarkerData: BaseMarkerData, latLng: LatLng?): MarkerOptions {
+        val options = when (baseMarkerData) {
+            is MarkerCluster -> {
+                stationToClusterOptions(baseMarkerData.getSize(), latLng)
+            }
+            is MarkerSingle -> {
+                stationToMarkerOptions(baseMarkerData.stationDetail, latLng)
+            }
+            else -> throw UnsupportedOperationException("type:$baseMarkerData")
+        }
+        return options
+    }
+
+    fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData) {
+        marker.setMarkerOptions(createMarkerOptions(baseMarkerData, marker.position))
     }
 
     fun createOrUpdateCluster(id: String, size: Int, latLng: LatLng?): Marker? {
@@ -39,7 +69,13 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return null
     }
 
-    fun deleteMarker(id: String?) {
+    fun removeMarkers(remove: MutableList<BaseMarkerData>) {
+        remove.forEach {
+            set.remove(it.getId())?.remove()
+        }
+    }
+
+    fun removeMarker(id: String?) {
         set.remove(id)?.remove()
     }
 
@@ -61,7 +97,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return BitmapDescriptorFactory.fromView(view)
     }
 
-    private fun stationToClusterOptions(size: Int, latLng: LatLng) =
+    private fun stationToClusterOptions(size: Int, latLng: LatLng?) =
         MarkerOptions()
             .position(latLng)
             .icon(getClusterBitmapDescriptor(size))

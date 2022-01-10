@@ -177,7 +177,7 @@ class ClusterUtilsTest {
 
         result.flatMap {
             it.subNodeList.map {
-                it.nodeType
+                Pair(it.nodeType, it.subNode.getSize())
             }
         }.let {
             println(it)

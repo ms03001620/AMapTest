@@ -23,7 +23,7 @@ class MarkerActionActivity : AppCompatActivity() {
         ViewModelProvider(
             this,
             ViewModelFactory()
-        )[MarkerMockViewModel::class.java]
+        )[MarkerActionViewModel::class.java]
     }
     private val styleData by lazy {
         AssetsReadUtils.readBytes(this, "style.data")

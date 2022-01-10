@@ -7,33 +7,25 @@ import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
 import com.polestar.base.utils.logd
-import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.toLatLng
-import java.lang.UnsupportedOperationException
 
 class MarkerAction(val mapProxy: MapProxy) {
 
     fun setList(data: MutableList<BaseMarkerData>) {
         mapProxy.clear()
-        addCluster(data)
+        addMarkers(data)
     }
 
-    fun addCluster(baseMarkerDataList: MutableList<BaseMarkerData>) {
-        baseMarkerDataList.forEach {
-            when (it) {
-                is MarkerSingle -> addMarker(it.stationDetail)
-                is MarkerCluster -> addCluster(it)
-            }
-        }
+    fun addMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
+        mapProxy.createMarkers(baseMarkerDataList)
     }
 
-    fun addCluster(cluster: MarkerCluster, redirectLatLng: LatLng? = null): Marker? {
-        val latLng = redirectLatLng ?: cluster.getLatlng()
-        return mapProxy.createOrUpdateCluster(cluster.getId(), cluster.getSize(), latLng)
+    fun addMarker(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker? {
+        return mapProxy.createMarker(baseMarkerData, latLng)
     }
 
-    fun addMarker(stationDetail: StationDetail, latLng: LatLng? = null): Marker? {
-        return mapProxy.createMarker(stationDetail, latLng)
+    fun remove(remove: MutableList<BaseMarkerData>) {
+        mapProxy.removeMarkers(remove)
     }
 
     fun transfer(
@@ -47,14 +39,6 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
-    fun removed(removed: MutableList<BaseMarkerData>) {
-        removed.forEach {
-            if(it is MarkerSingle){
-                throw UnsupportedOperationException("new case")
-            }
-            mapProxy.deleteMarker(it.getId())
-        }
-    }
 
     fun onAnimTaskLiveData(animTaskData: AnimTaskData) {
         collapsed(animTaskData)
@@ -68,13 +52,13 @@ class MarkerAction(val mapProxy: MapProxy) {
     fun expansion(
         animTaskData: AnimTaskData
     ) {
-        removed(animTaskData.deleteList)
+        remove(animTaskData.deleteList)
         animTaskData.expList.forEach {
             val fromLatLng = it.key
             it.value.forEach { itemCluster ->
                 when (itemCluster) {
                     is MarkerCluster -> {
-                        val mark = addCluster(itemCluster, fromLatLng)
+                        val mark = addMarker(itemCluster, fromLatLng)
                         if (mark != null) {
                             // cluster不存在，创建并播放动画
                             itemCluster.getStation()?.let {
@@ -83,7 +67,7 @@ class MarkerAction(val mapProxy: MapProxy) {
                         }
                     }
                     is MarkerSingle -> {
-                        val t = addMarker(itemCluster.stationDetail, fromLatLng)
+                        val t = addMarker(itemCluster, fromLatLng)
                         logd("MarkerSingle t:$t")
                         if (t != null) {
                             transfer(
@@ -119,7 +103,7 @@ class MarkerAction(val mapProxy: MapProxy) {
                 total--
                 //然后创建合拢节点
                 if (total == 0) {
-                    addCluster(added)
+                    addMarkers(added)
                 }
             }
         }
@@ -136,6 +120,10 @@ class MarkerAction(val mapProxy: MapProxy) {
                 )
             }
         }
+    }
+
+    fun pieceTransfer(baseMarkerData: BaseMarkerData, fromLatLng: LatLng, toLatLng: LatLng) {
+
     }
 
     fun transfer(
@@ -155,7 +143,7 @@ class MarkerAction(val mapProxy: MapProxy) {
                     }
 
                     override fun onAnimationEnd() {
-                        mapProxy.deleteMarker(id)
+                        mapProxy.removeMarker(id)
                         listener?.onAnimationEnd()
                     }
                 })

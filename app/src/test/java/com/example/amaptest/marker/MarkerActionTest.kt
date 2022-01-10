@@ -11,9 +11,10 @@ class MarkerActionTest {
     @Test
     fun removed(){
         val mapProxy = mockk<MapProxy>()
-        every { mapProxy.deleteMarker(any()) } just Runs
-        MarkerAction(mapProxy).removed(mock(stationsList.subList(0, 3), stationsList.subList(3, 6)))
-        verify(exactly = 2)  { mapProxy.deleteMarker(any()) }
+        every { mapProxy.removeMarker(any()) } just Runs
+        every { mapProxy.removeMarkers(any()) } just Runs
+        MarkerAction(mapProxy).remove(mock(stationsList.subList(0, 3), stationsList.subList(3, 6)))
+        verify(exactly = 1)  { mapProxy.removeMarkers(any()) }
     }
 
     @Test
