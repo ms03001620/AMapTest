@@ -8,6 +8,7 @@ import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
 import com.polestar.base.utils.logd
 import com.polestar.repository.data.charging.toLatLng
+import kotlin.math.abs
 
 class MarkerAction(val mapProxy: MapProxy) {
 
@@ -28,18 +29,6 @@ class MarkerAction(val mapProxy: MapProxy) {
         mapProxy.removeMarkers(remove)
     }
 
-    fun transfer(
-        from: BaseMarkerData,
-        to: LatLng,
-        removeAtEnd: Boolean,
-        listener: Animation.AnimationListener? = null
-    ) {
-        mapProxy.getMarker(from)?.let {
-            transfer(from.getId(), it, to, removeAtEnd, listener)
-        }
-    }
-
-
     fun onAnimTaskLiveData(animTaskData: AnimTaskData) {
         collapsed(animTaskData)
         expansion(animTaskData)
@@ -59,19 +48,20 @@ class MarkerAction(val mapProxy: MapProxy) {
                 when (itemCluster) {
                     is MarkerCluster -> {
                         val mark = addMarker(itemCluster, fromLatLng)
-                        if (mark != null) {
-                            // cluster不存在，创建并播放动画
-                            itemCluster.getStation()?.let {
-                                transfer(itemCluster, it.toLatLng(), false)
+                        // cluster不存在，创建并播放动画
+                        itemCluster.getStation()?.let { station ->
+                            mapProxy.getMarker(itemCluster)?.let {
+                                transfer(itemCluster.getId(), it, station.toLatLng(), false)
                             }
                         }
                     }
                     is MarkerSingle -> {
                         val t = addMarker(itemCluster, fromLatLng)
                         logd("MarkerSingle t:$t")
-                        if (t != null) {
+                        mapProxy.getMarker(itemCluster)?.let {
                             transfer(
-                                itemCluster,
+                                itemCluster.getId(),
+                                it,
                                 itemCluster.stationDetail.toLatLng(),
                                 false
                             )
@@ -112,18 +102,11 @@ class MarkerAction(val mapProxy: MapProxy) {
             //合拢节点
             val toLatLng = it.key
             it.value.forEach { itemCluster ->
-                transfer(
-                    itemCluster,
-                    toLatLng,
-                    true/*移动到合拢节点，消失*/,
-                    anim
-                )
+                mapProxy.getMarker(itemCluster)?.let {
+                    transfer(itemCluster.getId(), it, toLatLng, true, anim)
+                }
             }
         }
-    }
-
-    fun pieceTransfer(baseMarkerData: BaseMarkerData, fromLatLng: LatLng, toLatLng: LatLng) {
-
     }
 
     fun transfer(
@@ -151,6 +134,79 @@ class MarkerAction(val mapProxy: MapProxy) {
         })
         marker.setAnimation(set)
         marker.startAnimation()
+    }
+
+
+    fun attemptTransfer(
+        baseMarkerData: BaseMarkerData,
+        moveTo: LatLng,
+        autoCreate: Boolean = true,
+        autoCreatePosition: LatLng? = null,
+        removeAtEnd: Boolean = false,
+        listener: Animation.AnimationListener? = null
+    ) {
+        var marker = mapProxy.getMarker(baseMarkerData)
+
+        if (autoCreate && marker == null) {
+            val createPosition = autoCreatePosition ?: baseMarkerData.getLatlng()
+            marker = mapProxy.createMarker(baseMarkerData, createPosition)
+        }
+
+        assert(marker != null)
+
+        if (isSamePosition(moveTo, marker?.position)) {
+            // keep marker
+            listener?.onAnimationStart()
+            if (removeAtEnd) {
+                mapProxy.removeMarker(baseMarkerData.getId())
+            }
+            listener?.onAnimationEnd()
+        } else {
+            // transfer marker
+            transfer(baseMarkerData, moveTo, removeAtEnd, listener)
+        }
+    }
+
+    private fun transfer(
+        baseMarkerData: BaseMarkerData,
+        moveTo: LatLng,
+        removeAtEnd: Boolean = false,
+        listener: Animation.AnimationListener? = null
+    ) {
+        val marker = mapProxy.getMarker(baseMarkerData)
+        val set = AnimationSet(true)
+        set.addAnimation(TranslateAnimation(moveTo).apply {
+            this.setInterpolator(AccelerateInterpolator())
+            this.setDuration(/*CLUSTER_MOVE_ANIM*/2000)
+            this.setAnimationListener(object : Animation.AnimationListener {
+                override fun onAnimationStart() {
+                    listener?.onAnimationStart()
+                }
+
+                override fun onAnimationEnd() {
+                    if (removeAtEnd) {
+                        mapProxy.removeMarker(baseMarkerData.getId())
+                    }
+                    listener?.onAnimationEnd()
+                }
+            })
+        })
+        marker?.setAnimation(set)
+        marker?.startAnimation()
+    }
+
+
+    fun isSamePosition(a: LatLng?, b: LatLng?, error: Float = 0.000001f): Boolean {
+        if (a == null) {
+            return false
+        }
+        if (b == null) {
+            return false
+        }
+
+        val v1 = abs(a.latitude - b.latitude)
+        val v2 = abs(a.longitude - b.longitude)
+        return v1 < error && v2 < error
     }
 
     companion object {

@@ -11,6 +11,7 @@ import com.amap.api.maps.model.BitmapDescriptorFactory
 import com.amap.api.maps.model.CustomMapStyleOptions
 import com.amap.api.maps.model.LatLngBounds
 import com.amap.api.maps.model.MyLocationStyle
+import com.amap.api.maps.model.animation.Animation
 import com.example.amaptest.marker.*
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.toLatLng
@@ -46,12 +47,36 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_del).setOnClickListener {
+            markerAction.attemptTransfer(default.value, defaultCluster.value.getLatlng()!!,
+                listener = object: Animation.AnimationListener{
+                    override fun onAnimationStart() {
+                        logd("onAnimationStart", "MainActivity")
+                    }
+
+                    override fun onAnimationEnd() {
+                        logd("onAnimationEnd", "MainActivity")
+                    }
+                })
         }
 
         findViewById<View>(R.id.btn_center).setOnClickListener {
+            markerAction.attemptTransfer(default.value, defaultCluster.value.getLatlng()!!,
+                listener = object: Animation.AnimationListener{
+                    override fun onAnimationStart() {
+                        logd("onAnimationStart", "MainActivity")
+                    }
+
+                    override fun onAnimationEnd() {
+                        logd("onAnimationEnd", "MainActivity")
+                    }
+                }
+                , removeAtEnd = true)
         }
 
         findViewById<View>(R.id.btn_offset).setOnClickListener {
+            val data = JsonTestUtil.mock(stations.subList(7, 15)).first()
+
+            markerAction.attemptTransfer(data, moveTo = default.value.getLatlng()!!, removeAtEnd = true)
         }
     }
 
