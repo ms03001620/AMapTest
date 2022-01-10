@@ -38,39 +38,27 @@ class MainActivity : AppCompatActivity() {
         initCamera()
 
         findViewById<View>(R.id.btn_add).setOnClickListener {
-            mMapProxy.createMarkers(default.value)
+            val s = JsonTestUtil.mock(stations.subList(0, 1)).first()
+            mMapProxy.createOrUpdateMarkerToPosition(s)
         }
 
         findViewById<View>(R.id.btn_move).setOnClickListener {
-            val marker = mMapProxy.getMarker(default.value)!!
-            mMapProxy.updateMarker(marker, defaultCluster.value)
+            val s = JsonTestUtil.mock(stations.subList(0, 1)).first()
+            val t = JsonTestUtil.mock(stations.subList(5, 7)).first()
+
+            markerAction.attemptTransfer(s, t.getLatlng()!!, removeAtEnd = false)
+
         }
 
         findViewById<View>(R.id.btn_del).setOnClickListener {
-            markerAction.attemptTransfer(default.value, defaultCluster.value.getLatlng()!!,
-                listener = object: Animation.AnimationListener{
-                    override fun onAnimationStart() {
-                        logd("onAnimationStart", "MainActivity")
-                    }
+            val s = JsonTestUtil.mock(stations.subList(0, 1)).first()
+            val t = JsonTestUtil.mock(stations.subList(5, 7)).first()
 
-                    override fun onAnimationEnd() {
-                        logd("onAnimationEnd", "MainActivity")
-                    }
-                })
+            markerAction.attemptTransfer(s, t.getLatlng()!!, removeAtEnd = true)
         }
 
         findViewById<View>(R.id.btn_center).setOnClickListener {
-            markerAction.attemptTransfer(default.value, defaultCluster.value.getLatlng()!!,
-                listener = object: Animation.AnimationListener{
-                    override fun onAnimationStart() {
-                        logd("onAnimationStart", "MainActivity")
-                    }
 
-                    override fun onAnimationEnd() {
-                        logd("onAnimationEnd", "MainActivity")
-                    }
-                }
-                , removeAtEnd = true)
         }
 
         findViewById<View>(R.id.btn_offset).setOnClickListener {

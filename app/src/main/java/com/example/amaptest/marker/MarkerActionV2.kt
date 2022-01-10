@@ -2,12 +2,9 @@ package com.example.amaptest.marker
 
 import android.view.animation.AccelerateInterpolator
 import com.amap.api.maps.model.LatLng
-import com.amap.api.maps.model.Marker
 import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
-import com.polestar.base.utils.logd
-import com.polestar.repository.data.charging.toLatLng
 import kotlin.math.abs
 
 class MarkerActionV2(val mapProxy: MapProxy) {
@@ -37,7 +34,7 @@ class MarkerActionV2(val mapProxy: MapProxy) {
 
         if (autoCreate && marker == null) {
             val createPosition = autoCreatePosition ?: baseMarkerData.getLatlng()
-            marker = mapProxy.createMarker(baseMarkerData, createPosition)
+            marker = mapProxy.createOrUpdateMarkerToPosition(baseMarkerData, createPosition)
         }
 
         assert(marker != null)
@@ -62,6 +59,7 @@ class MarkerActionV2(val mapProxy: MapProxy) {
         listener: Animation.AnimationListener? = null
     ) {
         val marker = mapProxy.getMarker(baseMarkerData)
+        assert(marker != null)
         val set = AnimationSet(true)
         set.addAnimation(TranslateAnimation(moveTo).apply {
             this.setInterpolator(AccelerateInterpolator())

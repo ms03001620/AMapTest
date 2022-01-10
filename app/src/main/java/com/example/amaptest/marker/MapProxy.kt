@@ -13,22 +13,22 @@ import java.lang.IllegalStateException
 class MapProxy(private val map: AMap, private val context: Context) {
     private val set = HashMap<String, Marker>()
 
-    fun createMarkers(vararg baseMarkerDataList: BaseMarkerData) {
-        createMarkers(baseMarkerDataList.toMutableList())
-    }
-
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
         baseMarkerDataList.forEach {
-            createMarker(it, it.getLatlng())
+            createOrUpdateMarkerToPosition(it, it.getLatlng())
         }
     }
 
-    fun createMarker(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker {
+    fun createOrUpdateMarkerToPosition(baseMarkerData: BaseMarkerData){
+        createOrUpdateMarkerToPosition(baseMarkerData, baseMarkerData.getLatlng())
+    }
+
+    fun createOrUpdateMarkerToPosition(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker {
         baseMarkerData.getId().let { id ->
             val oldMarker = set[id]
             if (oldMarker == null) {
                 val option = createMarkerOptions(baseMarkerData, latLng)
-                val marker = createMarker(option)
+                val marker = createOrUpdateMarkerToPosition(option)
                 if (marker != null) {
                     set[id] = marker
                 } else {
@@ -73,7 +73,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
         set.remove(id)?.remove()
     }
 
-    private fun createMarker(markerOptions: MarkerOptions): Marker? {
+    private fun createOrUpdateMarkerToPosition(markerOptions: MarkerOptions): Marker? {
         return map.addMarker(markerOptions)
     }
 
