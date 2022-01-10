@@ -14,42 +14,47 @@
 
     <LinearLayout
         android:id="@+id/layout_btn"
-        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="add" />
 
         <Button
             android:id="@+id/btn_move"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="move"/>
+            android:text="move" />
 
         <Button
             android:id="@+id/btn_del"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="delete"/>
+            android:text="delete" />
 
         <Button
             android:id="@+id/btn_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="center"/>
+            android:text="center" />
 
         <Button
             android:id="@+id/btn_offset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="offset"/>
+            android:text="offset" />
 
     </LinearLayout>
 
-
-    <View
-        android:layout_below="@id/layout_btn"
-        android:layout_width="100dp"
-        android:background="#0f0"
-        android:layout_height="20dp" />
+    <!--
+        <View
+            android:layout_below="@id/layout_btn"
+            android:layout_width="100dp"
+            android:background="#0f0"
+            android:layout_height="20dp" />-->
 
 </RelativeLayout>

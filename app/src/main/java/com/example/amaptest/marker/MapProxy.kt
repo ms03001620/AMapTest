@@ -13,6 +13,10 @@ import java.lang.IllegalStateException
 class MapProxy(private val map: AMap, private val context: Context) {
     private val set = HashMap<String, Marker>()
 
+    fun createMarkers(vararg baseMarkerDataList: BaseMarkerData) {
+        createMarkers(baseMarkerDataList.toMutableList())
+    }
+
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
         baseMarkerDataList.forEach {
             createMarker(it, it.getLatlng())
@@ -21,7 +25,8 @@ class MapProxy(private val map: AMap, private val context: Context) {
 
     fun createMarker(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker {
         baseMarkerData.getId().let { id ->
-            if (set.containsKey(id).not()) {
+            val oldMarker = set[id]
+            if (oldMarker == null) {
                 val option = createMarkerOptions(baseMarkerData, latLng)
                 val marker = createMarker(option)
                 if (marker != null) {
@@ -31,7 +36,10 @@ class MapProxy(private val map: AMap, private val context: Context) {
                 }
                 return marker
             } else {
-                throw IllegalStateException("111111")
+                // throw IllegalStateException("set.containsKey(${id})")
+                // logd("updateMarker $id")
+                updateMarker(oldMarker, baseMarkerData, latLng)
+                return oldMarker
             }
         }
     }
@@ -49,8 +57,10 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return options
     }
 
-    fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData) {
-        marker.setMarkerOptions(createMarkerOptions(baseMarkerData, marker.position))
+    fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData, forceLatLng: LatLng? = null) {
+        //TODO 相同点相同数据的优化问题
+        val finalLatLng = forceLatLng ?: marker.position
+        marker.setMarkerOptions(createMarkerOptions(baseMarkerData, finalLatLng))
     }
 
     fun removeMarkers(remove: MutableList<BaseMarkerData>) {

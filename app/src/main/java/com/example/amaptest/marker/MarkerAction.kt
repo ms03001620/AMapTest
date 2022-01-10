@@ -20,7 +20,7 @@ class MarkerAction(val mapProxy: MapProxy) {
         mapProxy.createMarkers(baseMarkerDataList)
     }
 
-    fun addMarker(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker? {
+    fun addMarker(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker {
         return mapProxy.createMarker(baseMarkerData, latLng)
     }
 
