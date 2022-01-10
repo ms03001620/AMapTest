@@ -23,6 +23,42 @@ class ClusterUtilsTest {
     }
 
     @Test
+    fun createTrackDataBase1() {
+        val p = JsonTestUtil.mock(stationsList.subList(0, 3))
+        val c = JsonTestUtil.mock(
+            stationsList.subList(0, 1),
+            stationsList.subList(1, 2),
+            stationsList.subList(2, 3)
+        )
+
+        val b1 = ClusterUtils.process(p, c)
+        val b2 = ClusterUtils.process(c, p)
+
+
+        assertNotNull(b1)
+    }
+
+    @Test
+    fun createTrackDataBase2() {
+        val p = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+        val c = JsonTestUtil.mock(
+            listOf(
+                stationsList.subList(0, 1).first(),
+                stationsList.subList(2, 3).first()
+            ),
+            listOf(
+                stationsList.subList(1, 2).first(),
+                stationsList.subList(3, 4).first()
+            ),
+        )
+
+        val b1 = ClusterUtils.process(p, c)
+        val b2 = ClusterUtils.process(c, p)
+
+        assertNotNull(b1)
+    }
+
+    @Test
     fun createTrackData() {
         val p = JsonTestUtil.mock(
             stationsList.subList(0, 2),
@@ -138,6 +174,14 @@ class ClusterUtilsTest {
 
     fun isSame(p: MutableList<BaseMarkerData>, c: MutableList<BaseMarkerData>) {
         val result = c.map { ClusterUtils.createTrackData(it, p) }
+
+        result.flatMap {
+            it.subNodeList.map {
+                it.nodeType
+            }
+        }.let {
+            println(it)
+        }
         val pCount = p.sumOf { it.getSize() }
         val cCount = c.sumOf { it.getSize() }
         val nCount = result.sumOf { it.node.getSize() }

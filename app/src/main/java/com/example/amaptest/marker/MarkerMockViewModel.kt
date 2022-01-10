@@ -19,49 +19,39 @@ class MarkerMockViewModel : ViewModel() {
     private lateinit var stationsList: List<StationDetail>
 
     val p = lazy {
-        JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+        JsonTestUtil.mock(stationsList.subList(0, 4))
     }
 
     val c = lazy{
         JsonTestUtil.mock(
-            stationsList.subList(0, 3),
+            stationsList.subList(0, 1),
+            stationsList.subList(1, 2),
+            stationsList.subList(2, 3),
             stationsList.subList(3, 4)
         )
     }
-
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
     val onAnimTaskLiveData = SingleLiveEvent<AnimTaskData>()
 
-    private val adapter = ClusterAdapter(object : ClusterAdapter.OnClusterAction {
-        override fun noChange(data: MutableList<BaseMarkerData>) {
-            noChangeLiveData.postValue(data)
-        }
-
-        override fun onAnimTask(animTaskData: AnimTaskData) {
-            onAnimTaskLiveData.postValue(animTaskData)
-        }
-    })
-
-    private val clusterAlgorithm by lazy {
-        //AlgorithmWallpaper(DistanceAlgorithm())
-        AlgorithmWallpaper(DistanceQuadTreeAlgorithm())
-    }
-
     fun loadDefault(context: Context, file: String, start: Int, end: Int) {
         stationsList = AssetsReadUtils.mockStation(context, file)!!
-
-        adapter.queue(p.value)
+        logd("loadDefault", "MarkerMockViewModel")
     }
 
-    fun calcClusters(distanceInfo: DistanceInfo) {
-        logd(distanceInfo.toString(), "zoom")
-        if(distanceInfo.cameraPosition?.zoom == 16f){
-            adapter.queue(c.value)
-        }
-        if(distanceInfo.cameraPosition?.zoom == 15f){
-            adapter.queue(p.value)
-        }
+    var distanceInfo : DistanceInfo?=null
 
+    fun calcClusters(distanceInfo: DistanceInfo) {
+        logd("distanceInfo:${distanceInfo.toString()}", "MarkerMockViewModel")
+        if (this.distanceInfo == null) {
+            logd("first ", "MarkerMockViewModel")
+            this.distanceInfo = distanceInfo
+            noChangeLiveData.value = p.value
+        } else {
+            logd("first ", "MarkerMockViewModel")
+            ClusterUtils.process(p.value, c.value)
+
+            //TODO NodeTrack -> AnimTaskData
+        }
     }
 
 

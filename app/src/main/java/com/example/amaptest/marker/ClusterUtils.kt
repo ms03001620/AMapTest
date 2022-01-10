@@ -4,10 +4,34 @@ import com.amap.api.maps.model.LatLng
 import com.polestar.charging.ui.cluster.base.ClusterItem
 
 object ClusterUtils {
-    fun process(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>) {
-        curr.forEach {
+    fun process(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): List<NodeTrack> {
+        val result = curr.map {
             createTrackData(it, prev)
         }
+
+        curr.forEach {
+            val nodeTrack = createTrackData(it, prev)
+            if (nodeTrack.node.getSize() == 1) {
+                assert(nodeTrack.subNodeList.size == 1)
+
+            }
+        }
+
+        println(result)
+        return result
+    }
+
+
+    fun findOrCreateClusterList(
+        collapsedTask: HashMap<LatLng, MutableList<BaseMarkerData>>,
+        key: LatLng
+    ): MutableList<BaseMarkerData> {
+        var result = collapsedTask[key]
+        if (result == null) {
+            result = mutableListOf()
+            collapsedTask[key] = result
+        }
+        return result
     }
 
     /**
