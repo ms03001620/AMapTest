@@ -80,6 +80,11 @@ class MarkerAction(val mapProxy: MapProxy) {
     fun collapsed(animTaskData: AnimTaskData) {
         val map = animTaskData.cospList
         val added = animTaskData.addList
+
+        if (added.isNotEmpty()) {
+            assert(map.isNotEmpty())
+        }
+
         var total = 0
         map.forEach {
             total += it.value.size
