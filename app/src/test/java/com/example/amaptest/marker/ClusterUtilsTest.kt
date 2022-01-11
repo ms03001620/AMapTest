@@ -6,6 +6,7 @@ import com.polestar.charging.ui.cluster.quadtree.DistanceBasedAlgorithm
 import org.junit.Assert.*
 
 import org.junit.Test
+import java.util.*
 
 class ClusterUtilsTest {
     private val stationsList = JsonTestUtil.readStation("json_stations.json")
@@ -171,8 +172,22 @@ class ClusterUtilsTest {
         }
     }
 
-    fun isSame(p: MutableList<BaseMarkerData>, c: MutableList<BaseMarkerData>) {
+    private fun isSame(p: MutableList<BaseMarkerData>, c: MutableList<BaseMarkerData>) {
         val result = c.map { ClusterUtils.createTrackData(it, p) }
+
+        result.filter {
+            it.subNodeList.size > 1
+        }.filter {
+            it.subNodeList.firstNotNullOf {
+                it.nodeType == ClusterUtils.NodeType.PIECE
+            }
+        }.forEach {
+            val string = it.subNodeList.map {
+                "${it.nodeType}"
+            }
+
+            println("pp sub size:${it.subNodeList.size}, types:${string}")
+        }
 
         val pCount = p.sumOf { it.getSize() }
         val cCount = c.sumOf { it.getSize() }
@@ -185,7 +200,7 @@ class ClusterUtilsTest {
         assertEquals(pCount, nSubCount)
     }
 
-    fun unCheckCase(result: List<ClusterUtils.NodeTrack>) {
+    private fun unCheckCase(result: List<ClusterUtils.NodeTrack>) {
         // subNodeList.size == 1 时不包含PIECE数据，未确定原因
         result.filter {
             it.subNodeList.size == 1
