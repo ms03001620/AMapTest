@@ -120,7 +120,6 @@ class ClusterUtilsTest {
             result.count { it.subNodeList.first().nodeType == ClusterUtils.NodeType.SINGLE })
     }
 
-
     @Test
     fun processBig() {
         processBigImpl(true)
@@ -139,8 +138,8 @@ class ClusterUtilsTest {
             val index1 = i * 1.0f
             val index2 = (i + 1) * 1.0f
 
-            println(index1)
-            println(index2)
+            //println(index1)
+            //println(index2)
 
             val p = MarkerDataFactory.create(algorithm.getClusters(index1))
             val c = MarkerDataFactory.create(algorithm.getClusters(index2))
@@ -157,8 +156,8 @@ class ClusterUtilsTest {
         for (i in zoomEnd downTo zoomStart step 2) {
             val index1 = i * 1.0f
             val index2 = (i - 1) * 1.0f
-            println(index1)
-            println(index2)
+            //println(index1)
+            //println(index2)
 
             val p = MarkerDataFactory.create(algorithm.getClusters(index1))
             val c = MarkerDataFactory.create(algorithm.getClusters(index2))
@@ -175,21 +174,28 @@ class ClusterUtilsTest {
     fun isSame(p: MutableList<BaseMarkerData>, c: MutableList<BaseMarkerData>) {
         val result = c.map { ClusterUtils.createTrackData(it, p) }
 
-        result.flatMap {
-            it.subNodeList.map {
-                Pair(it.nodeType, it.subNode.getSize())
-            }
-        }.let {
-            println(it)
-        }
         val pCount = p.sumOf { it.getSize() }
         val cCount = c.sumOf { it.getSize() }
         val nCount = result.sumOf { it.node.getSize() }
         val nSubCount = result.sumOf { it.subNodeList.sumOf { it.subNode.getSize() } }
-        println("-----pCount:$pCount")
+        unCheckCase(result)
+        //println("-----pCount:$pCount")
         assertEquals(pCount, cCount)
         assertEquals(pCount, nCount)
         assertEquals(pCount, nSubCount)
+    }
+
+    fun unCheckCase(result: List<ClusterUtils.NodeTrack>) {
+        // subNodeList.size == 1 时不包含PIECE数据，未确定原因
+        result.filter {
+            it.subNodeList.size == 1
+        }.map {
+            it.subNodeList.first().nodeType
+        }.count {
+            it.name == "PIECE" //     SINGLE, PARTY, PIECE
+        }.let {
+            assertEquals(0, it)
+        }
     }
 
     @Test
