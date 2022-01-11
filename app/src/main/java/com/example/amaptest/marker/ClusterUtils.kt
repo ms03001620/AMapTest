@@ -2,35 +2,27 @@ package com.example.amaptest.marker
 
 import com.amap.api.maps.model.LatLng
 import com.polestar.charging.ui.cluster.base.ClusterItem
+import kotlin.math.abs
 
 object ClusterUtils {
     fun process(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): List<NodeTrack> {
         val result = curr.map {
             createTrackData(it, prev)
         }
-
-        curr.forEach {
-            val nodeTrack = createTrackData(it, prev)
-            if (nodeTrack.node.getSize() == 1) {
-                assert(nodeTrack.subNodeList.size == 1)
-
-            }
-        }
-
         println(result)
         return result
     }
 
+    fun processAndDeSame(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): List<NodeTrack> {
+        val subPrev = prev.toMutableList()
+        val subCurr = curr.toMutableList()
 
-    fun findOrCreateClusterList(
-        collapsedTask: HashMap<LatLng, MutableList<BaseMarkerData>>,
-        key: LatLng
-    ): MutableList<BaseMarkerData> {
-        var result = collapsedTask[key]
-        if (result == null) {
-            result = mutableListOf()
-            collapsedTask[key] = result
+        delSame(subPrev, subCurr)
+
+        val result = subCurr.map {
+            createTrackData(it, subPrev)
         }
+
         return result
     }
 
@@ -110,6 +102,19 @@ object ClusterUtils {
         val prevCopy = prev.toMutableList()
         prev.removeAll(curr)
         curr.removeAll(prevCopy)
+    }
+
+    fun isSamePosition(a: LatLng?, b: LatLng?, error: Float = 0.000001f): Boolean {
+        if (a == null) {
+            return false
+        }
+        if (b == null) {
+            return false
+        }
+
+        val v1 = abs(a.latitude - b.latitude)
+        val v2 = abs(a.longitude - b.longitude)
+        return v1 < error && v2 < error
     }
 
     /**
