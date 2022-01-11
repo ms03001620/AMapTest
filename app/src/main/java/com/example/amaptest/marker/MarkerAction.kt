@@ -22,7 +22,7 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     fun addMarker(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker {
-        return mapProxy.createOrUpdateMarkerToPosition(baseMarkerData, latLng)
+        return mapProxy.createMarker(baseMarkerData, latLng)
     }
 
     fun remove(remove: MutableList<BaseMarkerData>) {
@@ -154,7 +154,7 @@ class MarkerAction(val mapProxy: MapProxy) {
 
         if (autoCreate && marker == null) {
             val createPosition = autoCreatePosition ?: baseMarkerData.getLatlng()
-            marker = mapProxy.createOrUpdateMarkerToPosition(baseMarkerData, createPosition)
+            marker = mapProxy.createMarker(baseMarkerData, createPosition)
         }
 
         assert(marker != null)

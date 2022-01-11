@@ -34,7 +34,7 @@ class MarkerActionV2(val mapProxy: MapProxy) {
 
         if (autoCreate && marker == null) {
             val createPosition = autoCreatePosition ?: baseMarkerData.getLatlng()
-            marker = mapProxy.createOrUpdateMarkerToPosition(baseMarkerData, createPosition)
+            marker = mapProxy.createMarker(baseMarkerData, createPosition)
         }
 
         assert(marker != null)

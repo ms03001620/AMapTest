@@ -11,7 +11,6 @@ import com.amap.api.maps.model.BitmapDescriptorFactory
 import com.amap.api.maps.model.CustomMapStyleOptions
 import com.amap.api.maps.model.LatLngBounds
 import com.amap.api.maps.model.MyLocationStyle
-import com.amap.api.maps.model.animation.Animation
 import com.example.amaptest.marker.*
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.toLatLng
@@ -39,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_add).setOnClickListener {
             val s = JsonTestUtil.mock(stations.subList(0, 1)).first()
-            mMapProxy.createOrUpdateMarkerToPosition(s)
+            mMapProxy.createMarker(s)
         }
 
         findViewById<View>(R.id.btn_move).setOnClickListener {

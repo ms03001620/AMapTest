@@ -15,20 +15,20 @@ class MapProxy(private val map: AMap, private val context: Context) {
 
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
         baseMarkerDataList.forEach {
-            createOrUpdateMarkerToPosition(it, it.getLatlng())
+            createMarker(it, it.getLatlng())
         }
     }
 
-    fun createOrUpdateMarkerToPosition(baseMarkerData: BaseMarkerData){
-        createOrUpdateMarkerToPosition(baseMarkerData, baseMarkerData.getLatlng())
+    fun createMarker(baseMarkerData: BaseMarkerData){
+        createMarker(baseMarkerData, baseMarkerData.getLatlng())
     }
 
-    fun createOrUpdateMarkerToPosition(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker {
+    fun createMarker(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker {
         baseMarkerData.getId().let { id ->
             val oldMarker = set[id]
             if (oldMarker == null) {
-                val option = createMarkerOptions(baseMarkerData, latLng)
-                val marker = createOrUpdateMarkerToPosition(option)
+                val option = createOptionsToPosition(baseMarkerData, latLng)
+                val marker = createMarker(option)
                 if (marker != null) {
                     set[id] = marker
                 } else {
@@ -44,7 +44,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
         }
     }
 
-    fun createMarkerOptions(baseMarkerData: BaseMarkerData, latLng: LatLng?): MarkerOptions {
+    fun createOptionsToPosition(baseMarkerData: BaseMarkerData, latLng: LatLng?): MarkerOptions {
         val options = when (baseMarkerData) {
             is MarkerCluster -> {
                 stationToClusterOptions(baseMarkerData.getSize(), latLng)
@@ -60,7 +60,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
     fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData, forceLatLng: LatLng? = null) {
         //TODO 相同点相同数据的优化问题
         val finalLatLng = forceLatLng ?: marker.position
-        marker.setMarkerOptions(createMarkerOptions(baseMarkerData, finalLatLng))
+        marker.setMarkerOptions(createOptionsToPosition(baseMarkerData, finalLatLng))
     }
 
     fun removeMarkers(remove: MutableList<BaseMarkerData>) {
@@ -73,7 +73,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
         set.remove(id)?.remove()
     }
 
-    private fun createOrUpdateMarkerToPosition(markerOptions: MarkerOptions): Marker? {
+    private fun createMarker(markerOptions: MarkerOptions): Marker? {
         return map.addMarker(markerOptions)
     }
 
