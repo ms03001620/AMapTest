@@ -36,24 +36,27 @@ class MainActivity : AppCompatActivity() {
         setupMap(savedInstanceState)
         initCamera()
 
+        val prev = JsonTestUtil.mock(stations.subList(0, 2))
+
+        val curr = JsonTestUtil.mock(
+            stations.subList(0, 1),
+            stations.subList(1, 2),
+           /* stations.subList(2, 3)*/
+        )
+
+
         findViewById<View>(R.id.btn_add).setOnClickListener {
-            val s = JsonTestUtil.mock(stations.subList(0, 1)).first()
-            mMapProxy.createMarker(s)
+            markerAction.setList(prev)
         }
 
         findViewById<View>(R.id.btn_move).setOnClickListener {
-            val s = JsonTestUtil.mock(stations.subList(0, 1)).first()
-            val t = JsonTestUtil.mock(stations.subList(5, 7)).first()
-
-            markerAction.attemptTransfer(s, t.getLatlng()!!, removeAtEnd = false)
-
+            ClusterUtils.processAndDeSame(prev, curr).let {
+                markerAction.makeAnim(it)
+            }
         }
 
         findViewById<View>(R.id.btn_del).setOnClickListener {
-            val s = JsonTestUtil.mock(stations.subList(0, 1)).first()
-            val t = JsonTestUtil.mock(stations.subList(5, 7)).first()
 
-            markerAction.attemptTransfer(s, t.getLatlng()!!, removeAtEnd = true)
         }
 
         findViewById<View>(R.id.btn_center).setOnClickListener {
@@ -61,9 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_offset).setOnClickListener {
-            val data = JsonTestUtil.mock(stations.subList(7, 15)).first()
 
-            markerAction.attemptTransfer(data, moveTo = default.value.getLatlng()!!, removeAtEnd = true)
         }
     }
 

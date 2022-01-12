@@ -6,7 +6,6 @@ import com.polestar.charging.ui.cluster.quadtree.DistanceBasedAlgorithm
 import org.junit.Assert.*
 
 import org.junit.Test
-import java.util.*
 
 class ClusterUtilsTest {
     private val stationsList = JsonTestUtil.readStation("json_stations.json")
@@ -130,20 +129,14 @@ class ClusterUtilsTest {
     fun processBigImpl(enableDelSame: Boolean) {
         val algorithm = DistanceBasedAlgorithm<ClusterItem>()
         algorithm.addItems(
-            JsonTestUtil.readStation("json_stations570.json").map { StationClusterItem(it) })
+            JsonTestUtil.readStation("json_stations.json").map { StationClusterItem(it) })
 
-        val zoomStart = 7
-        val zoomEnd = 16
 
-        for (i in zoomStart..zoomEnd step 2) {
-            val index1 = i * 1.0f
-            val index2 = (i + 1) * 1.0f
+        val sss = mutableListOf<Int>()
 
-            //println(index1)
-            //println(index2)
-
-            val p = MarkerDataFactory.create(algorithm.getClusters(index1))
-            val c = MarkerDataFactory.create(algorithm.getClusters(index2))
+        ClusterUtils.loops(7f, 17f, 1f, callback = { prevIndex: Float, currIndex: Float ->
+            val p = MarkerDataFactory.create(algorithm.getClusters(prevIndex))
+            val c = MarkerDataFactory.create(algorithm.getClusters(currIndex))
             val subPrev = p.toMutableList()
             val subCurr = c.toMutableList()
 
@@ -151,42 +144,32 @@ class ClusterUtilsTest {
                 ClusterUtils.delSame(subPrev, subCurr)
             }
 
-            isSame(subPrev, subCurr)
-        }
-        println("-----")
-        for (i in zoomEnd downTo zoomStart step 2) {
-            val index1 = i * 1.0f
-            val index2 = (i - 1) * 1.0f
-            //println(index1)
-            //println(index2)
+            isSame(subPrev, subCurr, sss)
+        })
 
-            val p = MarkerDataFactory.create(algorithm.getClusters(index1))
-            val c = MarkerDataFactory.create(algorithm.getClusters(index2))
-            val subPrev = p.toMutableList()
-            val subCurr = c.toMutableList()
-
-            if (enableDelSame) {
-                ClusterUtils.delSame(subPrev, subCurr)
-            }
-            isSame(subPrev, subCurr)
-        }
+        println("total: ${sss.size}")
     }
 
-    private fun isSame(p: MutableList<BaseMarkerData>, c: MutableList<BaseMarkerData>) {
+    private fun isSame(
+        p: MutableList<BaseMarkerData>,
+        c: MutableList<BaseMarkerData>,
+        sss: MutableList<Int>
+    ) {
         val result = c.map { ClusterUtils.createTrackData(it, p) }
 
-        result.filter {
-            it.subNodeList.size > 1
-        }.filter {
-            it.subNodeList.firstNotNullOf {
-                it.nodeType == ClusterUtils.NodeType.PIECE
-            }
-        }.forEach {
-            val string = it.subNodeList.map {
-                "${it.nodeType}"
+        result.forEach {
+            val currPos = it.node.getLatlng()
+
+            val count = it.subNodeList.count {
+                ClusterUtils.isSamePosition(currPos,  it.subNode.getLatlng())
             }
 
-            println("pp sub size:${it.subNodeList.size}, types:${string}")
+            if (count == 0) {
+                sss.add(1)
+               // println(count)
+            }
+
+            //println("sss: size:$count, prev: ${p.size}, curr: ${c.size}, ")
         }
 
         val pCount = p.sumOf { it.getSize() }
@@ -365,6 +348,81 @@ class ClusterUtilsTest {
         val prev = (prevCluster[0] as MarkerCluster).list.items
         assertFalse(ClusterUtils.isClusterContainerItems(null, prev))
         assertFalse(ClusterUtils.isClusterContainerItems(prev, null))
+    }
+
+    @Test
+    fun zoomWithParam() {
+        mutableListOf<Float>().apply {
+            ClusterUtils.loops(1f, 3f, 1f, callback = { f, s ->
+                this.add(f)
+                this.add(s)
+            })
+        }.let {
+            assertEquals("[1.0, 2.0, 2.0, 3.0, 3.0, 2.0, 2.0, 1.0]", it.toString())
+        }
+    }
+
+    @Test
+    fun zoomWithParamV1() {
+        mutableListOf<Float>().apply {
+            ClusterUtils.loops(1f, 3f, .5f, callback = { f, s ->
+                this.add(f)
+                this.add(s)
+            })
+        }.let {
+            assertEquals("[1.0, 1.5, 1.5, 2.0, 2.0, 2.5, 2.5, 3.0, 3.0, 2.5, 2.5, 2.0, 2.0, 1.5, 1.5, 1.0]", it.toString())
+        }
+    }
+
+    @Test
+    fun zoomWithParamV2() {
+        mutableListOf<Float>().apply {
+            ClusterUtils.loops(0f, 1f, .2f, callback = { f, s ->
+                this.add(f)
+                this.add(s)
+            })
+        }.let {
+            assertEquals("[0.0, 0.2, 0.2, 0.4, 0.4, 0.6, 0.6, 0.8, 0.8, 1.0, 1.0, 0.8, 0.8, 0.6, 0.6, 0.4, 0.4, 0.2, 0.2, 0.0]", it.toString())
+        }
+    }
+
+    @Test
+    fun zoomWithParamV21() {
+        mutableListOf<Float>().apply {
+            ClusterUtils.loops(0f, 1f, .3f, callback = { f, s ->
+                this.add(f)
+                this.add(s)
+            })
+        }.let {
+            assertEquals("[0.0, 0.3, 0.3, 0.6, 0.6, 0.9, 0.9, 0.6, 0.6, 0.3, 0.3, 0.0]", it.toString())
+        }
+    }
+
+    @Test
+    fun zoomWithParamV22() {
+        mutableListOf<Float>().apply {
+            ClusterUtils.loops(7f, 8f, 1f, callback = { f, s ->
+                this.add(f)
+                this.add(s)
+            })
+        }.let {
+            assertEquals("[7.0, 8.0, 8.0, 7.0]", it.toString())
+        }
+    }
+
+
+    @Test
+    fun zoomWithParamV3() {
+        assertThrows(java.lang.UnsupportedOperationException::class.java) {
+            ClusterUtils.loops(2f, 1f, .2f, callback = { f, s -> })
+        }
+    }
+
+    @Test
+    fun zoomWithParamV4() {
+        assertThrows(java.lang.IllegalArgumentException::class.java) {
+            ClusterUtils.loops(1f, 3f, 5f, callback = { f, s -> })
+        }
     }
 
 

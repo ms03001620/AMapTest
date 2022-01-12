@@ -3,6 +3,7 @@ package com.example.amaptest.marker
 import com.amap.api.maps.model.LatLng
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
 object ClusterUtils {
     fun process(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): List<NodeTrack> {
@@ -76,6 +77,15 @@ object ClusterUtils {
         parent?.contains(it) == true
     }
 
+
+    fun getMarkerListSize(list: MutableList<BaseMarkerData>): Int {
+        var total = 0
+        list.forEach {
+            total += it.getSize()
+        }
+        return total
+    }
+
     fun isClusterContainerItems(
         parent: MutableCollection<ClusterItem>?,
         child: MutableCollection<ClusterItem>?
@@ -104,7 +114,7 @@ object ClusterUtils {
         curr.removeAll(prevCopy)
     }
 
-    fun isSamePosition(a: LatLng?, b: LatLng?, error: Float = 0.000001f): Boolean {
+    fun isSamePosition(a: LatLng?, b: LatLng?, delta: Float = 0.000001f): Boolean {
         if (a == null) {
             return false
         }
@@ -114,8 +124,44 @@ object ClusterUtils {
 
         val v1 = abs(a.latitude - b.latitude)
         val v2 = abs(a.longitude - b.longitude)
-        return v1 < error && v2 < error
+        return v1 < delta && v2 < delta
     }
+
+    fun loops(start: Float, end: Float, step: Float, callback: (first: Float, second: Float) -> Unit) {
+        if (end <= start) {
+            throw UnsupportedOperationException("end <= start !!")
+        }
+        if (step > (end-start)) {
+            throw IllegalArgumentException("step to bigger !!")
+        }
+        var s = start
+        var e = start
+        var option = 0
+        while (true) {
+            if (option == 0) {
+                e += step
+            } else {
+                e -= step
+            }
+            if (e.compareTo(end) > 0) {
+                option = 1
+                e -= step
+                continue
+            }
+            if (e.compareTo(start) < 0) {
+                break
+            }
+            callback(s.round(1), e.round(1))
+            s = e
+        }
+    }
+
+    fun Float.round(decimals: Int): Float {
+        var multiplier = 1.0f
+        repeat(decimals) { multiplier *= 10 }
+        return ((this * multiplier).roundToInt() / multiplier)
+    }
+
 
     /**
      * node 节点
@@ -133,7 +179,7 @@ object ClusterUtils {
     }
 
     /**
-     * parentLatLng 子节点 所在簇坐标（如果之前是在别的簇中，取之前簇坐标，于其自身坐标不一样）
+     * parentLatLng 子节点 所在簇坐标（如果之前是在别的簇中，取之前簇坐标，与自身坐标不一样）
      * nodeType 节点性质， 除了混杂数据是当前簇数据的一部分，其余都是当前簇
      * subNode 节点数据
      */

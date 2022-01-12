@@ -22,6 +22,34 @@ class MarkerActionV2(val mapProxy: MapProxy) {
         mapProxy.removeMarkers(remove)
     }
 
+    fun makeAnim(list: List<ClusterUtils.NodeTrack>) {
+        val size = list.size
+        list.forEach {
+            processNode(it)
+        }
+    }
+
+    /**
+     * node 节点
+     * subNode 组成该节点的子节点
+     */
+    //data class NodeTrack(val node: BaseMarkerData, val subNodeList: MutableList<ClusterUtils.SubNode>)
+    fun processNode(nodeTrack: ClusterUtils.NodeTrack) {
+        val curr = nodeTrack.node
+        nodeTrack.subNodeList.forEach {
+            processSubNode(curr, it)
+        }
+
+    }
+
+    fun processSubNode(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
+        attemptTransfer(
+            baseMarkerData = subNode.subNode,
+            autoCreatePosition = subNode.parentLatLng,
+            moveTo = curr.getLatlng()!!
+        )
+    }
+
     fun attemptTransfer(
         baseMarkerData: BaseMarkerData,
         moveTo: LatLng,
@@ -39,7 +67,7 @@ class MarkerActionV2(val mapProxy: MapProxy) {
 
         assert(marker != null)
 
-        if (isSamePosition(moveTo, marker?.position)) {
+        if (ClusterUtils.isSamePosition(moveTo, marker?.position)) {
             // keep marker
             listener?.onAnimationStart()
             if (removeAtEnd) {
@@ -79,20 +107,6 @@ class MarkerActionV2(val mapProxy: MapProxy) {
         })
         marker?.setAnimation(set)
         marker?.startAnimation()
-    }
-
-
-    fun isSamePosition(a: LatLng?, b: LatLng?, error: Float = 0.000001f): Boolean {
-        if (a == null) {
-            return false
-        }
-        if (b == null) {
-            return false
-        }
-
-        val v1 = abs(a.latitude - b.latitude)
-        val v2 = abs(a.longitude - b.longitude)
-        return v1 < error && v2 < error
     }
 
     companion object {

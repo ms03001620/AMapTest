@@ -21,7 +21,7 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
             val subCurr = curr.toMutableList()
 
             ClusterUtils.delSame(subPrev, subCurr)
-            assert(getMarkerListSize(subPrev) == getMarkerListSize(subCurr))
+            assert(ClusterUtils.getMarkerListSize(subPrev) == ClusterUtils.getMarkerListSize(subCurr))
             installTask(subPrev, subCurr)
         }
         prev = curr
@@ -32,14 +32,6 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
         curr: MutableList<BaseMarkerData>
     ){
         action?.onAnimTask(createAnimTaskData(prev, curr))
-    }
-
-    fun getMarkerListSize(list: MutableList<BaseMarkerData>): Int {
-        var total = 0
-        list.forEach {
-            total += it.getSize()
-        }
-        return total
     }
 
     fun queue(set: MutableList<BaseMarkerData>) {
