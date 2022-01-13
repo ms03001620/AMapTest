@@ -36,13 +36,24 @@ class MainActivity : AppCompatActivity() {
         setupMap(savedInstanceState)
         initCamera()
 
-        val prev = JsonTestUtil.mock(stations.subList(0, 2))
+        val prev = JsonTestUtil.mock(stations.subList(0, 4))
 
         val curr = JsonTestUtil.mock(
             stations.subList(0, 1),
             stations.subList(1, 2),
-           /* stations.subList(2, 3)*/
+            stations.subList(2, 4)
         )
+
+/*        findViewById<View>(R.id.btn_add).setOnClickListener {
+            markerAction.setList(curr)
+        }
+
+        findViewById<View>(R.id.btn_move).setOnClickListener {
+            ClusterUtils.processAndDeSame(curr, prev).let {
+                markerAction.makeAnim(it)
+            }
+        }*/
+
 
 
         findViewById<View>(R.id.btn_add).setOnClickListener {

@@ -36,6 +36,7 @@ object ClusterUtils {
         val subNodeList = mutableListOf<SubNode>()
         prevList.forEach { prev ->
             val latLngPrev = prev.getLatlng()!!
+            val idPrev = prev.getId()
             // 新的是否包含了全部老的数据
             // ABCD AB true
             // A ABCD
@@ -44,14 +45,14 @@ object ClusterUtils {
                 if (prev.getSize() == 1) {
                     nodeType = NodeType.SINGLE
                 }
-                subNodeList.add(SubNode(latLngPrev, nodeType, prev))
+                subNodeList.add(SubNode(latLngPrev,idPrev, nodeType, prev))
 
             } else if (isClusterContainerItems(prev.getCluster().items, curr.getCluster().items)) {
                 var nodeType = NodeType.PARTY
                 if (curr.getSize() == 1) {
                     nodeType = NodeType.SINGLE
                 }
-                subNodeList.add(SubNode(latLngPrev, nodeType, curr))
+                subNodeList.add(SubNode(latLngPrev, idPrev,nodeType, curr))
             } else {
                 // 老的部分在新的中
                 val nodeType = NodeType.PIECE
@@ -60,6 +61,7 @@ object ClusterUtils {
                     subNodeList.add(
                         SubNode(
                             latLngPrev,
+                            idPrev,
                             nodeType,
                             MarkerDataFactory.create(items, latLngPrev)
                         )
@@ -185,6 +187,7 @@ object ClusterUtils {
      */
     data class SubNode(
         val parentLatLng: LatLng,
+        val parentId: String,
         val nodeType: NodeType,
         val subNode: BaseMarkerData
     )
