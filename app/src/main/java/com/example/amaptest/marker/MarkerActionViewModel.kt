@@ -1,10 +1,8 @@
 package com.example.amaptest.marker
 
 import android.content.Context
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.amap.api.maps.model.LatLng
 import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.SingleLiveEvent
 import com.polestar.charging.ui.cluster.base.DistanceInfo
@@ -15,17 +13,8 @@ import kotlinx.coroutines.launch
 
 class MarkerActionViewModel : ViewModel() {
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
-    val onAnimTaskLiveData = SingleLiveEvent<AnimTaskData>()
+    val onAnimTaskLiveData = SingleLiveEvent<List<ClusterUtils.NodeTrack>>()
 
-    private val adapter = ClusterAdapter(object : ClusterAdapter.OnClusterAction {
-        override fun noChange(data: MutableList<BaseMarkerData>) {
-            noChangeLiveData.postValue(data)
-        }
-
-        override fun onAnimTask(animTaskData: AnimTaskData) {
-            onAnimTaskLiveData.postValue(animTaskData)
-        }
-    })
 
     private val clusterAlgorithm by lazy {
         //AlgorithmWallpaper(DistanceAlgorithm())
@@ -51,8 +40,24 @@ class MarkerActionViewModel : ViewModel() {
     fun calcClusters(distanceInfo: DistanceInfo) {
         viewModelScope.launch(Dispatchers.IO) {
             clusterAlgorithm.calc(distanceInfo) {
-                adapter.queue(MarkerDataFactory.create(it)/*, distanceInfo.cameraPosition?.zoom ?: 0f*/)
+                ssss(MarkerDataFactory.create(it))
             }
         }
+    }
+
+    var prev :MutableList<BaseMarkerData>?=null
+
+    fun ssss(curr: MutableList<BaseMarkerData>) {
+        if (prev == null) {
+            noChangeLiveData.postValue(curr)
+        } else {
+            val p = ClusterUtils.processAndDeSame(prev!!, curr)
+            if(p.isNotEmpty()){
+                onAnimTaskLiveData.postValue(p)
+            }
+        }
+        val mutableList = mutableListOf<BaseMarkerData>()
+        mutableList.addAll(curr)
+        prev = mutableList
     }
 }

@@ -34,7 +34,7 @@ class MarkerActionActivity : AppCompatActivity() {
 
     lateinit var mMapView: MapView
     lateinit var mMapProxy: MapProxy
-    lateinit var markerAction: MarkerAction
+    lateinit var markerAction: MarkerActionV2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,7 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         viewModel.onAnimTaskLiveData.observe(this) {
-            markerAction.onAnimTaskLiveData(it)
+            markerAction.processNodeList(it)
         }
     }
 
@@ -60,7 +60,7 @@ class MarkerActionActivity : AppCompatActivity() {
         mMapView = findViewById(R.id.map)
         mMapView.onCreate(savedInstanceState)
         mMapProxy = MapProxy(mMapView.map, applicationContext)
-        markerAction = MarkerAction(mMapProxy)
+        markerAction = MarkerActionV2(mMapProxy)
         mMapView.map.setCustomMapStyle(
             CustomMapStyleOptions()
                 .setEnable(true)
@@ -143,7 +143,7 @@ class MarkerActionActivity : AppCompatActivity() {
         const val DEFAULT_LNG = 121.497798
         const val DEFAULT_LAT = 31.249051
 
-        const val ZOOM = 15f
+        const val ZOOM = 12f
 
 /*        const val FILE = "json_stations570.json"
         const val SUBLIST_START = -1 //-1 disable

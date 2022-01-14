@@ -116,9 +116,6 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return set.getOrDefault(baseMarkerData.getId(), null)
     }
 
-    fun getMarker(id: String): Marker? {
-        return set.getOrDefault(id, null)
-    }
 
     fun clear() {
         set.clear()

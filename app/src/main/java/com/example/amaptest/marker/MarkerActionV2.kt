@@ -52,7 +52,7 @@ class MarkerActionV2(val mapProxy: MapProxy) {
         if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.parentLatLng)) {
             // 子点和目标点一致。讲
             // update
-            val m = mapProxy.getMarker(subNode.parentId)
+            val m = mapProxy.getMarker(subNode.parentLatLng)
             assert(m != null)
             mapProxy.updateMarker(marker = m!!, curr)
         } else {
