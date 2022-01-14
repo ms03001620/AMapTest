@@ -25,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     lateinit var mMapView: MapView
-    lateinit var stations : List<StationDetail>
+    lateinit var stationsList : List<StationDetail>
     lateinit var mMapProxy: MapProxy
     lateinit var markerAction: MarkerActionV2
 
@@ -36,12 +36,25 @@ class MainActivity : AppCompatActivity() {
         setupMap(savedInstanceState)
         initCamera()
 
-        val prev = JsonTestUtil.mock(stations.subList(0, 4))
+ /*       val prev = JsonTestUtil.mock(stationsList.subList(0, 4))
 
         val curr = JsonTestUtil.mock(
-            stations.subList(0, 1),
-            stations.subList(1, 2),
-            stations.subList(2, 4)
+            stationsList.subList(0, 1),
+            stationsList.subList(1, 2),
+            stationsList.subList(2, 4)
+
+        )*/
+
+        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+        val curr = JsonTestUtil.mock(
+            listOf(
+                stationsList.subList(0, 1).first(),
+                stationsList.subList(2, 3).first()
+            ),
+            listOf(
+                stationsList.subList(1, 2).first(),
+                stationsList.subList(3, 4).first()
+            ),
         )
 
 /*        findViewById<View>(R.id.btn_add).setOnClickListener {
@@ -79,14 +92,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    val default = lazy {JsonTestUtil.mock(stations.subList(0, 1)).first()}
-    val defaultCluster = lazy {JsonTestUtil.mock(stations.subList(5, 7)).first()}
+    val default = lazy {JsonTestUtil.mock(stationsList.subList(0, 1)).first()}
+    val defaultCluster = lazy {JsonTestUtil.mock(stationsList.subList(5, 7)).first()}
 
     fun initData(){
         AssetsReadUtils.mockStation(this, "json_stations.json")?.let {
-            stations = it
+            stationsList = it
         }
-        Log.d("MainActivity", "stations:$stations")
+        Log.d("MainActivity", "stations:$stationsList")
     }
 
     fun setupMap(savedInstanceState: Bundle?){
@@ -120,7 +133,7 @@ class MainActivity : AppCompatActivity() {
 
     fun initCamera() {
         val boundsBuilder = LatLngBounds.builder()
-        for (station in stations) {
+        for (station in stationsList) {
             boundsBuilder.include(station.toLatLng())
         }
         mMapView.map.animateCamera(
@@ -150,4 +163,5 @@ class MainActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         mMapView.onSaveInstanceState(outState)
     }
+
 }
