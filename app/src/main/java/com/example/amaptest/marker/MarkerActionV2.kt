@@ -5,6 +5,7 @@ import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
+import com.polestar.base.utils.logd
 import java.lang.UnsupportedOperationException
 
 class MarkerActionV2(val mapProxy: MapProxy) {
@@ -18,13 +19,16 @@ class MarkerActionV2(val mapProxy: MapProxy) {
         mapProxy.createMarkers(baseMarkerDataList)
     }
 
-    fun remove(remove: MutableList<BaseMarkerData>) {
-        mapProxy.removeMarkers(remove)
-    }
+    fun processNodeList(list: List<ClusterUtils.NodeTrack>) {
+        list.map {
+            it.node.getLatlng()!!
+        }.let {
+            mapProxy.removeAllMarker(it)
+        }
 
-    fun makeAnim(list: List<ClusterUtils.NodeTrack>) {
-        val size = list.size
-        list.forEach {
+        list
+         /*   .subList(0, 1)*/
+            .forEach {
             processNode(it)
         }
     }
@@ -69,15 +73,27 @@ class MarkerActionV2(val mapProxy: MapProxy) {
 
             override fun onAnimationEnd() {
                 // 找到子点中与合并后点相同的点，在其他动画播放后 讲改点修改为合并后的点
-                nodeTrack.subNodeList.firstOrNull { subNode ->
-                    ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())
-                }?.let {
-                    val marker = mapProxy.getMarker(it.subNode)
-                    mapProxy.updateMarker(marker = marker!!, curr)
-                } ?: run {
-                    // 合并任务的子点 竟然没有一个点与合并后的点相同
-                    throw UnsupportedOperationException("合并任务的子点 竟然没有一个点与合并后的点相同")
+                val sameNode = nodeTrack.subNodeList.firstOrNull { subNode ->
+                    ClusterUtils.isSamePosition(
+                        curr.getLatlng(),
+                        subNode.subNode.getLatlng()
+                    )
                 }
+
+                // 移动后更新相同点为curr
+                if (sameNode != null) {
+                    val marker = mapProxy.getMarker(sameNode.subNode.getLatlng()!!)
+                    if (marker != null) {
+                        mapProxy.updateMarker(marker = marker, curr)
+                    } else {
+                        // 未找到的原因是这个点的id 无法获取
+                        logd("未找到的原因是这个点的id 无法获取", "MarkerActionV2")
+                    }
+                } else {
+                    //移动后创建curr
+                    mapProxy.createMarker(nodeTrack.node)
+                }
+
             }
         }
 

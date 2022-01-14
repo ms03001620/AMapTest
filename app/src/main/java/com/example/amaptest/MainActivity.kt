@@ -36,37 +36,13 @@ class MainActivity : AppCompatActivity() {
         setupMap(savedInstanceState)
         initCamera()
 
- /*       val prev = JsonTestUtil.mock(stationsList.subList(0, 4))
+        val prev = JsonTestUtil.mock(stationsList.subList(0, 4))
 
         val curr = JsonTestUtil.mock(
             stationsList.subList(0, 1),
             stationsList.subList(1, 2),
             stationsList.subList(2, 4)
-
-        )*/
-
-        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
-        val curr = JsonTestUtil.mock(
-            listOf(
-                stationsList.subList(0, 1).first(),
-                stationsList.subList(2, 3).first()
-            ),
-            listOf(
-                stationsList.subList(1, 2).first(),
-                stationsList.subList(3, 4).first()
-            ),
         )
-
-/*        findViewById<View>(R.id.btn_add).setOnClickListener {
-            markerAction.setList(curr)
-        }
-
-        findViewById<View>(R.id.btn_move).setOnClickListener {
-            ClusterUtils.processAndDeSame(curr, prev).let {
-                markerAction.makeAnim(it)
-            }
-        }*/
-
 
 
         findViewById<View>(R.id.btn_add).setOnClickListener {
@@ -75,9 +51,33 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_move).setOnClickListener {
             ClusterUtils.processAndDeSame(prev, curr).let {
-                markerAction.makeAnim(it)
+                markerAction.processNodeList(it)
             }
         }
+
+
+        /*      val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+       val curr = JsonTestUtil.mock(
+           listOf(
+               stationsList.subList(0, 1).first(),
+               stationsList.subList(2, 3).first()
+           ),
+           listOf(
+               stationsList.subList(1, 2).first(),
+               stationsList.subList(3, 4).first()
+           ),
+       )*/
+
+
+/*        findViewById<View>(R.id.btn_add).setOnClickListener {
+            markerAction.setList(curr)
+        }
+
+        findViewById<View>(R.id.btn_move).setOnClickListener {
+            ClusterUtils.processAndDeSame(curr, prev).let {
+                markerAction.processNodeList(it)
+            }
+        }*/
 
         findViewById<View>(R.id.btn_del).setOnClickListener {
 

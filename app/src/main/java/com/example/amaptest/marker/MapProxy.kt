@@ -103,6 +103,15 @@ class MapProxy(private val map: AMap, private val context: Context) {
             .icon(getCollapsedBitmapDescriptor(station.showMarker()))
             .infoWindowEnable(true)
 
+    fun getMarker(latLng: LatLng): Marker? {
+        for ((key, value) in set) {
+            if (ClusterUtils.isSamePosition(value.position, latLng)) {
+                return value
+            }
+        }
+        return null
+    }
+
     fun getMarker(baseMarkerData: BaseMarkerData): Marker? {
         return set.getOrDefault(baseMarkerData.getId(), null)
     }
@@ -114,5 +123,13 @@ class MapProxy(private val map: AMap, private val context: Context) {
     fun clear() {
         set.clear()
         map.clear(true)
+    }
+
+    fun removeAllMarker(keepList: List<LatLng>) {
+        set.filter { map ->
+            keepList.firstOrNull { ClusterUtils.isSamePosition(it, map.value.position) } == null
+        }.forEach {
+            set.remove(it.key)?.remove()
+        }
     }
 }
