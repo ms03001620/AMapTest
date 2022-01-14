@@ -20,11 +20,11 @@ class MarkerActionV2(val mapProxy: MapProxy) {
     }
 
     fun processNodeList(list: List<ClusterUtils.NodeTrack>) {
-        list.map {
+/*        list.map {
             it.node.getLatlng()!!
         }.let {
             mapProxy.removeAllMarker(it)
-        }
+        }*/
 
         list
          /*   .subList(0, 1)*/
@@ -55,6 +55,12 @@ class MarkerActionV2(val mapProxy: MapProxy) {
             val m = mapProxy.getMarker(subNode.parentLatLng)
             assert(m != null)
             mapProxy.updateMarker(marker = m!!, curr)
+/*            if (m == null) {
+                mapProxy.createMarker(curr)
+            } else {
+                mapProxy.updateMarker(marker = m, curr)
+            }*/
+
         } else {
             attemptTransfer(
                 baseMarkerData = subNode.subNode,
