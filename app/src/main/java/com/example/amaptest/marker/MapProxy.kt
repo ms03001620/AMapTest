@@ -122,9 +122,10 @@ class MapProxy(private val map: AMap, private val context: Context) {
         map.clear(true)
     }
 
-    fun removeAllMarker(keepList: List<LatLng>) {
+
+    fun removeAllMarker(removeList: List<LatLng>) {
         set.filter { map ->
-            keepList.firstOrNull { ClusterUtils.isSamePosition(it, map.value.position) } == null
+            removeList.firstOrNull{ClusterUtils.isSamePosition(it, map.value.position)} !=null
         }.forEach {
             set.remove(it.key)?.remove()
         }

@@ -27,6 +27,23 @@ object ClusterUtils {
         return result
     }
 
+    fun processCreateDel(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): Pair<List<NodeTrack>, List<BaseMarkerData>> {
+        return Pair(processAndDeSame(prev, curr), processDel(prev, curr))
+    }
+
+    fun processDel(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): List<BaseMarkerData> {
+        val subPrev = prev.toMutableList()
+        val subCurr = curr.toMutableList()
+
+        delSame(subPrev, subCurr)
+
+        val del = subPrev.filter { p ->
+            curr.firstOrNull { isSamePosition(it.getLatlng(), p.getLatlng()) } == null
+        }
+
+        return del
+    }
+
     /**
      * 生成当前数据的组成结构NodeTrack。 依据prevList历史数据生成
      * curr 当前数据

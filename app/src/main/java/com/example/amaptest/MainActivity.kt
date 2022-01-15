@@ -37,7 +37,8 @@ class MainActivity : AppCompatActivity() {
         initCamera()
 
 
-/*        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+/*
+        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
         val curr = JsonTestUtil.mock(
             listOf(
                 stationsList.subList(0, 1).first(),
@@ -47,15 +48,18 @@ class MainActivity : AppCompatActivity() {
                 stationsList.subList(1, 2).first(),
                 stationsList.subList(3, 4).first()
             ),
-        )*/
+        )
+*/
 
 
-        val prev = JsonTestUtil.mock(stationsList.subList(0, 4))
+        val prev = JsonTestUtil.mock(stationsList.subList(0, 4), stationsList.subList(6, 8))
 
         val curr = JsonTestUtil.mock(
             stationsList.subList(0, 1),
             stationsList.subList(1, 2),
-            stationsList.subList(2, 4)
+            stationsList.subList(2, 4),
+
+            stationsList.subList(6, 8)
         )
 
 
@@ -65,14 +69,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_move).setOnClickListener {
-            ClusterUtils.processAndDeSame(prev, curr).let {
+            ClusterUtils.processCreateDel(prev, curr).let {
                 markerAction.processNodeList(it)
             }
         }
 
 
         findViewById<View>(R.id.btn_del).setOnClickListener {
-            ClusterUtils.processAndDeSame(curr, prev).let {
+            ClusterUtils.processCreateDel(curr, prev).let {
                 markerAction.processNodeList(it)
             }
         }

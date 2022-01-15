@@ -13,7 +13,8 @@ import kotlinx.coroutines.launch
 
 class MarkerActionViewModel : ViewModel() {
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
-    val onAnimTaskLiveData = SingleLiveEvent<List<ClusterUtils.NodeTrack>>()
+    val onAnimTaskLiveData = SingleLiveEvent<Pair<List<ClusterUtils.NodeTrack>, List<BaseMarkerData>>>()
+
 
 
     private val clusterAlgorithm by lazy {
@@ -51,10 +52,9 @@ class MarkerActionViewModel : ViewModel() {
         if (prev == null) {
             noChangeLiveData.postValue(curr)
         } else {
-            val p = ClusterUtils.processAndDeSame(prev!!, curr)
-            if(p.isNotEmpty()){
-                onAnimTaskLiveData.postValue(p)
-            }
+            val p = ClusterUtils.processCreateDel(prev!!, curr)
+
+            onAnimTaskLiveData.postValue(p)
         }
         val mutableList = mutableListOf<BaseMarkerData>()
         mutableList.addAll(curr)

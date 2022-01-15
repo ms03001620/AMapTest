@@ -22,15 +22,15 @@ class MarkerActionV2(val mapProxy: MapProxy) {
         mapProxy.createMarkers(baseMarkerDataList)
     }
 
-    fun processNodeList(list: List<ClusterUtils.NodeTrack>) {
-/*        list.map {
-            it.node.getLatlng()!!
+    fun processNodeList(pair: Pair<List<ClusterUtils.NodeTrack>, List<BaseMarkerData>>) {
+        pair.second.map {
+           it.getLatlng()!!
         }.let {
             mapProxy.removeAllMarker(it)
-        }*/
+        }
 
-        list
-         /*   .subList(0, 1)*/
+        pair.first
+            //.subList(0, 1)
             .forEach {
             processNode(it)
         }
@@ -53,15 +53,14 @@ class MarkerActionV2(val mapProxy: MapProxy) {
     fun processNodeToSub(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
         if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.parentLatLng)) {
             // 子点和目标点一致。讲
-            // update
             val m = mapProxy.getMarker(subNode.parentLatLng)
-            assert(m != null)
-            mapProxy.updateMarker(marker = m!!, curr)
-/*            if (m == null) {
+            //assert(m != null)
+            //mapProxy.updateMarker(marker = m!!, curr)
+            if (m == null) {
                 mapProxy.createMarker(curr)
             } else {
                 mapProxy.updateMarker(marker = m, curr)
-            }*/
+            }
 
         } else {
             attemptTransfer(
