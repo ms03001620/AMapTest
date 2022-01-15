@@ -36,6 +36,20 @@ class MainActivity : AppCompatActivity() {
         setupMap(savedInstanceState)
         initCamera()
 
+
+/*        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+        val curr = JsonTestUtil.mock(
+            listOf(
+                stationsList.subList(0, 1).first(),
+                stationsList.subList(2, 3).first()
+            ),
+            listOf(
+                stationsList.subList(1, 2).first(),
+                stationsList.subList(3, 4).first()
+            ),
+        )*/
+
+
         val prev = JsonTestUtil.mock(stationsList.subList(0, 4))
 
         val curr = JsonTestUtil.mock(
@@ -43,6 +57,7 @@ class MainActivity : AppCompatActivity() {
             stationsList.subList(1, 2),
             stationsList.subList(2, 4)
         )
+
 
 
         findViewById<View>(R.id.btn_add).setOnClickListener {
@@ -56,35 +71,14 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        /*      val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
-       val curr = JsonTestUtil.mock(
-           listOf(
-               stationsList.subList(0, 1).first(),
-               stationsList.subList(2, 3).first()
-           ),
-           listOf(
-               stationsList.subList(1, 2).first(),
-               stationsList.subList(3, 4).first()
-           ),
-       )*/
-
-
-/*        findViewById<View>(R.id.btn_add).setOnClickListener {
-            markerAction.setList(curr)
-        }
-
-        findViewById<View>(R.id.btn_move).setOnClickListener {
+        findViewById<View>(R.id.btn_del).setOnClickListener {
             ClusterUtils.processAndDeSame(curr, prev).let {
                 markerAction.processNodeList(it)
             }
-        }*/
-
-        findViewById<View>(R.id.btn_del).setOnClickListener {
-
         }
 
         findViewById<View>(R.id.btn_center).setOnClickListener {
-
+            markerAction.clear()
         }
 
         findViewById<View>(R.id.btn_offset).setOnClickListener {

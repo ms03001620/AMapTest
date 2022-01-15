@@ -6,9 +6,12 @@ import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
 import com.polestar.base.utils.logd
-import java.lang.UnsupportedOperationException
 
 class MarkerActionV2(val mapProxy: MapProxy) {
+
+    fun clear(){
+        mapProxy.clear()
+    }
 
     fun setList(data: MutableList<BaseMarkerData>) {
         mapProxy.clear()
@@ -41,14 +44,13 @@ class MarkerActionV2(val mapProxy: MapProxy) {
     fun processNode(nodeTrack: ClusterUtils.NodeTrack) {
         val curr = nodeTrack.node
         if (nodeTrack.subNodeList.size == 1) {
-            // 自有一个任务的track 默认为展开任务
-            processSubNode(curr, nodeTrack.subNodeList.first())
+            processNodeToSub(curr, nodeTrack.subNodeList.first())
         } else {
-            processMultiNode(nodeTrack)
+            processSubToNode(nodeTrack)
         }
     }
 
-    fun processSubNode(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
+    fun processNodeToSub(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
         if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.parentLatLng)) {
             // 子点和目标点一致。讲
             // update
@@ -70,8 +72,7 @@ class MarkerActionV2(val mapProxy: MapProxy) {
         }
     }
 
-    fun processMultiNode(nodeTrack: ClusterUtils.NodeTrack) {
-        // nodeTrack 为多子任务， 子任务合并成该点
+    fun processSubToNode(nodeTrack: ClusterUtils.NodeTrack) {
         val curr = nodeTrack.node
         val listener = object : Animation.AnimationListener {
             override fun onAnimationStart() {

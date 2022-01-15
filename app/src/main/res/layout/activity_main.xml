@@ -28,25 +28,25 @@
             android:id="@+id/btn_move"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="move" />
+            android:text="+" />
 
         <Button
             android:id="@+id/btn_del"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="delete" />
+            android:text="-" />
 
         <Button
             android:id="@+id/btn_center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="center" />
+            android:text="clear" />
 
         <Button
             android:id="@+id/btn_offset"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="offset" />
+            android:text="-" />
 
     </LinearLayout>
 
