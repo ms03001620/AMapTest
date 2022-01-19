@@ -42,7 +42,8 @@ class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
         return list.position
     }
 
-    override fun getId() = list.position.hashCode().toString()
+    // id 不能以latlng作为算法 piece 临时对象具有相同坐标 但是是需要区分的
+    override fun getId() = hashCode().toString()
 
     override fun hashCode(): Int {
         return list.items.hashCode()

@@ -65,7 +65,7 @@ object ClusterUtils {
                 subNodeList.add(SubNode(latLngPrev,idPrev, nodeType, prev))
 
             } else if (isClusterContainerItems(prev.getCluster().items, curr.getCluster().items)) {
-                var nodeType = NodeType.PARTY
+                var nodeType = NodeType.PARTY_A
                 if (curr.getSize() == 1) {
                     nodeType = NodeType.SINGLE
                 }
@@ -194,7 +194,7 @@ object ClusterUtils {
      * PIECE, 混杂
      */
     enum class NodeType {
-        SINGLE, PARTY, PIECE
+        SINGLE, PARTY, PARTY_A, PIECE
     }
 
     /**

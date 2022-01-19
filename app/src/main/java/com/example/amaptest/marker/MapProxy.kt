@@ -1,17 +1,18 @@
 package com.example.amaptest.marker
 
 import android.content.Context
-import android.view.LayoutInflater
-import android.widget.TextView
+import android.graphics.Bitmap
 import com.amap.api.maps.AMap
 import com.amap.api.maps.model.*
-import com.example.amaptest.R
+import com.polestar.base.utils.logd
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.showMarker
 import java.lang.IllegalStateException
+import java.util.concurrent.ConcurrentHashMap
 
 class MapProxy(private val map: AMap, private val context: Context) {
-    private val set = HashMap<String, Marker>()
+    private val iconGenerator = IconGenerator(context)
+    private val set = ConcurrentHashMap<String, Marker>()
 
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
         baseMarkerDataList.forEach {
@@ -27,6 +28,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
         baseMarkerData.getId().let { id ->
             val oldMarker = set[id]
             if (oldMarker == null) {
+                //logd("222222: create 1", "______")
                 val option = createOptionsToPosition(baseMarkerData, latLng)
                 val marker = createMarker(option)
                 if (marker != null) {
@@ -36,6 +38,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
                 }
                 return marker
             } else {
+                //logd("222222: create 2", "______")
                 // throw IllegalStateException("set.containsKey(${id})")
                 // logd("updateMarker $id")
                 updateMarker(oldMarker, baseMarkerData, latLng)
@@ -57,10 +60,20 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return options
     }
 
+    fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData) {
+        val start = System.currentTimeMillis()
+        val t = createBitmapDescriptor(baseMarkerData)
+        logd("ssss ${System.currentTimeMillis()-start}", "_____")
+        assert(t != null)
+        marker.setIcon(t)
+    }
+
     fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData, forceLatLng: LatLng? = null) {
         //TODO 相同点相同数据的优化问题
         val finalLatLng = forceLatLng ?: marker.position
+        //logd("11111111c"+baseMarkerData+", class:${baseMarkerData.javaClass.simpleName}, lng:$finalLatLng", "______")
         marker.setMarkerOptions(createOptionsToPosition(baseMarkerData, finalLatLng))
+        //logd("c", "_____")
     }
 
     fun removeMarkers(remove: MutableList<BaseMarkerData>) {
@@ -74,34 +87,42 @@ class MapProxy(private val map: AMap, private val context: Context) {
     }
 
     private fun createMarker(markerOptions: MarkerOptions): Marker? {
+        markerOptions.isFlat = true
         return map.addMarker(markerOptions)
     }
 
+    fun getCollapsedBitmapDescriptor2(total: String): Bitmap {
+        val p = iconGenerator.makeIconCluster(total)
+        return p
+    }
+
     private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
-        val view = LayoutInflater.from(context)
-            .inflate(R.layout.charging_layout_marker_collapsed, null, false)
-        view.findViewById<TextView>(R.id.tv).text = total
-        return BitmapDescriptorFactory.fromView(view)
+        return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon(total))
     }
 
     private fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
-        val view = LayoutInflater.from(context)
-            .inflate(R.layout.charging_layout_marker_cluster, null, false)
-        view.findViewById<TextView>(R.id.text_cluster).text = clusterSize.toString()
-        return BitmapDescriptorFactory.fromView(view)
+        return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIconCluster(clusterSize.toString()))
+    }
+
+    private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData): BitmapDescriptor? {
+        return when (baseMarkerData) {
+            is MarkerCluster -> getClusterBitmapDescriptor(baseMarkerData.getSize())
+            is MarkerSingle -> getCollapsedBitmapDescriptor(baseMarkerData.stationDetail.showMarker())
+            else -> throw UnsupportedOperationException("type:$baseMarkerData")
+        }
     }
 
     private fun stationToClusterOptions(size: Int, latLng: LatLng?) =
         MarkerOptions()
             .position(latLng)
             .icon(getClusterBitmapDescriptor(size))
-            .infoWindowEnable(true)
+            .infoWindowEnable(false)
 
     private fun stationToMarkerOptions(station: StationDetail, latLng: LatLng? = null) =
         MarkerOptions()
             .position(latLng ?: LatLng(station.lat ?: Double.NaN, station.lng ?: Double.NaN))
             .icon(getCollapsedBitmapDescriptor(station.showMarker()))
-            .infoWindowEnable(true)
+            .infoWindowEnable(false)
 
     fun getMarker(latLng: LatLng): Marker? {
         for ((key, value) in set) {
@@ -116,12 +137,10 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return set.getOrDefault(baseMarkerData.getId(), null)
     }
 
-
     fun clear() {
         set.clear()
         map.clear(true)
     }
-
 
     fun removeAllMarker(removeList: List<LatLng>) {
         set.filter { map ->

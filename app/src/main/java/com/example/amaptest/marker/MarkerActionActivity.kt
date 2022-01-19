@@ -2,9 +2,7 @@ package com.example.amaptest.marker
 
 import android.graphics.Color
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.amap.api.maps.AMap
@@ -14,9 +12,9 @@ import com.amap.api.maps.model.*
 import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
-import com.polestar.charging.ui.cluster.base.*
-import com.polestar.repository.data.charging.StationDetail
-import com.polestar.repository.data.charging.freeAcDcAll
+import com.polestar.base.utils.logd
+import com.polestar.charging.ui.cluster.base.DistanceInfo
+import kotlin.random.Random
 
 class MarkerActionActivity : AppCompatActivity() {
     private val viewModel by lazy {
@@ -108,6 +106,24 @@ class MarkerActionActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_zoom_out)?.setOnClickListener {
             mMapView.map.animateCamera(CameraUpdateFactory.zoomOut())
         }
+
+        findViewById<View>(R.id.btn_zoom_fn)?.setOnClickListener {
+            //markerAction.aaa()
+            val start = System.currentTimeMillis()
+            val v = Random.nextInt(0, 12)
+            val p = mMapProxy.getCollapsedBitmapDescriptor2(v.toString())
+
+            logd("getCollapsedBitmapDescriptor a pass:${System.currentTimeMillis()-start}", "_____")
+
+            val op = MarkerOptions()
+                .position(LatLng(31.218953,121.476741))
+                .icon(BitmapDescriptorFactory.fromBitmap(p))
+                .infoWindowEnable(false)
+
+            logd("getCollapsedBitmapDescriptor b pass:${System.currentTimeMillis()-start}", "_____")
+
+            mMapView.map.addMarker(op)
+        }
     }
 
     fun getClusterMergeDistance() =
@@ -143,14 +159,14 @@ class MarkerActionActivity : AppCompatActivity() {
         const val DEFAULT_LNG = 121.497798
         const val DEFAULT_LAT = 31.249051
 
-        const val ZOOM = 12f
+        const val ZOOM = 15f
 
 /*        const val FILE = "json_stations570.json"
         const val SUBLIST_START = -1 //-1 disable
         const val SUBLIST_END = -1 //-1 disable*/
 
 
-        const val FILE = "json_stations.json"
+        const val FILE = "json_stations8.json"
         const val SUBLIST_START = -1 //-1 disable
         const val SUBLIST_END = -1 //-1 disable
     }

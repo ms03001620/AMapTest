@@ -1,15 +1,22 @@
 package com.example.amaptest.marker
 
+import android.os.Handler
+import android.os.Looper
 import android.view.animation.AccelerateInterpolator
 import com.amap.api.maps.model.LatLng
+import com.amap.api.maps.model.Marker
 import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
 import com.polestar.base.utils.logd
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MarkerActionV2(val mapProxy: MapProxy) {
 
-    fun clear(){
+    fun clear() {
         mapProxy.clear()
     }
 
@@ -24,7 +31,7 @@ class MarkerActionV2(val mapProxy: MapProxy) {
 
     fun processNodeList(pair: Pair<List<ClusterUtils.NodeTrack>, List<BaseMarkerData>>) {
         pair.second.map {
-           it.getLatlng()!!
+            it.getLatlng()!!
         }.let {
             mapProxy.removeAllMarker(it)
         }
@@ -32,8 +39,8 @@ class MarkerActionV2(val mapProxy: MapProxy) {
         pair.first
             //.subList(0, 1)
             .forEach {
-            processNode(it)
-        }
+                processNode(it)
+            }
     }
 
     /**
@@ -54,20 +61,26 @@ class MarkerActionV2(val mapProxy: MapProxy) {
         if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.parentLatLng)) {
             // 子点和目标点一致。讲
             val m = mapProxy.getMarker(subNode.parentLatLng)
-            //assert(m != null)
-            //mapProxy.updateMarker(marker = m!!, curr)
             if (m == null) {
+                //logd("11111111a", "______")
                 mapProxy.createMarker(curr)
             } else {
-                mapProxy.updateMarker(marker = m, curr)
+                //logd("11111111b", "______")
+                mapProxy.updateMarker(m, curr)
             }
-
         } else {
             attemptTransfer(
                 baseMarkerData = subNode.subNode,
                 autoCreatePosition = subNode.parentLatLng,
                 moveTo = curr.getLatlng()!!
             )
+/*            Handler(Looper.getMainLooper()).postDelayed( {
+                attemptTransfer(
+                    baseMarkerData = subNode.subNode,
+                    autoCreatePosition = subNode.parentLatLng,
+                    moveTo = curr.getLatlng()!!
+                )
+            }, 50)*/
         }
     }
 
@@ -92,6 +105,7 @@ class MarkerActionV2(val mapProxy: MapProxy) {
                     if (marker != null) {
                         mapProxy.updateMarker(marker = marker, curr)
                     } else {
+                        mapProxy.createMarker(curr)
                         // 未找到的原因是这个点的id 无法获取
                         logd("未找到的原因是这个点的id 无法获取", "MarkerActionV2")
                     }
@@ -107,8 +121,7 @@ class MarkerActionV2(val mapProxy: MapProxy) {
             ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())
         }.forEachIndexed { index, subNode ->
             cospTransfer(
-                baseMarkerData = subNode.subNode,
-                autoCreatePosition = subNode.parentLatLng,
+                subNode,
                 moveTo = curr.getLatlng()!!,
                 listener = if (index == 0) listener else null
             )
@@ -116,17 +129,21 @@ class MarkerActionV2(val mapProxy: MapProxy) {
     }
 
     fun cospTransfer(
-        baseMarkerData: BaseMarkerData,
+        subNode: ClusterUtils.SubNode,
         moveTo: LatLng,
-        autoCreate: Boolean = true,
-        autoCreatePosition: LatLng? = null,
         listener: Animation.AnimationListener? = null
     ) {
-        var marker = mapProxy.getMarker(baseMarkerData)
+        val baseMarkerData = subNode.subNode
 
-        if (autoCreate && marker == null) {
-            val createPosition = autoCreatePosition ?: baseMarkerData.getLatlng()
-            marker = mapProxy.createMarker(baseMarkerData, createPosition)
+        var marker: Marker? = null
+        if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
+            marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
+        } else {
+            marker = mapProxy.getMarker(baseMarkerData)
+        }
+
+        if (marker == null) {
+            marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
         }
 
         assert(marker != null)
@@ -145,6 +162,7 @@ class MarkerActionV2(val mapProxy: MapProxy) {
     ) {
         var marker = mapProxy.getMarker(baseMarkerData)
 
+        logd("attemptTransfer:$marker", "______")
         if (autoCreate && marker == null) {
             val createPosition = autoCreatePosition ?: baseMarkerData.getLatlng()
             marker = mapProxy.createMarker(baseMarkerData, createPosition)
