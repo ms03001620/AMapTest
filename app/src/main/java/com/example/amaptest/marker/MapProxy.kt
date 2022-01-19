@@ -14,9 +14,10 @@ class MapProxy(private val map: AMap, private val context: Context) {
     private val iconGenerator = IconGenerator(context)
     private val set = ConcurrentHashMap<String, Marker>()
 
+
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
         baseMarkerDataList.forEach {
-            createMarker(it, it.getLatlng())
+            createMarker(it)
         }
     }
 
@@ -61,25 +62,12 @@ class MapProxy(private val map: AMap, private val context: Context) {
     }
 
     fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData) {
-        val start = System.currentTimeMillis()
-        val t = createBitmapDescriptor(baseMarkerData)
-        logd("ssss ${System.currentTimeMillis()-start}", "_____")
-        assert(t != null)
-        marker.setIcon(t)
+        marker.setIcon(createBitmapDescriptor(baseMarkerData))
     }
 
     fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData, forceLatLng: LatLng? = null) {
-        //TODO 相同点相同数据的优化问题
         val finalLatLng = forceLatLng ?: marker.position
-        //logd("11111111c"+baseMarkerData+", class:${baseMarkerData.javaClass.simpleName}, lng:$finalLatLng", "______")
         marker.setMarkerOptions(createOptionsToPosition(baseMarkerData, finalLatLng))
-        //logd("c", "_____")
-    }
-
-    fun removeMarkers(remove: MutableList<BaseMarkerData>) {
-        remove.forEach {
-            set.remove(it.getId())?.remove()
-        }
     }
 
     fun removeMarker(id: String?) {
@@ -124,6 +112,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
             .icon(getCollapsedBitmapDescriptor(station.showMarker()))
             .infoWindowEnable(false)
 
+
     fun getMarker(latLng: LatLng): Marker? {
         for ((key, value) in set) {
             if (ClusterUtils.isSamePosition(value.position, latLng)) {
@@ -142,7 +131,7 @@ class MapProxy(private val map: AMap, private val context: Context) {
         map.clear(true)
     }
 
-    fun removeAllMarker(removeList: List<LatLng>) {
+    fun removeMarkers(removeList: List<LatLng>) {
         set.filter { map ->
             removeList.firstOrNull{ClusterUtils.isSamePosition(it, map.value.position)} !=null
         }.forEach {

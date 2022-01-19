@@ -153,5 +153,5 @@ class ClusterAdapter(val action: OnClusterAction? = null) {
     fun isClusterContainerItems(
         parent: MutableCollection<ClusterItem>?,
         child: MutableCollection<ClusterItem>?
-    ) = ClusterUtils.isClusterContainerItems(parent, child)
+    ) = ClusterUtils.isAllItemInParent(parent, child)
 }

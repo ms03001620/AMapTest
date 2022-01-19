@@ -38,6 +38,12 @@
             android:layout_height="40dp"
             android:text="Fn" />
 
+        <Button
+            android:id="@+id/btn_zoom_co"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:text="Co" />
+
     </LinearLayout>
 
 

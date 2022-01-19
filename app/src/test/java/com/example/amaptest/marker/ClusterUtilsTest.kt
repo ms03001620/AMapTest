@@ -117,7 +117,7 @@ class ClusterUtilsTest {
         assertEquals(3, result.size)
         assertEquals(
             2,
-            result.count { it.subNodeList.first().nodeType == ClusterUtils.NodeType.SINGLE })
+            result.count { it.subNodeList.first().nodeType == ClusterUtils.NodeType.SINGLE_A })
     }
 
     @Test
@@ -257,8 +257,8 @@ class ClusterUtilsTest {
         val prev = (prevCluster[0] as MarkerCluster).list.items
         val child = (childCluster[0] as MarkerCluster).list.items
 
-        assertTrue(ClusterUtils.isClusterContainerItems(prev, child))
-        assertFalse(ClusterUtils.isClusterContainerItems(child, prev))
+        assertTrue(ClusterUtils.isAllItemInParent(prev, child))
+        assertFalse(ClusterUtils.isAllItemInParent(child, prev))
     }
 
 
@@ -328,8 +328,8 @@ class ClusterUtilsTest {
         val prev = (prevCluster[0] as MarkerCluster).list.items
         val child = (childCluster[0] as MarkerCluster).list.items
 
-        assertTrue(ClusterUtils.isClusterContainerItems(prev, child))
-        assertFalse(ClusterUtils.isClusterContainerItems(child, prev))
+        assertTrue(ClusterUtils.isAllItemInParent(prev, child))
+        assertFalse(ClusterUtils.isAllItemInParent(child, prev))
     }
 
     @Test
@@ -339,15 +339,15 @@ class ClusterUtilsTest {
 
         val prev = (prevCluster[0] as MarkerCluster).list.items
         val child = (childCluster[0] as MarkerCluster).list.items
-        assertFalse(ClusterUtils.isClusterContainerItems(prev, child))
+        assertFalse(ClusterUtils.isAllItemInParent(prev, child))
     }
 
     @Test
     fun testIsAllInTargetNull() {
         val prevCluster = JsonTestUtil.mock(stationsList.subList(0, 4))
         val prev = (prevCluster[0] as MarkerCluster).list.items
-        assertFalse(ClusterUtils.isClusterContainerItems(null, prev))
-        assertFalse(ClusterUtils.isClusterContainerItems(prev, null))
+        assertFalse(ClusterUtils.isAllItemInParent(null, prev))
+        assertFalse(ClusterUtils.isAllItemInParent(prev, null))
     }
 
     @Test

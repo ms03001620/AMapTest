@@ -31,7 +31,7 @@ class MarkerActionActivity : AppCompatActivity() {
     }
 
     lateinit var mMapView: MapView
-    lateinit var mMapProxy: MapProxy
+    lateinit var mMapProxy: MapProxy1
     lateinit var markerAction: MarkerActionV2
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +57,7 @@ class MarkerActionActivity : AppCompatActivity() {
     fun setupMap(savedInstanceState: Bundle?) {
         mMapView = findViewById(R.id.map)
         mMapView.onCreate(savedInstanceState)
-        mMapProxy = MapProxy(mMapView.map, applicationContext)
+        mMapProxy = MapProxy1(mMapView.map, applicationContext)
         markerAction = MarkerActionV2(mMapProxy)
         mMapView.map.setCustomMapStyle(
             CustomMapStyleOptions()
@@ -105,6 +105,7 @@ class MarkerActionActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_zoom_out)?.setOnClickListener {
             mMapView.map.animateCamera(CameraUpdateFactory.zoomOut())
+            //mMapView.map.mapScreenMarkers.first().remove()
         }
 
         findViewById<View>(R.id.btn_zoom_fn)?.setOnClickListener {
@@ -122,7 +123,16 @@ class MarkerActionActivity : AppCompatActivity() {
 
             logd("getCollapsedBitmapDescriptor b pass:${System.currentTimeMillis()-start}", "_____")
 
-            mMapView.map.addMarker(op)
+            val marker = mMapView.map.addMarker(op)
+
+            markerAction.transfer(marker, LatLng(31.218953,121.486741))
+        }
+
+        findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
+            logd("list marker size:${mMapView.map.mapScreenMarkers.size}", "_____")
+            mMapView.map.mapScreenMarkers.forEach {
+                logd("list marker:${it.isRemoved}", "_____")
+            }
         }
     }
 
@@ -159,7 +169,7 @@ class MarkerActionActivity : AppCompatActivity() {
         const val DEFAULT_LNG = 121.497798
         const val DEFAULT_LAT = 31.249051
 
-        const val ZOOM = 15f
+        const val ZOOM = 13f
 
 /*        const val FILE = "json_stations570.json"
         const val SUBLIST_START = -1 //-1 disable

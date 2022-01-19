@@ -52,22 +52,22 @@ object ClusterUtils {
     fun createTrackData(curr: BaseMarkerData, prevList: MutableList<BaseMarkerData>): NodeTrack {
         val subNodeList = mutableListOf<SubNode>()
         prevList.forEach { prev ->
-            val latLngPrev = prev.getLatlng()!!
+            val latLngPrev = prev.getLatlng()
             val idPrev = prev.getId()
             // 新的是否包含了全部老的数据
             // ABCD AB true
             // A ABCD
-            if (isClusterContainerItems(curr.getCluster().items, prev.getCluster().items)) {
+            if (isAllItemInParent(curr.getCluster().items, prev.getCluster().items)) {
                 var nodeType = NodeType.PARTY
                 if (prev.getSize() == 1) {
                     nodeType = NodeType.SINGLE
                 }
                 subNodeList.add(SubNode(latLngPrev,idPrev, nodeType, prev))
 
-            } else if (isClusterContainerItems(prev.getCluster().items, curr.getCluster().items)) {
+            } else if (isAllItemInParent(prev.getCluster().items, curr.getCluster().items)) {
                 var nodeType = NodeType.PARTY_A
                 if (curr.getSize() == 1) {
-                    nodeType = NodeType.SINGLE
+                    nodeType = NodeType.SINGLE_A
                 }
                 subNodeList.add(SubNode(latLngPrev, idPrev,nodeType, curr))
             } else {
@@ -105,23 +105,27 @@ object ClusterUtils {
         return total
     }
 
-    fun isClusterContainerItems(
+    /**
+     * parent包含了全部的child元素
+     */
+    fun isAllItemInParent(
         parent: MutableCollection<ClusterItem>?,
         child: MutableCollection<ClusterItem>?
     ): Boolean {
-        if ((child?.size ?: 0) > (parent?.size ?: 0)) {
+        if (child == null || parent==null) {
             return false
         }
-        child?.map {
-            it.id
-        }?.let { ids ->
-            parent?.map {
-                it.id
-            }?.containsAll(ids).let {
-                return it == true
-            }
+        val sizeParent = parent.size
+        val sizeChild = child.size
+
+        if (sizeParent < sizeChild) {
+            return false
         }
-        return false
+
+        val parentIds = parent.map { it.id }
+        val childIds = child.map { it.id }
+
+        return parentIds.containsAll(childIds)
     }
 
     fun delSame(
@@ -133,7 +137,12 @@ object ClusterUtils {
         curr.removeAll(prevCopy)
     }
 
-    fun isSamePosition(a: LatLng?, b: LatLng?, delta: Float = 0.000001f): Boolean {
+    /**
+     * 是否是相同点
+     * 判断经纬度误差小于delta值
+     */
+    fun isSamePosition(a: LatLng?, b: LatLng?, delta: Float = 5.0E-6f): Boolean {
+        //  5.0E-6f ,marker移动到指定pos后，计算移动后的marker pos 和指定的值误差
         if (a == null) {
             return false
         }
@@ -194,7 +203,7 @@ object ClusterUtils {
      * PIECE, 混杂
      */
     enum class NodeType {
-        SINGLE, PARTY, PARTY_A, PIECE
+        SINGLE, SINGLE_A, PARTY, PARTY_A, PIECE
     }
 
     /**

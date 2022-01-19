@@ -15,7 +15,7 @@ interface BaseMarkerData {
 
     fun getSize(): Int
 
-    fun getLatlng(): LatLng?
+    fun getLatlng(): LatLng
 
     fun getId(): String
 }
@@ -38,8 +38,8 @@ class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
 
     override fun getSize() = list.size
 
-    override fun getLatlng(): LatLng? {
-        return list.position
+    override fun getLatlng(): LatLng {
+        return list.position!!
     }
 
     // id 不能以latlng作为算法 piece 临时对象具有相同坐标 但是是需要区分的
@@ -79,8 +79,8 @@ class MarkerSingle(val stationDetail: StationDetail, val latLng: LatLng?) : Base
 
     override fun getSize() = 1
 
-    override fun getLatlng(): LatLng? {
-        return latLng
+    override fun getLatlng(): LatLng {
+        return latLng!!
     }
 
     override fun getId() = stationDetail.id ?: ""

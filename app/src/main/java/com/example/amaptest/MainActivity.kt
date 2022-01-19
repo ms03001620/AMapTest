@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var mMapView: MapView
     lateinit var stationsList : List<StationDetail>
-    lateinit var mMapProxy: MapProxy
+    lateinit var mMapProxy: MapProxy1
     lateinit var markerAction: MarkerActionV2
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
     fun setupMap(savedInstanceState: Bundle?){
         mMapView = findViewById(R.id.map)
         mMapView.onCreate(savedInstanceState)
-        mMapProxy = MapProxy(mMapView.map, applicationContext)
+        mMapProxy = MapProxy1(mMapView.map, applicationContext)
         markerAction = MarkerActionV2(mMapProxy)
         mMapView.map.setCustomMapStyle(
             CustomMapStyleOptions()
