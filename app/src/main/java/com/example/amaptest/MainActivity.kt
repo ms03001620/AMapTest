@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         initCamera()
 
 
-/*
+
         val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
         val curr = JsonTestUtil.mock(
             listOf(
@@ -49,9 +49,9 @@ class MainActivity : AppCompatActivity() {
                 stationsList.subList(3, 4).first()
             ),
         )
-*/
 
 
+/*
         val prev = JsonTestUtil.mock(stationsList.subList(0, 4), stationsList.subList(6, 8))
 
         val curr = JsonTestUtil.mock(
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
             stationsList.subList(2, 4),
 
             stationsList.subList(6, 8)
-        )
+        )*/
 
 
 
