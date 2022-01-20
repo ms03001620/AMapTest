@@ -26,41 +26,32 @@ class MarkerActionV2(val mapProxy: MapProxy1) {
     }
 
     fun processNodeList(pair: Pair<List<ClusterUtils.NodeTrack>, List<BaseMarkerData>>) {
-        pair.second.map {
-            it.getLatlng()
-        }.let {
-            mapProxy.removeMarkers(it)
+        // 展开点，子任务未包含 原点的删除
+        if (pair.second.isNotEmpty()) {
+            pair.second.map {
+                it.getLatlng()
+            }.let {
+                mapProxy.removeMarkers(it)
+            }
         }
 
-        pair.first
-            //.subList(0, 1)
-            .forEach {
-                processNode(it)
+        pair.first.forEach { nodeTrack ->
+            val curr = nodeTrack.node
+            if (nodeTrack.subNodeList.size == 1) {
+                processNodeToSub(curr, nodeTrack.subNodeList.first())
+            } else {
+                processSubToNode(nodeTrack)
             }
-    }
-
-    /**
-     * node 节点
-     * subNode 组成该节点的子节点
-     */
-    //data class NodeTrack(val node: BaseMarkerData, val subNodeList: MutableList<ClusterUtils.SubNode>)
-    fun processNode(nodeTrack: ClusterUtils.NodeTrack) {
-        val curr = nodeTrack.node
-        if (nodeTrack.subNodeList.size == 1) {
-            processNodeToSub(curr, nodeTrack.subNodeList.first())
-        } else {
-            processSubToNode(nodeTrack)
         }
     }
 
     fun processNodeToSub(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
         if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.parentLatLng)) {
-            // 子点和目标点一致。讲
-            val m = mapProxy.getMarker(subNode.parentLatLng)
-            if (m == null) {
+            val marker = mapProxy.getMarker(subNode.parentLatLng)
+            if (marker == null) {
                 mapProxy.createMarker(curr)
             } else {
-                mapProxy.updateMarker(m, curr)
+                mapProxy.updateMarker(marker, curr)
             }
         } else {
             attemptTransfer(subNode, curr.getLatlng())
@@ -77,26 +68,14 @@ class MarkerActionV2(val mapProxy: MapProxy1) {
             }
 
             override fun onAnimationEnd() {
-                // 找到子点中与合并后点相同的点，在其他动画播放后 讲改点修改为合并后的点
-                val sameNode = nodeTrack.subNodeList.firstOrNull { subNode ->
-                    ClusterUtils.isSamePosition(
-                        curr.getLatlng(),
-                        subNode.subNode.getLatlng()
-                    )
-                }
-
-                // 移动后更新相同点为curr
-                if (sameNode != null) {
-                    val marker = mapProxy.getMarker(sameNode.subNode.getLatlng())
-                    if (marker != null) {
-                        mapProxy.updateMarker(marker, curr)
-                    } else {
-                        mapProxy.createMarker(curr)
-                        // 未找到的原因是这个点的id 无法获取
-                        logd("未找到的原因是这个点的id 无法获取", "MarkerActionV2")
-                    }
-                } else {
-                    //移动后创建curr
+                // 动画后创建或更新聚合点
+                nodeTrack.subNodeList.firstOrNull { subNode ->
+                    ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())
+                }?.let {
+                    mapProxy.getMarker(it.subNode.getLatlng())
+                }?.let {
+                    mapProxy.updateMarker(it, curr)
+                } ?: run {
                     mapProxy.createMarker(nodeTrack.node)
                 }
             }
@@ -123,12 +102,15 @@ class MarkerActionV2(val mapProxy: MapProxy1) {
         var marker: Marker? = null
         if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
             marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
+            logd("cospTransfer createMarker1:$marker", "______")
         } else {
             marker = mapProxy.getMarker(baseMarkerData)
+            logd("cospTransfer getMarker:$marker", "______")
         }
 
         if (marker == null) {
             marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
+            logd("cospTransfer createMarker2:$marker", "______")
         }
 
         assert(marker != null)
@@ -144,7 +126,7 @@ class MarkerActionV2(val mapProxy: MapProxy1) {
         val baseMarkerData = subNode.subNode
         val autoCreatePosition = subNode.parentLatLng
         val marker = mapProxy.createMarker(baseMarkerData, autoCreatePosition)
-        logd("attemptTransfer:$marker", "______")
+        //logd("attemptTransfer:$marker", "______")
 
         marker?.let {
             if (ClusterUtils.isSamePosition(moveTo, marker.position)) {

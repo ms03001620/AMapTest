@@ -56,10 +56,12 @@ class MapProxy1(private val map: AMap, private val context: Context) {
     }
 
     fun removeMarkers(removeList: List<LatLng>) {
-        map.mapScreenMarkers.filter { marker ->
-            removeList.firstOrNull { ClusterUtils.isSamePosition(it, marker.position) } != null
-        }.forEach {
-            it.remove()
+        if (removeList.isNotEmpty()) {
+            map.mapScreenMarkers.filter { marker ->
+                removeList.firstOrNull { ClusterUtils.isSamePosition(it, marker.position) } != null
+            }.forEach {
+                it.remove()
+            }
         }
     }
 
