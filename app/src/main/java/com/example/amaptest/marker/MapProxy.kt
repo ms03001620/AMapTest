@@ -2,86 +2,66 @@ package com.example.amaptest.marker
 
 import android.content.Context
 import android.graphics.Bitmap
-import com.amap.api.maps.AMap
 import com.amap.api.maps.model.*
-import com.polestar.base.utils.logd
-import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.showMarker
-import java.lang.IllegalStateException
-import java.util.concurrent.ConcurrentHashMap
 
-class MapProxy(private val map: AMap, private val context: Context) {
+class MapProxy(private val map: BaseMap, private val context: Context) {
     private val iconGenerator = IconGenerator(context)
-    private val set = ConcurrentHashMap<String, Marker>()
-
 
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
-        baseMarkerDataList.forEach {
-            createMarker(it)
+        baseMarkerDataList.map {
+            createOptionsToPosition(it)
+        }.let {
+            ArrayList<MarkerOptions>(it)
+        }.let { options ->
+            map.addMarkers(options)
         }
     }
 
-    fun createMarker(baseMarkerData: BaseMarkerData){
-        createMarker(baseMarkerData, baseMarkerData.getLatlng())
-    }
-
-    fun createMarker(baseMarkerData: BaseMarkerData, latLng: LatLng?): Marker {
-        baseMarkerData.getId().let { id ->
-            val oldMarker = set[id]
-            if (oldMarker == null) {
-                //logd("222222: create 1", "______")
-                val option = createOptionsToPosition(baseMarkerData, latLng)
-                val marker = createMarker(option)
-                if (marker != null) {
-                    set[id] = marker
-                } else {
-                    throw IllegalStateException("create marker failed")
-                }
-                return marker
-            } else {
-                //logd("222222: create 2", "______")
-                // throw IllegalStateException("set.containsKey(${id})")
-                // logd("updateMarker $id")
-                updateMarker(oldMarker, baseMarkerData, latLng)
-                return oldMarker
-            }
-        }
-    }
-
-    fun createOptionsToPosition(baseMarkerData: BaseMarkerData, latLng: LatLng?): MarkerOptions {
-        val options = when (baseMarkerData) {
-            is MarkerCluster -> {
-                stationToClusterOptions(baseMarkerData.getSize(), latLng)
-            }
-            is MarkerSingle -> {
-                stationToMarkerOptions(baseMarkerData.stationDetail, latLng)
-            }
-            else -> throw UnsupportedOperationException("type:$baseMarkerData")
-        }
-        return options
+    fun createMarker(baseMarkerData: BaseMarkerData, forceLatLng: LatLng? = null): Marker? {
+        return createMarker(createOptionsToPosition(baseMarkerData, forceLatLng))
     }
 
     fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData) {
-        marker.setIcon(createBitmapDescriptor(baseMarkerData))
+        map.updateMarker(marker, baseMarkerData.getId(), createBitmapDescriptor(baseMarkerData))
     }
 
-    fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData, forceLatLng: LatLng? = null) {
-        val finalLatLng = forceLatLng ?: marker.position
-        marker.setMarkerOptions(createOptionsToPosition(baseMarkerData, finalLatLng))
-    }
-
-    fun removeMarker(id: String?) {
-        set.remove(id)?.remove()
+    fun removeMarker(id: String) {
+        map.removeMarker(id)
     }
 
     private fun createMarker(markerOptions: MarkerOptions): Marker? {
-        markerOptions.isFlat = true
         return map.addMarker(markerOptions)
     }
 
     fun getCollapsedBitmapDescriptor2(total: String): Bitmap {
         val p = iconGenerator.makeIconCluster(total)
         return p
+    }
+
+    fun getMarker(id: String): Marker? {
+        return map.getMarker(id)
+    }
+
+    fun getAllMarkers(): List<Marker> {
+        return map.getAllMarkers()
+    }
+
+    fun clear() {
+        map.clear()
+    }
+
+    fun removeMarkers(removeList: List<String>) {
+        if (removeList.isNotEmpty()) {
+            removeList.forEach {
+                removeMarker(it)
+            }
+        }
+    }
+
+    private fun createOptionsToPosition(baseMarkerData: BaseMarkerData, forceLatLng: LatLng? = null): MarkerOptions {
+        val createAtPosition = forceLatLng ?: baseMarkerData.getLatlng()
+        return createMarkerOptions(baseMarkerData, createAtPosition)
     }
 
     private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
@@ -92,50 +72,18 @@ class MapProxy(private val map: AMap, private val context: Context) {
         return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIconCluster(clusterSize.toString()))
     }
 
-    private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData): BitmapDescriptor? {
-        return when (baseMarkerData) {
+    private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData) =
+        when (baseMarkerData) {
             is MarkerCluster -> getClusterBitmapDescriptor(baseMarkerData.getSize())
             is MarkerSingle -> getCollapsedBitmapDescriptor(baseMarkerData.stationDetail.showMarker())
             else -> throw UnsupportedOperationException("type:$baseMarkerData")
         }
-    }
 
-    private fun stationToClusterOptions(size: Int, latLng: LatLng?) =
+    private fun createMarkerOptions(baseMarkerData: BaseMarkerData, latLng: LatLng) =
         MarkerOptions()
+            .title(baseMarkerData.getId())
             .position(latLng)
-            .icon(getClusterBitmapDescriptor(size))
+            .icon(createBitmapDescriptor(baseMarkerData))
+            .setFlat(true)
             .infoWindowEnable(false)
-
-    private fun stationToMarkerOptions(station: StationDetail, latLng: LatLng? = null) =
-        MarkerOptions()
-            .position(latLng ?: LatLng(station.lat ?: Double.NaN, station.lng ?: Double.NaN))
-            .icon(getCollapsedBitmapDescriptor(station.showMarker()))
-            .infoWindowEnable(false)
-
-
-    fun getMarker(latLng: LatLng): Marker? {
-        for ((key, value) in set) {
-            if (ClusterUtils.isSamePosition(value.position, latLng)) {
-                return value
-            }
-        }
-        return null
-    }
-
-    fun getMarker(baseMarkerData: BaseMarkerData): Marker? {
-        return set.getOrDefault(baseMarkerData.getId(), null)
-    }
-
-    fun clear() {
-        set.clear()
-        map.clear(true)
-    }
-
-    fun removeMarkers(removeList: List<LatLng>) {
-        set.filter { map ->
-            removeList.firstOrNull{ClusterUtils.isSamePosition(it, map.value.position)} !=null
-        }.forEach {
-            set.remove(it.key)?.remove()
-        }
-    }
 }
