@@ -18,18 +18,14 @@ class MarkerActionV2(val mapProxy: MapProxy1) {
 
     fun setList(data: MutableList<BaseMarkerData>) {
         mapProxy.clear()
-        addMarkers(data)
-    }
-
-    fun addMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
-        mapProxy.createMarkers(baseMarkerDataList)
+        mapProxy.createMarkers(data)
     }
 
     fun processNodeList(pair: Pair<List<ClusterUtils.NodeTrack>, List<BaseMarkerData>>) {
         // 展开点，子任务未包含 原点的删除
         if (pair.second.isNotEmpty()) {
             pair.second.map {
-                it.getLatlng()
+                it.getId()
             }.let {
                 mapProxy.removeMarkers(it)
             }
@@ -47,7 +43,7 @@ class MarkerActionV2(val mapProxy: MapProxy1) {
 
     fun processNodeToSub(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
         if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.parentLatLng)) {
-            val marker = mapProxy.getMarker(subNode.parentLatLng)
+            val marker = mapProxy.getMarker(subNode.parentId)
             if (marker == null) {
                 mapProxy.createMarker(curr)
             } else {
@@ -72,7 +68,7 @@ class MarkerActionV2(val mapProxy: MapProxy1) {
                 nodeTrack.subNodeList.firstOrNull { subNode ->
                     ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())
                 }?.let {
-                    mapProxy.getMarker(it.subNode.getLatlng())
+                    mapProxy.getMarker(it.subNode.getId())
                 }?.let {
                     mapProxy.updateMarker(it, curr)
                 } ?: run {
@@ -102,15 +98,15 @@ class MarkerActionV2(val mapProxy: MapProxy1) {
         var marker: Marker? = null
         if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
             marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
-            logd("cospTransfer createMarker1:$marker", "______")
+            //logd("cospTransfer createMarker1:$marker", "______")
         } else {
-            marker = mapProxy.getMarker(baseMarkerData)
-            logd("cospTransfer getMarker:$marker", "______")
+            marker = mapProxy.getMarker(baseMarkerData.getId())
+            //logd("cospTransfer getMarker:$marker", "______")
         }
 
         if (marker == null) {
             marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
-            logd("cospTransfer createMarker2:$marker", "______")
+            //logd("cospTransfer createMarker2:$marker", "______")
         }
 
         assert(marker != null)
@@ -146,7 +142,7 @@ class MarkerActionV2(val mapProxy: MapProxy1) {
         removeAtEnd: Boolean = false,
         listener: Animation.AnimationListener? = null
     ) {
-        val marker = mapProxy.getMarker(baseMarkerData)
+        val marker = mapProxy.getMarker(baseMarkerData.getId())
         transfer(marker!!, moveTo, removeAtEnd, listener)
     }
 
@@ -167,7 +163,7 @@ class MarkerActionV2(val mapProxy: MapProxy1) {
 
                 override fun onAnimationEnd() {
                     if (removeAtEnd) {
-                        mapProxy.removeMarker(marker)
+                        mapProxy.removeMarker(marker.title)
                     }
                     listener?.onAnimationEnd()
                 }

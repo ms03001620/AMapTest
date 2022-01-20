@@ -57,7 +57,7 @@ class MarkerActionActivity : AppCompatActivity() {
     fun setupMap(savedInstanceState: Bundle?) {
         mMapView = findViewById(R.id.map)
         mMapView.onCreate(savedInstanceState)
-        mMapProxy = MapProxy1(mMapView.map, applicationContext)
+        mMapProxy = MapProxy1(BaseMap(mMapView.map), applicationContext)
         markerAction = MarkerActionV2(mMapProxy)
         mMapView.map.setCustomMapStyle(
             CustomMapStyleOptions()
@@ -129,9 +129,10 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
-            logd("list marker size:${mMapView.map.mapScreenMarkers.size}", "_____")
-            mMapView.map.mapScreenMarkers.forEach {
-                logd("list marker:${it.isRemoved}", "_____")
+            val markers = mMapProxy.getAllMarkers()
+            logd("list marker size:${markers.size}", "_____")
+            markers.forEach {
+                logd("list marker:${it.title}", "_____")
             }
         }
     }

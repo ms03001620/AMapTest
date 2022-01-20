@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
     fun setupMap(savedInstanceState: Bundle?){
         mMapView = findViewById(R.id.map)
         mMapView.onCreate(savedInstanceState)
-        mMapProxy = MapProxy1(mMapView.map, applicationContext)
+        mMapProxy = MapProxy1(BaseMap(mMapView.map), applicationContext)
         markerAction = MarkerActionV2(mMapProxy)
         mMapView.map.setCustomMapStyle(
             CustomMapStyleOptions()

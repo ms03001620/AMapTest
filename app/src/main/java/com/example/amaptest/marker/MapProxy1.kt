@@ -2,12 +2,10 @@ package com.example.amaptest.marker
 
 import android.content.Context
 import android.graphics.Bitmap
-import com.amap.api.maps.AMap
 import com.amap.api.maps.model.*
-import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.showMarker
 
-class MapProxy1(private val map: AMap, private val context: Context) {
+class MapProxy1(private val map: BaseMap, private val context: Context) {
     private val iconGenerator = IconGenerator(context)
 
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
@@ -15,8 +13,8 @@ class MapProxy1(private val map: AMap, private val context: Context) {
             createOptionsToPosition(it)
         }.let {
             ArrayList<MarkerOptions>(it)
-        }.let {
-            map.addMarkers(it, false/*boolean moveToCenter */)
+        }.let { options ->
+            map.addMarkers(options)
         }
     }
 
@@ -25,11 +23,11 @@ class MapProxy1(private val map: AMap, private val context: Context) {
     }
 
     fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData) {
-        marker.setIcon(createBitmapDescriptor(baseMarkerData))
+        map.updateMarker(marker, baseMarkerData.getId(), createBitmapDescriptor(baseMarkerData))
     }
 
-    fun removeMarker(marker: Marker) {
-        marker.remove()
+    fun removeMarker(id: String) {
+        map.removeMarker(id)
     }
 
     private fun createMarker(markerOptions: MarkerOptions): Marker? {
@@ -41,42 +39,29 @@ class MapProxy1(private val map: AMap, private val context: Context) {
         return p
     }
 
-    fun getMarker(latLng: LatLng?): Marker? {
-        return map.mapScreenMarkers.firstOrNull { marker ->
-            ClusterUtils.isSamePosition(latLng, marker.position)
-        }
+    fun getMarker(id: String): Marker? {
+        return map.getMarker(id)
     }
 
-    fun getMarker(baseMarkerData: BaseMarkerData): Marker? {
-        return getMarker(baseMarkerData.getLatlng())
+    fun getAllMarkers(): List<Marker> {
+        return map.getAllMarkers()
     }
 
     fun clear() {
-        map.clear(true)
+        map.clear()
     }
 
-    fun removeMarkers(removeList: List<LatLng>) {
+    fun removeMarkers(removeList: List<String>) {
         if (removeList.isNotEmpty()) {
-            map.mapScreenMarkers.filter { marker ->
-                removeList.firstOrNull { ClusterUtils.isSamePosition(it, marker.position) } != null
-            }.forEach {
-                it.remove()
+            removeList.forEach {
+                removeMarker(it)
             }
         }
     }
 
     private fun createOptionsToPosition(baseMarkerData: BaseMarkerData, forceLatLng: LatLng? = null): MarkerOptions {
         val createAtPosition = forceLatLng ?: baseMarkerData.getLatlng()
-        val options = when (baseMarkerData) {
-            is MarkerCluster -> {
-                stationToClusterOptions(baseMarkerData.getSize(), createAtPosition)
-            }
-            is MarkerSingle -> {
-                stationToMarkerOptions(baseMarkerData.stationDetail, createAtPosition)
-            }
-            else -> throw UnsupportedOperationException("type:$baseMarkerData")
-        }
-        return options
+        return createMarkerOptions(baseMarkerData, createAtPosition)
     }
 
     private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
@@ -87,25 +72,18 @@ class MapProxy1(private val map: AMap, private val context: Context) {
         return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIconCluster(clusterSize.toString()))
     }
 
-    private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData): BitmapDescriptor? {
-        return when (baseMarkerData) {
+    private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData) =
+        when (baseMarkerData) {
             is MarkerCluster -> getClusterBitmapDescriptor(baseMarkerData.getSize())
             is MarkerSingle -> getCollapsedBitmapDescriptor(baseMarkerData.stationDetail.showMarker())
             else -> throw UnsupportedOperationException("type:$baseMarkerData")
         }
-    }
 
-    private fun stationToClusterOptions(size: Int, latLng: LatLng?) =
+    private fun createMarkerOptions(baseMarkerData: BaseMarkerData, latLng: LatLng) =
         MarkerOptions()
+            .title(baseMarkerData.getId())
             .position(latLng)
-            .icon(getClusterBitmapDescriptor(size))
-            .setFlat(true)
-            .infoWindowEnable(false)
-
-    private fun stationToMarkerOptions(station: StationDetail, latLng: LatLng? = null) =
-        MarkerOptions()
-            .position(latLng ?: LatLng(station.lat ?: Double.NaN, station.lng ?: Double.NaN))
-            .icon(getCollapsedBitmapDescriptor(station.showMarker()))
+            .icon(createBitmapDescriptor(baseMarkerData))
             .setFlat(true)
             .infoWindowEnable(false)
 }
