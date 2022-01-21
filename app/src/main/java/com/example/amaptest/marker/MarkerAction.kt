@@ -34,7 +34,7 @@ class MarkerAction(val mapProxy: MapProxy) {
 
         animTask.forEach { nodeTrack ->
             val curr = nodeTrack.node
-            if (nodeTrack.subNodeList.size == 1) {
+            if (nodeTrack.isExpTask) {
                 processNodeToSub(curr, nodeTrack.subNodeList.first())
             } else {
                 processSubToNode(nodeTrack)
@@ -51,7 +51,17 @@ class MarkerAction(val mapProxy: MapProxy) {
                 mapProxy.updateMarker(marker, curr)
             }
         } else {
-            attemptTransfer(subNode, curr.getLatlng())
+
+            val baseMarkerData = subNode.subNode
+            val marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
+            assert(marker != null)
+
+            if (ClusterUtils.isSamePosition(curr.getLatlng(), marker!!.position)) {
+                println(baseMarkerData)
+            } else {
+                transfer(marker, curr.getLatlng(), false, null)
+            }
+
 /*            Handler(Looper.getMainLooper()).postDelayed( {
                 attemptTransfer(subNode,curr.getLatlng())
             }, 10)*/
@@ -86,74 +96,30 @@ class MarkerAction(val mapProxy: MapProxy) {
             }
         }
 
-        nodeTrack.subNodeList.filterNot { subNode ->
-            ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())
-        }.forEachIndexed { index, subNode ->
-            cospTransfer(
-                subNode,
-                moveTo = curr.getLatlng(),
-                listener = if (index == 0) listener else null
-            )
-        }
-    }
-
-    fun cospTransfer(
-        subNode: ClusterUtils.SubNode,
-        moveTo: LatLng,
-        listener: Animation.AnimationListener? = null
-    ) {
-        val baseMarkerData = subNode.subNode
-
-        var marker: Marker? = null
-        if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
-            marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
-            //logd("cospTransfer createMarker1:$marker", "______")
-        } else {
-            marker = mapProxy.getMarker(baseMarkerData.getId())
-            //logd("cospTransfer getMarker:$marker", "______")
-        }
-
-        if (marker == null) {
-            //marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
-            logd("cospTransfer createMarker2:${subNode.nodeType}", "______")
-        }
-
-        assert(marker != null)
-
-        // transfer marker
-        transfer(baseMarkerData, moveTo, true, listener)
-    }
-
-    fun attemptTransfer(
-        subNode: ClusterUtils.SubNode,
-        moveTo: LatLng,
-    ) {
-        val baseMarkerData = subNode.subNode
-        val autoCreatePosition = subNode.parentLatLng
-        val marker = mapProxy.createMarker(baseMarkerData, autoCreatePosition)
-        //logd("attemptTransfer:$marker", "______")
-
-        marker?.let {
-            if (ClusterUtils.isSamePosition(moveTo, marker.position)) {
-                // keep marker
+        var isFirst = true
+        nodeTrack.subNodeList.forEach { subNode ->
+            if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())) {
+                // 合并任务中，子点已在合并点，不需要移动。
+                println(subNode)
             } else {
-                // transfer marker
-                transfer(marker, moveTo, false, null)
+                // 合并任务，移动子点到合并点，并且删除
+                val baseMarkerData = subNode.subNode
+                logd("cospTransfer nodeType:${subNode.nodeType}", "______")
+
+                var marker: Marker? = null
+                if (subNode.nodeType == ClusterUtils.NodeType.PREV_IN_CURR) {
+                    marker = mapProxy.getMarker(baseMarkerData.getId())
+                } else {
+                    marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
+                }
+                assert(marker != null)
+
+                transfer(marker!!, curr.getLatlng(), true,if (isFirst) listener else null)
+                isFirst = false
             }
-        } ?: run {
-            assert(marker != null)
         }
     }
 
-    private fun transfer(
-        baseMarkerData: BaseMarkerData,
-        moveTo: LatLng,
-        removeAtEnd: Boolean = false,
-        listener: Animation.AnimationListener? = null
-    ) {
-        val marker = mapProxy.getMarker(baseMarkerData.getId())
-        transfer(marker!!, moveTo, removeAtEnd, listener)
-    }
 
     private fun transfer(
         marker: Marker,

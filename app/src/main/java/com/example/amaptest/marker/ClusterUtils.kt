@@ -213,7 +213,11 @@ object ClusterUtils {
      * @node 新节点
      * @subNodeList 数据的来源
      */
-    data class NodeTrack(val node: BaseMarkerData, val subNodeList: MutableList<SubNode>)
+    data class NodeTrack(
+        val node: BaseMarkerData,
+        val subNodeList: MutableList<SubNode>,
+        val isExpTask: Boolean = subNodeList.size == 1
+    )
 
 
     /**

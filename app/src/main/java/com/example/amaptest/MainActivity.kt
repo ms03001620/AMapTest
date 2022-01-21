@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapView
@@ -38,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+/*        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
         val curr = JsonTestUtil.mock(
             listOf(
                 stationsList.subList(0, 1).first(),
@@ -48,11 +49,11 @@ class MainActivity : AppCompatActivity() {
                 stationsList.subList(1, 2).first(),
                 stationsList.subList(3, 4).first()
             ),
-        )
+        )*/
 
 
-/*
-        val prev = JsonTestUtil.mock(stationsList.subList(0, 4), stationsList.subList(6, 8))
+
+/*        val prev = JsonTestUtil.mock(stationsList.subList(0, 4), stationsList.subList(6, 8))
 
         val curr = JsonTestUtil.mock(
             stationsList.subList(0, 1),
@@ -62,8 +63,16 @@ class MainActivity : AppCompatActivity() {
             stationsList.subList(6, 8)
         )*/
 
+        val prev = JsonTestUtil.mock(stationsList.subList(0, 4))
+
+        val curr = JsonTestUtil.mock(
+            stationsList.subList(0, 1),
+            stationsList.subList(1, 2),
+            stationsList.subList(2, 4),
+        )
 
 
+        markerAction.setList(prev)
         findViewById<View>(R.id.btn_add).setOnClickListener {
             markerAction.setList(prev)
         }
@@ -86,6 +95,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_fn).setOnClickListener {
+            Toast.makeText(this, "size:${mMapProxy.getAllMarkers().size}", Toast.LENGTH_SHORT)
+                .show()
             markerAction.printMarkers()
         }
     }
