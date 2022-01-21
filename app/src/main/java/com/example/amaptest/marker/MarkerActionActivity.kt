@@ -3,6 +3,7 @@ package com.example.amaptest.marker
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.amap.api.maps.AMap
@@ -129,6 +130,10 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
+            viewModel.printPrev()
+
+            Toast.makeText(this, "size:${mMapProxy.getAllMarkers().size}", Toast.LENGTH_SHORT)
+                .show()
             markerAction.printMarkers()
         }
     }

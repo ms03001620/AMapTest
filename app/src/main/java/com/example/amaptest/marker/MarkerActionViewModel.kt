@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.SingleLiveEvent
+import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.DistanceInfo
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.charging.ui.cluster.distance.DistanceQuadTreeAlgorithm
@@ -59,5 +60,12 @@ class MarkerActionViewModel : ViewModel() {
         val mutableList = mutableListOf<BaseMarkerData>()
         mutableList.addAll(curr)
         prev = mutableList
+    }
+
+    fun printPrev() {
+        logd("prev size:${prev?.size?:0}", "_____")
+        prev?.forEach {
+            logd("list marker:${it.getId()}", "_____")
+        }
     }
 }

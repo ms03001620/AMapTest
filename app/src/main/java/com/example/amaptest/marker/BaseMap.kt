@@ -19,7 +19,7 @@ class BaseMap(val map: AMap) {
         moveToCenter: Boolean = false
     ): ArrayList<Marker> {
         val count = options.size
-        logd("createMarkers:${count}", "_____")
+        logd("createMarkers:${count}", TAG)
         val markers = map.addMarkers(options, moveToCenter)
         assert(count == markers.size)
         markers.forEach {
@@ -30,17 +30,18 @@ class BaseMap(val map: AMap) {
     }
 
     fun clear() {
+        logd("clear", TAG)
         markersHashMap.clear()
         map.clear(true)
     }
 
     fun removeMarker(id: String) {
-        logd("removeMarker:${id}", "_____")
+        logd("removeMarker:${id}", TAG)
         markersHashMap.remove(id)!!.remove()
     }
 
     fun addMarker(markerOptions: MarkerOptions): Marker? {
-        logd("createMarker:${markerOptions.title}", "_____")
+        logd("createMarker:${markerOptions.title}", TAG)
         if (markersHashMap.containsKey(markerOptions.title).not()) {
             val marker = map.addMarker(markerOptions)
             assert(marker != null)
@@ -52,11 +53,12 @@ class BaseMap(val map: AMap) {
     }
 
     fun getMarker(id: String): Marker? {
+        logd("getMarker:${id}", TAG)
         return markersHashMap[id]
     }
 
     fun updateMarker(marker: Marker, id: String, icon: BitmapDescriptor?) {
-        logd("updateMarker:${id}", "_____")
+        logd("updateMarker:${id}", TAG)
         val curMarker = markersHashMap.remove(marker.title)
         curMarker!!.title = id
         curMarker!!.setIcon(icon)
@@ -65,5 +67,9 @@ class BaseMap(val map: AMap) {
 
     fun getAllMarkers(): List<Marker> {
         return markersHashMap.values.toList()
+    }
+
+    companion object{
+        const val TAG = "BaseMap"
     }
 }

@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-/*        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
         val curr = JsonTestUtil.mock(
             listOf(
                 stationsList.subList(0, 1).first(),
@@ -49,11 +49,12 @@ class MainActivity : AppCompatActivity() {
                 stationsList.subList(1, 2).first(),
                 stationsList.subList(3, 4).first()
             ),
-        )*/
+        )
 
 
 
-/*        val prev = JsonTestUtil.mock(stationsList.subList(0, 4), stationsList.subList(6, 8))
+/*
+        val prev = JsonTestUtil.mock(stationsList.subList(0, 4), stationsList.subList(6, 8))
 
         val curr = JsonTestUtil.mock(
             stationsList.subList(0, 1),
@@ -61,15 +62,16 @@ class MainActivity : AppCompatActivity() {
             stationsList.subList(2, 4),
 
             stationsList.subList(6, 8)
-        )*/
+        )
+*/
 
-        val prev = JsonTestUtil.mock(stationsList.subList(0, 4))
+/*        val prev = JsonTestUtil.mock(stationsList.subList(0, 4))
 
         val curr = JsonTestUtil.mock(
             stationsList.subList(0, 1),
             stationsList.subList(1, 2),
             stationsList.subList(2, 4),
-        )
+        )*/
 
 
         markerAction.setList(prev)

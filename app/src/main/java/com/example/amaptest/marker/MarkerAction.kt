@@ -112,6 +112,9 @@ class MarkerAction(val mapProxy: MapProxy) {
                 } else {
                     marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
                 }
+                if (marker == null) {
+                    println(baseMarkerData)
+                }
                 assert(marker != null)
 
                 transfer(marker!!, curr.getLatlng(), true,if (isFirst) listener else null)
