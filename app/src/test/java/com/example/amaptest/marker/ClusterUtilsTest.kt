@@ -95,11 +95,8 @@ class ClusterUtilsTest {
         val node = ClusterUtils.createTrackData(c.first(), p)
 
         assertEquals(3, node.subNodeList.size)
-        assertEquals(2, node.subNodeList.count {
-            it.nodeType == ClusterUtils.NodeType.SINGLE
-        })
-        assertEquals(1, node.subNodeList.count {
-            it.nodeType == ClusterUtils.NodeType.PARTY
+        assertEquals(3, node.subNodeList.count {
+            it.nodeType == ClusterUtils.NodeType.PREV_IN_CURR
         })
     }
 
@@ -116,8 +113,8 @@ class ClusterUtilsTest {
         val result = c.map { ClusterUtils.createTrackData(it, p) }
         assertEquals(3, result.size)
         assertEquals(
-            2,
-            result.count { it.subNodeList.first().nodeType == ClusterUtils.NodeType.SINGLE_A })
+            3,
+            result.count { it.subNodeList.first().nodeType == ClusterUtils.NodeType.CURR_IN_PREV })
     }
 
     @Test

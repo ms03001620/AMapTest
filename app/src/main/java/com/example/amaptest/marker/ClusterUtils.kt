@@ -80,17 +80,13 @@ object ClusterUtils {
             // ABCD AB true
             // A ABCD
             if (isAllItemInParent(curr.getCluster().items, prev.getCluster().items)) {
-                var nodeType = NodeType.PARTY
-                if (prev.getSize() == 1) {
-                    nodeType = NodeType.SINGLE
-                }
+                // 新点包括所有老点
+                val nodeType = NodeType.PREV_IN_CURR
                 subNodeList.add(SubNode(latLngPrev,idPrev, nodeType, prev))
 
             } else if (isAllItemInParent(prev.getCluster().items, curr.getCluster().items)) {
-                var nodeType = NodeType.PARTY_A
-                if (curr.getSize() == 1) {
-                    nodeType = NodeType.SINGLE_A
-                }
+                // 老点包括所有新点
+                val nodeType = NodeType.CURR_IN_PREV
                 subNodeList.add(SubNode(latLngPrev, idPrev,nodeType, curr))
             } else {
                 // 老的部分在新的中
@@ -219,13 +215,9 @@ object ClusterUtils {
      */
     data class NodeTrack(val node: BaseMarkerData, val subNodeList: MutableList<SubNode>)
 
-    /**
-     * SINGLE, 独立
-     * PARTY, 全同
-     * PIECE, 混杂
-     */
+
     enum class NodeType {
-        SINGLE, SINGLE_A, PARTY, PARTY_A, PIECE
+        PREV_IN_CURR, CURR_IN_PREV, PIECE
     }
 
     /**

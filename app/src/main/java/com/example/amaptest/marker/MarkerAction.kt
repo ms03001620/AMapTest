@@ -114,8 +114,8 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
 
         if (marker == null) {
-            marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
-            //logd("cospTransfer createMarker2:$marker", "______")
+            //marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
+            logd("cospTransfer createMarker2:${subNode.nodeType}", "______")
         }
 
         assert(marker != null)
