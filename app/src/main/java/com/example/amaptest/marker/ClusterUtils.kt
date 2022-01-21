@@ -210,20 +210,26 @@ object ClusterUtils {
 
 
     /**
-     * node 节点
-     * subNode 组成该节点的子节点
+     * @node 新节点
+     * @subNodeList 数据的来源
      */
     data class NodeTrack(val node: BaseMarkerData, val subNodeList: MutableList<SubNode>)
 
 
+    /**
+     * @PREV_IN_CURR 子节点全部被合并 A,B,CD -> ABCD
+     * @CURR_IN_PREV 子节点被分裂 ABCD -> A,B,CD
+     * @PIECE， 子节点只是部分数据，不完整
+     */
     enum class NodeType {
         PREV_IN_CURR, CURR_IN_PREV, PIECE
     }
 
     /**
-     * parentLatLng 子节点 所在簇坐标（如果之前是在别的簇中，取之前簇坐标，与自身坐标不一样）
-     * nodeType 节点性质， 除了混杂数据是当前簇数据的一部分，其余都是当前簇
-     * subNode 节点数据
+     * @parentLatLng 子节点的父节点坐标
+     * @parentId 子节点的父节点id
+     * @nodeType 子节点性质
+     * @subNode 子节点数据
      */
     data class SubNode(
         val parentLatLng: LatLng,
