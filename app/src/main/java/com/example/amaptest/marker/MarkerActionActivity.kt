@@ -129,11 +129,7 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
-            val markers = mMapProxy.getAllMarkers()
-            logd("list marker size:${markers.size}", "_____")
-            markers.forEach {
-                logd("list marker:${it.title}", "_____")
-            }
+            markerAction.printMarkers()
         }
     }
 
@@ -177,7 +173,7 @@ class MarkerActionActivity : AppCompatActivity() {
         const val SUBLIST_END = -1 //-1 disable*/
 
 
-        const val FILE = "json_stations8.json"
+        const val FILE = "json_stations.json"
         const val SUBLIST_START = -1 //-1 disable
         const val SUBLIST_END = -1 //-1 disable
     }

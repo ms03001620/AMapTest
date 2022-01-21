@@ -85,8 +85,8 @@ class MainActivity : AppCompatActivity() {
             markerAction.clear()
         }
 
-        findViewById<View>(R.id.btn_offset).setOnClickListener {
-
+        findViewById<View>(R.id.btn_fn).setOnClickListener {
+            markerAction.printMarkers()
         }
     }
 

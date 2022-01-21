@@ -20,16 +20,19 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     fun processNodeList(pair: Pair<List<ClusterUtils.NodeTrack>, List<BaseMarkerData>>) {
+        val animTask = pair.first
+        val delTask = pair.second
+
         // 展开点，子任务未包含 原点的删除
-        if (pair.second.isNotEmpty()) {
-            pair.second.map {
+        if (delTask.isNotEmpty()) {
+            delTask.map {
                 it.getId()
             }.let {
                 mapProxy.removeMarkers(it)
             }
         }
 
-        pair.first.forEach { nodeTrack ->
+        animTask.forEach { nodeTrack ->
             val curr = nodeTrack.node
             if (nodeTrack.subNodeList.size == 1) {
                 processNodeToSub(curr, nodeTrack.subNodeList.first())
@@ -63,13 +66,21 @@ class MarkerAction(val mapProxy: MapProxy) {
 
             override fun onAnimationEnd() {
                 // 动画后创建或更新聚合点
-                nodeTrack.subNodeList.firstOrNull { subNode ->
-                    ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())
-                }?.let {
-                    mapProxy.getMarker(it.subNode.getId())
-                }?.let {
-                    mapProxy.updateMarker(it, curr)
-                } ?: run {
+                val subNode = nodeTrack.subNodeList.firstOrNull { subNode ->
+                    ClusterUtils.isSamePosition(
+                        curr.getLatlng(),
+                        subNode.subNode.getLatlng()
+                    )
+                }
+
+                if (subNode != null) {
+                    val marker = mapProxy.getMarker(subNode.subNode.getId())
+                    if (marker != null) {
+                        mapProxy.updateMarker(marker, curr)
+                    } else {
+                        // TODO 没找到相同点
+                    }
+                } else {
                     mapProxy.createMarker(nodeTrack.node)
                 }
             }
@@ -196,6 +207,14 @@ class MarkerAction(val mapProxy: MapProxy) {
         }.let {
             marker.setAnimation(it)
             marker.startAnimation()
+        }
+    }
+
+    fun printMarkers() {
+        val markers = mapProxy.getAllMarkers()
+        logd("list marker size:${markers.size}", "_____")
+        markers.forEach {
+            logd("list marker:${it.title}", "_____")
         }
     }
 
