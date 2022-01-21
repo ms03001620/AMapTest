@@ -99,8 +99,15 @@ class MarkerAction(val mapProxy: MapProxy) {
         var isFirst = true
         nodeTrack.subNodeList.forEach { subNode ->
             if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())) {
-                // 合并任务中，子点已在合并点，不需要移动。
-                println(subNode)
+                if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
+                    // animId 6
+                    val marker = mapProxy.getMarker(subNode.parentId)
+                    if (marker != null) {
+                        mapProxy.updateMarker(marker, subNode.subNode)
+                    }
+                } else {
+                    // animId 1; 合并任务中，子点已在合并点，不需要移动。
+                }
             } else {
                 // 合并任务，移动子点到合并点，并且删除
                 val baseMarkerData = subNode.subNode
