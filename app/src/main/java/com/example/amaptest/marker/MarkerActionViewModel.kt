@@ -16,7 +16,7 @@ class MarkerActionViewModel : ViewModel() {
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
     val onAnimTaskLiveData = SingleLiveEvent<Pair<List<ClusterUtils.NodeTrack>, List<BaseMarkerData>>>()
 
-
+    var distanceInfo: DistanceInfo? = null
 
     private val clusterAlgorithm by lazy {
         //AlgorithmWallpaper(DistanceAlgorithm())
@@ -34,15 +34,33 @@ class MarkerActionViewModel : ViewModel() {
                     } else {
                         clusterAlgorithm.feed(it)
                     }
+                    postCalcClusters()
                 }
             }
         }
     }
 
     fun calcClusters(distanceInfo: DistanceInfo) {
-        viewModelScope.launch(Dispatchers.IO) {
-            clusterAlgorithm.calc(distanceInfo) {
-                ssss(MarkerDataFactory.create(it))
+        this.distanceInfo = distanceInfo
+        postCalcClusters()
+    }
+
+    private fun postCalcClusters() {
+        if (clusterAlgorithm.isFeed().not()) {
+            logd("not feed", "_____")
+            return
+        }
+
+        if (distanceInfo == null) {
+            logd("not distanceInfo", "_____")
+            return
+        }
+
+        distanceInfo?.let { distanceInfo ->
+            viewModelScope.launch(Dispatchers.IO) {
+                clusterAlgorithm.calc(distanceInfo) {
+                    ssss(MarkerDataFactory.create(it))
+                }
             }
         }
     }

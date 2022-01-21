@@ -41,4 +41,6 @@ class DistanceAlgorithm : BaseClusterAlgorithm {
         }
         callback.invoke(newResult)
     }
+
+    override fun isFeed() = clusterItems.isNotEmpty()
 }

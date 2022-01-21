@@ -17,9 +17,12 @@ class BaseMap(val map: AMap) {
     fun addMarkers(
         options: ArrayList<MarkerOptions>,
         moveToCenter: Boolean = false
-    ): ArrayList<Marker> {
+    ): ArrayList<Marker>? {
         val count = options.size
         logd("createMarkers:${count}", TAG)
+        if (count == 0) {
+            return null
+        }
         val markers = map.addMarkers(options, moveToCenter)
         assert(count == markers.size)
         markers.forEach {

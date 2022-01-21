@@ -7,4 +7,6 @@ interface BaseClusterAlgorithm {
         distanceInfo: DistanceInfo,
         callback: (list: Set<Cluster<ClusterItem>>) -> Unit
     )
+
+    fun isFeed(): Boolean
 }

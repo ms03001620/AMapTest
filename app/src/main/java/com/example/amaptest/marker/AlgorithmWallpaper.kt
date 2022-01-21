@@ -36,4 +36,6 @@ class AlgorithmWallpaper(private val impl: BaseClusterAlgorithm) : BaseClusterAl
             "clusterEvent"
         )
     }
+
+    override fun isFeed() = impl.isFeed()
 }
