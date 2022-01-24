@@ -8,7 +8,7 @@ import com.example.amaptest.SingleLiveEvent
 import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.DistanceInfo
 import com.polestar.charging.ui.cluster.base.StationClusterItem
-import com.polestar.charging.ui.cluster.distance.DistanceQuadTreeAlgorithm
+import com.polestar.charging.ui.cluster.distance.DistanceAlgorithm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -19,8 +19,8 @@ class MarkerActionViewModel : ViewModel() {
     var distanceInfo: DistanceInfo? = null
 
     private val clusterAlgorithm by lazy {
-        //AlgorithmWallpaper(DistanceAlgorithm())
-        AlgorithmWallpaper(DistanceQuadTreeAlgorithm())
+        AlgorithmWallpaper(DistanceAlgorithm())
+        //AlgorithmWallpaper(DistanceQuadTreeAlgorithm())
     }
 
     fun loadDefault(context: Context, file: String, start: Int, end: Int) {

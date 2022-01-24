@@ -31,6 +31,10 @@ class MarkerActionActivity : AppCompatActivity() {
         AssetsReadUtils.readBytes(this, "style_extra.data")
     }
 
+    private val clusterIconSize by lazy {
+        resources.getDimension(R.dimen.charging_station_cluster_size)
+    }
+
     lateinit var mMapView: MapView
     lateinit var mMapProxy: MapProxy
     lateinit var markerAction: MarkerAction
@@ -140,7 +144,7 @@ class MarkerActionActivity : AppCompatActivity() {
 
     fun getClusterMergeDistance() =
         DistanceInfo(
-            0f,
+            clusterIconSize * mMapView.map.scalePerPixel,
             mMapView.map.cameraPosition.zoom != mMapView.map.maxZoomLevel,
             mMapView.map.cameraPosition
         )
