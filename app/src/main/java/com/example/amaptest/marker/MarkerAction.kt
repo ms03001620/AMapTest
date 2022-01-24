@@ -20,24 +20,6 @@ class MarkerAction(val mapProxy: MapProxy) {
         mapProxy.createMarkers(data)
     }
 
-    fun processNodeList(pair: Pair<List<ClusterUtils.NodeTrack>, List<BaseMarkerData>>) {
-        val animTask = pair.first
-        val delTask = pair.second
-
-        // animId 5
-        delTask.forEach {
-            mapProxy.removeMarker(it.getId())
-        }
-
-        animTask.forEach { nodeTrack ->
-            if (nodeTrack.isExpTask()) {
-                processExpTask(nodeTrack.node, nodeTrack.subNodeList.first())
-            } else {
-                processCospTask(nodeTrack)
-            }
-        }
-    }
-
     fun processNodeList(clusterAnimData: ClusterAnimData) {
         // animId 5
         clusterAnimData.deleteList.forEach {
