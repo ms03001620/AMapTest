@@ -17,6 +17,7 @@ class MarkerActionViewModel : ViewModel() {
     val onAnimTaskLiveData = SingleLiveEvent<Pair<List<ClusterUtils.NodeTrack>, List<BaseMarkerData>>>()
 
     var distanceInfo: DistanceInfo? = null
+    var prev: MutableList<BaseMarkerData>? = null
 
     private val clusterAlgorithm by lazy {
         AlgorithmWallpaper(DistanceAlgorithm())
@@ -59,29 +60,23 @@ class MarkerActionViewModel : ViewModel() {
         distanceInfo?.let { distanceInfo ->
             viewModelScope.launch(Dispatchers.IO) {
                 clusterAlgorithm.calc(distanceInfo) {
-                    ssss(MarkerDataFactory.create(it))
+                    val curr = MarkerDataFactory.create(it)
+
+                    prev?.let {
+                        val p = ClusterUtils.processCreateDel(it, curr)
+                        onAnimTaskLiveData.postValue(p)
+                    } ?: run {
+                        noChangeLiveData.postValue(curr)
+                    }
+
+                    prev = curr.toMutableList()
                 }
             }
         }
     }
 
-    var prev :MutableList<BaseMarkerData>?=null
-
-    fun ssss(curr: MutableList<BaseMarkerData>) {
-        if (prev == null) {
-            noChangeLiveData.postValue(curr)
-        } else {
-            val p = ClusterUtils.processCreateDel(prev!!, curr)
-
-            onAnimTaskLiveData.postValue(p)
-        }
-        val mutableList = mutableListOf<BaseMarkerData>()
-        mutableList.addAll(curr)
-        prev = mutableList
-    }
-
     fun printPrev() {
-        logd("prev size:${prev?.size?:0}", "_____")
+        logd("prev size:${prev?.size}", "_____")
         prev?.forEach {
             logd("list marker:${it.getId()}", "_____")
         }
