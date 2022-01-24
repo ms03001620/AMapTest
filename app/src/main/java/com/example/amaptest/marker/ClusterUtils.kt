@@ -216,8 +216,9 @@ object ClusterUtils {
     data class NodeTrack(
         val node: BaseMarkerData,
         val subNodeList: MutableList<SubNode>,
-        val isExpTask: Boolean = subNodeList.size == 1
     )
+
+    fun NodeTrack.isExpTask() = this.subNodeList.size == 1
 
 
     /**

@@ -9,6 +9,7 @@ import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.DistanceInfo
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.charging.ui.cluster.distance.DistanceAlgorithm
+import com.polestar.charging.ui.cluster.distance.DistanceQuadTreeAlgorithm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -20,8 +21,8 @@ class MarkerActionViewModel : ViewModel() {
     var prev: MutableList<BaseMarkerData>? = null
 
     private val clusterAlgorithm by lazy {
-        AlgorithmWallpaper(DistanceAlgorithm())
-        //AlgorithmWallpaper(DistanceQuadTreeAlgorithm())
+        //AlgorithmWallpaper(DistanceAlgorithm())
+        AlgorithmWallpaper(DistanceQuadTreeAlgorithm())
     }
 
     fun loadDefault(context: Context, file: String, start: Int, end: Int) {

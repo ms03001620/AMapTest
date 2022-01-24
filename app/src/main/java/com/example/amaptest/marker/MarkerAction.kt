@@ -6,6 +6,7 @@ import com.amap.api.maps.model.Marker
 import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
+import com.example.amaptest.marker.ClusterUtils.isExpTask
 import com.polestar.base.utils.logd
 
 class MarkerAction(val mapProxy: MapProxy) {
@@ -30,7 +31,7 @@ class MarkerAction(val mapProxy: MapProxy) {
 
         animTask.forEach { nodeTrack ->
             val curr = nodeTrack.node
-            if (nodeTrack.isExpTask) {
+            if (nodeTrack.isExpTask()) {
                 processNodeToSub(curr, nodeTrack.subNodeList.first())
             } else {
                 processSubToNode(nodeTrack)
