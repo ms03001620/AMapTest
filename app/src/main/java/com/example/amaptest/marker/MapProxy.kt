@@ -84,6 +84,6 @@ class MapProxy(private val map: BaseMap, private val context: Context) {
             .title(baseMarkerData.getId())
             .position(latLng)
             .icon(createBitmapDescriptor(baseMarkerData))
-            .setFlat(true)
+            .setFlat(false)
             .infoWindowEnable(false)
 }
