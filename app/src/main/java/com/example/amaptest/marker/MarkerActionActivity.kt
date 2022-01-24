@@ -59,7 +59,7 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         viewModel.clusterAnimDataLiveData.observe(this) {
-            markerAction.processNodeList1(it)
+            markerAction.processNodeList(it)
         }
 
     }

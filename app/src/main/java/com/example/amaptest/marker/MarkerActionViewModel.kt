@@ -8,7 +8,6 @@ import com.example.amaptest.SingleLiveEvent
 import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.DistanceInfo
 import com.polestar.charging.ui.cluster.base.StationClusterItem
-import com.polestar.charging.ui.cluster.distance.DistanceAlgorithm
 import com.polestar.charging.ui.cluster.distance.DistanceQuadTreeAlgorithm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -69,7 +68,7 @@ class MarkerActionViewModel : ViewModel() {
                     prev?.let {
     /*                    val p = ClusterUtils.processCreateDel(it, curr)
                         onAnimTaskLiveData.postValue(p)*/
-                        val p = ClusterUtils.processCreateDel1(it, curr)
+                        val p = ClusterUtils.processCreateDel(it, curr)
                         clusterAnimDataLiveData.postValue(p)
                     } ?: run {
                         noChangeLiveData.postValue(curr)

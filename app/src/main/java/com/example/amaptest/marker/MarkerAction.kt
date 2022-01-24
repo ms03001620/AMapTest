@@ -38,7 +38,7 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
-    fun processNodeList1(clusterAnimData: ClusterAnimData) {
+    fun processNodeList(clusterAnimData: ClusterAnimData) {
         // animId 5
         clusterAnimData.deleteList.forEach {
             mapProxy.removeMarker(it.getId())
