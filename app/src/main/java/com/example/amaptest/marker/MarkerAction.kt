@@ -32,14 +32,14 @@ class MarkerAction(val mapProxy: MapProxy) {
         animTask.forEach { nodeTrack ->
             val curr = nodeTrack.node
             if (nodeTrack.isExpTask()) {
-                processNodeToSub(curr, nodeTrack.subNodeList.first())
+                processExpTask(curr, nodeTrack.subNodeList.first())
             } else {
-                processSubToNode(nodeTrack)
+                processCospTask(nodeTrack)
             }
         }
     }
 
-    fun processNodeToSub(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
+    private fun processExpTask(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
         if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.parentLatLng)) {
             val marker = mapProxy.getMarker(subNode.parentId)
             if (marker == null) {
@@ -58,14 +58,10 @@ class MarkerAction(val mapProxy: MapProxy) {
             } else {
                 transfer(marker, curr.getLatlng(), false, null)
             }
-
-/*            Handler(Looper.getMainLooper()).postDelayed( {
-                attemptTransfer(subNode,curr.getLatlng())
-            }, 10)*/
         }
     }
 
-    fun processSubToNode(nodeTrack: ClusterUtils.NodeTrack) {
+    fun processCospTask(nodeTrack: ClusterUtils.NodeTrack) {
         val curr = nodeTrack.node
         val listener = object : Animation.AnimationListener {
             override fun onAnimationStart() {
