@@ -30,9 +30,8 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
 
         animTask.forEach { nodeTrack ->
-            val curr = nodeTrack.node
             if (nodeTrack.isExpTask()) {
-                processExpTask(curr, nodeTrack.subNodeList.first())
+                processExpTask(nodeTrack.node, nodeTrack.subNodeList.first())
             } else {
                 processCospTask(nodeTrack)
             }
@@ -40,7 +39,6 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     private fun processExpTask(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
-   /*     if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.parentLatLng)) {*/
         if (subNode.isNoMove) {
             val marker = mapProxy.getMarker(subNode.parentId)
             if (marker == null) {
@@ -49,20 +47,15 @@ class MarkerAction(val mapProxy: MapProxy) {
                 mapProxy.updateMarker(marker, curr)
             }
         } else {
-
-            val baseMarkerData = subNode.subNode
-            val marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
-            assert(marker != null)
-
-            if (ClusterUtils.isSamePosition(curr.getLatlng(), marker!!.position)) {
-                println(baseMarkerData)
-            } else {
-                transfer(marker, curr.getLatlng(), false, null)
+            mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)?.let {
+                transfer(it, curr.getLatlng(), false, null)
+            } ?: run {
+                assert(false)
             }
         }
     }
 
-    fun processCospTask(nodeTrack: ClusterUtils.NodeTrack) {
+    private fun processCospTask(nodeTrack: ClusterUtils.NodeTrack) {
         val curr = nodeTrack.node
         val listener = object : Animation.AnimationListener {
             override fun onAnimationStart() {
@@ -73,11 +66,8 @@ class MarkerAction(val mapProxy: MapProxy) {
                 val subNode = nodeTrack.subNodeList.firstOrNull { it.isNoMove }
 
                 if (subNode != null) {
-                    val marker = mapProxy.getMarker(subNode.subNode.getId())
-                    if (marker != null) {
-                        mapProxy.updateMarker(marker, curr)
-                    } else {
-                        // TODO 没找到相同点
+                    mapProxy.getMarker(subNode.subNode.getId())?.let {
+                        mapProxy.updateMarker(it, curr)
                     }
                 } else {
                     mapProxy.createMarker(nodeTrack.node)
@@ -87,7 +77,6 @@ class MarkerAction(val mapProxy: MapProxy) {
 
         var isFirst = true
         nodeTrack.subNodeList.forEach { subNode ->
-/*            if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())) {*/
             if (subNode.isNoMove) {
                 if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
                     // animId 7
@@ -103,18 +92,17 @@ class MarkerAction(val mapProxy: MapProxy) {
                 val baseMarkerData = subNode.subNode
                 logd("cospTransfer nodeType:${subNode.nodeType}", "______")
 
-                var marker: Marker? = null
-                if (subNode.nodeType == ClusterUtils.NodeType.PREV_IN_CURR) {
-                    marker = mapProxy.getMarker(baseMarkerData.getId())
+                val marker = if (subNode.nodeType == ClusterUtils.NodeType.PREV_IN_CURR) {
+                    mapProxy.getMarker(baseMarkerData.getId())
                 } else {
-                    marker = mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
+                    mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
                 }
-                if (marker == null) {
-                    println(baseMarkerData)
-                }
-                assert(marker != null)
 
-                transfer(marker!!, curr.getLatlng(), true,if (isFirst) listener else null)
+                marker?.let {
+                    transfer(marker, curr.getLatlng(), true, if (isFirst) listener else null)
+                } ?: run {
+                    assert(false)
+                }
                 isFirst = false
             }
         }
