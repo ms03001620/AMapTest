@@ -40,7 +40,8 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     private fun processExpTask(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
-        if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.parentLatLng)) {
+   /*     if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.parentLatLng)) {*/
+        if (subNode.isNoMove) {
             val marker = mapProxy.getMarker(subNode.parentId)
             if (marker == null) {
                 mapProxy.createMarker(curr)
@@ -69,12 +70,7 @@ class MarkerAction(val mapProxy: MapProxy) {
 
             override fun onAnimationEnd() {
                 // 动画后创建或更新聚合点
-                val subNode = nodeTrack.subNodeList.firstOrNull { subNode ->
-                    ClusterUtils.isSamePosition(
-                        curr.getLatlng(),
-                        subNode.subNode.getLatlng()
-                    )
-                }
+                val subNode = nodeTrack.subNodeList.firstOrNull { it.isNoMove }
 
                 if (subNode != null) {
                     val marker = mapProxy.getMarker(subNode.subNode.getId())
@@ -91,7 +87,8 @@ class MarkerAction(val mapProxy: MapProxy) {
 
         var isFirst = true
         nodeTrack.subNodeList.forEach { subNode ->
-            if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())) {
+/*            if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())) {*/
+            if (subNode.isNoMove) {
                 if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
                     // animId 7
                     val marker = mapProxy.getMarker(subNode.parentId)

@@ -76,18 +76,19 @@ object ClusterUtils {
         prevList.forEach { prev ->
             val latLngPrev = prev.getLatlng()
             val idPrev = prev.getId()
+            val isSamePos = isSamePosition(prev.getLatlng(), curr.getLatlng())
             // 新的是否包含了全部老的数据
             // ABCD AB true
             // A ABCD
             if (isAllItemInParent(curr.getCluster().items, prev.getCluster().items)) {
                 // 新点包括所有老点
                 val nodeType = NodeType.PREV_IN_CURR
-                subNodeList.add(SubNode(latLngPrev,idPrev, nodeType, prev))
+                subNodeList.add(SubNode(latLngPrev,idPrev, nodeType, prev, isSamePos))
 
             } else if (isAllItemInParent(prev.getCluster().items, curr.getCluster().items)) {
                 // 老点包括所有新点
                 val nodeType = NodeType.CURR_IN_PREV
-                subNodeList.add(SubNode(latLngPrev, idPrev,nodeType, curr))
+                subNodeList.add(SubNode(latLngPrev, idPrev,nodeType, curr, isSamePos))
             } else {
                 // 老的部分在新的中
                 val nodeType = NodeType.PIECE
@@ -98,7 +99,8 @@ object ClusterUtils {
                             latLngPrev,
                             idPrev,
                             nodeType,
-                            MarkerDataFactory.create(items, latLngPrev)
+                            MarkerDataFactory.create(items, latLngPrev),
+                            isSamePos
                         )
                     )
                 }
@@ -221,7 +223,7 @@ object ClusterUtils {
     fun NodeTrack.isExpTask() = this.subNodeList.size == 1
 
 
-    /**
+        /**
      * @PREV_IN_CURR 子节点全部被合并 A,B,CD -> ABCD
      * @CURR_IN_PREV 子节点被分裂 ABCD -> A,B,CD
      * @PIECE， 子节点只是部分数据，不完整
@@ -240,6 +242,7 @@ object ClusterUtils {
         val parentLatLng: LatLng,
         val parentId: String,
         val nodeType: NodeType,
-        val subNode: BaseMarkerData
+        val subNode: BaseMarkerData,
+        val isNoMove: Boolean
     )
 }
