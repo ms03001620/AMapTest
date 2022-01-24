@@ -18,44 +18,13 @@ class ClusterUtilsTest {
             stationsList.subList(1, 2),
             stationsList.subList(2, 3)
         )
-        val t = ClusterUtils.createTrackData(p.first(), c)
-        assertEquals(3, t.subNodeList.size)
-    }
 
-    @Test
-    fun createTrackDataBase1() {
-        val p = JsonTestUtil.mock(stationsList.subList(0, 3))
-        val c = JsonTestUtil.mock(
-            stationsList.subList(0, 1),
-            stationsList.subList(1, 2),
-            stationsList.subList(2, 3)
-        )
-
-        val b1 = ClusterUtils.process(p, c)
-        val b2 = ClusterUtils.process(c, p)
-
-
-        assertNotNull(b1)
-    }
-
-    @Test
-    fun createTrackDataBase2() {
-        val p = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
-        val c = JsonTestUtil.mock(
-            listOf(
-                stationsList.subList(0, 1).first(),
-                stationsList.subList(2, 3).first()
-            ),
-            listOf(
-                stationsList.subList(1, 2).first(),
-                stationsList.subList(3, 4).first()
-            ),
-        )
-
-        val b1 = ClusterUtils.process(p, c)
-        val b2 = ClusterUtils.process(c, p)
-
-        assertNotNull(b1)
+        ClusterUtils.createTrackData(p.first(), c).let {
+            assertEquals(3, it.subNodeList.size)
+            assertTrue(it.subNodeList[0].isNoMove)
+            assertFalse(it.subNodeList[1].isNoMove)
+            assertFalse(it.subNodeList[2].isNoMove)
+        }
     }
 
     @Test

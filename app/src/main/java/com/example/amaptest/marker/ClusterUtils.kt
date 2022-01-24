@@ -6,14 +6,6 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 object ClusterUtils {
-    fun process(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): List<NodeTrack> {
-        val result = curr.map {
-            createTrackData(it, prev)
-        }
-        println(result)
-        return result
-    }
-
     fun processAndDeSame(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): List<NodeTrack> {
         val subPrev = prev.toMutableList()
         val subCurr = curr.toMutableList()
