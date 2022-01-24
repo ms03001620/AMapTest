@@ -23,13 +23,9 @@ class MarkerAction(val mapProxy: MapProxy) {
         val animTask = pair.first
         val delTask = pair.second
 
-        // 展开点，子任务未包含 原点的删除
-        if (delTask.isNotEmpty()) {
-            delTask.map {
-                it.getId()
-            }.let {
-                mapProxy.removeMarkers(it)
-            }
+        // animId 5
+        delTask.forEach {
+            mapProxy.removeMarker(it.getId())
         }
 
         animTask.forEach { nodeTrack ->
@@ -100,7 +96,7 @@ class MarkerAction(val mapProxy: MapProxy) {
         nodeTrack.subNodeList.forEach { subNode ->
             if (ClusterUtils.isSamePosition(curr.getLatlng(), subNode.subNode.getLatlng())) {
                 if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
-                    // animId 6
+                    // animId 7
                     val marker = mapProxy.getMarker(subNode.parentId)
                     if (marker != null) {
                         mapProxy.updateMarker(marker, subNode.subNode)
