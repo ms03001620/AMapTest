@@ -45,6 +45,32 @@ object ClusterUtils {
         return Pair(taskList, del)
     }
 
+    fun processCreateDel1(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): ClusterAnimData {
+        val taskList = processAndDeSame(prev, curr)
+        val delList = processDel(prev, curr)
+
+        // 过滤删除任务（有些点需要在动画后删除）
+        val del = delList.filterNot { delData ->
+            var findDel = false
+            run lit@{
+                taskList.forEach { track ->
+                    if (track.subNodeList.size > 1) {
+                        track.subNodeList.forEach { subNode ->
+                            // task合并任务已包含该删除点，该点会在合并结束后删除
+                            if (subNode.subNode == delData) {
+                                findDel = true
+                                return@lit
+                            }
+                        }
+                    }
+                }
+            }
+            findDel
+        }
+
+        return ClusterAnimData(taskList, del)
+    }
+
     fun processDel(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): List<BaseMarkerData> {
         val subPrev = prev.toMutableList()
         val subCurr = curr.toMutableList()

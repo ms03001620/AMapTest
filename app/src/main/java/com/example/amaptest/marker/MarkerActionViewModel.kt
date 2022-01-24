@@ -16,6 +16,9 @@ import kotlinx.coroutines.launch
 class MarkerActionViewModel : ViewModel() {
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
     val onAnimTaskLiveData = SingleLiveEvent<Pair<List<ClusterUtils.NodeTrack>, List<BaseMarkerData>>>()
+    val clusterAnimDataLiveData = SingleLiveEvent<ClusterAnimData>()
+
+
 
     var distanceInfo: DistanceInfo? = null
     var prev: MutableList<BaseMarkerData>? = null
@@ -64,8 +67,10 @@ class MarkerActionViewModel : ViewModel() {
                     val curr = MarkerDataFactory.create(it)
 
                     prev?.let {
-                        val p = ClusterUtils.processCreateDel(it, curr)
-                        onAnimTaskLiveData.postValue(p)
+    /*                    val p = ClusterUtils.processCreateDel(it, curr)
+                        onAnimTaskLiveData.postValue(p)*/
+                        val p = ClusterUtils.processCreateDel1(it, curr)
+                        clusterAnimDataLiveData.postValue(p)
                     } ?: run {
                         noChangeLiveData.postValue(curr)
                     }

@@ -38,6 +38,21 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
+    fun processNodeList1(clusterAnimData: ClusterAnimData) {
+        // animId 5
+        clusterAnimData.deleteList.forEach {
+            mapProxy.removeMarker(it.getId())
+        }
+
+        clusterAnimData.animTask.forEach { nodeTrack ->
+            if (nodeTrack.isExpTask()) {
+                processExpTask(nodeTrack.node, nodeTrack.subNodeList.first())
+            } else {
+                processCospTask(nodeTrack)
+            }
+        }
+    }
+
     private fun processExpTask(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
         if (subNode.isNoMove) {
             val marker = mapProxy.getMarker(subNode.parentId)
