@@ -6,25 +6,29 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 object ClusterUtils {
-    fun processAndDeSame(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): List<NodeTrack> {
-        val subPrev = prev.toMutableList()
-        val subCurr = curr.toMutableList()
+    fun processCreateDel(subPrev: MutableList<BaseMarkerData>, subCurr: MutableList<BaseMarkerData>): ClusterAnimData {
+        val prev = subPrev.toMutableList()
+        val curr = subCurr.toMutableList()
+        delSame(prev, curr)
 
-        delSame(subPrev, subCurr)
-
-        val result = subCurr.map {
-            createTrackData(it, subPrev)
+        val taskList = curr.map {
+            createTrackData(it, prev)
         }
-
-        return result
+        val delList = processDel(prev, curr, taskList)
+        return ClusterAnimData(taskList, delList)
     }
 
-    fun processCreateDel(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): ClusterAnimData {
-        val taskList = processAndDeSame(prev, curr)
-        val delList = processDel(prev, curr)
+    fun processDel(
+        prev: MutableList<BaseMarkerData>,
+        curr: MutableList<BaseMarkerData>,
+        taskList: List<NodeTrack>
+    ): List<BaseMarkerData> {
+        val del = prev.filter { p ->
+            curr.firstOrNull { isSamePosition(it.getLatlng(), p.getLatlng()) } == null
+        }
 
         // 过滤删除任务（有些点需要在动画后删除）
-        val del = delList.filterNot { delData ->
+        return del.filterNot { delData ->
             var findDel = false
             run lit@{
                 taskList.forEach { track ->
@@ -41,21 +45,6 @@ object ClusterUtils {
             }
             findDel
         }
-
-        return ClusterAnimData(taskList, del)
-    }
-
-    fun processDel(prev: MutableList<BaseMarkerData>, curr: MutableList<BaseMarkerData>): List<BaseMarkerData> {
-        val subPrev = prev.toMutableList()
-        val subCurr = curr.toMutableList()
-
-        delSame(subPrev, subCurr)
-
-        val del = subPrev.filter { p ->
-            curr.firstOrNull { isSamePosition(it.getLatlng(), p.getLatlng()) } == null
-        }
-
-        return del
     }
 
     /**
