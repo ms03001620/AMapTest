@@ -7,7 +7,6 @@ data class DistanceInfo(
     val distanceMerge: Float,
     val enableCluster: Boolean,
     val cameraPosition: CameraPosition? = null,
-    val visibleBounds: LatLngBounds? = null
 )
 
 
