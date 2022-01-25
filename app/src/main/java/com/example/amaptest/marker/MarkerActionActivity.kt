@@ -114,23 +114,8 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_zoom_fn)?.setOnClickListener {
-            //markerAction.aaa()
-            val start = System.currentTimeMillis()
-            val v = Random.nextInt(0, 12)
-            val p = mMapProxy.getCollapsedBitmapDescriptor2(v.toString())
-
-            logd("getCollapsedBitmapDescriptor a pass:${System.currentTimeMillis()-start}", "_____")
-
-            val op = MarkerOptions()
-                .position(LatLng(31.218953,121.476741))
-                .icon(BitmapDescriptorFactory.fromBitmap(p))
-                .infoWindowEnable(false)
-
-            logd("getCollapsedBitmapDescriptor b pass:${System.currentTimeMillis()-start}", "_____")
-
-            val marker = mMapView.map.addMarker(op)
-
-            //markerAction.transfer(marker, LatLng(31.218953,121.486741))
+            //testAddIcon()
+            testRemove()
         }
 
         findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
@@ -140,6 +125,29 @@ class MarkerActionActivity : AppCompatActivity() {
                 .show()
             markerAction.printMarkers()
         }
+    }
+
+    fun testRemove(){
+        markerAction.clearMarker(viewModel.prev)
+    }
+
+    fun testAddIcon(){
+        val start = System.currentTimeMillis()
+        val v = Random.nextInt(0, 12)
+        val p = mMapProxy.getCollapsedBitmapDescriptor2(v.toString())
+
+        logd("getCollapsedBitmapDescriptor a pass:${System.currentTimeMillis()-start}", "_____")
+
+        val op = MarkerOptions()
+            .position(LatLng(31.218953,121.476741))
+            .icon(BitmapDescriptorFactory.fromBitmap(p))
+            .infoWindowEnable(false)
+
+        logd("getCollapsedBitmapDescriptor b pass:${System.currentTimeMillis()-start}", "_____")
+
+        val marker = mMapView.map.addMarker(op)
+
+        //markerAction.transfer(marker, LatLng(31.218953,121.486741))
     }
 
     fun getClusterMergeDistance() =

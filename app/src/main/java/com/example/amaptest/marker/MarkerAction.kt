@@ -16,6 +16,14 @@ class MarkerAction(val mapProxy: MapProxy) {
         mapProxy.clear()
     }
 
+    fun clearMarker(prev: MutableList<BaseMarkerData>?) {
+        prev?.map {
+            it.getId()
+        }?.let {
+            mapProxy.clearMarker(it)
+        }
+    }
+
     fun setList(data: MutableList<BaseMarkerData>) {
         mapProxy.clear()
         mapProxy.createMarkers(data)
@@ -48,7 +56,8 @@ class MarkerAction(val mapProxy: MapProxy) {
             mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)?.let {
                 transfer(it, curr.getLatlng(), false, null)
             } ?: run {
-                assert(false)
+                loge("processExpTask :${subNode.nodeType}", "MarkerAction")
+                //assert(false)
             }
         }
     }
@@ -100,7 +109,7 @@ class MarkerAction(val mapProxy: MapProxy) {
                     transfer(marker, curr.getLatlng(), true, if (isFirst) listener else null)
                     isFirst = false
                 } ?: run {
-                    loge("cospTransfer :${subNode.nodeType}", BaseMap.TAG)
+                    loge("cospTransfer :${subNode.nodeType}", "MarkerAction")
                     //assert(false)
                 }
             }

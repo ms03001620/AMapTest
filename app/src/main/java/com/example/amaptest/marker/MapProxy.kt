@@ -62,6 +62,10 @@ class MapProxy(private val map: BaseMap, context: Context) {
         }
     }
 
+    fun clearMarker(keepIds: List<String>) {
+        map.clearMarker(keepIds)
+    }
+
     private fun createOptionsToPosition(
         baseMarkerData: BaseMarkerData,
         forceLatLng: LatLng? = null

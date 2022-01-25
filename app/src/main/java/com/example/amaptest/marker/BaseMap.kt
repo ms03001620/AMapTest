@@ -40,6 +40,14 @@ class BaseMap(val map: AMap) {
         map.clear(true)
     }
 
+    fun clearMarker(keepIds: List<String>) {
+        markersHashMap.keys.filterNot {
+            keepIds.contains(it)
+        }.forEach {
+            removeMarker(it)
+        }
+    }
+
     fun removeMarker(id: String) {
         markersHashMap.remove(id)?.remove() ?: run {
             // assert(false)
