@@ -80,14 +80,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_move).setOnClickListener {
-            ClusterUtils.processCreateDel(prev, curr).let {
+            ClusterUtils.createClusterAnimData(prev, curr).let {
                 markerAction.processNodeList(it)
             }
         }
 
 
         findViewById<View>(R.id.btn_del).setOnClickListener {
-            ClusterUtils.processCreateDel(curr, prev).let {
+            ClusterUtils.createClusterAnimData(curr, prev).let {
                 markerAction.processNodeList(it)
             }
         }

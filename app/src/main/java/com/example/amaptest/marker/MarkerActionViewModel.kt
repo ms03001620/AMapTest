@@ -64,7 +64,7 @@ class MarkerActionViewModel : ViewModel() {
                     val curr = MarkerDataFactory.create(it)
 
                     prev?.let {
-                        val p = ClusterUtils.processCreateDel(it, curr)
+                        val p = ClusterUtils.createClusterAnimData(it, curr)
                         clusterAnimDataLiveData.postValue(p)
                     } ?: run {
                         noChangeLiveData.postValue(curr)

@@ -6,7 +6,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 object ClusterUtils {
-    fun processCreateDel(subPrev: MutableList<BaseMarkerData>, subCurr: MutableList<BaseMarkerData>): ClusterAnimData {
+    fun createClusterAnimData(subPrev: MutableList<BaseMarkerData>, subCurr: MutableList<BaseMarkerData>): ClusterAnimData {
         val prev = subPrev.toMutableList()
         val curr = subCurr.toMutableList()
         delSame(prev, curr)
