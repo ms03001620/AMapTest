@@ -97,7 +97,6 @@ class MarkerAction(val mapProxy: MapProxy) {
             } else {
                 // 合并任务，移动子点到合并点，并且删除
                 val baseMarkerData = subNode.subNode
-                logd("cospTransfer nodeType:${subNode.nodeType}", "______")
 
                 val marker = if (subNode.nodeType == ClusterUtils.NodeType.PREV_IN_CURR) {
                     mapProxy.getMarker(baseMarkerData.getId())
@@ -146,7 +145,7 @@ class MarkerAction(val mapProxy: MapProxy) {
 
     fun transfer(marker: Marker, moveTo: LatLng) {
         val startPos = marker.position
-        logd("before transfer pos:${startPos} to $moveTo", "_____")
+        logd("before transfer pos:${startPos} to $moveTo", "MarkerAction")
         TranslateAnimation(moveTo).apply {
             this.setInterpolator(AccelerateInterpolator())
             this.setDuration(CLUSTER_MOVE_ANIM)
@@ -159,7 +158,7 @@ class MarkerAction(val mapProxy: MapProxy) {
                     val deltaLat = endPos.latitude - moveTo.latitude
                     val deltaLng = endPos.longitude - moveTo.longitude
 
-                    logd("after deltaLat:${deltaLat}, deltaLng:${deltaLng}, same:${ClusterUtils.isSamePosition(endPos, moveTo)} ", "_____")
+                    logd("after deltaLat:${deltaLat}, deltaLng:${deltaLng}, same:${ClusterUtils.isSamePosition(endPos, moveTo)} ", "MarkerAction")
                 }
             })
         }.let {
@@ -174,13 +173,13 @@ class MarkerAction(val mapProxy: MapProxy) {
 
     fun printMarkers() {
         val markers = mapProxy.getAllMarkers()
-        logd("list marker size:${markers.size}", "_____")
+        logd("list marker size:${markers.size}", "MarkerAction")
         markers.forEach {
-            logd("list marker:${it.title}", "_____")
+            logd("list marker:${it.title}", "MarkerAction")
         }
     }
 
     companion object {
-        const val CLUSTER_MOVE_ANIM = 2000L
+        const val CLUSTER_MOVE_ANIM = 300L
     }
 }
