@@ -8,17 +8,12 @@ import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import com.example.amaptest.R
 
-class IconGenerator(val context: Context) {
+class IconGenerator(val context: Context, resId: Int, textResId: Int) {
     private val container =
-        LayoutInflater.from(context).inflate(R.layout.charging_layout_marker_collapsed_v2, null)
+        LayoutInflater.from(context).inflate(resId, null)
 
-    private val containerCluster =
-        LayoutInflater.from(context).inflate(R.layout.charging_layout_marker_cluster_v2, null)
-
-    private val textView = container.findViewById<TextView>(R.id.tv)
-    private val textViewCluster = containerCluster.findViewById<TextView>(R.id.text_cluster)
+    private val textView = container.findViewById<TextView>(textResId)
 
     private val sizeSingle by lazy {
         val measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -29,31 +24,22 @@ class IconGenerator(val context: Context) {
         Size(measuredWidth, measuredHeight)
     }
 
-    private val sizeCluster by lazy {
-        val measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
-        containerCluster.measure(measureSpec, measureSpec)
-        val measuredWidth: Int = containerCluster.measuredWidth
-        val measuredHeight: Int = containerCluster.measuredHeight
-        containerCluster.layout(0, 0, measuredWidth, measuredHeight)
-        Size(measuredWidth, measuredHeight)
-    }
+    private var bitmapCache: Bitmap? = null
 
     fun makeIcon(text: CharSequence): Bitmap {
-        return makeIconCluster(text, textView, container, sizeSingle)
-    }
-
-    fun makeIconCluster(text: CharSequence): Bitmap {
-        return makeIconCluster(text, textViewCluster, containerCluster, sizeCluster)
+        if (bitmapCache == null) {
+            bitmapCache =
+                Bitmap.createBitmap(sizeSingle.width, sizeSingle.height, Bitmap.Config.ARGB_8888)
+        }
+        return makeIconCluster(text, container, bitmapCache!!)
     }
 
     private fun makeIconCluster(
         text: CharSequence,
-        textView: TextView,
         container: View,
-        size: Size
+        bitmap: Bitmap
     ): Bitmap {
         textView.text = text
-        val bitmap = Bitmap.createBitmap(size.width, size.height, Bitmap.Config.ARGB_8888)
         bitmap.eraseColor(Color.TRANSPARENT)
         val canvas = Canvas(bitmap)
         container.draw(canvas)

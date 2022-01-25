@@ -3,10 +3,14 @@ package com.example.amaptest.marker
 import android.content.Context
 import android.graphics.Bitmap
 import com.amap.api.maps.model.*
+import com.example.amaptest.R
 import com.polestar.repository.data.charging.showMarker
 
-class MapProxy(private val map: BaseMap, private val context: Context) {
-    private val iconGenerator = IconGenerator(context)
+class MapProxy(private val map: BaseMap, context: Context) {
+    private val iconSingle =
+        IconGenerator(context, R.layout.charging_layout_marker_collapsed_v2, R.id.tv)
+    private val iconCluster =
+        IconGenerator(context, R.layout.charging_layout_marker_cluster_v2, R.id.text_cluster)
 
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
         baseMarkerDataList.map {
@@ -35,7 +39,7 @@ class MapProxy(private val map: BaseMap, private val context: Context) {
     }
 
     fun getCollapsedBitmapDescriptor2(total: String): Bitmap {
-        val p = iconGenerator.makeIconCluster(total)
+        val p = iconCluster.makeIcon(total)
         return p
     }
 
@@ -59,17 +63,20 @@ class MapProxy(private val map: BaseMap, private val context: Context) {
         }
     }
 
-    private fun createOptionsToPosition(baseMarkerData: BaseMarkerData, forceLatLng: LatLng? = null): MarkerOptions {
+    private fun createOptionsToPosition(
+        baseMarkerData: BaseMarkerData,
+        forceLatLng: LatLng? = null
+    ): MarkerOptions {
         val createAtPosition = forceLatLng ?: baseMarkerData.getLatlng()
         return createMarkerOptions(baseMarkerData, createAtPosition)
     }
 
     private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
-        return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIcon(total))
+        return BitmapDescriptorFactory.fromBitmap(iconSingle.makeIcon(total))
     }
 
     private fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
-        return BitmapDescriptorFactory.fromBitmap(iconGenerator.makeIconCluster(clusterSize.toString()))
+        return BitmapDescriptorFactory.fromBitmap(iconCluster.makeIcon(clusterSize.toString()))
     }
 
     private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData) =

@@ -130,7 +130,7 @@ class MarkerActionActivity : AppCompatActivity() {
 
             val marker = mMapView.map.addMarker(op)
 
-            markerAction.transfer(marker, LatLng(31.218953,121.486741))
+            //markerAction.transfer(marker, LatLng(31.218953,121.486741))
         }
 
         findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
