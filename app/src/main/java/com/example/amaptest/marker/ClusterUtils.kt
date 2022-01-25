@@ -11,14 +11,12 @@ object ClusterUtils {
         val curr = subCurr.toMutableList()
         delSame(prev, curr)
 
-        val taskList = curr.map {
-            createTrackData(it, prev)
-        }
-        val delList = processDel(prev, curr, taskList)
-        return ClusterAnimData(taskList, delList)
+        val taskList = curr.map { createTrackData(it, prev) }
+        val deleteList = createDeleteData(prev, curr, taskList)
+        return ClusterAnimData(taskList, deleteList)
     }
 
-    fun processDel(
+    fun createDeleteData(
         prev: MutableList<BaseMarkerData>,
         curr: MutableList<BaseMarkerData>,
         taskList: List<NodeTrack>
