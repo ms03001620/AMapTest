@@ -9,8 +9,12 @@ import com.amap.api.maps.model.animation.TranslateAnimation
 import com.example.amaptest.marker.ClusterUtils.isExpTask
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
+import kotlinx.coroutines.*
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.locks.ReentrantLock
 
 class MarkerAction(val mapProxy: MapProxy) {
+    private val lock = ReentrantLock()
 
     fun clear() {
         mapProxy.clear()
@@ -30,6 +34,34 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     fun processNodeList(clusterAnimData: ClusterAnimData) {
+        GlobalScope.launch {
+            suspendProcessNodeList(clusterAnimData)
+        }
+    }
+
+     fun suspendProcessNodeList(clusterAnimData: ClusterAnimData) {
+        if (lock.tryLock(6, TimeUnit.SECONDS)) {
+            try {
+                logd("safeProcessNodeList start", "MarkerAction")
+                val start = System.currentTimeMillis()
+                safeProcessNodeList(clusterAnimData)
+                runBlocking {
+                    // delay for transfer anim duration
+                    delay(CLUSTER_MOVE_ANIM + 100)
+                }
+                logd(
+                    "safeProcessNodeList pass :${System.currentTimeMillis() - start}",
+                    "MarkerAction"
+                )
+            } finally {
+                lock.unlock()
+            }
+        } else {
+            loge("1111111111", "MarkerAction")
+        }
+    }
+
+    private fun safeProcessNodeList(clusterAnimData: ClusterAnimData) {
         // animId 5
         clusterAnimData.deleteList.forEach {
             mapProxy.removeMarker(it.getId())
@@ -180,6 +212,6 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     companion object {
-        const val CLUSTER_MOVE_ANIM = 300L
+        const val CLUSTER_MOVE_ANIM = 500L
     }
 }
