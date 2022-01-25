@@ -5,6 +5,8 @@ import com.amap.api.maps.model.BitmapDescriptor
 import com.amap.api.maps.model.Marker
 import com.amap.api.maps.model.MarkerOptions
 import com.polestar.base.utils.logd
+import com.polestar.base.utils.loge
+import com.polestar.base.utils.logw
 import java.lang.IllegalArgumentException
 
 class BaseMap(val map: AMap) {
@@ -39,19 +41,22 @@ class BaseMap(val map: AMap) {
     }
 
     fun removeMarker(id: String) {
-        logd("removeMarker:${id}", TAG)
-        markersHashMap.remove(id)!!.remove()
+        markersHashMap.remove(id)?.remove() ?: run {
+            // assert(false)
+            loge("removeMarker:${id}", TAG)
+        }
     }
 
     fun addMarker(markerOptions: MarkerOptions): Marker? {
-        logd("createMarker:${markerOptions.title}", TAG)
         if (markersHashMap.containsKey(markerOptions.title).not()) {
             val marker = map.addMarker(markerOptions)
             assert(marker != null)
-            markersHashMap.put(markerOptions.title, marker)
+            markersHashMap[markerOptions.title] = marker
             return marker
         } else {
-            throw IllegalArgumentException("markerOptions has added ${markerOptions.title}")
+            // throw IllegalArgumentException("markerOptions has added ${markerOptions.title}")
+            loge("addMarker duplicate:${markerOptions.title}", TAG)
+            return null
         }
     }
 

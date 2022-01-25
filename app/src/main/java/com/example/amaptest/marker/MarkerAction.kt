@@ -97,10 +97,10 @@ class MarkerAction(val mapProxy: MapProxy) {
 
                 marker?.let {
                     transfer(marker, curr.getLatlng(), true, if (isFirst) listener else null)
+                    isFirst = false
                 } ?: run {
                     assert(false)
                 }
-                isFirst = false
             }
         }
     }
