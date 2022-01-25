@@ -38,9 +38,8 @@ class MapProxy(private val map: BaseMap, context: Context) {
         return map.addMarker(markerOptions)
     }
 
-    fun getCollapsedBitmapDescriptor2(total: String): Bitmap {
-        val p = iconCluster.makeIcon(total)
-        return p
+    fun getCollapsedBitmapDescriptor2(total: String): Bitmap? {
+        return iconCluster.makeIcon(total)
     }
 
     fun getMarker(id: String): Marker? {

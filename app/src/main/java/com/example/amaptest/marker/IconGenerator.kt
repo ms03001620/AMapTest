@@ -26,24 +26,24 @@ class IconGenerator(val context: Context, resId: Int, textResId: Int) {
 
     private var bitmapCache: Bitmap? = null
 
-    fun makeIcon(text: CharSequence): Bitmap {
+    fun makeIcon(text: CharSequence): Bitmap? {
         if (bitmapCache == null) {
             bitmapCache =
                 Bitmap.createBitmap(sizeSingle.width, sizeSingle.height, Bitmap.Config.ARGB_8888)
         }
-        return makeIconCluster(text, container, bitmapCache!!)
+        return makeIconCluster(text, container)
     }
 
     private fun makeIconCluster(
         text: CharSequence,
         container: View,
-        bitmap: Bitmap
-    ): Bitmap {
+    ): Bitmap? {
         textView.text = text
-        bitmap.eraseColor(Color.TRANSPARENT)
-        val canvas = Canvas(bitmap)
-        container.draw(canvas)
-        return bitmap
+        bitmapCache?.let {
+            it.eraseColor(Color.TRANSPARENT)
+            container.draw(Canvas(it))
+        }
+        return bitmapCache
     }
 
 }
