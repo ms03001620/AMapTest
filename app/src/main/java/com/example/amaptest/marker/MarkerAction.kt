@@ -8,6 +8,7 @@ import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
 import com.example.amaptest.marker.ClusterUtils.isExpTask
 import com.polestar.base.utils.logd
+import com.polestar.base.utils.loge
 
 class MarkerAction(val mapProxy: MapProxy) {
 
@@ -99,7 +100,8 @@ class MarkerAction(val mapProxy: MapProxy) {
                     transfer(marker, curr.getLatlng(), true, if (isFirst) listener else null)
                     isFirst = false
                 } ?: run {
-                    assert(false)
+                    loge("cospTransfer :${subNode.nodeType}", BaseMap.TAG)
+                    //assert(false)
                 }
             }
         }
