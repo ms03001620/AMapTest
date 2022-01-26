@@ -34,7 +34,7 @@ class MapProxy(private val map: BaseMap, context: Context) {
         map.removeMarker(id)
     }
 
-    private fun createMarker(markerOptions: MarkerOptions): Marker? {
+    fun createMarker(markerOptions: MarkerOptions): Marker? {
         return map.addMarker(markerOptions)
     }
 
