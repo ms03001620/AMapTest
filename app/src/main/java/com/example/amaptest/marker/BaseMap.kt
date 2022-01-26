@@ -49,9 +49,16 @@ class BaseMap(val map: AMap) {
     }
 
     fun removeMarker(id: String) {
-        markersHashMap.remove(id)?.remove() ?: run {
-            // assert(false)
-            loge("removeMarker:${id}", TAG)
+        val marker = markersHashMap.get(id)
+        if (marker == null) {
+            loge("removeMarker null id:${id}", "logicException")
+        } else {
+            marker.remove()
+            if (marker.isRemoved) {
+                markersHashMap.remove(id)
+            } else {
+                loge("removeMarker remove fail:${id}", "logicException")
+            }
         }
     }
 
