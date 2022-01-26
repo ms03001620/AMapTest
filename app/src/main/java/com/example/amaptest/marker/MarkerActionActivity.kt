@@ -15,7 +15,6 @@ import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
 import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.DistanceInfo
-import kotlin.random.Random
 
 class MarkerActionActivity : AppCompatActivity() {
     private val viewModel by lazy {
@@ -49,7 +48,7 @@ class MarkerActionActivity : AppCompatActivity() {
     }
 
     private fun initObserver() {
-        viewModel.loadDefault(this, FILE, SUBLIST_START, SUBLIST_END)
+        //viewModel.loadDefault(this, FILE, SUBLIST_START, SUBLIST_END)
         viewModel.noChangeLiveData.observe(this) {
             markerAction.setList(it)
         }
@@ -119,35 +118,25 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
-            viewModel.printPrev()
-
-            Toast.makeText(this, "size:${mMapProxy.getAllMarkers().size}", Toast.LENGTH_SHORT)
-                .show()
-            markerAction.printMarkers()
+            testAddIcon()
         }
     }
 
-    fun testRemove(){
+    fun testRemove() {
         markerAction.clearMarker(viewModel.prev)
     }
 
-    fun testAddIcon(){
+    fun testPaint() {
+        viewModel.printPrev()
+        Toast.makeText(this, "size:${mMapProxy.getAllMarkers().size}", Toast.LENGTH_SHORT)
+            .show()
+        markerAction.printMarkers()
+    }
+
+    fun testAddIcon() {
         val start = System.currentTimeMillis()
-        val v = Random.nextInt(0, 12)
-        val p = mMapProxy.getCollapsedBitmapDescriptor2(v.toString())
-
-        logd("getCollapsedBitmapDescriptor a pass:${System.currentTimeMillis()-start}", "_____")
-
-        val op = MarkerOptions()
-            .position(LatLng(31.218953,121.476741))
-            .icon(BitmapDescriptorFactory.fromBitmap(p))
-            .infoWindowEnable(false)
-
-        logd("getCollapsedBitmapDescriptor b pass:${System.currentTimeMillis()-start}", "_____")
-
-        val marker = mMapView.map.addMarker(op)
-
-        //markerAction.transfer(marker, LatLng(31.218953,121.486741))
+        markerAction.testSyncAnim()
+        logd("transfer b pass:${System.currentTimeMillis() - start}", "_____")
     }
 
     fun getClusterMergeDistance() =

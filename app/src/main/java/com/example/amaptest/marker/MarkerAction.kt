@@ -1,8 +1,10 @@
 package com.example.amaptest.marker
 
 import android.view.animation.AccelerateInterpolator
+import com.amap.api.maps.model.BitmapDescriptorFactory
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.Marker
+import com.amap.api.maps.model.MarkerOptions
 import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
@@ -10,8 +12,10 @@ import com.example.amaptest.marker.ClusterUtils.isExpTask
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
 import kotlinx.coroutines.*
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.ReentrantLock
+import kotlin.random.Random
 
 class MarkerAction(val mapProxy: MapProxy) {
     private val lock = ReentrantLock()
@@ -175,31 +179,36 @@ class MarkerAction(val mapProxy: MapProxy) {
         marker.startAnimation()
     }
 
-    fun transfer(marker: Marker, moveTo: LatLng) {
-        val startPos = marker.position
-        logd("before transfer pos:${startPos} to $moveTo", "MarkerAction")
-        TranslateAnimation(moveTo).apply {
+
+
+    fun testSyncAnim() {
+        val countDownLatch = CountDownLatch(1)
+        val op = MarkerOptions()
+            .position(LatLng(31.245299, 121.499514))
+            .icon(BitmapDescriptorFactory.fromBitmap(mapProxy.getCollapsedBitmapDescriptor2(Random.nextInt(0, 99).toString())))
+            .title(Random.nextInt(0, 99).toString())
+            .infoWindowEnable(false)
+
+        val marker = mapProxy.createMarker(op)!!
+        TranslateAnimation(LatLng(31.245299, 121.519999)).apply {
             this.setInterpolator(AccelerateInterpolator())
-            this.setDuration(CLUSTER_MOVE_ANIM)
+            this.setDuration(1000)
             this.setAnimationListener(object : Animation.AnimationListener {
                 override fun onAnimationStart() {
                 }
 
                 override fun onAnimationEnd() {
-                    val endPos = marker.position
-                    val deltaLat = endPos.latitude - moveTo.latitude
-                    val deltaLng = endPos.longitude - moveTo.longitude
-
-                    logd("after deltaLat:${deltaLat}, deltaLng:${deltaLng}, same:${ClusterUtils.isSamePosition(endPos, moveTo)} ", "MarkerAction")
+                    countDownLatch.countDown()
                 }
             })
         }.let {
-            val set = AnimationSet(true)
-            set.addAnimation(it)
-            set
+            AnimationSet(true).apply {
+                this.addAnimation(it)
+            }
         }.let {
             marker.setAnimation(it)
             marker.startAnimation()
+            countDownLatch.await(1500, TimeUnit.MILLISECONDS)
         }
     }
 
