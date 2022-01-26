@@ -48,7 +48,7 @@ class MarkerActionActivity : AppCompatActivity() {
     }
 
     private fun initObserver() {
-        //viewModel.loadDefault(this, FILE, SUBLIST_START, SUBLIST_END)
+        viewModel.loadDefault(this, FILE, SUBLIST_START, SUBLIST_END)
         viewModel.noChangeLiveData.observe(this) {
             markerAction.setList(it)
         }
@@ -113,12 +113,12 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_zoom_fn)?.setOnClickListener {
-            //testAddIcon()
             testRemove()
         }
 
         findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
-            testAddIcon()
+            //testAddIcon()
+            testScreenMarkersPaint()
         }
     }
 
@@ -131,6 +131,12 @@ class MarkerActionActivity : AppCompatActivity() {
         Toast.makeText(this, "size:${mMapProxy.getAllMarkers().size}", Toast.LENGTH_SHORT)
             .show()
         markerAction.printMarkers()
+    }
+
+    fun testScreenMarkersPaint() {
+        mMapView.map.mapScreenMarkers.forEachIndexed { index, marker ->
+            logd("index: $index, id:${marker.title}", "_____")
+        }
     }
 
     fun testAddIcon() {
