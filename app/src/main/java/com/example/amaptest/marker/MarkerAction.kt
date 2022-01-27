@@ -121,6 +121,7 @@ class MarkerAction(val mapProxy: MapProxy) {
                     mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
                 }
 
+                // TODO add listener at last
                 marker?.let {
                     transfer(marker, curr.getLatlng(), true, if (isFirst) listener else null)
                     isFirst = false
