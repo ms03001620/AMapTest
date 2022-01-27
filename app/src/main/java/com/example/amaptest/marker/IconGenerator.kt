@@ -8,6 +8,8 @@ import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import com.polestar.base.utils.loge
+import java.lang.Exception
 
 class IconGenerator(val context: Context, resId: Int, textResId: Int) {
     private val container =
@@ -40,8 +42,12 @@ class IconGenerator(val context: Context, resId: Int, textResId: Int) {
     ): Bitmap? {
         textView.text = text
         bitmapCache?.let {
-            it.eraseColor(Color.TRANSPARENT)
-            container.draw(Canvas(it))
+            try {
+                it.eraseColor(Color.TRANSPARENT)
+                container.draw(Canvas(it))
+            } catch (e: Exception) {
+                loge("makeIconCluster", "logicException", e)
+            }
         }
         return bitmapCache
     }
