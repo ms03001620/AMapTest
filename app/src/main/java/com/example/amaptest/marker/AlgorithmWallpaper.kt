@@ -17,14 +17,14 @@ class AlgorithmWallpaper(private val impl: BaseClusterAlgorithm) : BaseClusterAl
         distanceInfo: DistanceInfo,
         callback: (list: Set<Cluster<ClusterItem>>) -> Unit
     ) {
-        logd("distanceMerge zoom: ${distanceInfo.cameraPosition?.zoom}", "clusterEvent")
-        if(lastDistanceMerge?.cameraPosition?.zoom == distanceInfo.cameraPosition?.zoom) {
+        logd("distanceMerge zoom: ${distanceInfo.zoomLevel}", "clusterEvent")
+        if(lastDistanceMerge?.zoomLevel == distanceInfo.zoomLevel) {
             logd("distanceMerge: skip: $distanceInfo", "clusterEvent")
             return // skip same
         }
 
-        val od = lastDistanceMerge?.cameraPosition?.zoom ?: 0f
-        val no = distanceInfo.cameraPosition?.zoom?:0f
+        val od = lastDistanceMerge?.zoomLevel ?: 0f
+        val no = distanceInfo.zoomLevel
         val zoomOut = od < no
 
         lastDistanceMerge = distanceInfo

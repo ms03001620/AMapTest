@@ -126,6 +126,10 @@ class MarkerActionActivity : AppCompatActivity() {
         markerAction.clearMarker(viewModel.prev)
     }
 
+    fun testDoubleZoom() {
+
+    }
+
     fun testPaint() {
         viewModel.printPrev()
         Toast.makeText(this, "size:${mMapProxy.getAllMarkers().size}", Toast.LENGTH_SHORT)
@@ -149,7 +153,7 @@ class MarkerActionActivity : AppCompatActivity() {
         DistanceInfo(
             clusterIconSize * mMapView.map.scalePerPixel,
             mMapView.map.cameraPosition.zoom != mMapView.map.maxZoomLevel,
-            mMapView.map.cameraPosition
+            mMapView.map.cameraPosition.zoom
         )
 
 
@@ -185,7 +189,7 @@ class MarkerActionActivity : AppCompatActivity() {
         const val SUBLIST_END = -1 //-1 disable*/
 
 
-        const val FILE = "json_stations.json"
+        const val FILE = "json_stations570.json"
         const val SUBLIST_START = -1 //-1 disable
         const val SUBLIST_END = -1 //-1 disable
     }

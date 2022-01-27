@@ -43,18 +43,19 @@ class MarkerActionViewModel : ViewModel() {
     }
 
     fun calcClusters(distanceInfo: DistanceInfo) {
+        logd("calcClusters: ${distanceInfo.zoomLevel}", "_____")
         this.distanceInfo = distanceInfo
         postCalcClusters()
     }
 
     private fun postCalcClusters() {
         if (clusterAlgorithm.isFeed().not()) {
-            logd("not feed", "_____")
+            //logd("not feed", "_____")
             return
         }
 
         if (distanceInfo == null) {
-            logd("not distanceInfo", "_____")
+            //logd("not distanceInfo", "_____")
             return
         }
 

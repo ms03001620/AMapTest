@@ -20,7 +20,7 @@ class DistanceQuadTreeAlgorithm : BaseClusterAlgorithm {
         distanceInfo: DistanceInfo,
         callback: (list: Set<Cluster<ClusterItem>>) -> Unit
     ) {
-        callback.invoke(algorithm.getClusters(distanceInfo.cameraPosition?.zoom ?: 0f))
+        callback.invoke(algorithm.getClusters(distanceInfo.zoomLevel))
     }
 
     override fun isFeed() = feed

@@ -43,7 +43,11 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
-     fun suspendProcessNodeList(clusterAnimData: ClusterAnimData) {
+    fun suspendProcessNodeList(clusterAnimData: ClusterAnimData) {
+        unSafeProcessNodeList(clusterAnimData)
+    }
+
+/*     fun suspendProcessNodeList(clusterAnimData: ClusterAnimData) {
         if (lock.tryLock(10, TimeUnit.SECONDS)) {
             try {
                 logd("safeProcessNodeList start", "MarkerAction")
@@ -63,9 +67,9 @@ class MarkerAction(val mapProxy: MapProxy) {
         } else {
             loge("1111111111", "logicException")
         }
-    }
+    }*/
 
-    private fun safeProcessNodeList(clusterAnimData: ClusterAnimData) {
+    private fun unSafeProcessNodeList(clusterAnimData: ClusterAnimData) {
         // animId 5
         clusterAnimData.deleteList.forEach {
             mapProxy.removeMarker(it.getId())

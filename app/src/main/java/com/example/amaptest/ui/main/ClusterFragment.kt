@@ -243,7 +243,7 @@ set.forEach { cluster ->
         DistanceInfo(
             clusterIconSize * mapView.map.scalePerPixel,
             mapView.map.cameraPosition.zoom != mapView.map.maxZoomLevel,
-            mapView.map.cameraPosition
+            mapView.map.cameraPosition?.zoom ?: 0f
         )
 
     private fun initZoomBtn(view: View) {
