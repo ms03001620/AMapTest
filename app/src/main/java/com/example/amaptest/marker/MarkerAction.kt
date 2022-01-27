@@ -12,13 +12,13 @@ import com.example.amaptest.marker.ClusterUtils.isExpTask
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
 import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Semaphore
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.locks.ReentrantLock
 import kotlin.random.Random
 
 class MarkerAction(val mapProxy: MapProxy) {
-    private val lock = ReentrantLock()
+    private val lock = AnimFactory(Semaphore(1))
 
     fun clear() {
         mapProxy.clear()
@@ -39,35 +39,12 @@ class MarkerAction(val mapProxy: MapProxy) {
 
     fun processNodeList(clusterAnimData: ClusterAnimData) {
         GlobalScope.launch(Dispatchers.IO) {
-            suspendProcessNodeList(clusterAnimData)
+            lock.acquire()
+            logd("countTask s:${lock.countTask}", "AnimFactory")
+            unSafeProcessNodeList(clusterAnimData)
+            logd("countTask e:${lock.countTask}", "AnimFactory")
         }
     }
-
-    fun suspendProcessNodeList(clusterAnimData: ClusterAnimData) {
-        unSafeProcessNodeList(clusterAnimData)
-    }
-
-/*     fun suspendProcessNodeList(clusterAnimData: ClusterAnimData) {
-        if (lock.tryLock(10, TimeUnit.SECONDS)) {
-            try {
-                logd("safeProcessNodeList start", "MarkerAction")
-                val start = System.currentTimeMillis()
-                safeProcessNodeList(clusterAnimData)
-                runBlocking {
-                    // delay for transfer anim duration
-                    delay(CLUSTER_MOVE_ANIM + 200)
-                }
-                logd(
-                    "safeProcessNodeList pass :${System.currentTimeMillis() - start}",
-                    "MarkerAction"
-                )
-            } finally {
-                lock.unlock()
-            }
-        } else {
-            loge("1111111111", "logicException")
-        }
-    }*/
 
     private fun unSafeProcessNodeList(clusterAnimData: ClusterAnimData) {
         // animId 5
@@ -96,7 +73,7 @@ class MarkerAction(val mapProxy: MapProxy) {
             mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)?.let {
                 transfer(it, curr.getLatlng(), false, null)
             } ?: run {
-                loge("processExpTask :${subNode.nodeType}", "MarkerAction")
+                loge("processExpTask :${subNode.nodeType}", "logicException")
                 //assert(false)
             }
         }
@@ -148,13 +125,12 @@ class MarkerAction(val mapProxy: MapProxy) {
                     transfer(marker, curr.getLatlng(), true, if (isFirst) listener else null)
                     isFirst = false
                 } ?: run {
-                    loge("cospTransfer :${subNode.nodeType}", "MarkerAction")
+                    loge("cospTransfer :${subNode.nodeType}", "logicException")
                     //assert(false)
                 }
             }
         }
     }
-
 
     private fun transfer(
         marker: Marker,
@@ -166,18 +142,21 @@ class MarkerAction(val mapProxy: MapProxy) {
         set.addAnimation(TranslateAnimation(moveTo).apply {
             this.setInterpolator(AccelerateInterpolator())
             this.setDuration(CLUSTER_MOVE_ANIM)
-            this.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart() {
-                    listener?.onAnimationStart()
-                }
+            this.setAnimationListener(
+                lock.createAnimationListener(
+                    object : Animation.AnimationListener {
+                        override fun onAnimationStart() {
+                            listener?.onAnimationStart()
+                        }
 
-                override fun onAnimationEnd() {
-                    if (removeAtEnd) {
-                        mapProxy.removeMarker(marker.title)
-                    }
-                    listener?.onAnimationEnd()
-                }
-            })
+                        override fun onAnimationEnd() {
+                            if (removeAtEnd) {
+                                mapProxy.removeMarker(marker.title)
+                            }
+                            listener?.onAnimationEnd()
+                        }
+                    })
+            )
         })
         marker.setAnimation(set)
         marker.startAnimation()
@@ -225,6 +204,6 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     companion object {
-        const val CLUSTER_MOVE_ANIM = 300L
+        const val CLUSTER_MOVE_ANIM = 200L
     }
 }

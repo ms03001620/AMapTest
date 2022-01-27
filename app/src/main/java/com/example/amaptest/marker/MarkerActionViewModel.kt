@@ -8,6 +8,7 @@ import com.example.amaptest.SingleLiveEvent
 import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.DistanceInfo
 import com.polestar.charging.ui.cluster.base.StationClusterItem
+import com.polestar.charging.ui.cluster.base.sameZoom
 import com.polestar.charging.ui.cluster.distance.DistanceQuadTreeAlgorithm
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,7 +16,6 @@ import kotlinx.coroutines.launch
 class MarkerActionViewModel : ViewModel() {
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
     val clusterAnimDataLiveData = SingleLiveEvent<ClusterAnimData>()
-
 
     var distanceInfo: DistanceInfo? = null
     var prev: MutableList<BaseMarkerData>? = null
@@ -43,19 +43,24 @@ class MarkerActionViewModel : ViewModel() {
     }
 
     fun calcClusters(distanceInfo: DistanceInfo) {
-        logd("calcClusters: ${distanceInfo.zoomLevel}", "_____")
+        if (distanceInfo.sameZoom(this.distanceInfo)) {
+            logd("sameZoom", "MarkerActionViewModel")
+            return
+        }
+        logd("calcClusters: ${distanceInfo.zoomLevel}", "MarkerActionViewModel")
+
         this.distanceInfo = distanceInfo
         postCalcClusters()
     }
 
     private fun postCalcClusters() {
         if (clusterAlgorithm.isFeed().not()) {
-            //logd("not feed", "_____")
+            logd("not feed", "MarkerActionViewModel")
             return
         }
 
         if (distanceInfo == null) {
-            //logd("not distanceInfo", "_____")
+            logd("not distanceInfo", "MarkerActionViewModel")
             return
         }
 
@@ -65,7 +70,7 @@ class MarkerActionViewModel : ViewModel() {
                     val curr = MarkerDataFactory.create(it)
 
                     prev?.let {
-                        val p = ClusterUtils.createClusterAnimData(it, curr)
+                        val p = ClusterUtils.createClusterAnimData(it, curr, distanceInfo.zoomLevel)
                         clusterAnimDataLiveData.postValue(p)
                     } ?: run {
                         noChangeLiveData.postValue(curr)
@@ -78,9 +83,9 @@ class MarkerActionViewModel : ViewModel() {
     }
 
     fun printPrev() {
-        logd("prev size:${prev?.size}", "_____")
+        logd("prev size:${prev?.size}", "MarkerActionViewModel")
         prev?.forEach {
-            logd("list marker:${it.getId()}", "_____")
+            logd("list marker:${it.getId()}", "MarkerActionViewModel")
         }
     }
 }

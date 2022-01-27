@@ -2,9 +2,10 @@ package com.example.amaptest.marker
 
 import com.amap.api.maps.model.animation.Animation
 import com.polestar.base.utils.loge
+import kotlinx.coroutines.sync.Semaphore
 import java.util.concurrent.CountDownLatch
 
-class AnimFactory(val countDownLatch: CountDownLatch) {
+class AnimFactory(val countDownLatch: Semaphore? = null) {
     var countTask = 0
 
 
@@ -21,9 +22,11 @@ class AnimFactory(val countDownLatch: CountDownLatch) {
                 countTask--
                 loge("AnimFactory onAnimationEnd count:${countTask}", "MarkerAction")
                 if (countTask == 0) {
-                    countDownLatch.countDown()
+                    countDownLatch?.release()
                 }
             }
         }
     }
+
+    suspend fun acquire() = countDownLatch?.acquire()
 }

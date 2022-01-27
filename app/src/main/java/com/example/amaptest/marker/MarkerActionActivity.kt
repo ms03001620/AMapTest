@@ -15,6 +15,9 @@ import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
 import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.DistanceInfo
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class MarkerActionActivity : AppCompatActivity() {
     private val viewModel by lazy {
@@ -113,12 +116,11 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_zoom_fn)?.setOnClickListener {
-            testRemove()
+            testDoubleZoom()
         }
 
         findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
-            //testAddIcon()
-            testScreenMarkersPaint()
+            testRemove()
         }
     }
 
@@ -127,6 +129,15 @@ class MarkerActionActivity : AppCompatActivity() {
     }
 
     fun testDoubleZoom() {
+        val delay = 500L
+        GlobalScope.launch {
+            viewModel.calcClusters(DistanceInfo(0f, true, 14f))
+            delay(delay)
+            viewModel.calcClusters(DistanceInfo(0f, true, 15f))
+            delay(delay)
+            viewModel.calcClusters(DistanceInfo(0f, true, 16f))
+            delay(delay)
+        }
 
     }
 
@@ -141,12 +152,6 @@ class MarkerActionActivity : AppCompatActivity() {
         mMapView.map.mapScreenMarkers.forEachIndexed { index, marker ->
             logd("index: $index, id:${marker.title}", "_____")
         }
-    }
-
-    fun testAddIcon() {
-        val start = System.currentTimeMillis()
-        markerAction.testSyncAnim()
-        logd("transfer b pass:${System.currentTimeMillis() - start}", "_____")
     }
 
     fun getClusterMergeDistance() =
@@ -179,8 +184,14 @@ class MarkerActionActivity : AppCompatActivity() {
 
     companion object {
         // 白玉兰位置
-        const val DEFAULT_LNG = 121.497798
-        const val DEFAULT_LAT = 31.249051
+/*        const val DEFAULT_LNG = 121.497798
+        const val DEFAULT_LAT = 31.249051*/
+
+        // 上海黄浦区领展企业广场
+        const val DEFAULT_LNG = 121.476231
+        const val DEFAULT_LAT = 31.22128
+
+
 
         const val ZOOM = 12f
 

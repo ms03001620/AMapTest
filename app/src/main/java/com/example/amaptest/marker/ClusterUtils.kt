@@ -6,14 +6,14 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 object ClusterUtils {
-    fun createClusterAnimData(subPrev: MutableList<BaseMarkerData>, subCurr: MutableList<BaseMarkerData>): ClusterAnimData {
+    fun createClusterAnimData(subPrev: MutableList<BaseMarkerData>, subCurr: MutableList<BaseMarkerData>, zoom: Float): ClusterAnimData {
         val prev = subPrev.toMutableList()
         val curr = subCurr.toMutableList()
         delSame(prev, curr)
 
         val taskList = curr.map { createTrackData(it, prev) }
         val deleteList = createDeleteData(prev, curr, taskList)
-        return ClusterAnimData(taskList, deleteList)
+        return ClusterAnimData(taskList, deleteList, zoom)
     }
 
     fun createDeleteData(
