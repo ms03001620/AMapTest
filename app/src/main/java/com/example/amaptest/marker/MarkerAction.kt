@@ -38,20 +38,20 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     fun processNodeList(clusterAnimData: ClusterAnimData) {
-        GlobalScope.launch {
+        GlobalScope.launch(Dispatchers.IO) {
             suspendProcessNodeList(clusterAnimData)
         }
     }
 
      fun suspendProcessNodeList(clusterAnimData: ClusterAnimData) {
-        if (lock.tryLock(6, TimeUnit.SECONDS)) {
+        if (lock.tryLock(10, TimeUnit.SECONDS)) {
             try {
                 logd("safeProcessNodeList start", "MarkerAction")
                 val start = System.currentTimeMillis()
                 safeProcessNodeList(clusterAnimData)
                 runBlocking {
                     // delay for transfer anim duration
-                    delay(CLUSTER_MOVE_ANIM + 100)
+                    delay(CLUSTER_MOVE_ANIM + 200)
                 }
                 logd(
                     "safeProcessNodeList pass :${System.currentTimeMillis() - start}",
@@ -61,7 +61,7 @@ class MarkerAction(val mapProxy: MapProxy) {
                 lock.unlock()
             }
         } else {
-            loge("1111111111", "MarkerAction")
+            loge("1111111111", "logicException")
         }
     }
 
@@ -221,6 +221,6 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     companion object {
-        const val CLUSTER_MOVE_ANIM = 500L
+        const val CLUSTER_MOVE_ANIM = 300L
     }
 }
