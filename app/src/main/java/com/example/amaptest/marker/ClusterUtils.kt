@@ -19,7 +19,7 @@ object ClusterUtils {
     fun createDeleteData(
         prev: MutableList<BaseMarkerData>,
         curr: MutableList<BaseMarkerData>,
-        taskList: List<NodeTrackV2>
+        taskList: List<NodeTrack>
     ): List<BaseMarkerData> {
         val del = prev.filter { p ->
             curr.firstOrNull { isSamePosition(it.getLatlng(), p.getLatlng()) } == null
@@ -58,7 +58,7 @@ object ClusterUtils {
      * curr 当前数据
      * prevList 全部历史数据
      */
-    fun createTrackData(curr: BaseMarkerData, prevList: MutableList<BaseMarkerData>): NodeTrackV2 {
+    fun createTrackData(curr: BaseMarkerData, prevList: MutableList<BaseMarkerData>): NodeTrack {
         val subNodeList = mutableListOf<SubNode>()
         val subNodeListNoMove = mutableListOf<SubNode>()
         prevList.forEach { prev ->
@@ -118,7 +118,7 @@ object ClusterUtils {
 
         val isExpTask = (subNodeList.size + subNodeListNoMove.size) == 1
 
-        return NodeTrackV2(curr, subNodeList, subNodeListNoMove, isExpTask)
+        return NodeTrack(curr, subNodeList, subNodeListNoMove, isExpTask)
     }
 
     fun findItems(
@@ -222,17 +222,13 @@ object ClusterUtils {
         return ((this * multiplier).roundToInt() / multiplier)
     }
 
-
     /**
      * @node 新节点
      * @subNodeList 数据的来源
+     * @subNodeListNoMove  数据的来源，未移动
+     * @isExpTask 是否是展开任务
      */
-    data class NodeTrack(
-        val node: BaseMarkerData,
-        val subNodeList: MutableList<SubNode>,
-    )
-
-    class NodeTrackV2(
+    class NodeTrack(
         val node: BaseMarkerData,
         val subNodeList: MutableList<SubNode>,
         val subNodeListNoMove: MutableList<SubNode>,

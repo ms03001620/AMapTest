@@ -252,7 +252,7 @@ class ClusterUtilsTest {
         assertEquals(pCount, nSubCount + nSubNoMoveCount)
     }
 
-    private fun unCheckCase(result: List<ClusterUtils.NodeTrackV2>) {
+    private fun unCheckCase(result: List<ClusterUtils.NodeTrack>) {
         // subNodeList.size == 1 时不包含PIECE数据，未确定原因
         result.filter {
             it.isExpTask

@@ -60,7 +60,7 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
-    private fun processExpTask(curr: BaseMarkerData, nodeTrack: ClusterUtils.NodeTrackV2) {
+    private fun processExpTask(curr: BaseMarkerData, nodeTrack: ClusterUtils.NodeTrack) {
         nodeTrack.subNodeListNoMove.forEach { subNode ->
             val marker = mapProxy.getMarker(subNode.parentId)
             if (marker == null) {
@@ -80,7 +80,7 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
-    private fun processCospTask(nodeTrack: ClusterUtils.NodeTrackV2) {
+    private fun processCospTask(nodeTrack: ClusterUtils.NodeTrack) {
         val curr = nodeTrack.node
         val listener = object : Animation.AnimationListener {
             override fun onAnimationStart() {
