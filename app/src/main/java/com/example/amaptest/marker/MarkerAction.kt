@@ -81,7 +81,6 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     private fun processCospTask(nodeTrack: ClusterUtils.NodeTrack) {
-        val curr = nodeTrack.node
         val listener = object : Animation.AnimationListener {
             override fun onAnimationStart() {
             }
@@ -92,7 +91,7 @@ class MarkerAction(val mapProxy: MapProxy) {
 
                 if (subNode != null) {
                     mapProxy.getMarker(subNode.subNode.getId())?.let {
-                        mapProxy.updateMarker(it, curr)
+                        mapProxy.updateMarker(it, nodeTrack.node)
                     }
                 } else {
                     mapProxy.createMarker(nodeTrack.node)
@@ -112,8 +111,8 @@ class MarkerAction(val mapProxy: MapProxy) {
             }
         }
 
-        var isFirst = true
-        nodeTrack.subNodeList.forEach { subNode ->
+        val size = nodeTrack.subNodeList.size
+        nodeTrack.subNodeList.forEachIndexed{ index,  subNode ->
             // 合并任务，移动子点到合并点，并且删除
             val baseMarkerData = subNode.subNode
 
@@ -123,11 +122,12 @@ class MarkerAction(val mapProxy: MapProxy) {
                 mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
             }
 
-            // TODO add listener at last
-            marker?.let {
-                transfer(marker, curr.getLatlng(), true, if (isFirst) listener else null)
-                isFirst = false
-            } ?: run {
+            val isLastIndex = index == (size - 1)
+            val li = if (isLastIndex) listener else null
+
+            if (marker != null) {
+                transfer(marker, nodeTrack.node.getLatlng(), true, li)
+            } else {
                 loge("cospTransfer :${subNode.nodeType}", "logicException")
                 //assert(false)
             }

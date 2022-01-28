@@ -205,7 +205,7 @@ class ClusterUtilsTest {
 
         val sss = mutableListOf<Int>()
 
-        ClusterUtils.loops(7f, 17f, 1f, callback = { prevIndex: Float, currIndex: Float ->
+        ClusterUtils.loops(7f, 17f, .4f, callback = { prevIndex: Float, currIndex: Float ->
             val p = MarkerDataFactory.create(algorithm.getClusters(prevIndex))
             val c = MarkerDataFactory.create(algorithm.getClusters(currIndex))
             val subPrev = p.toMutableList()
@@ -238,6 +238,11 @@ class ClusterUtilsTest {
             if (count == 0) {
                 sss.add(1)
             }
+        }
+
+
+        result.forEach {
+            assertTrue(it.subNodeListNoMove.size <= 1)
         }
 
         val pCount = p.sumOf { it.getSize() }
