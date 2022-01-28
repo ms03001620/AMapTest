@@ -30,8 +30,8 @@ object ClusterUtils {
             var findDel = false
             run lit@{
                 taskList.forEach { track ->
-                    if ((track.subNodeList.size + track.subNodeListNoMove.size) > 1) {
-                        track.subNodeListNoMove.forEach { subNode ->
+                    if (track.subSize() > 1) {
+                        track.subNodeListNoMove?.let { subNode ->
                             // task合并任务已包含该删除点，该点会在合并结束后删除
                             if (subNode.subNode == delData) {
                                 findDel = true
@@ -60,7 +60,7 @@ object ClusterUtils {
      */
     fun createTrackData(curr: BaseMarkerData, prevList: MutableList<BaseMarkerData>): NodeTrack {
         val subNodeList = mutableListOf<SubNode>()
-        val subNodeListNoMove = mutableListOf<SubNode>()
+        var subNodeListNoMove: SubNode? = null
         prevList.forEach { prev ->
             val latLngPrev = prev.getLatlng()
             val idPrev = prev.getId()
@@ -72,7 +72,7 @@ object ClusterUtils {
                 // 新点包括所有老点
                 val nodeType = NodeType.PREV_IN_CURR
                 if (isSamePos) {
-                    subNodeListNoMove.add(SubNode(latLngPrev, idPrev, nodeType, prev, isSamePos))
+                    subNodeListNoMove = SubNode(latLngPrev, idPrev, nodeType, prev, isSamePos)
                 } else {
                     subNodeList.add(SubNode(latLngPrev, idPrev, nodeType, prev, isSamePos))
                 }
@@ -81,7 +81,7 @@ object ClusterUtils {
                 // 老点包括所有新点
                 val nodeType = NodeType.CURR_IN_PREV
                 if (isSamePos) {
-                    subNodeListNoMove.add(SubNode(latLngPrev, idPrev,nodeType, curr, isSamePos))
+                    subNodeListNoMove = SubNode(latLngPrev, idPrev,nodeType, curr, isSamePos)
                 }else{
                     subNodeList.add(SubNode(latLngPrev, idPrev,nodeType, curr, isSamePos))
                 }
@@ -92,7 +92,7 @@ object ClusterUtils {
                 val items = findItems(curr.getCluster().items, prev.getCluster().items)
                 if (items?.isNotEmpty() == true) {
                     if (isSamePos) {
-                        subNodeListNoMove.add(
+                        subNodeListNoMove =
                             SubNode(
                                 latLngPrev,
                                 idPrev,
@@ -100,7 +100,7 @@ object ClusterUtils {
                                 MarkerDataFactory.create(items, latLngPrev),
                                 isSamePos
                             )
-                        )
+
                     } else {
                         subNodeList.add(
                             SubNode(
@@ -116,7 +116,9 @@ object ClusterUtils {
             }
         }
 
-        val isExpTask = (subNodeList.size + subNodeListNoMove.size) == 1
+        val subNodeListNoMoveSize = if (subNodeListNoMove == null) 0 else 1
+
+        val isExpTask = (subNodeList.size + subNodeListNoMoveSize) == 1
 
         return NodeTrack(curr, subNodeList, subNodeListNoMove, isExpTask)
     }
@@ -231,9 +233,11 @@ object ClusterUtils {
     class NodeTrack(
         val node: BaseMarkerData,
         val subNodeList: MutableList<SubNode>,
-        val subNodeListNoMove: MutableList<SubNode>,
+        val subNodeListNoMove: SubNode?,
         val isExpTask: Boolean
     )
+
+    fun NodeTrack.subSize() = subNodeList.size + if(subNodeListNoMove==null) 0 else 1
 
         /**
      * @PREV_IN_CURR 子节点全部被合并 A,B,CD -> ABCD
