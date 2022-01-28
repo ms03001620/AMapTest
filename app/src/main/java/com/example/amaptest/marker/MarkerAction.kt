@@ -53,22 +53,24 @@ class MarkerAction(val mapProxy: MapProxy) {
 
         clusterAnimData.animTask.forEach { nodeTrack ->
             if (nodeTrack.isExpTask) {
-                processExpTask(nodeTrack.node, nodeTrack.subNodeList.first())
+                processExpTask(nodeTrack.node, nodeTrack)
             } else {
                 processCospTask(nodeTrack)
             }
         }
     }
 
-    private fun processExpTask(curr: BaseMarkerData, subNode: ClusterUtils.SubNode) {
-        if (subNode.isNoMove) {
+    private fun processExpTask(curr: BaseMarkerData, nodeTrack: ClusterUtils.NodeTrackV2) {
+        nodeTrack.subNodeListNoMove.forEach { subNode ->
             val marker = mapProxy.getMarker(subNode.parentId)
             if (marker == null) {
                 mapProxy.createMarker(curr)
             } else {
                 mapProxy.updateMarker(marker, curr)
             }
-        } else {
+        }
+
+        nodeTrack.subNodeList.forEach { subNode ->
             mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)?.let {
                 transfer(it, curr.getLatlng(), false, null)
             } ?: run {
@@ -86,7 +88,7 @@ class MarkerAction(val mapProxy: MapProxy) {
 
             override fun onAnimationEnd() {
                 // 动画后创建或更新聚合点
-                val subNode = nodeTrack.subNodeList.firstOrNull { it.isNoMove }
+                val subNode = nodeTrack.subNodeListNoMove.firstOrNull { it.isNoMove }
 
                 if (subNode != null) {
                     mapProxy.getMarker(subNode.subNode.getId())?.let {
@@ -98,36 +100,36 @@ class MarkerAction(val mapProxy: MapProxy) {
             }
         }
 
-        var isFirst = true
-        nodeTrack.subNodeList.forEach { subNode ->
-            if (subNode.isNoMove) {
-                if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
-                    // animId 7
-                    val marker = mapProxy.getMarker(subNode.parentId)
-                    if (marker != null) {
-                        mapProxy.updateMarker(marker, subNode.subNode)
-                    }
-                } else {
-                    // animId 1; 合并任务中，子点已在合并点，不需要移动。
+        nodeTrack.subNodeListNoMove.forEach {  subNode ->
+            if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
+                // animId 7
+                val marker = mapProxy.getMarker(subNode.parentId)
+                if (marker != null) {
+                    mapProxy.updateMarker(marker, subNode.subNode)
                 }
             } else {
-                // 合并任务，移动子点到合并点，并且删除
-                val baseMarkerData = subNode.subNode
+                // animId 1; 合并任务中，子点已在合并点，不需要移动。
+            }
+        }
 
-                val marker = if (subNode.nodeType == ClusterUtils.NodeType.PREV_IN_CURR) {
-                    mapProxy.getMarker(baseMarkerData.getId())
-                } else {
-                    mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
-                }
+        var isFirst = true
+        nodeTrack.subNodeList.forEach { subNode ->
+            // 合并任务，移动子点到合并点，并且删除
+            val baseMarkerData = subNode.subNode
 
-                // TODO add listener at last
-                marker?.let {
-                    transfer(marker, curr.getLatlng(), true, if (isFirst) listener else null)
-                    isFirst = false
-                } ?: run {
-                    loge("cospTransfer :${subNode.nodeType}", "logicException")
-                    //assert(false)
-                }
+            val marker = if (subNode.nodeType == ClusterUtils.NodeType.PREV_IN_CURR) {
+                mapProxy.getMarker(baseMarkerData.getId())
+            } else {
+                mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
+            }
+
+            // TODO add listener at last
+            marker?.let {
+                transfer(marker, curr.getLatlng(), true, if (isFirst) listener else null)
+                isFirst = false
+            } ?: run {
+                loge("cospTransfer :${subNode.nodeType}", "logicException")
+                //assert(false)
             }
         }
     }
