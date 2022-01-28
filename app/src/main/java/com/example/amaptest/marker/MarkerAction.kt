@@ -40,9 +40,9 @@ class MarkerAction(val mapProxy: MapProxy) {
     fun processNodeList(clusterAnimData: ClusterAnimData) {
         GlobalScope.launch(Dispatchers.IO) {
             lock.acquire()
-            logd("countTask s:${lock.countTask}", "AnimFactory")
             unSafeProcessNodeList(clusterAnimData)
-            logd("countTask e:${lock.countTask}", "AnimFactory")
+            // release lock when no anim task
+            lock.tryRelease()
         }
     }
 
