@@ -5,10 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class FlowViewModel : ViewModel() {
@@ -28,6 +25,8 @@ class FlowViewModel : ViewModel() {
         viewModelScope.launch {
             newsApi.latestNews.filter {
                 it % 2 == 0
+            }.catch {
+
             }.collect {
                 news.value = it
             }
