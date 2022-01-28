@@ -61,7 +61,7 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     private fun processExpTask(curr: BaseMarkerData, nodeTrack: ClusterUtils.NodeTrack) {
-        nodeTrack.subNodeListNoMove?.let { subNode ->
+        nodeTrack.subNodeNoMove?.let { subNode ->
             val marker = mapProxy.getMarker(subNode.parentId)
             if (marker == null) {
                 mapProxy.createMarker(curr)
@@ -87,7 +87,7 @@ class MarkerAction(val mapProxy: MapProxy) {
 
             override fun onAnimationEnd() {
                 // 动画后创建或更新聚合点
-                val subNode = nodeTrack.subNodeListNoMove
+                val subNode = nodeTrack.subNodeNoMove
                 if (subNode != null) {
                     mapProxy.getMarker(subNode.subNode.getId())?.let {
                         mapProxy.updateMarker(it, nodeTrack.node)
@@ -98,7 +98,7 @@ class MarkerAction(val mapProxy: MapProxy) {
             }
         }
 
-        nodeTrack.subNodeListNoMove?.let {  subNode ->
+        nodeTrack.subNodeNoMove?.let { subNode ->
             if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
                 // animId 7
                 val marker = mapProxy.getMarker(subNode.parentId)

@@ -31,7 +31,7 @@ object ClusterUtils {
             run lit@{
                 taskList.forEach { track ->
                     if (track.subSize() > 1) {
-                        track.subNodeListNoMove?.let { subNode ->
+                        track.subNodeNoMove?.let { subNode ->
                             // task合并任务已包含该删除点，该点会在合并结束后删除
                             if (subNode.subNode == delData) {
                                 findDel = true
@@ -233,11 +233,11 @@ object ClusterUtils {
     class NodeTrack(
         val node: BaseMarkerData,
         val subNodeList: MutableList<SubNode>,
-        val subNodeListNoMove: SubNode?,
+        val subNodeNoMove: SubNode?,
         val isExpTask: Boolean
     )
 
-    fun NodeTrack.subSize() = subNodeList.size + if(subNodeListNoMove==null) 0 else 1
+    fun NodeTrack.subSize() = subNodeList.size + if(subNodeNoMove==null) 0 else 1
 
         /**
      * @PREV_IN_CURR 子节点全部被合并 A,B,CD -> ABCD

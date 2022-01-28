@@ -23,7 +23,7 @@ class ClusterUtilsTest {
 
         ClusterUtils.createTrackData(c[0], p).let {
             assertEquals(3, it.subSize())
-            assertTrue(it.subNodeListNoMove?.isNoMove == true)
+            assertTrue(it.subNodeNoMove?.isNoMove == true)
             assertFalse(it.subNodeList[0].isNoMove)
             assertFalse(it.subNodeList[1].isNoMove)
         }
@@ -41,7 +41,7 @@ class ClusterUtilsTest {
 
         ClusterUtils.createTrackData(c[0], p).let {
             assertEquals(1, it.subSize())
-            assertTrue(it.subNodeListNoMove?.isNoMove == true)
+            assertTrue(it.subNodeNoMove?.isNoMove == true)
         }
 
         ClusterUtils.createTrackData(c[1], p).let {
@@ -72,10 +72,10 @@ class ClusterUtilsTest {
 
         ClusterUtils.createTrackData(curr[0], prev).let {
             assertEquals(1, it.subNodeList.size)
-            assertNotNull(it.subNodeListNoMove)
+            assertNotNull(it.subNodeNoMove)
             assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeList[0].nodeType)
-            assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeListNoMove?.nodeType)
-            assertTrue(it.subNodeListNoMove?.isNoMove == true)
+            assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeNoMove?.nodeType)
+            assertTrue(it.subNodeNoMove?.isNoMove == true)
             assertFalse(it.subNodeList[0].isNoMove)
         }
 
@@ -105,10 +105,10 @@ class ClusterUtilsTest {
 
         ClusterUtils.createTrackData(curr[0], prev).let {
             assertEquals(1, it.subNodeList.size)
-            assertNotNull(it.subNodeListNoMove)
+            assertNotNull(it.subNodeNoMove)
             assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeList[0].nodeType)
-            assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeListNoMove?.nodeType)
-            assertTrue(it.subNodeListNoMove?.isNoMove == true)
+            assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeNoMove?.nodeType)
+            assertTrue(it.subNodeNoMove?.isNoMove == true)
             assertFalse(it.subNodeList[0].isNoMove)
         }
 
@@ -130,7 +130,7 @@ class ClusterUtilsTest {
         val c = JsonTestUtil.mock(stationsList.subList(0, 3))
 
         assertEquals(1, ClusterUtils.createTrackData(c.first(), p).subNodeList.size)
-        assertNotNull(ClusterUtils.createTrackData(c.first(), p).subNodeListNoMove)
+        assertNotNull(ClusterUtils.createTrackData(c.first(), p).subNodeNoMove)
     }
 
     @Test
@@ -141,7 +141,7 @@ class ClusterUtilsTest {
         )
         val c = JsonTestUtil.mock(stationsList.subList(0, 1))
 
-        assertNotNull(ClusterUtils.createTrackData(c.first(), p).subNodeListNoMove)
+        assertNotNull(ClusterUtils.createTrackData(c.first(), p).subNodeNoMove)
         assertTrue(ClusterUtils.createTrackData(c.first(), p).isExpTask)
     }
 
@@ -164,8 +164,8 @@ class ClusterUtilsTest {
             it.nodeType == ClusterUtils.NodeType.PREV_IN_CURR
         })
 
-        assertNotNull(node.subNodeListNoMove)
-        assertEquals(ClusterUtils.NodeType.PREV_IN_CURR, node.subNodeListNoMove?.nodeType)
+        assertNotNull(node.subNodeNoMove)
+        assertEquals(ClusterUtils.NodeType.PREV_IN_CURR, node.subNodeNoMove?.nodeType)
     }
 
     @Test
@@ -184,7 +184,7 @@ class ClusterUtilsTest {
         val a =
             result.count { it.subNodeList.firstOrNull()?.nodeType == ClusterUtils.NodeType.CURR_IN_PREV }
         val b =
-            result.count { it.subNodeListNoMove?.nodeType == ClusterUtils.NodeType.CURR_IN_PREV }
+            result.count { it.subNodeNoMove?.nodeType == ClusterUtils.NodeType.CURR_IN_PREV }
         assertEquals(
             3,
             a + b
@@ -244,7 +244,7 @@ class ClusterUtilsTest {
         val cCount = c.sumOf { it.getSize() }
         val nCount = result.sumOf { it.node.getSize() }
         val nSubCount = result.sumOf { it.subNodeList.sumOf { it.subNode.getSize() } }
-        val nSubNoMoveCount = result.sumOf { it.subNodeListNoMove?.subNode?.getSize()?:0 }
+        val nSubNoMoveCount = result.sumOf { it.subNodeNoMove?.subNode?.getSize()?:0 }
         unCheckCase(result)
         //println("-----pCount:$pCount")
         assertEquals(pCount, cCount)
