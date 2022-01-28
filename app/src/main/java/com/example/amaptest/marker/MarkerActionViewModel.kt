@@ -3,6 +3,7 @@ package com.example.amaptest.marker
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.amap.api.maps.model.LatLng
 import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.SingleLiveEvent
 import com.polestar.base.utils.logd
@@ -10,8 +11,10 @@ import com.polestar.charging.ui.cluster.base.DistanceInfo
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.charging.ui.cluster.base.sameZoom
 import com.polestar.charging.ui.cluster.distance.DistanceQuadTreeAlgorithm
+import com.polestar.repository.data.charging.toLatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class MarkerActionViewModel : ViewModel() {
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
@@ -28,7 +31,9 @@ class MarkerActionViewModel : ViewModel() {
     fun loadDefault(context: Context, file: String, start: Int, end: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             AssetsReadUtils.mockStation(context, file)?.let { data ->
-                data.map {
+                data.filter {
+                    isCloseToPosition(it.toLatLng())
+                }.map {
                     StationClusterItem(it)
                 }.let {
                     if (start != -1 && end != -1) {
@@ -40,6 +45,17 @@ class MarkerActionViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun isCloseToPosition(
+        source: LatLng,
+        position: LatLng = LatLng(31.218953, 121.476741),
+        delta: Float = 0.005f
+    ): Boolean {
+        val latClose = abs(source.latitude - position.latitude) <= delta
+        val lngClose = abs(source.longitude - position.longitude) <= delta
+
+        return latClose && lngClose
     }
 
     fun calcClusters(distanceInfo: DistanceInfo) {
