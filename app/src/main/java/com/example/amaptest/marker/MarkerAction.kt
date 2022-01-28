@@ -8,7 +8,6 @@ import com.amap.api.maps.model.MarkerOptions
 import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
-import com.example.amaptest.marker.ClusterUtils.isExpTask
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
 import kotlinx.coroutines.*
@@ -53,7 +52,7 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
 
         clusterAnimData.animTask.forEach { nodeTrack ->
-            if (nodeTrack.isExpTask()) {
+            if (nodeTrack.isExpTask) {
                 processExpTask(nodeTrack.node, nodeTrack.subNodeList.first())
             } else {
                 processCospTask(nodeTrack)
@@ -79,7 +78,7 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
-    private fun processCospTask(nodeTrack: ClusterUtils.NodeTrack) {
+    private fun processCospTask(nodeTrack: ClusterUtils.NodeTrackV2) {
         val curr = nodeTrack.node
         val listener = object : Animation.AnimationListener {
             override fun onAnimationStart() {

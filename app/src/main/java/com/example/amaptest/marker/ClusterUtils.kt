@@ -19,7 +19,7 @@ object ClusterUtils {
     fun createDeleteData(
         prev: MutableList<BaseMarkerData>,
         curr: MutableList<BaseMarkerData>,
-        taskList: List<NodeTrack>
+        taskList: List<NodeTrackV2>
     ): List<BaseMarkerData> {
         val del = prev.filter { p ->
             curr.firstOrNull { isSamePosition(it.getLatlng(), p.getLatlng()) } == null
@@ -30,7 +30,15 @@ object ClusterUtils {
             var findDel = false
             run lit@{
                 taskList.forEach { track ->
-                    if (track.subNodeList.size > 1) {
+                    if ((track.subNodeList.size + track.subNodeListNoMove.size) > 1) {
+                        track.subNodeListNoMove.forEach { subNode ->
+                            // task合并任务已包含该删除点，该点会在合并结束后删除
+                            if (subNode.subNode == delData) {
+                                findDel = true
+                                return@lit
+                            }
+                        }
+
                         track.subNodeList.forEach { subNode ->
                             // task合并任务已包含该删除点，该点会在合并结束后删除
                             if (subNode.subNode == delData) {
@@ -50,8 +58,9 @@ object ClusterUtils {
      * curr 当前数据
      * prevList 全部历史数据
      */
-    fun createTrackData(curr: BaseMarkerData, prevList: MutableList<BaseMarkerData>): NodeTrack {
+    fun createTrackData(curr: BaseMarkerData, prevList: MutableList<BaseMarkerData>): NodeTrackV2 {
         val subNodeList = mutableListOf<SubNode>()
+        val subNodeListNoMove = mutableListOf<SubNode>()
         prevList.forEach { prev ->
             val latLngPrev = prev.getLatlng()
             val idPrev = prev.getId()
@@ -62,30 +71,54 @@ object ClusterUtils {
             if (isAllItemInParent(curr.getCluster().items, prev.getCluster().items)) {
                 // 新点包括所有老点
                 val nodeType = NodeType.PREV_IN_CURR
-                subNodeList.add(SubNode(latLngPrev,idPrev, nodeType, prev, isSamePos))
+                if (isSamePos) {
+                    subNodeListNoMove.add(SubNode(latLngPrev, idPrev, nodeType, prev, isSamePos))
+                } else {
+                    subNodeList.add(SubNode(latLngPrev, idPrev, nodeType, prev, isSamePos))
+                }
 
             } else if (isAllItemInParent(prev.getCluster().items, curr.getCluster().items)) {
                 // 老点包括所有新点
                 val nodeType = NodeType.CURR_IN_PREV
-                subNodeList.add(SubNode(latLngPrev, idPrev,nodeType, curr, isSamePos))
+                if (isSamePos) {
+                    subNodeListNoMove.add(SubNode(latLngPrev, idPrev,nodeType, curr, isSamePos))
+                }else{
+                    subNodeList.add(SubNode(latLngPrev, idPrev,nodeType, curr, isSamePos))
+                }
+
             } else {
                 // 老的部分在新的中
                 val nodeType = NodeType.PIECE
                 val items = findItems(curr.getCluster().items, prev.getCluster().items)
                 if (items?.isNotEmpty() == true) {
-                    subNodeList.add(
-                        SubNode(
-                            latLngPrev,
-                            idPrev,
-                            nodeType,
-                            MarkerDataFactory.create(items, latLngPrev),
-                            isSamePos
+                    if (isSamePos) {
+                        subNodeListNoMove.add(
+                            SubNode(
+                                latLngPrev,
+                                idPrev,
+                                nodeType,
+                                MarkerDataFactory.create(items, latLngPrev),
+                                isSamePos
+                            )
                         )
-                    )
+                    } else {
+                        subNodeList.add(
+                            SubNode(
+                                latLngPrev,
+                                idPrev,
+                                nodeType,
+                                MarkerDataFactory.create(items, latLngPrev),
+                                isSamePos
+                            )
+                        )
+                    }
                 }
             }
         }
-        return NodeTrack(curr, subNodeList)
+
+        val isExpTask = (subNodeList.size + subNodeListNoMove.size) == 1
+
+        return NodeTrackV2(curr, subNodeList, subNodeListNoMove, isExpTask)
     }
 
     fun findItems(
@@ -199,8 +232,12 @@ object ClusterUtils {
         val subNodeList: MutableList<SubNode>,
     )
 
-    fun NodeTrack.isExpTask() = this.subNodeList.size == 1
-
+    class NodeTrackV2(
+        val node: BaseMarkerData,
+        val subNodeList: MutableList<SubNode>,
+        val subNodeListNoMove: MutableList<SubNode>,
+        val isExpTask: Boolean
+    )
 
         /**
      * @PREV_IN_CURR 子节点全部被合并 A,B,CD -> ABCD

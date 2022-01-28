@@ -21,10 +21,10 @@ class ClusterUtilsTest {
         val c = JsonTestUtil.mock(stationsList.subList(0, 3))
 
         ClusterUtils.createTrackData(c[0], p).let {
-            assertEquals(3, it.subNodeList.size)
-            assertTrue(it.subNodeList[0].isNoMove)
+            assertEquals(3, it.subNodeList.size+it.subNodeListNoMove.size)
+            assertTrue(it.subNodeListNoMove[0].isNoMove)
+            assertFalse(it.subNodeList[0].isNoMove)
             assertFalse(it.subNodeList[1].isNoMove)
-            assertFalse(it.subNodeList[2].isNoMove)
         }
     }
 
@@ -39,17 +39,17 @@ class ClusterUtilsTest {
         )
 
         ClusterUtils.createTrackData(c[0], p).let {
-            assertEquals(1, it.subNodeList.size)
-            assertTrue(it.subNodeList[0].isNoMove)
+            assertEquals(1, it.subNodeList.size + it.subNodeListNoMove.size)
+            assertTrue(it.subNodeListNoMove[0].isNoMove)
         }
 
         ClusterUtils.createTrackData(c[1], p).let {
-            assertEquals(1, it.subNodeList.size)
+            assertEquals(1, it.subNodeList.size + it.subNodeListNoMove.size)
             assertFalse(it.subNodeList[0].isNoMove)
         }
 
         ClusterUtils.createTrackData(c[2], p).let {
-            assertEquals(1, it.subNodeList.size)
+            assertEquals(1, it.subNodeList.size + it.subNodeListNoMove.size)
             assertFalse(it.subNodeList[0].isNoMove)
         }
     }
@@ -70,11 +70,12 @@ class ClusterUtilsTest {
         )
 
         ClusterUtils.createTrackData(curr[0], prev).let {
-            assertEquals(2, it.subNodeList.size)
+            assertEquals(1, it.subNodeList.size)
+            assertEquals(1, it.subNodeListNoMove.size)
             assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeList[0].nodeType)
-            assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeList[1].nodeType)
-            assertTrue(it.subNodeList[0].isNoMove)
-            assertFalse(it.subNodeList[1].isNoMove)
+            assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeListNoMove[0].nodeType)
+            assertTrue(it.subNodeListNoMove[0].isNoMove)
+            assertFalse(it.subNodeList[0].isNoMove)
         }
 
         ClusterUtils.createTrackData(curr[1], prev).let {
@@ -102,11 +103,12 @@ class ClusterUtilsTest {
         val curr = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
 
         ClusterUtils.createTrackData(curr[0], prev).let {
-            assertEquals(2, it.subNodeList.size)
+            assertEquals(1, it.subNodeList.size)
+            assertEquals(1, it.subNodeListNoMove.size)
             assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeList[0].nodeType)
-            assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeList[1].nodeType)
-            assertTrue(it.subNodeList[0].isNoMove)
-            assertFalse(it.subNodeList[1].isNoMove)
+            assertEquals(ClusterUtils.NodeType.PIECE, it.subNodeListNoMove[0].nodeType)
+            assertTrue(it.subNodeListNoMove[0].isNoMove)
+            assertFalse(it.subNodeList[0].isNoMove)
         }
 
         ClusterUtils.createTrackData(curr[1], prev).let {
@@ -126,7 +128,8 @@ class ClusterUtilsTest {
         )
         val c = JsonTestUtil.mock(stationsList.subList(0, 3))
 
-        assertEquals(2, ClusterUtils.createTrackData(c.first(), p).subNodeList.size)
+        assertEquals(1, ClusterUtils.createTrackData(c.first(), p).subNodeList.size)
+        assertEquals(1, ClusterUtils.createTrackData(c.first(), p).subNodeListNoMove.size)
     }
 
     @Test
@@ -137,7 +140,8 @@ class ClusterUtilsTest {
         )
         val c = JsonTestUtil.mock(stationsList.subList(0, 1))
 
-        assertEquals(1, ClusterUtils.createTrackData(c.first(), p).subNodeList.size)
+        assertEquals(1, ClusterUtils.createTrackData(c.first(), p).subNodeListNoMove.size)
+        assertTrue(ClusterUtils.createTrackData(c.first(), p).isExpTask)
     }
 
     @Test
@@ -154,8 +158,12 @@ class ClusterUtilsTest {
 
         val node = ClusterUtils.createTrackData(c.first(), p)
 
-        assertEquals(3, node.subNodeList.size)
-        assertEquals(3, node.subNodeList.count {
+        assertEquals(3, node.subNodeList.size +node.subNodeListNoMove.size)
+        assertEquals(2, node.subNodeList.count {
+            it.nodeType == ClusterUtils.NodeType.PREV_IN_CURR
+        })
+
+        assertEquals(1, node.subNodeListNoMove.count {
             it.nodeType == ClusterUtils.NodeType.PREV_IN_CURR
         })
     }
@@ -172,9 +180,15 @@ class ClusterUtilsTest {
         )
         val result = c.map { ClusterUtils.createTrackData(it, p) }
         assertEquals(3, result.size)
+
+        val a =
+            result.count { it.subNodeList.firstOrNull()?.nodeType == ClusterUtils.NodeType.CURR_IN_PREV }
+        val b =
+            result.count { it.subNodeListNoMove.firstOrNull()?.nodeType == ClusterUtils.NodeType.CURR_IN_PREV }
         assertEquals(
             3,
-            result.count { it.subNodeList.first().nodeType == ClusterUtils.NodeType.CURR_IN_PREV })
+            a + b
+        )
     }
 
     @Test
@@ -230,21 +244,22 @@ class ClusterUtilsTest {
         val cCount = c.sumOf { it.getSize() }
         val nCount = result.sumOf { it.node.getSize() }
         val nSubCount = result.sumOf { it.subNodeList.sumOf { it.subNode.getSize() } }
+        val nSubNoMoveCount = result.sumOf { it.subNodeListNoMove.sumOf { it.subNode.getSize() } }
         unCheckCase(result)
         //println("-----pCount:$pCount")
         assertEquals(pCount, cCount)
         assertEquals(pCount, nCount)
-        assertEquals(pCount, nSubCount)
+        assertEquals(pCount, nSubCount + nSubNoMoveCount)
     }
 
-    private fun unCheckCase(result: List<ClusterUtils.NodeTrack>) {
+    private fun unCheckCase(result: List<ClusterUtils.NodeTrackV2>) {
         // subNodeList.size == 1 时不包含PIECE数据，未确定原因
         result.filter {
-            it.subNodeList.size == 1
+            it.isExpTask
         }.map {
-            it.subNodeList.first().nodeType
+            it.subNodeList.firstOrNull()?.nodeType
         }.count {
-            it.name == ClusterUtils.NodeType.PIECE.name //     SINGLE, PARTY, PIECE
+            it?.name == ClusterUtils.NodeType.PIECE.name //     SINGLE, PARTY, PIECE
         }.let {
             assertEquals(0, it)
         }
