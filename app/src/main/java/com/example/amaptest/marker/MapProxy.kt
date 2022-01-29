@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import com.amap.api.maps.model.*
 import com.example.amaptest.R
+import com.polestar.base.utils.logd
 import com.polestar.repository.data.charging.showMarker
 
 class MapProxy(private val map: BaseMap, context: Context) {
@@ -27,6 +28,11 @@ class MapProxy(private val map: BaseMap, context: Context) {
     }
 
     fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData) {
+        if(!ClusterUtils.isSamePosition(marker.position, baseMarkerData.getLatlng())){
+            logd("not same:", "_____")
+        }
+
+
         map.updateMarker(marker, baseMarkerData.getId(), createBitmapDescriptor(baseMarkerData))
     }
 
