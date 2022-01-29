@@ -1,6 +1,6 @@
 package com.example.amaptest.marker
 
-import com.example.amaptest.logd
+import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.*
 
 class AlgorithmWallpaper(private val impl: BaseClusterAlgorithm) : BaseClusterAlgorithm {
