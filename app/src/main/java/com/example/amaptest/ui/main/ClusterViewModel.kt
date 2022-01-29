@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.amaptest.AssetsReadUtils
-import com.example.amaptest.logd
+import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.*
 import com.polestar.charging.ui.cluster.distance.*
 import kotlinx.coroutines.Dispatchers
