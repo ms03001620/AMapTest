@@ -66,7 +66,9 @@ class MarkerAction(val mapProxy: MapProxy) {
             if (marker == null) {
                 mapProxy.createMarker(curr)
             } else {
-                mapProxy.updateMarker(marker, curr)
+                fixPosition(marker, curr) {
+                    mapProxy.updateMarker(marker, curr)
+                }
             }
         }
 
@@ -77,6 +79,27 @@ class MarkerAction(val mapProxy: MapProxy) {
                 loge("processExpTask :${subNode.nodeType}", "logicException")
                 //assert(false)
             }
+        }
+    }
+
+    private fun fixPosition(marker: Marker, baseMarkerData: BaseMarkerData, callback: () -> Unit) {
+        if (ClusterUtils.isSamePosition(marker.position, baseMarkerData.getLatlng())) {
+            //
+            callback.invoke()
+        } else {
+            //
+            transfer(
+                marker,
+                baseMarkerData.getLatlng(),
+                false,
+                object : Animation.AnimationListener {
+                    override fun onAnimationStart() {
+                    }
+
+                    override fun onAnimationEnd() {
+                        callback.invoke()
+                    }
+                })
         }
     }
 
@@ -103,7 +126,9 @@ class MarkerAction(val mapProxy: MapProxy) {
                 // animId 7
                 val marker = mapProxy.getMarker(subNode.parentId)
                 if (marker != null) {
-                    mapProxy.updateMarker(marker, subNode.subNode)
+                    fixPosition(marker, subNode.subNode) {
+                        mapProxy.updateMarker(marker, subNode.subNode)
+                    }
                 }
             } else {
                 // animId 1; 合并任务中，子点已在合并点，不需要移动。

@@ -28,11 +28,9 @@ class MapProxy(private val map: BaseMap, context: Context) {
     }
 
     fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData) {
-        if(!ClusterUtils.isSamePosition(marker.position, baseMarkerData.getLatlng())){
-            logd("not same:", "_____")
+        if (ClusterUtils.isSamePosition(marker.position, baseMarkerData.getLatlng()).not()) {
+            marker.position = baseMarkerData.getLatlng()
         }
-
-
         map.updateMarker(marker, baseMarkerData.getId(), createBitmapDescriptor(baseMarkerData))
     }
 
