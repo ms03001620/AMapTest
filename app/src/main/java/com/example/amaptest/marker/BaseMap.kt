@@ -82,10 +82,10 @@ class BaseMap(val map: AMap) {
 
     fun updateMarker(marker: Marker, id: String, icon: BitmapDescriptor?) {
         logd("updateMarker:${id}", TAG)
-        val curMarker = markersHashMap.remove(marker.title)
-        curMarker!!.title = id
-        curMarker!!.setIcon(icon)
-        markersHashMap.put(id, curMarker)
+        markersHashMap.remove(marker.title)
+        marker.title = id
+        marker.setIcon(icon)
+        markersHashMap.put(id, marker)
     }
 
     fun getAllMarkers(): List<Marker> {
