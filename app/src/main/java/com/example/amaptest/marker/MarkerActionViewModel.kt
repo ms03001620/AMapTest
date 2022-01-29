@@ -31,9 +31,9 @@ class MarkerActionViewModel : ViewModel() {
     fun loadDefault(context: Context, file: String, start: Int, end: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             AssetsReadUtils.mockStation(context, file)?.let { data ->
-                data.filter {
+                data./*filter {
                     isCloseToPosition(it.toLatLng())
-                }.map {
+                }.*/map {
                     StationClusterItem(it)
                 }.let {
                     if (start != -1 && end != -1) {
