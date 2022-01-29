@@ -104,4 +104,9 @@ class MarkerActionViewModel : ViewModel() {
             logd("list marker:${it.getId()}", "MarkerActionViewModel")
         }
     }
+
+    fun printPrevTotalStation() {
+        logd("prev size:${prev?.size}", "MarkerActionViewModel")
+        logd("prev station total:${prev?.sumOf { it.getSize() }}", "MarkerActionViewModel")
+    }
 }

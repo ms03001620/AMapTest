@@ -116,11 +116,13 @@ class MarkerActionActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_zoom_fn)?.setOnClickListener {
-            testDoubleZoom()
+            //testDoubleZoom()
         }
 
         findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
-            testRemove()
+            //testRemove()
+            //testPaint()
+            viewModel.printPrevTotalStation()
         }
     }
 
