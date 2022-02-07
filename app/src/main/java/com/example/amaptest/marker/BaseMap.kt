@@ -26,6 +26,7 @@ class BaseMap(val map: AMap) {
             return null
         }
         val markers = map.addMarkers(options, moveToCenter)
+        assert(markers != null)
         assert(count == markers.size)
         markers.forEach {
             assert(markersHashMap.contains(it.title).not())
@@ -49,16 +50,16 @@ class BaseMap(val map: AMap) {
     }
 
     fun removeMarker(id: String) {
-        val marker = markersHashMap.get(id)
+        val marker = markersHashMap[id]
         if (marker == null) {
             loge("removeMarker null id:${id}", "logicException")
+            return
+        }
+        marker.remove()
+        if (marker.isRemoved) {
+            markersHashMap.remove(id)
         } else {
-            marker.remove()
-            if (marker.isRemoved) {
-                markersHashMap.remove(id)
-            } else {
-                loge("removeMarker remove fail:${id}", "logicException")
-            }
+            loge("removeMarker remove fail:${id}", "logicException")
         }
     }
 

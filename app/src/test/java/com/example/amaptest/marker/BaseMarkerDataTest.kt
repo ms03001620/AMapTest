@@ -8,6 +8,19 @@ class BaseMarkerDataTest {
     private val stationsList = JsonTestUtil.readStation("json_stations.json")
 
     @Test
+    fun testDuplicateId() {
+        val stationsList570 = JsonTestUtil.readStation("json_stations570.json")
+
+        mutableSetOf<String>().apply {
+            stationsList570.forEach {
+                this.add(it.id!!)
+            }
+        }.let {
+            Assert.assertEquals(570, it.size)
+        }
+    }
+
+    @Test
     fun baseMarkerDataCollection() {
         val prevCluster = JsonTestUtil.mock(
             stationsList.subList(0, 1),
