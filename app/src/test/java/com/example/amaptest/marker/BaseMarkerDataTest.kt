@@ -95,6 +95,21 @@ class BaseMarkerDataTest {
                 )
             )
         )
+
+        Assert.assertEquals(
+            JsonTestUtil.mock(
+                listOf(
+                    stationsList.subList(0, 1).first(),
+                    stationsList.subList(1, 2).first()
+                )
+            ),
+            JsonTestUtil.mock(
+                listOf(
+                    stationsList.subList(1, 2).first(),
+                    stationsList.subList(0, 1).first()
+                )
+            )
+        )
     }
 
     @Test
