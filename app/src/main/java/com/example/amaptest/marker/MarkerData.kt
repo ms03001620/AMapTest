@@ -51,7 +51,9 @@ class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
 
     override fun equals(other: Any?): Boolean {
         if (other is MarkerCluster) {
-            return hashCode() == other.hashCode()
+            if (this.list.size == other.list.size) {
+                return hashCode() == other.hashCode()
+            }
         }
         return false
     }
