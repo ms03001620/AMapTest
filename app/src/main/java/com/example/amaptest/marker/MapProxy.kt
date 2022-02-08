@@ -2,12 +2,14 @@ package com.example.amaptest.marker
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.view.LayoutInflater
+import android.widget.TextView
 import com.amap.api.maps.model.*
 import com.example.amaptest.R
 import com.polestar.base.utils.logd
 import com.polestar.repository.data.charging.showMarker
 
-class MapProxy(private val map: BaseMap, context: Context) {
+class MapProxy(private val map: BaseMap, val context: Context) {
     private val iconSingle =
         IconGenerator(context, R.layout.charging_layout_marker_collapsed_v2, R.id.tv)
     private val iconCluster =
@@ -77,6 +79,20 @@ class MapProxy(private val map: BaseMap, context: Context) {
         val createAtPosition = forceLatLng ?: baseMarkerData.getLatlng()
         return createMarkerOptions(baseMarkerData, createAtPosition)
     }
+
+/*    private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.charging_layout_marker_collapsed, null, false)
+        view.findViewById<TextView>(R.id.tv).text = total
+        return BitmapDescriptorFactory.fromView(view)
+    }
+
+    private fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.charging_layout_marker_cluster, null, false)
+        view.findViewById<TextView>(R.id.text_cluster).text = clusterSize.toString()
+        return BitmapDescriptorFactory.fromView(view)
+    }*/
 
     private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
         return BitmapDescriptorFactory.fromBitmap(iconSingle.makeIcon(total))

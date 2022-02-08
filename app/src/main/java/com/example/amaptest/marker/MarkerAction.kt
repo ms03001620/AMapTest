@@ -32,8 +32,12 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     fun setList(data: MutableList<BaseMarkerData>) {
-        mapProxy.clear()
-        mapProxy.createMarkers(data)
+        GlobalScope.launch(Dispatchers.IO) {
+            lock.acquire()
+            mapProxy.clear()
+            mapProxy.createMarkers(data)
+            lock.tryRelease()
+        }
     }
 
     fun processNodeList(clusterAnimData: ClusterAnimData) {
