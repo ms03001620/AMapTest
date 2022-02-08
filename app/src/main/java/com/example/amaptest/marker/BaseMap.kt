@@ -77,16 +77,19 @@ class BaseMap(val map: AMap) {
     }
 
     fun getMarker(id: String): Marker? {
-        logd("getMarker:${id}", TAG)
+        //logd("getMarker:${id}", TAG)
         return markersHashMap[id]
     }
 
     fun updateMarker(marker: Marker, id: String, icon: BitmapDescriptor?) {
-        logd("updateMarker:${id}", TAG)
-        markersHashMap.remove(marker.title)
+        //logd("updateMarker:${id}", TAG)
+        val removed = markersHashMap.remove(marker.title)
+        if (removed == null) {
+            loge("updateMarker removed null; title:${marker.title}, id: $id", "logicException")
+        }
         marker.title = id
         marker.setIcon(icon)
-        markersHashMap.put(id, marker)
+        markersHashMap[id] = marker
     }
 
     fun getAllMarkers(): List<Marker> {

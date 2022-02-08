@@ -47,9 +47,6 @@ class MapProxy(private val map: BaseMap, context: Context) {
     }
 
     fun getMarker(id: String): Marker? {
-        if (id.startsWith("53728bf5-cf5a-4b1f-a53d-4ff7b8cd58")) {
-            println(id)
-        }
         return map.getMarker(id)
     }
 

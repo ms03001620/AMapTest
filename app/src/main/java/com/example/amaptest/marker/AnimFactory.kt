@@ -19,7 +19,7 @@ class AnimFactory(val countDownLatch: Semaphore? = null) {
             override fun onAnimationEnd() {
                 realListener?.onAnimationEnd()
                 countTask--
-                loge("onAnimationEnd count:${countTask}", "AnimFactory")
+                //loge("onAnimationEnd count:${countTask}", "AnimFactory")
                 if (isEmpty()) {
                     countDownLatch?.release()
                 }
@@ -36,7 +36,7 @@ class AnimFactory(val countDownLatch: Semaphore? = null) {
         } else {
             false
         }
-        logd(" tryRelease:$result", "AnimFactory")
+        //logd(" tryRelease:$result", "AnimFactory")
         return result
     }
 
