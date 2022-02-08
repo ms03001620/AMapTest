@@ -63,7 +63,7 @@ class MarkerActionViewModel : ViewModel() {
             logd("sameZoom", "MarkerActionViewModel")
             return
         }
-        logd("calcClusters: ${distanceInfo.zoomLevel}", "MarkerActionViewModel")
+        //logd("calcClusters: ${distanceInfo.zoomLevel}", "MarkerActionViewModel")
 
         this.distanceInfo = distanceInfo
         postCalcClusters()

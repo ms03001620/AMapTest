@@ -50,6 +50,7 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     private fun unSafeProcessNodeList(clusterAnimData: ClusterAnimData) {
+        logd("do task: ${clusterAnimData.getInfoString()}")
         // animId 5
         clusterAnimData.deleteList.forEach {
             mapProxy.removeMarker(it.getId())

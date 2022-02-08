@@ -15,9 +15,11 @@ import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
 import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.DistanceInfo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.Math.abs
 
 class MarkerActionActivity : AppCompatActivity() {
     private val viewModel by lazy {
@@ -117,12 +119,14 @@ class MarkerActionActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_zoom_fn)?.setOnClickListener {
             //testDoubleZoom()
+            testAutoZoom()
         }
 
         findViewById<View>(R.id.btn_zoom_co)?.setOnClickListener {
             //testRemove()
             //testPaint()
-            viewModel.printPrevTotalStation()
+            //viewModel.printPrevTotalStation()
+            testScreenMarkersPaint()
         }
     }
 
@@ -140,7 +144,34 @@ class MarkerActionActivity : AppCompatActivity() {
             viewModel.calcClusters(DistanceInfo(0f, true, 16f))
             delay(delay)
         }
+    }
 
+    fun testAutoZoom() {
+        GlobalScope.launch(Dispatchers.IO) {
+            GlobalScope.launch {
+                autoZoomTask(3, -3, delayMs = 500)
+            }
+        }
+    }
+
+    suspend fun autoZoomTask(vararg step: Int, delayMs: Long) {
+        step.forEach {
+            if (it > 0) {
+                for (i in 1..it) {
+                    delay(delayMs)
+                    runOnUiThread {
+                        mMapView.map.animateCamera(CameraUpdateFactory.zoomIn())
+                    }
+                }
+            } else {
+                for (i in 1..kotlin.math.abs(it)) {
+                    delay(delayMs)
+                    runOnUiThread {
+                        mMapView.map.animateCamera(CameraUpdateFactory.zoomOut())
+                    }
+                }
+            }
+        }
     }
 
     fun testPaint() {
@@ -195,7 +226,7 @@ class MarkerActionActivity : AppCompatActivity() {
 
 
 
-        const val ZOOM = 12f
+        const val ZOOM = 13f
 
 /*        const val FILE = "json_stations570.json"
         const val SUBLIST_START = -1 //-1 disable
