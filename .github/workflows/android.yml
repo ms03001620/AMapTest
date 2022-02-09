@@ -25,12 +25,12 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew assembleDebug
     - name: Upload apk to AppCenter
-        uses: wzieba/AppCenter-Github-Action@v1
-        with:
-          appName: mazhenjin-sina.com/Test4CI
-          token: 1641b8c03d337c8985a57f1d9d52da26d494de6c
-          group: assembleDebug
-          file: app/build/outputs/apk/debug/app-debug.apk
-          releaseNotes: abcd
-          notifyTesters: true
-          debug: true
+      uses: wzieba/AppCenter-Github-Action@v1
+      with:
+        appName: mazhenjin-sina.com/Test4CI
+        token: 1641b8c03d337c8985a57f1d9d52da26d494de6c
+        group: assembleDebug
+        file: app/build/outputs/apk/debug/app-debug.apk
+        releaseNotes: abcd
+        notifyTesters: true
+        debug: true
