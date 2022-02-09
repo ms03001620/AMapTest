@@ -21,7 +21,7 @@ class AnimFactory(private val semaphore: Semaphore) {
             override fun onAnimationEnd() {
                 realListener?.onAnimationEnd()
                 val count = countTask.decrementAndGet()
-                logd("onAnimationEnd count:${count}", "AnimFactory")
+                //logd("onAnimationEnd count:${count}", "AnimFactory")
                 if (count == 0) {
                     semaphore.release()
                     logd("release true", "AnimFactory")

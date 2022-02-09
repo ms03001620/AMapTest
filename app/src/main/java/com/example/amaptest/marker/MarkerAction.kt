@@ -53,12 +53,14 @@ class MarkerAction(val mapProxy: MapProxy) {
 
     private fun postSyncTask(task: () -> Unit) {
         GlobalScope.launch(Dispatchers.IO) {
-            if (lock.tryAcquire()) {
+            lock.acquire()
+            task.invoke()
+/*            if (lock.tryAcquire()) {
                 task.invoke()
             } else {
                 loge("postSafeTask tryAcquire false", "AnimFactory")
                 lock.acquire()
-            }
+            }*/
         }
     }
 
