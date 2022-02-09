@@ -25,4 +25,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     - name: Send Message to WeChat
-      run: ./curl 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4db2c60b-1ca8-4eb3-a67d-21226ea3fc0d' -H 'Content-Type: application/json' -d '{"msgtype": "text","text": {"content": "hello world"}}'
+      run: >-
+        curl -H 'Content-type: application/json'
+        --data '{"msgtype": "text","text": {"content": "hello world"}}' 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4db2c60b-1ca8-4eb3-a67d-21226ea3fc0d'
+
