@@ -64,7 +64,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 
-    api "com.amap.api:3dmap:7.5.0"
+    //api "com.amap.api:3dmap:7.5.0"
+    api "com.amap.api:3dmap:8.1.0"
     api "com.amap.api:location:5.1.0"
     api "com.amap.api:search:7.4.0"
 

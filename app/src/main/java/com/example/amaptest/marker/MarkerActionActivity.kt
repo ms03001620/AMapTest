@@ -6,9 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import com.amap.api.maps.AMap
-import com.amap.api.maps.CameraUpdateFactory
-import com.amap.api.maps.MapView
+import com.amap.api.maps.*
 import com.amap.api.maps.model.*
 import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.R
@@ -39,7 +37,7 @@ class MarkerActionActivity : AppCompatActivity() {
         resources.getDimension(R.dimen.charging_station_cluster_size)
     }
 
-    lateinit var mMapView: MapView
+    lateinit var mMapView: TextureMapView
     lateinit var mMapProxy: MapProxy
     lateinit var markerAction: MarkerAction
 
@@ -64,6 +62,9 @@ class MarkerActionActivity : AppCompatActivity() {
     }
 
     fun setupMap(savedInstanceState: Bundle?) {
+        //https://lbs.amap.com/api/android-sdk/guide/create-project/dev-attention#t2
+        MapsInitializer.updatePrivacyShow(this, true, true)
+        MapsInitializer.updatePrivacyAgree(this, true)
         mMapView = findViewById(R.id.map)
         mMapView.onCreate(savedInstanceState)
         mMapProxy = MapProxy(BaseMap(mMapView.map), applicationContext)
@@ -127,6 +128,7 @@ class MarkerActionActivity : AppCompatActivity() {
             //testPaint()
             //viewModel.printPrevTotalStation()
             testScreenMarkersPaint()
+            ///testMapReloadMap()
         }
     }
 
@@ -172,6 +174,11 @@ class MarkerActionActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    fun testMapReloadMap() {
+        //mMapView.map.reloadMap()
+        mMapView.map.runOnDrawFrame()
     }
 
     fun testPaint() {

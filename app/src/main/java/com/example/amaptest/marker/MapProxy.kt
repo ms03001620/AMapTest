@@ -80,7 +80,7 @@ class MapProxy(private val map: BaseMap, val context: Context) {
         return createMarkerOptions(baseMarkerData, createAtPosition)
     }
 
-    private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
+/*    private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
         val view = LayoutInflater.from(context)
             .inflate(R.layout.charging_layout_marker_collapsed, null, false)
         view.findViewById<TextView>(R.id.tv).text = total
@@ -92,15 +92,15 @@ class MapProxy(private val map: BaseMap, val context: Context) {
             .inflate(R.layout.charging_layout_marker_cluster, null, false)
         view.findViewById<TextView>(R.id.text_cluster).text = clusterSize.toString()
         return BitmapDescriptorFactory.fromView(view)
-    }
+    }*/
 
-/*    private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
+    private fun getCollapsedBitmapDescriptor(total: String): BitmapDescriptor? {
         return BitmapDescriptorFactory.fromBitmap(iconSingle.makeIcon(total))
     }
 
     private fun getClusterBitmapDescriptor(clusterSize: Int): BitmapDescriptor? {
         return BitmapDescriptorFactory.fromBitmap(iconCluster.makeIcon(clusterSize.toString()))
-    }*/
+    }
 
     private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData) =
         when (baseMarkerData) {
