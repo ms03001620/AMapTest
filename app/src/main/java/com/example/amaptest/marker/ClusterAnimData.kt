@@ -20,3 +20,7 @@ fun ClusterAnimData.getInfoString(): String {
     sb.append(zoom)
     return sb.toString()
 }
+
+fun ClusterAnimData.isAnimTaskEmpty(): Boolean {
+    return animTask.isEmpty()
+}

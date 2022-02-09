@@ -4,12 +4,14 @@ import com.amap.api.maps.model.animation.Animation
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
 import kotlinx.coroutines.sync.Semaphore
+import java.lang.Exception
+import java.util.concurrent.atomic.AtomicInteger
 
-class AnimFactory(val countDownLatch: Semaphore? = null) {
-    private var countTask = 0
+class AnimFactory(private val semaphore: Semaphore) {
+    private var countTask = AtomicInteger()
 
     fun createAnimationListener(realListener: Animation.AnimationListener? = null): Animation.AnimationListener {
-        countTask++
+        countTask.incrementAndGet()
 
         return object : Animation.AnimationListener {
             override fun onAnimationStart() {
@@ -18,29 +20,29 @@ class AnimFactory(val countDownLatch: Semaphore? = null) {
 
             override fun onAnimationEnd() {
                 realListener?.onAnimationEnd()
-                countTask--
-                //loge("onAnimationEnd count:${countTask}", "AnimFactory")
-                if (isEmpty()) {
-                    countDownLatch?.release()
+                val count = countTask.decrementAndGet()
+                logd("onAnimationEnd count:${count}", "AnimFactory")
+                if (count == 0) {
+                    semaphore.release()
+                    logd("release true", "AnimFactory")
                 }
             }
         }
     }
 
-    private fun isEmpty() = countTask == 0
-
-    fun tryRelease(): Boolean {
-        val result = if (isEmpty()) {
-            countDownLatch?.release()
+    fun forceRelease(): Boolean {
+        return try {
+            semaphore.release()
+            logd("forceRelease true", "AnimFactory")
             true
-        } else {
+        } catch (e: Exception) {
+            loge("forceRelease false", "AnimFactory", e)
             false
         }
-        //logd(" tryRelease:$result", "AnimFactory")
-        return result
     }
 
-    suspend fun acquire() = countDownLatch?.acquire()
+    fun tryAcquire() = semaphore.tryAcquire()
 
+    suspend fun acquire() = semaphore.acquire()
 
 }

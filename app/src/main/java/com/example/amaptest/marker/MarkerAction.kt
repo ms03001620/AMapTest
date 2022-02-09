@@ -32,20 +32,33 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     fun setList(data: MutableList<BaseMarkerData>) {
-        GlobalScope.launch(Dispatchers.IO) {
-            lock.acquire()
+        postSyncTask {
             mapProxy.clear()
             mapProxy.createMarkers(data)
-            lock.tryRelease()
+            lock.forceRelease()
         }
     }
 
     fun processNodeList(clusterAnimData: ClusterAnimData) {
-        GlobalScope.launch(Dispatchers.IO) {
-            lock.acquire()
+        postSyncTask {
             unSafeProcessNodeList(clusterAnimData)
-            // release lock when no anim task
-            lock.tryRelease()
+            if (clusterAnimData.isAnimTaskEmpty()) {
+                val result = lock.forceRelease()
+                if (result.not()) {
+                    loge("unSafeProcessNodeList autoRelease false", "logicException")
+                }
+            }
+        }
+    }
+
+    private fun postSyncTask(task: () -> Unit) {
+        GlobalScope.launch(Dispatchers.IO) {
+            if (lock.tryAcquire()) {
+                task.invoke()
+            } else {
+                loge("postSafeTask tryAcquire false", "AnimFactory")
+                lock.acquire()
+            }
         }
     }
 
@@ -89,10 +102,8 @@ class MarkerAction(val mapProxy: MapProxy) {
 
     private fun fixPosition(marker: Marker, baseMarkerData: BaseMarkerData, callback: () -> Unit) {
         if (ClusterUtils.isSamePosition(marker.position, baseMarkerData.getLatlng())) {
-            //
             callback.invoke()
         } else {
-            //
             transfer(
                 marker,
                 baseMarkerData.getLatlng(),
