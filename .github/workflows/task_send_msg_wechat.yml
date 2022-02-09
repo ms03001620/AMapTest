@@ -1,4 +1,4 @@
-name: Android CI
+name: SendMessage
 
 on:
   push:
@@ -22,8 +22,6 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
     - name: Send Message to WeChat
       run: >-
         curl -H 'Content-type: application/json'
