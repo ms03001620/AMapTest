@@ -25,5 +25,5 @@ jobs:
       - name: Send Message to WeChat
         run: >-
           curl -H 'Content-type: application/json'
-          --data '{"msgtype": "text","text": {"content": "hello ci"}}' 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4db2c60b-1ca8-4eb3-a67d-21226ea3fc0d'
+          --data '{"msgtype": "text","text": {"content": "hello ci1"}}' 'https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4db2c60b-1ca8-4eb3-a67d-21226ea3fc0d'
 
