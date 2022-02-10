@@ -1,0 +1,86 @@
+//import groovy.json.JsonSlurper
+
+def apiKey = "4aef3bfb8033997b146c1620d007156b"// for test env
+
+def weHook = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4db2c60b-1ca8-4eb3-a67d-21226ea3fc0d" // for test
+
+
+
+/**
+ * 发送测试信息到企业微信
+ * https://developer.work.weixin.qq.com/document/path/91770
+ */
+task sendHelloToWechat1(type: Exec) {
+    def response = new ByteArrayOutputStream()
+
+    executable = 'curl'
+    args = ['-H', "Content-type: application/json",
+            '--data', createNewsJson(),
+            weHook
+    ]
+    standardOutput = response
+    doLast {
+        println response.toString()
+        println isSendSuccess(response.toString())
+    }
+}
+
+/**
+ * 企业微信消息是否发送成功
+ * @param responseJson "{"errcode":0,"errmsg":"ok"}"
+ * @return success
+ */
+def isSendSuccess(String responseJson) {
+    try {
+        def response = new groovy.json.JsonSlurper().parseText(responseJson)
+        return response.errcode == 0
+    } catch (Exception ex) {
+        println("isSendSuccess exception:$ex")
+        return false
+    }
+}
+
+
+/**
+ * 发送测试信息到企业微信
+ * https://developer.work.weixin.qq.com/document/path/91770
+ * 每个机器人发送的消息不能超过20条/分钟。
+ * 要求文件大小在5B~20M之间
+ */
+task sendHelloToWechat(type: Exec) {
+    def helloJson = '{"msgtype": "text","text": {"content": "hello world"}}'
+    def response = new ByteArrayOutputStream()
+
+    executable = 'curl'
+    args = ['-H', "Content-type: application/json",
+            '--data', helloJson,
+            weHook
+    ]
+    standardOutput = response
+    doLast {
+        // {"errcode":0,"errmsg":"ok"}
+        println response.toString()
+    }
+}
+
+/**
+ * 生成新闻类型的json数据
+ * @param title
+ * @param description
+ * @param url
+ * @param picUrl
+ * @return json
+ */
+def createNewsJson(String title = "default",
+                   String description = "default",
+                   String url = "www.qq.com",
+                   String picUrl = "http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png") {
+    return groovy.json.JsonOutput.toJson(
+            [msgtype: 'news',
+             news   : [articles: [[title      : title,
+                                   description: description,
+                                   url        : url,
+                                   picurl     : picUrl]]]]
+    )
+}
+
