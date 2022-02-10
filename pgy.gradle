@@ -1,28 +1,76 @@
-//import groovy.json.JsonSlurper
+def pgyHost = "https://www.pgyer.com/apiv2/app/upload" // pgy api host
+def apiKey = "4aef3bfb8033997b146c1620d007156b"// pgy api key
+def weHook = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4db2c60b-1ca8-4eb3-a67d-21226ea3fc0d" // wechat hook
 
-def apiKey = "4aef3bfb8033997b146c1620d007156b"// for test env
-
-def weHook = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4db2c60b-1ca8-4eb3-a67d-21226ea3fc0d" // for test
-
-
-
-/**
- * 发送测试信息到企业微信
- * https://developer.work.weixin.qq.com/document/path/91770
- */
-task sendHelloToWechat1(type: Exec) {
+task publishDebugToPgyer(type: Exec, dependsOn: ['assembleDebug']) {
     def response = new ByteArrayOutputStream()
+    String apkPath = "$buildDir/outputs/apk/debug/app-debug.apk"
+    doFirst {
+        assert file(apkPath).exists()
+    }
+    println("upload apk $apkPath")
 
     executable = 'curl'
-    args = ['-H', "Content-type: application/json",
-            '--data', createNewsJson(),
-            weHook
+    args = ['-F', "file=@${apkPath}",
+            '-F', "_api_key=${apiKey}",
+            '-F', "buildPassword=123456",
+            '-F', "buildUpdateDescription=${getGitCommitLogsLastWeek()}",
+            pgyHost
     ]
     standardOutput = response
     doLast {
-        println response.toString()
-        println isSendSuccess(response.toString())
+        def responsePgy = response.toString()
+        println responsePgy
+
+        def notification = createNotification(/*mockPgyResp*/responsePgy)
+
+        println syncNotification(weHook, notification)
     }
+}
+
+def test(){
+    String apkPath = "$buildDir/outputs/apk/debug/app-debug.apk"
+    def response =  syncUpLoadApk(pgyHost, apkPath, apiKey)
+    def notification = createNotification(/*mockPgyResp*/response)
+    println syncNotification(weHook, notification)
+}
+
+def createNotification(String upLoadResponseJson){
+    def response = new groovy.json.JsonSlurper().parseText(upLoadResponseJson)
+
+    def image = "https://www.datocms-assets.com/11286/1618232315-snow-location-angle-2.jpg"
+    def link = "https://www.pgyer.com/"+response.data.buildShortcutUrl
+
+    def sb = new StringBuilder()
+    sb.append("Version: ").append(response.data.buildVersion).append("\n")
+    sb.append("Build: ").append(response.data.buildBuildVersion).append("\n")
+    sb.append(response.data.buildUpdated).append("\n")
+
+    def description = sb.toString()
+    println description
+    return createNewsJson("测试版本发布",description, link, image)
+}
+
+def syncUpLoadApk(String host, String filePath, String apiKey){
+    def requestArray = ["curl",
+                        "-F", "file=@${filePath}",
+                        "-F", "_api_key=${apiKey}",
+                        "-F", "buildPassword=123456",
+                        "-F", "buildUpdateDescription=${getGitCommitLogsLastWeek()}",
+                        host]
+    def request = requestArray.execute()
+    request.waitFor()
+    return request.text
+}
+
+def syncNotification(String weHook, String json) {
+    def requestArray = ["curl",
+                        "-H", "Content-type: application/json",
+                        "--data", json,
+                        weHook]
+    def request = requestArray.execute()
+    request.waitFor()
+    return request.text
 }
 
 /**
@@ -65,16 +113,16 @@ task sendHelloToWechat(type: Exec) {
 
 /**
  * 生成新闻类型的json数据
- * @param title
- * @param description
- * @param url
- * @param picUrl
+ * @param title 标题，不超过128个字节，超过会自动截断
+ * @param description 描述，不超过512个字节，超过会自动截断
+ * @param url 点击后跳转的链接。
+ * @param picUrl 图文消息的图片链接，支持JPG、PNG格式，较好的效果为大图 1068*455，小图150*150。
  * @return json
  */
-def createNewsJson(String title = "default",
-                   String description = "default",
-                   String url = "www.qq.com",
-                   String picUrl = "http://res.mail.qq.com/node/ww/wwopenmng/images/independent/doc/test_pic_msg1.png") {
+def createNewsJson(String title,
+                   String description,
+                   String url,
+                   String picUrl) {
     return groovy.json.JsonOutput.toJson(
             [msgtype: 'news',
              news   : [articles: [[title      : title,
@@ -83,4 +131,44 @@ def createNewsJson(String title = "default",
                                    picurl     : picUrl]]]]
     )
 }
+
+/**
+ * @return 返回近一周的Git commit logs
+ */
+private def getGitCommitLogsLastWeek() {
+    def stdout = new ByteArrayOutputStream()
+    exec {
+        commandLine 'git', 'log', '--oneline', '--after={1.weeks.ago}'
+        standardOutput = stdout
+    }
+    return stdout.toString().trim()
+}
+
+def mockPgyResp = "{\n" +
+        "   \"code\":0,\n" +
+        "   \"message\":\"\",\n" +
+        "   \"data\":{\n" +
+        "      \"buildKey\":\"bc4f532092c5eccb33bd17d60039cb85\",\n" +
+        "      \"buildType\":\"2\",\n" +
+        "      \"buildIsFirst\":\"0\",\n" +
+        "      \"buildIsLastest\":\"1\",\n" +
+        "      \"buildFileKey\":\"9d54ac0aca17b21ff8d37d610f9ba5ca.apk\",\n" +
+        "      \"buildFileName\":\"app-debug.apk\",\n" +
+        "      \"buildFileSize\":\"43624368\",\n" +
+        "      \"buildName\":\"AMapTest\",\n" +
+        "      \"buildVersion\":\"1.0\",\n" +
+        "      \"buildVersionNo\":\"1\",\n" +
+        "      \"buildBuildVersion\":\"6\",\n" +
+        "      \"buildIdentifier\":\"com.example.amaptest\",\n" +
+        "      \"buildIcon\":\"410101bc94baf2ada593bf08faad3869\",\n" +
+        "      \"buildDescription\":\"\",\n" +
+        "      \"buildUpdateDescription\":\"8d24238 fix\\na4ca927 remove\\n77d62af Update task_send_msg_wechat.yml\\ne2a1845 Update task_send_msg_wechat.yml\\nf754675 Update task_build_upload_apk.yml\\nd24776b Update task_send_msg_wechat.yml\\n6db667f Update task_send_msg_wechat.yml\\n6af49df Create task_send_msg_wechat.yml\\n26b58e9 Rename android.yml to task_build_upload_apk.yml\\n24f5216 Update android.yml\\nc958b7f Update android.yml\\nf3912fd Create android.yml\\na60e0e2 ready to test\\n6af6c70 back to amap 7.5.0\",\n" +
+        "      \"buildScreenshots\":\"\",\n" +
+        "      \"buildShortcutUrl\":\"ioNN\",\n" +
+        "      \"buildCreated\":\"2022-02-10 16:05:26\",\n" +
+        "      \"buildUpdated\":\"2022-02-10 16:05:26\",\n" +
+        "      \"buildQRCodeURL\":\"https:\\/\\/www.pgyer.com\\/app\\/qrcodeHistory\\/9af37570c69f08cb45af66ce429f85844e1bf5a1b63305ef8ae1acd50a4f2f0d\"\n" +
+        "   }\n" +
+        "}"
+
 

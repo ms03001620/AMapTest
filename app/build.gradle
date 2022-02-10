@@ -13,6 +13,7 @@ plugins {
 */
 
 apply from: '../jacoco.gradle'
+apply from: '../pgy.gradle'
 
 android {
     compileSdk 31
