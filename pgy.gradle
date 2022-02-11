@@ -28,11 +28,10 @@ task publishDebugToPgyer(type: Exec, dependsOn: ['assembleDebug']) {
     }
 }
 
-def test(){
-    String apkPath = "$buildDir/outputs/apk/debug/app-debug.apk"
-    def response =  syncUpLoadApk(pgyHost, apkPath, apiKey)
-    def notification = createNotification(/*mockPgyResp*/response)
-    println syncNotification(weHook, notification)
+def test1(){
+
+
+    println getGitCommitLogsLastWeek()
 }
 
 def createNotification(String upLoadResponseJson){
@@ -136,13 +135,23 @@ def createNewsJson(String title,
  * @return 返回近一周的Git commit logs
  */
 private def getGitCommitLogsLastWeek() {
-    def stdout = new ByteArrayOutputStream()
-    exec {
-        commandLine 'git', 'log', '--oneline', '--after={1.weeks.ago}'
-        standardOutput = stdout
-    }
-    return stdout.toString().trim()
+    def requestArray = ["git", "log", "--oneline", "--after={1.weeks.ago}"]
+    def request = requestArray.execute()
+    request.waitFor()
+    return request.text
 }
+
+/**
+ * @param top count logs
+ * @return 返回最近提交的top跳commit history
+ */
+private def getGitCommitLogTop(int top) {
+    def requestArray = ["git", "log", "--oneline", "-$top"]
+    def request = requestArray.execute()
+    request.waitFor()
+    return request.text
+}
+
 
 def mockPgyResp = "{\n" +
         "   \"code\":0,\n" +
