@@ -12,6 +12,11 @@ class ClusterUtilsTest {
     private val stationsList = JsonTestUtil.readStation("json_stations.json")
 
     @Test
+    fun ciTestFailed() {
+        assertTrue(true)
+    }
+
+    @Test
     fun createTrackDataBase() {
         // A, B, C -> ABC
         val p = JsonTestUtil.mock(
