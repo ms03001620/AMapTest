@@ -13,7 +13,7 @@ class ClusterUtilsTest {
 
     @Test
     fun ciTestFailed() {
-        assertTrue(true)
+        assertTrue(false)
     }
 
     @Test
