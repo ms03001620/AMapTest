@@ -138,7 +138,7 @@ private def getGitCommitLogsLastWeek() {
     def requestArray = ["git", "log", "--oneline", "--after={1.weeks.ago}"]
     def request = requestArray.execute()
     request.waitFor()
-    return request.text
+    return request.text.replace(";", " ")
 }
 
 /**
@@ -149,7 +149,7 @@ private def getGitCommitLogTop(int top) {
     def requestArray = ["git", "log", "--oneline", "-$top"]
     def request = requestArray.execute()
     request.waitFor()
-    return request.text
+    return request.text.replace(";", " ")
 }
 
 
