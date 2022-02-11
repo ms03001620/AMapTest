@@ -20,7 +20,7 @@ task publishDebugToPgyer(type: Exec, dependsOn: ['assembleDebug']) {
     standardOutput = response
     doLast {
         def responsePgy = response.toString()
-        println responsePgy
+        println groovy.json.JsonOutput.prettyPrint(responsePgy)
 
         def notification = createNotification(/*mockPgyResp*/responsePgy)
 
