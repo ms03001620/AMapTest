@@ -39,7 +39,7 @@ def createNotification(String upLoadResponseJson){
     def response = new groovy.json.JsonSlurper().parseText(upLoadResponseJson)
 
     def image = "https://www.datocms-assets.com/11286/1618232315-snow-location-angle-2.jpg"
-    def link = "https://www.pgyer.com/"+response.data.buildShortcutUrl
+    def link = "https://www.pgyer.com/$response.data.buildKey"
 
     def sb = new StringBuilder()
     sb.append("Version: ").append(response.data.buildVersion).append("\n")
