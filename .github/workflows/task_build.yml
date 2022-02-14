@@ -1,6 +1,6 @@
 name: Build
 
-on: [push]
+on: [dev]
 jobs:
   build:
 
@@ -19,12 +19,3 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew assembleDebug
-    - name: GitHub Action for Android Lint
-      # You may pin to the exact commit or the version.
-      # uses: yutailang0119/action-android-lint@b73b2458223008500f04699133aa2e02ad173bf4
-      uses: yutailang0119/action-android-lint@v2.0.0
-      with:
-        # The lint report file path. Support glob patterns. e.g `build/reports/*.xml`
-        report-path: "build/reports/a.xml"
-        # Indicates whether to follow symbolic links
-        follow-symbolic-links: true# optional, default is true
