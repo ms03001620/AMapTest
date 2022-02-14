@@ -7,3 +7,4 @@ jobs:
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{github.event_name}} event."
       - run: echo "The job is now running on a ${{runner.os}} erver hosted by Github"
+      - run: echo "The name of your branch is ${{github.ref}} and your repositiory is ${{github.repository}}."
