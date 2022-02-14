@@ -99,7 +99,7 @@ def isSendSuccess(String responseJson) {
  * 每个机器人发送的消息不能超过20条/分钟。
  * 要求文件大小在5B~20M之间
  */
-task sendHelloToWechat(type: Exec) {
+/*task sendHelloToWechat(type: Exec) {
     def helloJson = '{"msgtype": "text","text": {"content": "hello world"}}'
     def response = new ByteArrayOutputStream()
 
@@ -113,7 +113,7 @@ task sendHelloToWechat(type: Exec) {
         // {"errcode":0,"errmsg":"ok"}
         println response.toString()
     }
-}
+}*/
 
 /**
  * 生成新闻类型的json数据
