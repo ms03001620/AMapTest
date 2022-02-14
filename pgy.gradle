@@ -2,7 +2,7 @@ import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 
 def pgyHost = "https://www.pgyer.com/apiv2/app/upload" // pgy api host
-def apiKey = "4aef3bfb8033997b146c1620d007156b"// pgy api key
+def apiKey = System.getenv("KEY_PGY_API")
 def weHook = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4db2c60b-1ca8-4eb3-a67d-21226ea3fc0d" // wechat hook
 
 task publishDebugToPgyer(type: Exec, dependsOn: ['assembleDebug']) {
@@ -10,6 +10,7 @@ task publishDebugToPgyer(type: Exec, dependsOn: ['assembleDebug']) {
     String apkPath = "$buildDir/outputs/apk/debug/app-debug.apk"
     doFirst {
         assert file(apkPath).exists()
+        assert !apiKey.isEmpty()
     }
     println("upload apk $apkPath")
 
