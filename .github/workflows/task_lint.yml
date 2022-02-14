@@ -7,8 +7,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
       - name: GitHub Action for Android Lint
         # You may pin to the exact commit or the version.
         # uses: yutailang0119/action-android-lint@b73b2458223008500f04699133aa2e02ad173bf4
