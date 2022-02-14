@@ -1,4 +1,4 @@
-name: Android CI
+name: publishDebugToPgyer
 
 on: [push]
 
@@ -16,7 +16,7 @@ jobs:
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
-    - name: Build with Gradle
+    - name: publishDebugToPgyer with Gradle
       run: ./gradlew publishDebugToPgyer
       env:
         KEY_PGY_API: ${{ secrets.KEY_PGY_API }}
