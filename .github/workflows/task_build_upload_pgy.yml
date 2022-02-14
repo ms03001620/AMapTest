@@ -19,4 +19,4 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew publishDebugToPgyer
       env:
-        KEY_PGY_API: ${{ secrets.KEY_WEHOOK }}
+        KEY_PGY_API: ${{ secrets.KEY_PGY_API }}
