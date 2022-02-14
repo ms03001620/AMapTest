@@ -1,3 +1,6 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
 def pgyHost = "https://www.pgyer.com/apiv2/app/upload" // pgy api host
 def apiKey = "4aef3bfb8033997b146c1620d007156b"// pgy api key
 def weHook = "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=4db2c60b-1ca8-4eb3-a67d-21226ea3fc0d" // wechat hook
@@ -20,7 +23,7 @@ task publishDebugToPgyer(type: Exec, dependsOn: ['assembleDebug']) {
     standardOutput = response
     doLast {
         def responsePgy = response.toString()
-        println groovy.json.JsonOutput.prettyPrint(responsePgy)
+        println JsonOutput.prettyPrint(responsePgy)
 
         def notification = createNotification(/*mockPgyResp*/responsePgy)
 
@@ -35,7 +38,7 @@ def test1(){
 }
 
 def createNotification(String upLoadResponseJson){
-    def response = new groovy.json.JsonSlurper().parseText(upLoadResponseJson)
+    def response = new JsonSlurper().parseText(upLoadResponseJson)
 
     def image = "https://www.datocms-assets.com/11286/1618232315-snow-location-angle-2.jpg"
     def link = "https://www.pgyer.com/$response.data.buildKey"
@@ -79,7 +82,7 @@ def syncNotification(String weHook, String json) {
  */
 def isSendSuccess(String responseJson) {
     try {
-        def response = new groovy.json.JsonSlurper().parseText(responseJson)
+        def response = new JsonSlurper().parseText(responseJson)
         return response.errcode == 0
     } catch (Exception ex) {
         println("isSendSuccess exception:$ex")
@@ -122,7 +125,7 @@ def createNewsJson(String title,
                    String description,
                    String url,
                    String picUrl) {
-    return groovy.json.JsonOutput.toJson(
+    return JsonOutput.toJson(
             [msgtype: 'news',
              news   : [articles: [[title      : title,
                                    description: description,

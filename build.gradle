@@ -10,6 +10,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+        classpath "org.codehaus.groovy:groovy-json:3.0.9"
         classpath "com.android.tools.build:gradle:${versions.agp}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
         // NOTE: Do not place your application dependencies here; they belong
