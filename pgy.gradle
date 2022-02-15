@@ -33,10 +33,14 @@ task publishDebugToPgyer(type: Exec, dependsOn: ['assembleDebug']) {
     }
 }
 
-def test1(){
+task test1(){
+    println getGitCommitLogTop(5)
+}
 
-
-    println getGitCommitLogsLastWeek()
+task test2(){
+    doLast{
+        println "ffffffff"
+    }
 }
 
 def createNotification(String upLoadResponseJson){
