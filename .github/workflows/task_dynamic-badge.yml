@@ -1,0 +1,19 @@
+name: CommentJira
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Create Awesome Badge
+      uses: schneegans/dynamic-badges-action@v1.1.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: 14f7f6dd2626bd81096fb2c6997fe970
+        filename: style.json
+        label: Hello1
+        message: World2
+        color: orange
