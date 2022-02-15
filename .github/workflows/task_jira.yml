@@ -1,6 +1,6 @@
 name: CommentJira
 
-on: [push]
+on: [dev]
 
 jobs:
   build:
