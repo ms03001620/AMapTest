@@ -1,6 +1,6 @@
 name: publishDebugToPgyer
 
-on: [push]
+on: [dev]
 
 jobs:
   build:
