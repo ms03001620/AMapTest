@@ -1,6 +1,6 @@
 name: UnitTest
 
-on: [dev]
+on: [push]
 
 jobs:
   build:
@@ -20,10 +20,5 @@ jobs:
         run: chmod +x gradlew
       - name: Run unitTest
         run: ./gradlew testDebugUnitTest
-      - name: Run Test Coverage
-        run: ./gradlew jacocoTestReport
-      - name: Generate JaCoCo Badge
-        uses: cicirello/jacoco-badge-generator@v2
-        with:
-          generate-branches-badge: true
-          jacoco-csv-file: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.csv
+      #- name: Run Test Coverage
+      #  run: ./gradlew jacocoTestReport
