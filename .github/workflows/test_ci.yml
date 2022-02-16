@@ -33,11 +33,7 @@ jobs:
         run: |
           cat .github/badges/jacoco.json
       - name: PrintDir2
-        id: fileToJson
         run: |
           content=`cat .github/badges/jacoco.json`
           echo "::set-output name=packageJson::$content"
-       - name: PrintDir3
-        run: |
-          echo "${{fromJson(steps.fileToJson.outputs.packageJson).message}}"
 
