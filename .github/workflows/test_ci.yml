@@ -29,5 +29,5 @@ jobs:
           coverage-endpoint-filename: jacoco.json
       - name: PrintJson
         run: |
-          JSON=$(cat ./jacoco.json)
+          JSON=$(cat jacoco.json)
           echo "::set-output name=matrix::${JSON//'%'/'%25'}"
