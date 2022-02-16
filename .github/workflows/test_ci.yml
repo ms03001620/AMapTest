@@ -18,9 +18,16 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Run unitTest
-        run: ./gradlew testDebugUnitTest
-      - name: Android Test Report
-        uses: asadmansr/android-test-report-action@v1.2.0
-      #- name: Run Test Coverage
-      #  run: ./gradlew jacocoTestReport
+      - name: Run jacocoTestReport
+        run: ./gradlew jacocoTestReport
+      - name: Generate JaCoCo Badge
+        uses: cicirello/jacoco-badge-generator@v2
+        with:
+          badges-directory: .
+          generate-branches-badge: false
+          jacoco-csv-file: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.csv
+          coverage-endpoint-filename: jacoco.json
+      - name: PrintJson
+        run: |
+          JSON=$(cat ./jacoco.json)
+          echo "::set-output name=matrix::${JSON//'%'/'%25'}"
