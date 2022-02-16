@@ -34,9 +34,25 @@ jobs:
       - name: PrintJson
         run: |
           cat .github/badges/jacoco.json
-      - name: PrintJsonNode
+      - name: PrintDir2
+        id: set_var
         run: |
-          echo "${{fromJson(.github/badges/jacoco.json).message}}"
+          content=`cat .github/badges/jacoco.json`
+          # the following lines are only required for multi line json
+          content="${content//'%'/'%25'}"
+          content="${content//$'\n'/'%0A'}"
+          content="${content//$'\r'/'%0D'}"
+          # end of optional handling for multi line json
+          echo "::set-output name=packageJson::$content"
+       - name: PrintDir3
+        run: |
+            echo "${{fromJson(steps.set_var.outputs.packageJson).message}}"
+
+
+
+      #- name: PrintJsonNode
+      #  run: |
+      #    echo "${{fromJson(.github/badges/jacoco.json).message}}"
         #run: |
         #  JSON=$(cat .github/badges/jacoco.json)
         #  echo "::set-output name=matrix::${JSON//'%'/'%25'}"
