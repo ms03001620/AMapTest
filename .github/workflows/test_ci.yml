@@ -23,11 +23,11 @@ jobs:
       - name: Generate JaCoCo Badge
         uses: cicirello/jacoco-badge-generator@v2
         with:
-          badges-directory: .
+          badges-directory: .github/badges
           generate-branches-badge: false
           jacoco-csv-file: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.csv
           coverage-endpoint-filename: jacoco.json
       - name: PrintJson
         run: |
-          JSON=$(cat jacoco.json)
+          JSON=$(cat .github/badges/jacoco.json)
           echo "::set-output name=matrix::${JSON//'%'/'%25'}"
