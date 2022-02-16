@@ -28,9 +28,12 @@ jobs:
           jacoco-csv-file: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.csv
           generate-coverage-endpoint: true
           coverage-endpoint-filename: jacoco.json
-      - name: PrintJson
+      - name: PrintDir
         run: |
           ls .github/badges
+      - name: PrintJson
+        run: |
+          cat .github/badges/jacoco.json
         #run: |
         #  JSON=$(cat .github/badges/jacoco.json)
         #  echo "::set-output name=matrix::${JSON//'%'/'%25'}"
