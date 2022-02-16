@@ -34,6 +34,9 @@ jobs:
       - name: PrintJson
         run: |
           cat .github/badges/jacoco.json
+      - name: PrintJsonNode
+        run: |
+          echo "${{fromJson(.github/badges/jacoco.json).message}}"
         #run: |
         #  JSON=$(cat .github/badges/jacoco.json)
         #  echo "::set-output name=matrix::${JSON//'%'/'%25'}"
