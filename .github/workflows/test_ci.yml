@@ -36,4 +36,5 @@ jobs:
         run: |
           content=`cat .github/badges/jacoco.json`
           echo "::set-output name=packageJson::$content"
+          echo "$content"
 
