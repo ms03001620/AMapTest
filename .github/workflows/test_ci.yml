@@ -26,6 +26,7 @@ jobs:
           badges-directory: .github/badges
           generate-branches-badge: false
           jacoco-csv-file: app/build/reports/jacoco/jacocoTestReport/jacocoTestReport.csv
+          generate-coverage-endpoint: true
           coverage-endpoint-filename: jacoco.json
       - name: PrintJson
         run: |
