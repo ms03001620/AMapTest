@@ -32,9 +32,16 @@ jobs:
       - name: PrintJson
         run: |
           cat .github/badges/jacoco.json
-      - name: PrintDir2
+      - name: JsonToContent
         run: |
           content=`cat .github/badges/jacoco.json`
-          echo "::set-output name=packageJson::$content"
           echo "$content"
+      - name: DeployToGist
+        uses: exuanbo/actions-deploy-gist@v1
+        with:
+          token: ${{ secrets.GIST_SECRET }}
+          gist_id: 14f7f6dd2626bd81096fb2c6997fe970
+          gist_description: "badge image json"
+          gist_file_name: style.json
+          file_path: .github/badges/jacoco.json
 
