@@ -29,5 +29,7 @@ jobs:
           coverage-endpoint-filename: jacoco.json
       - name: PrintJson
         run: |
-          JSON=$(cat .github/badges/jacoco.json)
-          echo "::set-output name=matrix::${JSON//'%'/'%25'}"
+          ls .github/badges
+        #run: |
+        #  JSON=$(cat .github/badges/jacoco.json)
+        #  echo "::set-output name=matrix::${JSON//'%'/'%25'}"
