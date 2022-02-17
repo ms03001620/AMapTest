@@ -51,6 +51,9 @@
             android:name=".marker.MarkerActionActivity"
             android:exported="false" />
         <activity
+            android:name=".MapPerformanceActivity"
+            android:exported="false" />
+        <activity
             android:name=".LocationActivity"
             android:exported="false" />
         <activity

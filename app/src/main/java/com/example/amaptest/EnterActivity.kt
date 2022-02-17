@@ -113,6 +113,10 @@ class EnterActivity : AppCompatActivity() {
             gotoMarkerAction()
         }
 
+        findViewById<View>(R.id.btn_map_performance).setOnClickListener {
+            gotoMapPerformance()
+        }
+
         // 蓝牙
         findViewById<View>(R.id.btn_bluetooth).setOnClickListener {
             //https://developer.android.com/reference/android/bluetooth/BluetoothDevice#createBond()
@@ -168,6 +172,11 @@ class EnterActivity : AppCompatActivity() {
     fun gotoMarkerAction() {
         startActivity(Intent(this, MarkerActionActivity::class.java))
     }
+
+    fun gotoMapPerformance() {
+        startActivity(Intent(this, MapPerformanceActivity::class.java))
+    }
+
 
     fun gotoAnim() {
         startActivity(Intent(this, AnimActivity::class.java))
