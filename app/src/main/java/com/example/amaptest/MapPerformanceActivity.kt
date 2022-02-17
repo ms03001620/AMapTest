@@ -8,6 +8,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapView
+import com.amap.api.maps.TextureMapView
 import com.amap.api.maps.model.*
 import com.example.amaptest.marker.*
 import com.polestar.repository.data.charging.StationDetail
@@ -22,7 +23,7 @@ class MapPerformanceActivity : AppCompatActivity() {
         AssetsReadUtils.readBytes(this, "style_extra.data")
     }
 
-    lateinit var mMapView: MapView
+    lateinit var mMapView: TextureMapView
     lateinit var stationsList : List<StationDetail>
     lateinit var mMapProxy: MapProxy
     lateinit var markerAction: MarkerAction
