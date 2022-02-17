@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapView
 import com.amap.api.maps.TextureMapView
@@ -16,6 +17,12 @@ import com.polestar.repository.data.charging.toLatLng
 
 
 class MapPerformanceActivity : AppCompatActivity() {
+    private val viewModel by lazy {
+        ViewModelProvider(
+            this,
+            ViewModelFactory()
+        )[MapPerformanceViewModel::class.java]
+    }
     private val styleData by lazy {
         AssetsReadUtils.readBytes(this, "style.data")
     }
@@ -34,6 +41,11 @@ class MapPerformanceActivity : AppCompatActivity() {
         initData()
         setupMap(savedInstanceState)
         initCamera()
+        initObserver()
+    }
+
+    private fun initObserver() {
+        viewModel.loadDefault(this, FILE, SUBLIST_START, SUBLIST_END)
     }
 
 
@@ -47,12 +59,7 @@ class MapPerformanceActivity : AppCompatActivity() {
     private fun moveCameraToDataArea() {
         mMapView.map.moveCamera(
             // 12f -> 13f  cluster(1->2)
-            CameraUpdateFactory.newLatLngZoom(
-                LatLng(
-                    MarkerActionActivity.DEFAULT_LAT,
-                    MarkerActionActivity.DEFAULT_LNG
-                ), MarkerActionActivity.ZOOM
-            )
+            CameraUpdateFactory.newLatLngZoom(LatLng(DEFAULT_LAT, DEFAULT_LNG), ZOOM)
         )
     }
 
@@ -120,6 +127,10 @@ class MapPerformanceActivity : AppCompatActivity() {
         const val DEFAULT_LAT = 31.22128
 
         const val ZOOM = 13f
+
+        const val FILE = "json_stations570.json"
+        const val SUBLIST_START = -1 //-1 disable
+        const val SUBLIST_END = -1 //-1 disable
     }
 
 }
