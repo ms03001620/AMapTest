@@ -18,6 +18,9 @@ jobs:
         run: chmod +x gradlew
       - name: Run jacocoTestReport
         run: ./gradlew jacocoTestReport
+      # 使用jacoco-badge-generator原因是他能生成badge的json。并且他内置了一个针对jacoco csv文件的统计覆盖算法
+      # 这样就可以借助这个工具来生成一个包含基本覆盖率信息的icon信息
+      # 当然如果可以自己通过csv或其他jacoco输出文件来计算也是可以不使用这个工具
       - name: Generate JaCoCo Badge
         uses: cicirello/jacoco-badge-generator@v2
         with:
@@ -36,12 +39,15 @@ jobs:
         run: |
           content=`cat .github/badges/jacoco.json`
           echo "$content"
+      # 这个json是需要保存的，这样markdown可以根据json信息显示出coverage badge
+      # 也有方案是直接保存svg图片或json到项目的一个文件目录。需要搭配git commit来实现
+      # gist保存这个信息可以不使用项目的版本管理。优先这个方案
       - name: DeployToGist
         uses: exuanbo/actions-deploy-gist@v1
         with:
           token: ${{ secrets.GIST_SECRET }}
           gist_id: 14f7f6dd2626bd81096fb2c6997fe970
-          gist_description: "badge image json"
+          gist_description: "More: https://shields.io/"
           gist_file_name: style.json
           file_path: .github/badges/jacoco.json
 
