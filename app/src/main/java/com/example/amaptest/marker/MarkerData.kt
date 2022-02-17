@@ -7,6 +7,7 @@ import com.polestar.charging.ui.cluster.base.StaticCluster
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.showMarker
+import com.polestar.repository.data.charging.toLatLng
 
 interface BaseMarkerData {
     fun getCluster(): Cluster<ClusterItem>
@@ -26,11 +27,9 @@ class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
     override fun getStation(): StationDetail? {
         if (list is StaticCluster<ClusterItem>) {
             val items = list.items
-            if (items is LinkedHashSet) {
-                val firstItem = items.first()
-                if (firstItem is StationClusterItem) {
-                    return firstItem.stationDetail
-                }
+            val firstItem = items.first()
+            if (firstItem is StationClusterItem) {
+                return firstItem.stationDetail
             }
         }
         return null
@@ -130,5 +129,11 @@ object MarkerDataFactory {
             }
             MarkerCluster(static)
         }
+    }
+
+    fun createMarkerCluster(station: StationDetail): BaseMarkerData {
+        val static = StaticCluster<ClusterItem>(station.toLatLng())
+        static.add(StationClusterItem(station))
+        return MarkerCluster(static)
     }
 }

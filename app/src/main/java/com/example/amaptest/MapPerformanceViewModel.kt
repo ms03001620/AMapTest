@@ -27,10 +27,10 @@ class MapPerformanceViewModel : ViewModel() {
 
                 stationCenter.let {
                     val list = ArrayList<StationDetail>()
-                    repeat(10) { i ->
-                        repeat(10) { j ->
+                    repeat(50) { i ->
+                        repeat(50) { j ->
                             stationCenter.copy(
-                                id = "id$i$j",
+                                id = "x$i,y$j",
                                 lat = stationCenter.lat?.plus(0.001 * i),
                                 lng = stationCenter.lng?.plus(0.001 * j),
                                 acTotal = i * 10 + j
@@ -42,6 +42,7 @@ class MapPerformanceViewModel : ViewModel() {
 
                     list.map {
                         MarkerSingle(it, it.toLatLng())
+                        //MarkerDataFactory.createMarkerCluster(it)
                     }.let {
                         dataLiveData.postValue(it.toMutableList())
                     }
