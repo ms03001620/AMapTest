@@ -38,22 +38,27 @@ class MapPerformanceActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_map_performance)
-        initData()
         setupMap(savedInstanceState)
         initCamera()
         initObserver()
+
+        findViewById<View>(R.id.btn_zoom_in)?.setOnClickListener {
+            mMapView.map.animateCamera(CameraUpdateFactory.zoomIn())
+        }
+
+        findViewById<View>(R.id.btn_zoom_out)?.setOnClickListener {
+            mMapView.map.animateCamera(CameraUpdateFactory.zoomOut())
+            //mMapView.map.mapScreenMarkers.first().remove()
+        }
     }
 
     private fun initObserver() {
-        viewModel.loadDefault(this, FILE, SUBLIST_START, SUBLIST_END)
-    }
-
-
-    fun initData(){
-        AssetsReadUtils.mockStation(this, "json_stations.json")?.let {
-            stationsList = it
+        viewModel.dataLiveData.observe(this) {
+            it?.let {
+                markerAction.setList(it)
+            }
         }
-        Log.d("MainActivity", "stations:$stationsList")
+        viewModel.loadDefault(this, FILE, SUBLIST_START, SUBLIST_END)
     }
 
     private fun moveCameraToDataArea() {
@@ -126,9 +131,9 @@ class MapPerformanceActivity : AppCompatActivity() {
         const val DEFAULT_LNG = 121.476231
         const val DEFAULT_LAT = 31.22128
 
-        const val ZOOM = 13f
+        const val ZOOM = 16f
 
-        const val FILE = "json_stations570.json"
+        const val FILE = "json_stations1.json"
         const val SUBLIST_START = -1 //-1 disable
         const val SUBLIST_END = -1 //-1 disable
     }

@@ -1,0 +1,101 @@
+[
+  {
+    "id": "54e0ffa6-25ca-4175-88af-cc57e0b29f46",
+    "stationid": "GWDD-310101MA002TMQX0002",
+    "providerNo": "GWDD",
+    "providerName": "国网电动",
+    "stationNo": "310101MA002TMQX0002",
+    "stationName": "上海黄浦区企业天地电动汽车充电站",
+    "lng": 121.477279,
+    "lat": 31.220805,
+    "acTotal": 8,
+    "dcTotal": 8,
+    "address": "湖滨路150号企业天地2期地下三层停车场",
+    "regionCode": "310000",
+    "imgList": [],
+    "serviceTime": "00:00:00-23:59:59",
+    "stubGroupType": 0,
+    "stubGroupStatus": 1,
+    "parkingFeeInfo": "20元/小时（参照停车场实际费用）",
+    "electricFee": [
+      {
+        "endTime": "06:00",
+        "startTime": "00:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "08:00",
+        "startTime": "06:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "11:00",
+        "startTime": "08:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "13:00",
+        "startTime": "11:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "15:00",
+        "startTime": "13:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "18:00",
+        "startTime": "15:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "21:00",
+        "startTime": "18:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "22:00",
+        "startTime": "21:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      },
+      {
+        "endTime": "24:00",
+        "startTime": "22:00",
+        "outFeeService": 80,
+        "outFeeElectric": 64.5
+      }
+    ],
+    "supportCarType": 0,
+    "parkingFeeType": 0,
+    "distance": 1134.07369446,
+    "price": 144.5,
+    "isFree": true,
+    "creator": 1,
+    "updater": 1,
+    "createDate": "2021-11-03T20:35:03.063Z",
+    "updateDate": "2021-11-23T20:35:07.210Z",
+    "gunKw": [
+      {
+        "kw": 60,
+        "type": 1
+      },
+      {
+        "kw": 7,
+        "type": 0
+      }
+    ],
+    "status": 1,
+    "freeAcTotal": 8,
+    "freeDcTotal": 8,
+    "favorites": 0,
+    "tagList": ""
+  }
+]
