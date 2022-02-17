@@ -1,6 +1,9 @@
 name: Lint
 
-on: [dev]
+on:
+  push:
+    branches-ignore:
+      - '**'
 jobs:
   build:
 

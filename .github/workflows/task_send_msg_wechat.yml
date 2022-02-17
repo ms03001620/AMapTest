@@ -2,9 +2,8 @@ name: SendMessage
 
 on:
   push:
-    branches: [ dev ]
-  pull_request:
-    branches: [ dev ]
+    branches-ignore:
+      - '**'
 
 jobs:
   build:

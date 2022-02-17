@@ -1,6 +1,9 @@
 name: MakeDynamicBadges
 
-on: [dev]
+on:
+  push:
+    branches-ignore:
+      - '**'
 
 jobs:
   build:
