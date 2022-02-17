@@ -4,19 +4,17 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import androidx.annotation.ColorInt
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
-import java.lang.Exception
 
-class IconGenerator(val context: Context, resId: Int, textResId: Int) {
+class IconGenerator(val context: Context, resId: Int, textResId: Int, @ColorInt textColor: Int) {
     private val container =
         LayoutInflater.from(context).inflate(resId, null)
-
-    private val textView = container.findViewById<TextView>(textResId)
 
     private val sizeSingle by lazy {
         val measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -24,28 +22,50 @@ class IconGenerator(val context: Context, resId: Int, textResId: Int) {
         val measuredWidth: Int = container.measuredWidth
         val measuredHeight: Int = container.measuredHeight
         container.layout(0, 0, measuredWidth, measuredHeight)
-        Size(measuredWidth, measuredHeight)
+
+        val bitmap = Bitmap.createBitmap(
+            measuredWidth,
+            measuredHeight,
+            Bitmap.Config.ARGB_8888
+        )
+        container.draw(Canvas(bitmap))
+
+        Pair<Size, Bitmap>(Size(measuredWidth, measuredHeight), bitmap)
     }
 
     private var bitmapCache: Bitmap? = null
 
-    fun makeIcon(text: CharSequence): Bitmap? {
+    fun makeIcon(text: String): Bitmap? {
         if (bitmapCache == null) {
             bitmapCache =
-                Bitmap.createBitmap(sizeSingle.width, sizeSingle.height, Bitmap.Config.ARGB_8888)
+                Bitmap.createBitmap(
+                    sizeSingle.first.width,
+                    sizeSingle.first.height,
+                    Bitmap.Config.ARGB_8888
+                )
         }
-        return makeIconCluster(text, container)
+        return makeIconCluster(text)
     }
 
-    private fun makeIconCluster(
-        text: CharSequence,
-        container: View,
-    ): Bitmap? {
-        textView.text = text
+    val paint = Paint().also {
+        it.color = textColor
+        it.textSize = 50f
+        it.textAlign = Paint.Align.CENTER
+    }
+
+    private fun makeIconCluster(text: String): Bitmap? {
         bitmapCache?.let {
             try {
                 it.eraseColor(Color.TRANSPARENT)
-                container.draw(Canvas(it))
+                val c = Canvas(it)
+
+                c.drawBitmap(sizeSingle.second, 0f, 0f, paint)
+
+                val xPos = it.width / 2.0f
+                val yPos = it.height / 2.0f - ((paint.descent() + paint.ascent()) / 2)
+
+                c.drawText(text, xPos, yPos, paint)
+
             } catch (e: Exception) {
                 loge("makeIconCluster", "logicException", e)
                 logd("text: $text", "logicException")
@@ -54,5 +74,4 @@ class IconGenerator(val context: Context, resId: Int, textResId: Int) {
         }
         return bitmapCache
     }
-
 }

@@ -2,6 +2,7 @@ package com.example.amaptest.marker
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.widget.TextView
 import com.amap.api.maps.model.*
@@ -11,9 +12,9 @@ import com.polestar.repository.data.charging.showMarker
 
 class MapProxy(private val map: BaseMap, val context: Context) {
     private val iconSingle =
-        IconGenerator(context, R.layout.charging_layout_marker_collapsed_v2, R.id.tv)
+        IconGenerator(context, R.layout.charging_layout_marker_collapsed_v2, R.id.tv, Color.WHITE)
     private val iconCluster =
-        IconGenerator(context, R.layout.charging_layout_marker_cluster_v2, R.id.text_cluster)
+        IconGenerator(context, R.layout.charging_layout_marker_cluster_v2, R.id.text_cluster, Color.BLACK)
 
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
         baseMarkerDataList.map {

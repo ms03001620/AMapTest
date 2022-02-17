@@ -123,13 +123,8 @@ class MapPerformanceActivity : AppCompatActivity() {
     }
 
     companion object {
-        // 白玉兰位置
-/*        const val DEFAULT_LNG = 121.497798
-        const val DEFAULT_LAT = 31.249051*/
-
-        // 上海黄浦区领展企业广场
-        const val DEFAULT_LNG = 121.476231
-        const val DEFAULT_LAT = 31.22128
+        const val DEFAULT_LNG = 121.483231
+        const val DEFAULT_LAT = 31.23128
 
         const val ZOOM = 16f
 
