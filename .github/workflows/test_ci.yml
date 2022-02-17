@@ -3,7 +3,7 @@ name: UnitTest
 on: [push]
 
 jobs:
-  build:
+  UnitTest:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
