@@ -91,7 +91,9 @@ class IconGenerator(
     }
 
     private fun makeIconBitmap(text: String): Bitmap? {
-        //Thread.sleep(100)
+        if (ENABLE_CACHE.not()) {
+            Thread.sleep(100)
+        }
         val bitmap = Bitmap.createBitmap(
             sizeSingle.first.width,
             sizeSingle.first.height,
@@ -110,7 +112,7 @@ class IconGenerator(
     }
 
     companion object {
-        const val ENABLE_CACHE = true
+        const val ENABLE_CACHE = false
         const val TAG = "IconGenerator"
     }
 }
