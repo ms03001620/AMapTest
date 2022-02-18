@@ -12,9 +12,9 @@ import com.polestar.repository.data.charging.showMarker
 
 class MapProxy(private val map: BaseMap, val context: Context) {
     private val iconSingle =
-        IconGenerator(context, R.layout.charging_layout_marker_collapsed_v2, R.id.tv, Color.WHITE)
+        IconGenerator(context, R.layout.charging_layout_marker_collapsed_v3, Color.WHITE, -10)
     private val iconCluster =
-        IconGenerator(context, R.layout.charging_layout_marker_cluster_v2, R.id.text_cluster, Color.BLACK)
+        IconGenerator(context, R.layout.charging_layout_marker_cluster_v3, Color.BLACK, 0)
 
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
         baseMarkerDataList.map {

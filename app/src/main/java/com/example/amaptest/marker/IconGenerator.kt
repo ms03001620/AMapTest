@@ -12,7 +12,12 @@ import androidx.annotation.ColorInt
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
 
-class IconGenerator(val context: Context, resId: Int, textResId: Int, @ColorInt textColor: Int) {
+class IconGenerator(
+    val context: Context,
+    resId: Int,
+    @ColorInt textColor: Int,
+    private val offsetHeight4Text: Int = 0
+) {
     private val container =
         LayoutInflater.from(context).inflate(resId, null)
 
@@ -64,7 +69,7 @@ class IconGenerator(val context: Context, resId: Int, textResId: Int, @ColorInt 
                 val xPos = it.width / 2.0f
                 val yPos = it.height / 2.0f - ((paint.descent() + paint.ascent()) / 2)
 
-                c.drawText(text, xPos, yPos, paint)
+                c.drawText(text, xPos, yPos + offsetHeight4Text, paint)
 
             } catch (e: Exception) {
                 loge("makeIconCluster", "logicException", e)
