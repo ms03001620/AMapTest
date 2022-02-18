@@ -5,12 +5,13 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.util.LruCache
 import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.ColorInt
-import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
+import com.polestar.base.utils.logw
 
 class IconGenerator(
     val context: Context,
@@ -39,8 +40,43 @@ class IconGenerator(
     }
 
     private var bitmapCache: Bitmap? = null
+    private var text: String = ""
+
+    private val cache = object : LruCache<String, Bitmap>(512) {
+        override fun sizeOf(key: String?, value: Bitmap): Int {
+            return value.byteCount / 1024
+        }
+    }
 
     fun makeIcon(text: String): Bitmap? {
+        if (ENABLE_CACHE) {
+            return createIconByCache(text)
+        } else {
+            return createIcon(text)
+        }
+    }
+
+    private fun createIconByCache(text: String): Bitmap? {
+        val bitmap = cache.get(text)
+
+        if (bitmap != null) {
+            return bitmap
+        } else {
+            val newBitmap = createIcon(text)
+            if (newBitmap != null) {
+                cache.put(text, newBitmap)
+            }
+            return newBitmap
+        }
+    }
+
+    private fun createIcon(text: String): Bitmap? {
+        if (this.text == text && bitmapCache != null) {
+            logw("makeIcon same:$text", TAG)
+            assert(!ENABLE_CACHE)
+        }
+        this.text = text
+
         if (bitmapCache == null) {
             bitmapCache =
                 Bitmap.createBitmap(
@@ -72,11 +108,16 @@ class IconGenerator(
                 c.drawText(text, xPos, yPos + offsetHeight4Text, paint)
 
             } catch (e: Exception) {
+                loge("makeIconCluster", TAG, e)
                 loge("makeIconCluster", "logicException", e)
-                logd("text: $text", "logicException")
                 return null
             }
         }
         return bitmapCache
+    }
+
+    companion object {
+        const val ENABLE_CACHE = true
+        const val TAG = "IconGenerator"
     }
 }
