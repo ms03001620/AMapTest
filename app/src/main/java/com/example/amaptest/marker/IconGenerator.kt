@@ -3,24 +3,29 @@ package com.example.amaptest.marker
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.util.LruCache
 import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.ColorInt
-import com.polestar.base.utils.loge
-import com.polestar.base.utils.logw
+import com.polestar.base.utils.logd
 
 class IconGenerator(
     val context: Context,
     resId: Int,
-    @ColorInt textColor: Int,
+    textColor: Int,
+    textSizePx: Float = 50f,
     private val offsetHeight4Text: Int = 0
 ) {
     private val container =
         LayoutInflater.from(context).inflate(resId, null)
+
+    private val paint = Paint().also {
+        it.color = textColor
+        it.textSize = textSizePx
+        it.textAlign = Paint.Align.CENTER
+    }
 
     private val sizeSingle by lazy {
         val measureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
@@ -39,81 +44,69 @@ class IconGenerator(
         Pair<Size, Bitmap>(Size(measuredWidth, measuredHeight), bitmap)
     }
 
-    private var bitmapCache: Bitmap? = null
-    private var text: String = ""
-
-    private val cache = object : LruCache<String, Bitmap>(512) {
+    //2022-02-10 10:53:41.981 2790-2833/com.example.amaptest V/_____: k:2, t:63504, t1024:62
+    //2022-02-10 10:53:42.085 2790-2833/com.example.amaptest V/_____: k:15, t:53340, t1024:52
+    private val cache = object : LruCache<String, Bitmap>(63504 * 1000) {
         override fun sizeOf(key: String?, value: Bitmap): Int {
-            return value.byteCount / 1024
+            logd("sizeOf key:$key, values hash:${value.hashCode()}", TAG)
+
+            return value.byteCount
+        }
+
+        override fun entryRemoved(
+            evicted: Boolean,
+            key: String?,
+            oldValue: Bitmap?,
+            newValue: Bitmap?
+        ) {
+            super.entryRemoved(evicted, key, oldValue, newValue)
+
+            logd("removed key:$key", TAG)
+            if (oldValue?.isRecycled?.not() == true) {
+                oldValue.recycle()
+            }
         }
     }
 
     fun makeIcon(text: String): Bitmap? {
         if (ENABLE_CACHE) {
-            return createIconByCache(text)
+            return makeIconBitmapOrCache(text)
         } else {
-            return createIcon(text)
+            return makeIconBitmap(text)
         }
     }
 
-    private fun createIconByCache(text: String): Bitmap? {
+    private fun makeIconBitmapOrCache(text: String): Bitmap? {
         val bitmap = cache.get(text)
 
-        if (bitmap != null) {
-            return bitmap
+        return if (bitmap != null) {
+            bitmap
         } else {
-            val newBitmap = createIcon(text)
+            val newBitmap = makeIconBitmap(text)
             if (newBitmap != null) {
                 cache.put(text, newBitmap)
             }
-            return newBitmap
+            newBitmap
         }
     }
 
-    private fun createIcon(text: String): Bitmap? {
-        if (this.text == text && bitmapCache != null) {
-            logw("makeIcon same:$text", TAG)
-            assert(!ENABLE_CACHE)
-        }
-        this.text = text
+    private fun makeIconBitmap(text: String): Bitmap? {
+        //Thread.sleep(100)
+        val bitmap = Bitmap.createBitmap(
+            sizeSingle.first.width,
+            sizeSingle.first.height,
+            Bitmap.Config.ARGB_8888
+        )
 
-        if (bitmapCache == null) {
-            bitmapCache =
-                Bitmap.createBitmap(
-                    sizeSingle.first.width,
-                    sizeSingle.first.height,
-                    Bitmap.Config.ARGB_8888
-                )
-        }
-        return makeIconCluster(text)
-    }
+        val canvas = Canvas(bitmap)
 
-    val paint = Paint().also {
-        it.color = textColor
-        it.textSize = 50f
-        it.textAlign = Paint.Align.CENTER
-    }
+        canvas.drawBitmap(sizeSingle.second, 0f, 0f, paint)
 
-    private fun makeIconCluster(text: String): Bitmap? {
-        bitmapCache?.let {
-            try {
-                it.eraseColor(Color.TRANSPARENT)
-                val c = Canvas(it)
+        val xPos = bitmap.width / 2.0f
+        val yPos = bitmap.height / 2.0f - ((paint.descent() + paint.ascent()) / 2)
 
-                c.drawBitmap(sizeSingle.second, 0f, 0f, paint)
-
-                val xPos = it.width / 2.0f
-                val yPos = it.height / 2.0f - ((paint.descent() + paint.ascent()) / 2)
-
-                c.drawText(text, xPos, yPos + offsetHeight4Text, paint)
-
-            } catch (e: Exception) {
-                loge("makeIconCluster", TAG, e)
-                loge("makeIconCluster", "logicException", e)
-                return null
-            }
-        }
-        return bitmapCache
+        canvas.drawText(text, xPos, yPos + offsetHeight4Text, paint)
+        return bitmap
     }
 
     companion object {
