@@ -7,11 +7,24 @@
     android:orientation="vertical"
     tools:context=".EnterActivity">
 
-    <Button
-        android:id="@+id/btn_enter"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Location" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_enter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Location" />
+
+        <Button
+            android:id="@+id/btn_welcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RoWel" />
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/btn_map"
