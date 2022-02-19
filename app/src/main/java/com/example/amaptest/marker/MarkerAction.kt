@@ -107,12 +107,9 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
 
         nodeTrack.subNodeList.forEach { subNode ->
-            mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)?.let {
-                transfer(it, curr.getLatlng(), false, null)
-            } ?: run {
-                loge("processExpTask :${subNode.nodeType}", "logicException")
-                //assert(false)
-            }
+            val marker = mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)
+            assert(marker != null)
+            transfer(marker!!, curr.getLatlng(), false, null)
         }
     }
 
