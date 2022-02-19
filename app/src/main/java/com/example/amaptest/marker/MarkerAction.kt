@@ -56,12 +56,6 @@ class MarkerAction(val mapProxy: MapProxy) {
         GlobalScope.launch(Dispatchers.IO) {
             lock.acquire()
             task.invoke()
-/*            if (lock.tryAcquire()) {
-                task.invoke()
-            } else {
-                loge("postSafeTask tryAcquire false", "AnimFactory")
-                lock.acquire()
-            }*/
         }
     }
 
@@ -198,38 +192,6 @@ class MarkerAction(val mapProxy: MapProxy) {
         marker.startAnimation()
     }
 
-
-
-    fun testSyncAnim() {
-        val countDownLatch = CountDownLatch(1)
-        val op = MarkerOptions()
-            .position(LatLng(31.245299, 121.499514))
-            .icon(BitmapDescriptorFactory.fromBitmap(mapProxy.getCollapsedBitmapDescriptor2(Random.nextInt(0, 99).toString())))
-            .title(Random.nextInt(0, 99).toString())
-            .infoWindowEnable(false)
-
-        val marker = mapProxy.createMarker(op)!!
-        TranslateAnimation(LatLng(31.245299, 121.519999)).apply {
-            this.setInterpolator(AccelerateInterpolator())
-            this.setDuration(1000)
-            this.setAnimationListener(object : Animation.AnimationListener {
-                override fun onAnimationStart() {
-                }
-
-                override fun onAnimationEnd() {
-                    countDownLatch.countDown()
-                }
-            })
-        }.let {
-            AnimationSet(true).apply {
-                this.addAnimation(it)
-            }
-        }.let {
-            marker.setAnimation(it)
-            marker.startAnimation()
-            countDownLatch.await(1500, TimeUnit.MILLISECONDS)
-        }
-    }
 
     fun printMarkers() {
         val markers = mapProxy.getAllMarkers()
