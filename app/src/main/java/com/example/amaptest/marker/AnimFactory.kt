@@ -15,13 +15,14 @@ class AnimFactory(private val semaphore: Semaphore) {
 
         return object : Animation.AnimationListener {
             override fun onAnimationStart() {
+                //logd("onAnimationStart", "AnimFactory")
                 realListener?.onAnimationStart()
             }
 
             override fun onAnimationEnd() {
                 realListener?.onAnimationEnd()
                 val count = countTask.decrementAndGet()
-                //logd("onAnimationEnd count:${count}", "AnimFactory")
+                logd("onAnimationEnd count:${count}", "AnimFactory")
                 if (count == 0) {
                     semaphore.release()
                     logd("release true", "AnimFactory")
@@ -33,7 +34,7 @@ class AnimFactory(private val semaphore: Semaphore) {
     fun forceRelease(): Boolean {
         return try {
             semaphore.release()
-            logd("forceRelease true", "AnimFactory")
+            //logd("forceRelease true", "AnimFactory")
             true
         } catch (e: Exception) {
             loge("forceRelease false", "AnimFactory", e)

@@ -41,6 +41,7 @@ class MarkerAction(val mapProxy: MapProxy) {
 
     fun processNodeList(clusterAnimData: ClusterAnimData) {
         postSyncTask {
+            logd("start task:$clusterAnimData", "AnimFactory")
             unSafeProcessNodeList(clusterAnimData)
             if (clusterAnimData.isAnimTaskEmpty()) {
                 val result = lock.forceRelease()
@@ -86,8 +87,21 @@ class MarkerAction(val mapProxy: MapProxy) {
             if (marker == null) {
                 mapProxy.createMarker(curr)
             } else {
-                fixPosition(marker, curr) {
+                if (ClusterUtils.isSamePosition(marker.position, curr.getLatlng())) {
                     mapProxy.updateMarker(marker, curr)
+                } else {
+                    transfer(
+                        marker,
+                        curr.getLatlng(),
+                        false,
+                        object : Animation.AnimationListener {
+                            override fun onAnimationStart() {
+                            }
+
+                            override fun onAnimationEnd() {
+                                mapProxy.updateMarker(marker, curr)
+                            }
+                        })
                 }
             }
         }
@@ -99,25 +113,6 @@ class MarkerAction(val mapProxy: MapProxy) {
                 loge("processExpTask :${subNode.nodeType}", "logicException")
                 //assert(false)
             }
-        }
-    }
-
-    private fun fixPosition(marker: Marker, baseMarkerData: BaseMarkerData, callback: () -> Unit) {
-        if (ClusterUtils.isSamePosition(marker.position, baseMarkerData.getLatlng())) {
-            callback.invoke()
-        } else {
-            transfer(
-                marker,
-                baseMarkerData.getLatlng(),
-                false,
-                object : Animation.AnimationListener {
-                    override fun onAnimationStart() {
-                    }
-
-                    override fun onAnimationEnd() {
-                        callback.invoke()
-                    }
-                })
         }
     }
 
@@ -144,9 +139,9 @@ class MarkerAction(val mapProxy: MapProxy) {
                 // animId 7
                 val marker = mapProxy.getMarker(subNode.parentId)
                 if (marker != null) {
-                    fixPosition(marker, subNode.subNode) {
-                        mapProxy.updateMarker(marker, subNode.subNode)
-                    }
+                    // 相同的断言来自于数据逻辑中这里不会出错 fixPosition将会是必要的
+                    assert(ClusterUtils.isSamePosition(marker.position, subNode.subNode.getLatlng()))
+                    mapProxy.updateMarker(marker, subNode.subNode)
                 }
             } else {
                 // animId 1; 合并任务中，子点已在合并点，不需要移动。
