@@ -106,23 +106,6 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     private fun processCospTask(nodeTrack: ClusterUtils.NodeTrack) {
-        val listener = object : Animation.AnimationListener {
-            override fun onAnimationStart() {
-            }
-
-            override fun onAnimationEnd() {
-                // 动画后创建或更新聚合点
-                val subNode = nodeTrack.subNodeNoMove
-                if (subNode != null) {
-                    mapProxy.getMarker(subNode.subNode.getId())?.let {
-                        mapProxy.updateMarker(it, nodeTrack.node)
-                    }
-                } else {
-                    mapProxy.createMarker(nodeTrack.node)
-                }
-            }
-        }
-
         nodeTrack.subNodeNoMove?.let { subNode ->
             if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
                 // animId 7
@@ -138,7 +121,7 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
 
         val size = nodeTrack.subNodeList.size
-        nodeTrack.subNodeList.forEachIndexed{ index,  subNode ->
+        nodeTrack.subNodeList.forEachIndexed { index, subNode ->
             // 合并任务，移动子点到合并点，并且删除
             val baseMarkerData = subNode.subNode
 
@@ -153,7 +136,22 @@ class MarkerAction(val mapProxy: MapProxy) {
             }
 
             val isLastIndex = index == (size - 1)
-            val li = if (isLastIndex) listener else null
+            val li = if (isLastIndex) object : Animation.AnimationListener {
+                override fun onAnimationStart() {
+                }
+
+                override fun onAnimationEnd() {
+                    // 动画后创建或更新聚合点
+                    val subNode = nodeTrack.subNodeNoMove
+                    if (subNode != null) {
+                        mapProxy.getMarker(subNode.subNode.getId())?.let {
+                            mapProxy.updateMarker(it, nodeTrack.node)
+                        }
+                    } else {
+                        mapProxy.createMarker(nodeTrack.node)
+                    }
+                }
+            } else null
 
             transfer(marker, nodeTrack.node.getLatlng(), true, li)
         }
