@@ -12,6 +12,7 @@ import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
+import java.lang.IllegalArgumentException
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -77,26 +78,23 @@ class MarkerAction(val mapProxy: MapProxy) {
 
     private fun processExpTask(curr: BaseMarkerData, nodeTrack: ClusterUtils.NodeTrack) {
         nodeTrack.subNodeNoMove?.let { subNode ->
-            val marker = mapProxy.getMarker(subNode.parentId)
-            if (marker == null) {
-                mapProxy.createMarker(curr)
-            } else {
-                if (ClusterUtils.isSamePosition(marker.position, curr.getLatlng())) {
-                    mapProxy.updateMarker(marker, curr)
-                } else {
-                    transfer(
-                        marker,
-                        curr.getLatlng(),
-                        false,
-                        object : Animation.AnimationListener {
-                            override fun onAnimationStart() {
-                            }
+            val marker = mapProxy.getMarker(subNode.parentId) ?: throw IllegalArgumentException("data error")
 
-                            override fun onAnimationEnd() {
-                                mapProxy.updateMarker(marker, curr)
-                            }
-                        })
-                }
+            if (ClusterUtils.isSamePosition(marker.position, curr.getLatlng())) {
+                mapProxy.updateMarker(marker, curr)
+            } else {
+                transfer(
+                    marker,
+                    curr.getLatlng(),
+                    false,
+                    object : Animation.AnimationListener {
+                        override fun onAnimationStart() {
+                        }
+
+                        override fun onAnimationEnd() {
+                            mapProxy.updateMarker(marker, curr)
+                        }
+                    })
             }
         }
 
@@ -150,15 +148,14 @@ class MarkerAction(val mapProxy: MapProxy) {
                 mapProxy.createMarker(baseMarkerData, subNode.parentLatLng)
             }
 
+            if (marker == null) {
+                throw IllegalArgumentException("data error")
+            }
+
             val isLastIndex = index == (size - 1)
             val li = if (isLastIndex) listener else null
 
-            if (marker != null) {
-                transfer(marker, nodeTrack.node.getLatlng(), true, li)
-            } else {
-                loge("cospTransfer :${subNode.nodeType}", "logicException")
-                //assert(false)
-            }
+            transfer(marker, nodeTrack.node.getLatlng(), true, li)
         }
     }
 
