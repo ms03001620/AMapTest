@@ -112,7 +112,7 @@ class IconGenerator(
     }
 
     companion object {
-        const val ENABLE_CACHE = false
+        const val ENABLE_CACHE = true
         const val TAG = "IconGenerator"
     }
 }

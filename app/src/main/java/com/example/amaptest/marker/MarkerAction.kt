@@ -14,6 +14,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Semaphore
 import java.lang.IllegalArgumentException
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.LinkedBlockingQueue
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
 
@@ -67,18 +68,29 @@ class MarkerAction(val mapProxy: MapProxy) {
             mapProxy.removeMarker(it.getId())
         }
 
+        val queue = LinkedBlockingQueue<Marker>()
+
         clusterAnimData.animTask.forEach { nodeTrack ->
             if (nodeTrack.isExpTask) {
-                processExpTask(nodeTrack.node, nodeTrack)
+                processExpTask(nodeTrack.node, nodeTrack, queue)
             } else {
-                processCospTask(nodeTrack)
+                processCospTask(nodeTrack, queue)
             }
+        }
+
+        while (queue.isEmpty().not()) {
+            queue.poll()?.startAnimation()
         }
     }
 
-    private fun processExpTask(curr: BaseMarkerData, nodeTrack: ClusterUtils.NodeTrack) {
+    private fun processExpTask(
+        curr: BaseMarkerData,
+        nodeTrack: ClusterUtils.NodeTrack,
+        queue: LinkedBlockingQueue<Marker>
+    ) {
         nodeTrack.subNodeNoMove?.let { subNode ->
-            val marker = mapProxy.getMarker(subNode.parentId) ?: throw IllegalArgumentException("data error")
+            val marker =
+                mapProxy.getMarker(subNode.parentId) ?: throw IllegalArgumentException("data error")
 
             if (ClusterUtils.isSamePosition(marker.position, curr.getLatlng())) {
                 mapProxy.updateMarker(marker, curr)
@@ -95,6 +107,8 @@ class MarkerAction(val mapProxy: MapProxy) {
                             mapProxy.updateMarker(marker, curr)
                         }
                     })
+
+                queue.add(marker)
             }
         }
 
@@ -102,10 +116,14 @@ class MarkerAction(val mapProxy: MapProxy) {
             val marker = mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)
             assert(marker != null)
             transfer(marker!!, curr.getLatlng(), false, null)
+            queue.add(marker)
         }
     }
 
-    private fun processCospTask(nodeTrack: ClusterUtils.NodeTrack) {
+    private fun processCospTask(
+        nodeTrack: ClusterUtils.NodeTrack,
+        queue: LinkedBlockingQueue<Marker>
+    ) {
         nodeTrack.subNodeNoMove?.let { subNode ->
             if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
                 // animId 7
@@ -154,6 +172,7 @@ class MarkerAction(val mapProxy: MapProxy) {
             } else null
 
             transfer(marker, nodeTrack.node.getLatlng(), true, li)
+            queue.add(marker)
         }
     }
 
@@ -184,7 +203,7 @@ class MarkerAction(val mapProxy: MapProxy) {
             )
         })
         marker.setAnimation(set)
-        marker.startAnimation()
+        //marker.startAnimation()
     }
 
 
