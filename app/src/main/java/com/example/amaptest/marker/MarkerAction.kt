@@ -113,10 +113,24 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
 
         nodeTrack.subNodeList.forEach { subNode ->
-            val marker = mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)
-            assert(marker != null)
-            transfer(marker!!, curr.getLatlng(), false, null)
-            queue.add(marker)
+            val id = subNode.subNode.getId()
+
+            var marker = mapProxy.getMarker(id)
+
+            if (marker != null) {
+                loge("ddddd: ${marker.snippet}, ${subNode.subNode.getStation()?.id}, size:${subNode.subNode.getSize()}")
+                //assert(false)
+            } else {
+                marker = mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)
+            }
+
+            if (marker != null) {
+                transfer(marker, curr.getLatlng(), false, null)
+                queue.add(marker)
+            } else {
+                loge("createMarker null:${subNode.subNode.getStation()?.id}", "logicException")
+                assert(false)
+            }
         }
     }
 
@@ -150,29 +164,32 @@ class MarkerAction(val mapProxy: MapProxy) {
             }
 
             if (marker == null) {
-                throw IllegalArgumentException("data error")
+                loge("fffffffffffffff", "logicException")
+                //throw IllegalArgumentException("data error")
+            }else{
+                val isLastIndex = index == (size - 1)
+                val li = if (isLastIndex) object : Animation.AnimationListener {
+                    override fun onAnimationStart() {
+                    }
+
+                    override fun onAnimationEnd() {
+                        // 动画后创建或更新聚合点
+                        val subNode = nodeTrack.subNodeNoMove
+                        if (subNode != null) {
+                            mapProxy.getMarker(subNode.subNode.getId())?.let {
+                                mapProxy.updateMarker(it, nodeTrack.node)
+                            }
+                        } else {
+                            mapProxy.createMarker(nodeTrack.node)
+                        }
+                    }
+                } else null
+
+                transfer(marker, nodeTrack.node.getLatlng(), true, li)
+                queue.add(marker)
             }
 
-            val isLastIndex = index == (size - 1)
-            val li = if (isLastIndex) object : Animation.AnimationListener {
-                override fun onAnimationStart() {
-                }
 
-                override fun onAnimationEnd() {
-                    // 动画后创建或更新聚合点
-                    val subNode = nodeTrack.subNodeNoMove
-                    if (subNode != null) {
-                        mapProxy.getMarker(subNode.subNode.getId())?.let {
-                            mapProxy.updateMarker(it, nodeTrack.node)
-                        }
-                    } else {
-                        mapProxy.createMarker(nodeTrack.node)
-                    }
-                }
-            } else null
-
-            transfer(marker, nodeTrack.node.getLatlng(), true, li)
-            queue.add(marker)
         }
     }
 

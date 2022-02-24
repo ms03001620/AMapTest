@@ -46,7 +46,7 @@ class IconGenerator(
 
     //2022-02-10 10:53:41.981 2790-2833/com.example.amaptest V/_____: k:2, t:63504, t1024:62
     //2022-02-10 10:53:42.085 2790-2833/com.example.amaptest V/_____: k:15, t:53340, t1024:52
-    private val cache = object : LruCache<String, Bitmap>(63504 * 1000) {
+    private val cache = object : LruCache<String, Bitmap>(63504 * 10) {
         override fun sizeOf(key: String?, value: Bitmap): Int {
             logd("sizeOf key:$key, values hash:${value.hashCode()}", TAG)
 

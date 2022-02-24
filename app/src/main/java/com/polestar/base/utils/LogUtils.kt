@@ -31,7 +31,7 @@ fun logw(message: String, tag: String = DEFAULT_TAG) {
 
 fun loge(message: String, tag: String = DEFAULT_TAG) {
     if (BuildConfig.DEBUG) {
-        Log.v(tag, message)
+        Log.e(tag, message)
     }
 }
 

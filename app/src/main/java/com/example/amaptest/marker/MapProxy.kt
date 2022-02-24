@@ -122,6 +122,7 @@ class MapProxy(private val map: BaseMap, val context: Context) {
 
     private fun createMarkerOptions(baseMarkerData: BaseMarkerData, latLng: LatLng) =
         MarkerOptions()
+            .snippet(baseMarkerData.getStation()?.id+",${baseMarkerData.getSize()}")
             .title(baseMarkerData.getId())
             .position(latLng)
             .icon(createBitmapDescriptor(baseMarkerData))
