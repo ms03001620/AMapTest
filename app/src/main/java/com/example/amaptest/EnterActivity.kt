@@ -18,6 +18,7 @@ import com.example.amaptest.bluetooth.BluetoothPermissionHelper
 import com.example.amaptest.bluetooth.BluetoothSampleActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.marker.MarkerActionActivity
+import com.robolectric.DialogsActivity
 import com.robolectric.WelcomeActivity
 
 class EnterActivity : AppCompatActivity() {
@@ -85,6 +86,10 @@ class EnterActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_welcome).setOnClickListener {
             startActivity(Intent(this, WelcomeActivity::class.java))
+        }
+
+        findViewById<View>(R.id.btn_dialog).setOnClickListener {
+            startActivity(Intent(this, DialogsActivity::class.java))
         }
 
         findViewById<View>(R.id.btn_map).setOnClickListener {

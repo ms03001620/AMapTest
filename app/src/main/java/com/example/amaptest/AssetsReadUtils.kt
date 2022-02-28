@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.polestar.repository.data.charging.StationDetail
 import java.lang.Exception
 import com.google.gson.reflect.TypeToken
+import com.robolectric.PolicyBean
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.io.InputStream
@@ -38,6 +39,15 @@ object AssetsReadUtils {
     fun mockStation(context: Context, fileName: String): List<StationDetail>? {
         readJson(context, fileName)?.let {
             return jsonToStations(it)
+        }
+        return null
+    }
+
+    fun mockPolicy(context: Context, fileName: String?=null): PolicyBean? {
+        readJson(context, "policy.json")?.let {
+            val listType: Type = object : TypeToken<PolicyBean>() {}.type
+            val data: PolicyBean = Gson().fromJson(it, listType)
+            return data
         }
         return null
     }

@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AMapTest">
         <activity
+            android:name="com.robolectric.DialogsActivity"
+            android:exported="false" />
+        <activity
             android:name="com.robolectric.LoginActivity"
             android:exported="false" />
         <activity

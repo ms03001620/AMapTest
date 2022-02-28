@@ -2,6 +2,8 @@ package com.example.amaptest.marker
 
 import com.amap.api.maps.model.LatLng
 import com.example.amaptest.AssetsReadUtils
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.repository.data.charging.StationDetail
 import org.json.JSONArray
@@ -9,6 +11,8 @@ import java.util.*
 import com.polestar.charging.ui.cluster.base.Cluster
 import com.polestar.charging.ui.cluster.base.StaticCluster
 import com.polestar.charging.ui.cluster.base.StationClusterItem
+import com.robolectric.PolicyBean
+import java.lang.reflect.Type
 
 
 object JsonTestUtil {
@@ -36,6 +40,15 @@ object JsonTestUtil {
                 )
             }
         }
+    }
+
+    fun readPolicy(fileName: String?): PolicyBean {
+        val stream = JsonTestUtil::class.java.classLoader.getResourceAsStream(fileName)
+        val json = Scanner(stream).useDelimiter(REGEX_INPUT_BOUNDARY_BEGINNING).next()
+
+        val listType: Type = object : TypeToken<PolicyBean>() {}.type
+        val data: PolicyBean = Gson().fromJson(json, listType)
+        return data
     }
 
     fun readStation(fileName: String?): List<StationDetail> {
