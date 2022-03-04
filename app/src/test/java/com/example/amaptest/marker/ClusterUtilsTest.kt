@@ -12,6 +12,39 @@ class ClusterUtilsTest {
     private val stationsList = JsonTestUtil.readStation("json_stations.json")
 
     @Test
+    fun testClusterHashCode() {
+        val algorithm = DistanceBasedAlgorithm<ClusterItem>()
+        algorithm.addItems(
+            JsonTestUtil.readStation("json_stations570.json").map { StationClusterItem(it) })
+
+        for (i in 1..10) {
+            val step = i * 0.1f
+            println(step)
+            ClusterUtils.loops(7f, 17f, step, callback = { p: Float, _: Float ->
+                val c = MarkerDataFactory.create(algorithm.getClusters(p))
+                println(c.size)
+                assertTrue(ClusterUtils.isNoSameHashCode(c))
+            })
+        }
+    }
+
+    @Test
+    fun testClusterHashCodeFalse() {
+        assertFalse(ClusterUtils.isNoSameHashCode(JsonTestUtil.mock(stationsList.subList(0, 3),stationsList.subList(0, 3))))
+
+        mutableListOf<BaseMarkerData>(
+            JsonTestUtil.mock(
+                stationsList.subList(0, 1),
+            ).first(),
+            JsonTestUtil.mock(
+                stationsList.subList(0, 1),
+            ).first()
+        ).let {
+            assertFalse(ClusterUtils.isNoSameHashCode(it))
+        }
+    }
+
+    @Test
     fun ciTestFailed() {
         assertTrue(true)
     }
@@ -482,6 +515,21 @@ class ClusterUtilsTest {
         }.let {
             assertEquals("[7.0, 8.0, 8.0, 7.0]", it.toString())
         }
+    }
+
+    @Test
+    fun zoomWithParamV222() {
+        val list = mutableListOf<Float>()
+        ClusterUtils.loops(7f, 17f, .2f, callback = { f, s ->
+            list.add(f)
+            list.add(s)
+        })
+
+        val max = list.maxOrNull() ?: 0f
+        val min = list.minOrNull() ?: 0f
+
+        assertEquals(7f, min, 0.01f)
+        assertEquals(17f, max, 0.01f)
     }
 
 

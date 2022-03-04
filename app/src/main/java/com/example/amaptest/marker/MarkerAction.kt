@@ -1,22 +1,18 @@
 package com.example.amaptest.marker
 
 import android.view.animation.AccelerateInterpolator
-import com.amap.api.maps.model.BitmapDescriptorFactory
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.Marker
-import com.amap.api.maps.model.MarkerOptions
 import com.amap.api.maps.model.animation.Animation
 import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
-import java.lang.IllegalArgumentException
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 
 class MarkerAction(val mapProxy: MapProxy) {
     private val lock = AnimFactory(Semaphore(1))
@@ -78,7 +74,7 @@ class MarkerAction(val mapProxy: MapProxy) {
             }
         }
 
-        while (queue.isEmpty().not()) {
+        while (queue.isNotEmpty()) {
             queue.poll()?.startAnimation()
         }
     }
@@ -174,9 +170,9 @@ class MarkerAction(val mapProxy: MapProxy) {
 
                     override fun onAnimationEnd() {
                         // 动画后创建或更新聚合点
-                        val subNode = nodeTrack.subNodeNoMove
-                        if (subNode != null) {
-                            mapProxy.getMarker(subNode.subNode.getId())?.let {
+                        val node = nodeTrack.subNodeNoMove
+                        if (node != null) {
+                            mapProxy.getMarker(node.subNode.getId())?.let {
                                 mapProxy.updateMarker(it, nodeTrack.node)
                             }
                         } else {
@@ -188,8 +184,6 @@ class MarkerAction(val mapProxy: MapProxy) {
                 transfer(marker, nodeTrack.node.getLatlng(), true, li)
                 queue.add(marker)
             }
-
-
         }
     }
 

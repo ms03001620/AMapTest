@@ -1,6 +1,7 @@
 package com.example.amaptest.marker
 
 import com.amap.api.maps.model.LatLng
+import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -14,6 +15,21 @@ object ClusterUtils {
         val taskList = curr.map { createTrackData(it, prev) }
         val deleteList = createDeleteData(prev, curr, taskList)
         return ClusterAnimData(taskList, deleteList, zoom)
+    }
+
+    fun isNoSameHashCode(list: List<BaseMarkerData>): Boolean {
+        val set = LinkedHashSet<BaseMarkerData>()
+
+        list.forEach {
+            if (set.contains(it)) {
+                logd("curr:$it", "_____")
+                logd("contains:${set.remove(it)}", "_____")
+                return false
+            } else {
+                set.add(it)
+            }
+        }
+        return true
     }
 
     fun createDeleteData(

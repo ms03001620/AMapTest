@@ -8,6 +8,7 @@ import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.showMarker
 import com.polestar.repository.data.charging.toLatLng
+import java.util.*
 
 interface BaseMarkerData {
     fun getCluster(): Cluster<ClusterItem>
@@ -62,11 +63,12 @@ class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
     }
 }
 
-class MarkerSingle(val stationDetail: StationDetail, val latLng: LatLng?) : BaseMarkerData {
-    lateinit var newResult : Cluster<ClusterItem>
+class MarkerSingle(val stationDetail: StationDetail, val latLng: LatLng) : BaseMarkerData {
+    private val newResult : Cluster<ClusterItem>
+    private val ids = stationDetail.id ?: ""
 
     init {
-        latLng?.let {
+        latLng.let {
             StaticCluster<ClusterItem>(latLng).let {
                 it.add(StationClusterItem(stationDetail))
                 newResult = it
@@ -81,13 +83,13 @@ class MarkerSingle(val stationDetail: StationDetail, val latLng: LatLng?) : Base
     override fun getSize() = 1
 
     override fun getLatlng(): LatLng {
-        return latLng!!
+        return latLng
     }
 
-    override fun getId() = stationDetail.id ?: ""
+    override fun getId() = ids
 
     override fun hashCode(): Int {
-        return getId().hashCode()
+        return ids.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -109,7 +111,7 @@ object MarkerDataFactory {
         list.forEach {
             if (it.items?.size == 1) {
                 val f = it.items?.toList()!![0] as StationClusterItem
-                result.add(MarkerSingle(f.stationDetail, it.position))
+                result.add(MarkerSingle(f.stationDetail, f.stationDetail.toLatLng()))
             } else {
                 result.add(MarkerCluster(it))
             }

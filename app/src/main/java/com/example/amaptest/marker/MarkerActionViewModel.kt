@@ -14,6 +14,7 @@ import com.polestar.charging.ui.cluster.distance.DistanceQuadTreeAlgorithm
 import com.polestar.repository.data.charging.toLatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.IllegalArgumentException
 import kotlin.math.abs
 
 class MarkerActionViewModel : ViewModel() {
@@ -86,6 +87,11 @@ class MarkerActionViewModel : ViewModel() {
                     val curr = MarkerDataFactory.create(it)
 
                     prev?.let {
+
+                        if (ClusterUtils.isNoSameHashCode(it).not()) {
+                            throw IllegalArgumentException("eeeee")
+                        }
+
                         val p = ClusterUtils.createClusterAnimData(it, curr, distanceInfo.zoomLevel)
                         clusterAnimDataLiveData.postValue(p)
                     } ?: run {
