@@ -1,5 +1,6 @@
 package com.example.amaptest.marker
 
+import com.amap.api.maps.model.LatLng
 import com.example.amaptest.marker.ClusterUtils.subSize
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.StationClusterItem
@@ -26,6 +27,38 @@ class ClusterUtilsTest {
                 assertTrue(ClusterUtils.isNoSameHashCode(c))
             })
         }
+    }
+    @Test
+    fun testClusterSymmetry() {
+        // 同一聚合点的绘制位置应该是一致的
+        // 放大和缩小地图都会产生聚合点，那么放大和缩小生成的相同聚合点应该位置一致，对称
+        val algorithm = DistanceBasedAlgorithm<ClusterItem>()
+        algorithm.addItems(
+            JsonTestUtil.readStation("json_stations570.json").map { StationClusterItem(it) })
+
+        val hashmap = HashMap<Int, MarkerCluster>()
+        val result = ArrayList<Pair<MarkerCluster, MarkerCluster>>()
+
+        ClusterUtils.loops(7f, 17f, 1f, callback = { p: Float, _: Float ->
+            println(p)
+            MarkerDataFactory.create(algorithm.getClusters(p)).filterIsInstance<MarkerCluster>()
+                .map {
+                    ClusterUtils.calcFinger(it)
+                }.map {
+                if (hashmap.containsKey(it.second)) {
+                    val a = it.first
+                    val b = hashmap[it.second]!!
+                    // 同一聚合点位置不一致
+                    if (ClusterUtils.isSamePosition(a.getLatlng(), b.getLatlng()).not()) {
+                        result.add(Pair(a, b))
+                    }
+                } else {
+                    hashmap[it.second] = it.first
+                }
+            }
+        })
+
+        assertEquals(31, result.size)
     }
 
     @Test

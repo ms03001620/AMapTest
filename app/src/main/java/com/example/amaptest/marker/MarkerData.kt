@@ -39,7 +39,7 @@ class MarkerCluster(val list: Cluster<ClusterItem>) : BaseMarkerData {
     override fun getSize() = list.size
 
     override fun getLatlng(): LatLng {
-        return list.position!!
+        return list.position
     }
 
     // id 不能以latlng作为算法 piece 临时对象具有相同坐标 但是是需要区分的
