@@ -31,24 +31,11 @@ object ClusterUtils {
         return true
     }
 
-/*    fun isNoSameMarkerCluster(list: List<MarkerCluster>): Boolean {
-        val map = HashMap<LatLng, Int>()
-        list.forEach { cluster ->
-            calcFinger(cluster).let {
-                if (map.containsKey(it.first)) {
-                    return false
-                }
-                map[it.first] = it.second
-            }
-        }
-        return true
-    }*/
-
     fun calcFinger(markerCluster: MarkerCluster):Pair<MarkerCluster, Int> {
-        val itemValueNotOrder = markerCluster.getCluster().items?.sumOf {
+        val itemValueNotOrder = markerCluster.getCluster().items.sumOf {
             it.id.hashCode()
         }
-        return Pair(markerCluster, itemValueNotOrder ?: 0)
+        return Pair(markerCluster, itemValueNotOrder)
     }
 
     fun createDeleteData(

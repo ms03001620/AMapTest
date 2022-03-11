@@ -30,9 +30,7 @@ class DistanceAlgorithm : BaseClusterAlgorithm {
                             clusterItem.position,
                             it.position
                         ) <= distanceInfo.distanceMerge
-            }?.let {
-                it.items?.add(clusterItem)
-            } ?: run {
+            }?.items?.add(clusterItem) ?: run {
                 StaticCluster<ClusterItem>(clusterItem.position).let {
                     it.add(clusterItem)
                     newResult.add(it)
