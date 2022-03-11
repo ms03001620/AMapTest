@@ -14,7 +14,6 @@ class AlgorithmWallpaper(private val impl: BaseClusterAlgorithm) : BaseClusterAl
         callback: (list: Set<Cluster<ClusterItem>>) -> Unit
     ) {
         impl.calc(distanceInfo, callback)
-
     }
 
     override fun isFeed() = impl.isFeed()

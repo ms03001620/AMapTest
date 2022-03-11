@@ -23,7 +23,7 @@ class DistanceBasedAlgorithmTest {
         val c = algorithm.getClusters(8.0f)
 
         assertEquals(1, c.size)
-        assertEquals(570, c.toList()[0].items?.size)
+        assertEquals(570, c.toList()[0].items.size)
 
         assertEquals(5, algorithm.getClusters(9.0f).size)
     }

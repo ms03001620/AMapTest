@@ -2,22 +2,29 @@ package com.polestar.charging.ui.cluster.base
 
 import com.amap.api.maps.model.LatLng
 import com.polestar.repository.data.charging.StationDetail
+import com.polestar.repository.data.charging.toLatLng
+import java.util.*
 
 class StationClusterItem(val stationDetail: StationDetail) : ClusterItem {
     override val id: String
         get() = stationDetail.id ?: ""
     override val position: LatLng
-        get() = LatLng(stationDetail.lat ?: Double.NaN, stationDetail.lng ?: Double.NaN)
+        get() = stationDetail.toLatLng()
     override val title: String
         get() = stationDetail.stationid ?: "NoneId"
     override val snippet: String
         get() = stationDetail.providerName + stationDetail.stationName
 
     override fun hashCode(): Int {
-        return id.hashCode()
+        return Objects.hashCode(id)
     }
 
     override fun equals(other: Any?): Boolean {
-        return hashCode() == other?.hashCode() ?: 0
+        if (other is StationClusterItem) {
+            if (other.id == this.id) {
+                return true
+            }
+        }
+        return false
     }
 }

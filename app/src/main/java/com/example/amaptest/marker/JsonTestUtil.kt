@@ -27,17 +27,19 @@ object JsonTestUtil {
         return mutableListOf<ClusterItem>().also {
             for (i in 0 until array.length()) {
                 val node = array.getJSONObject(i)
-                it.add(
-                    TestClusterItem(
-                        "",
-                        LatLng(
+                it.add(object : ClusterItem {
+                    override val position: LatLng
+                        get() = LatLng(
                             node.optDouble("lat", Double.NaN),
                             node.optDouble("lng", Double.NaN)
-                        ),
-                        node.optString("title", ""),
-                        node.optString("snippet", "")
-                    )
-                )
+                        )
+                    override val title: String?
+                        get() = node.optString("title", "")
+                    override val snippet: String?
+                        get() = node.optString("snippet", "")
+                    override val id: String
+                        get() = ""
+                })
             }
         }
     }

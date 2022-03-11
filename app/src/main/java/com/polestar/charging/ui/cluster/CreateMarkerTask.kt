@@ -14,7 +14,7 @@ class CreateMarkerTask<T : ClusterItem>(
 ) {
     fun perform(markerModifier: MarkerModifier<T>) {
         if (cluster.size > 4) {
-            cluster.items?.forEach { item ->
+            cluster.items.forEach { item ->
                 zoomCallback.getMarkerCacheItem(item)?.let { marker ->
                     item.title?.let {
                         marker.title = it
@@ -54,7 +54,7 @@ class CreateMarkerTask<T : ClusterItem>(
                 val markerWithPosition = MarkerWithPosition(marker!!)
 
                 if (animateFrom != null) {
-                    markerModifier.animate(markerWithPosition, animateFrom, cluster.position!!)
+                    markerModifier.animate(markerWithPosition, animateFrom, cluster.position)
                 }
                 markerWithPosition
             }.let {
