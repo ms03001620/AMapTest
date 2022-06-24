@@ -91,9 +91,6 @@ class IconGenerator(
     }
 
     private fun makeIconBitmap(text: String): Bitmap? {
-        if (ENABLE_CACHE.not()) {
-            Thread.sleep(200)
-        }
         val bitmap = Bitmap.createBitmap(
             sizeSingle.first.width,
             sizeSingle.first.height,
