@@ -13,7 +13,7 @@ fun logv(message: String, tag: String = DEFAULT_TAG) {
 
 fun logd(message: String, tag: String = DEFAULT_TAG) {
     if (BuildConfig.DEBUG) {
-        Log.v(tag, message)
+        Log.d(tag, message)
     }
 }
 

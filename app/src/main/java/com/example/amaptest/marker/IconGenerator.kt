@@ -9,7 +9,7 @@ import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import androidx.annotation.ColorInt
-import com.polestar.base.utils.logd
+import com.polestar.base.utils.logv
 
 class IconGenerator(
     val context: Context,
@@ -48,7 +48,7 @@ class IconGenerator(
     //2022-02-10 10:53:42.085 2790-2833/com.example.amaptest V/_____: k:15, t:53340, t1024:52
     private val cache = object : LruCache<String, Bitmap>(63504 * 10) {
         override fun sizeOf(key: String?, value: Bitmap): Int {
-            logd("sizeOf key:$key, values hash:${value.hashCode()}", TAG)
+            logv("sizeOf key:$key, values hash:${value.hashCode()}", TAG)
 
             return value.byteCount
         }
@@ -61,7 +61,7 @@ class IconGenerator(
         ) {
             super.entryRemoved(evicted, key, oldValue, newValue)
 
-            logd("removed key:$key", TAG)
+            logv("removed key:$key", TAG)
             if (oldValue?.isRecycled?.not() == true) {
                 oldValue.recycle()
             }
