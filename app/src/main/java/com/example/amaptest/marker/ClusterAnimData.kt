@@ -5,7 +5,8 @@ import java.lang.StringBuilder
 data class ClusterAnimData(
     val animTask: List<ClusterUtils.NodeTrack>,
     val deleteList: List<BaseMarkerData>,
-    val zoom: Float
+    val zoom: Float,
+    val currentNode: MutableList<BaseMarkerData>
 )
 
 fun ClusterAnimData.getInfoString(): String {

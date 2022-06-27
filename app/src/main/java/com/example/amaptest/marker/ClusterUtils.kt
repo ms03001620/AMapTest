@@ -1,6 +1,7 @@
 package com.example.amaptest.marker
 
 import com.amap.api.maps.model.LatLng
+import com.polestar.base.utils.logd
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -13,7 +14,7 @@ object ClusterUtils {
 
         val taskList = curr.map { createTrackData(it, prev) }
         val deleteList = createDeleteData(prev, curr, taskList)
-        return ClusterAnimData(taskList, deleteList, zoom)
+        return ClusterAnimData(taskList, deleteList, zoom, subCurr)
     }
 
     fun isNoSameHashCode(list: List<BaseMarkerData>): Boolean {
@@ -21,8 +22,6 @@ object ClusterUtils {
 
         list.forEach {
             if (set.contains(it)) {
-                //logd("curr:$it", "_____")
-                //logd("contains:${set.remove(it)}", "_____")
                 return false
             } else {
                 set.add(it)
@@ -197,7 +196,7 @@ object ClusterUtils {
      * 是否是相同点
      * 判断经纬度误差小于delta值
      */
-    fun isSamePosition(a: LatLng?, b: LatLng?, delta: Float = 5.0E-6f): Boolean {
+    fun isSamePosition(a: LatLng?, b: LatLng?, delta: Float = 5.0E-6f, showDiff: Boolean = false): Boolean {
         //  5.0E-6f ,marker移动到指定pos后，计算移动后的marker pos 和指定的值误差
         if (a == null) {
             return false
@@ -208,6 +207,9 @@ object ClusterUtils {
 
         val v1 = abs(a.latitude - b.latitude)
         val v2 = abs(a.longitude - b.longitude)
+        if (showDiff) {
+            logd("latitude diff:${v1.toBigDecimal()}(${v1 < delta}), longitude diff:${v2.toBigDecimal()}(${v2 < delta})")
+        }
         return v1 < delta && v2 < delta
     }
 

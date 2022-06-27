@@ -29,7 +29,6 @@ class BaseMap(val map: AMap) {
         assert(markers != null)
         assert(count == markers.size)
         markers.forEach {
-            assert(markersHashMap.contains(it.title).not())
             markersHashMap[it.title] = it
         }
         return markers

@@ -3,12 +3,13 @@ package com.example.amaptest.marker
 import com.amap.api.maps.model.animation.Animation
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
+import com.polestar.base.utils.logv
 import kotlinx.coroutines.sync.Semaphore
 import java.lang.Exception
 import java.util.concurrent.atomic.AtomicInteger
 
 class AnimFactory(private val semaphore: Semaphore) {
-    private var countTask = AtomicInteger()
+    private val countTask = AtomicInteger()
 
     fun createAnimationListener(realListener: Animation.AnimationListener? = null): Animation.AnimationListener {
         countTask.incrementAndGet()
@@ -22,16 +23,16 @@ class AnimFactory(private val semaphore: Semaphore) {
             override fun onAnimationEnd() {
                 realListener?.onAnimationEnd()
                 val count = countTask.decrementAndGet()
-                logd("onAnimationEnd count:${count}", "AnimFactory")
+                logv("onAnimationEnd count:${count}", "AnimFactory")
                 if (count == 0) {
                     semaphore.release()
-                    logd("release true", "AnimFactory")
+                    logv("release true", "AnimFactory")
                 }
             }
         }
     }
 
-    fun forceRelease(): Boolean {
+    fun release(): Boolean {
         return try {
             semaphore.release()
             //logd("forceRelease true", "AnimFactory")
@@ -42,8 +43,9 @@ class AnimFactory(private val semaphore: Semaphore) {
         }
     }
 
-    fun tryAcquire() = semaphore.tryAcquire()
-
-    suspend fun acquire() = semaphore.acquire()
+    suspend fun acquire(){
+        semaphore.acquire()
+        countTask.set(0)
+    }
 
 }

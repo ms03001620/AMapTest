@@ -8,6 +8,7 @@ import com.amap.api.maps.model.animation.AnimationSet
 import com.amap.api.maps.model.animation.TranslateAnimation
 import com.polestar.base.utils.logd
 import com.polestar.base.utils.loge
+import com.polestar.base.utils.logv
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -30,22 +31,26 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     fun setList(data: MutableList<BaseMarkerData>) {
-        postSyncTask {
-            mapProxy.clear()
-            mapProxy.createMarkers(data)
-            lock.forceRelease()
-        }
+        mapProxy.clear()
+        mapProxy.createMarkers(data)
     }
 
     fun processNodeList(clusterAnimData: ClusterAnimData) {
-        postSyncTask {
-            logd("start task:$clusterAnimData", "AnimFactory")
-            unSafeProcessNodeList(clusterAnimData)
-            if (clusterAnimData.isAnimTaskEmpty()) {
-                val result = lock.forceRelease()
-                if (result.not()) {
-                    loge("unSafeProcessNodeList autoRelease false", "logicException")
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
+                lock.acquire()
+                logv("start task:$clusterAnimData", "AnimFactory")
+
+                unSafeProcessNodeList(clusterAnimData)
+                if (clusterAnimData.isAnimTaskEmpty()) {
+                    lock.release()
                 }
+            } catch (e: Exception) {
+                loge("restore static markers ${clusterAnimData.currentNode.size}", "AnimFactory", e)
+                mapProxy.clear()
+                mapProxy.createMarkers(clusterAnimData.currentNode)
+
+                lock.release()
             }
         }
     }
@@ -72,6 +77,10 @@ class MarkerAction(val mapProxy: MapProxy) {
             } else {
                 processCospTask(nodeTrack, queue)
             }
+        }
+
+        if (clusterAnimData.animTask.isNotEmpty() && queue.isEmpty()) {
+            assert(false)
         }
 
         while (queue.isNotEmpty()) {
@@ -113,10 +122,7 @@ class MarkerAction(val mapProxy: MapProxy) {
 
             var marker = mapProxy.getMarker(id)
 
-            if (marker != null) {
-                loge("ddddd: ${marker.snippet}, ${subNode.subNode.getStation()?.id}, size:${subNode.subNode.getSize()}")
-                //assert(false)
-            } else {
+            if (marker == null) {
                 marker = mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)
             }
 
@@ -137,11 +143,8 @@ class MarkerAction(val mapProxy: MapProxy) {
         nodeTrack.subNodeNoMove?.let { subNode ->
             if (subNode.nodeType == ClusterUtils.NodeType.PIECE) {
                 // animId 7
-                val marker = mapProxy.getMarker(subNode.parentId)
-                if (marker != null) {
-                    // 相同的断言来自于数据逻辑中这里不会出错 fixPosition将会是必要的
-                    assert(ClusterUtils.isSamePosition(marker.position, subNode.subNode.getLatlng()))
-                    mapProxy.updateMarker(marker, subNode.subNode)
+                mapProxy.getMarker(subNode.parentId)?.let {
+                    mapProxy.updateMarker(it, subNode.subNode)
                 }
             } else {
                 // animId 1; 合并任务中，子点已在合并点，不需要移动。
@@ -160,9 +163,8 @@ class MarkerAction(val mapProxy: MapProxy) {
             }
 
             if (marker == null) {
-                loge("fffffffffffffff", "logicException")
-                //throw IllegalArgumentException("data error")
-            }else{
+                throw IllegalArgumentException("processCospTask marker = null")
+            } else {
                 val isLastIndex = index == (size - 1)
                 val li = if (isLastIndex) object : Animation.AnimationListener {
                     override fun onAnimationStart() {
