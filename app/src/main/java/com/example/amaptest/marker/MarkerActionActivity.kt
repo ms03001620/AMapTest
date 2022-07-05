@@ -27,10 +27,10 @@ class MarkerActionActivity : AppCompatActivity() {
         )[MarkerActionViewModel::class.java]
     }
     private val styleData by lazy {
-        AssetsReadUtils.readBytes(this, "style.data")
+        AssetsReadUtils.readBytes(this, "style_v780.data")
     }
     private val styleDataExtra by lazy {
-        AssetsReadUtils.readBytes(this, "style_extra.data")
+        AssetsReadUtils.readBytes(this, "style_extra_v780.data")
     }
 
     private val clusterIconSize by lazy {

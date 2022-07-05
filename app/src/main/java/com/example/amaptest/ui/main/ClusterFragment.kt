@@ -53,10 +53,10 @@ class ClusterFragment : Fragment(),
 
     lateinit var mapView: MapView
     private val styleData by lazy {
-        AssetsReadUtils.readBytes(requireActivity(), "style.data")
+        AssetsReadUtils.readBytes(requireActivity(), "style_v780.data")
     }
     private val styleDataExtra by lazy {
-        AssetsReadUtils.readBytes(requireActivity(), "style_extra.data")
+        AssetsReadUtils.readBytes(requireActivity(), "style_extra_v780.data")
     }
 
     private val clusterIconSize by lazy {
