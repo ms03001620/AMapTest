@@ -26,10 +26,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
 
-        ndk {
-            //设置支持的SO库架构（开发者可以根据需要，选择一个或多个平台的so）
-            abiFilters "armeabi", "armeabi-v7a", "arm64-v8a", "x86","x86_64"
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
         }
     }
 
@@ -65,10 +66,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 
-    api "com.amap.api:3dmap:7.5.0"
-    //api "com.amap.api:3dmap:8.1.0"
-    api "com.amap.api:location:5.1.0"
-    api "com.amap.api:search:7.4.0"
+    implementation files('libs/AMap3DMap_9.3.0_AMapSearch_9.2.0_AMapLocation_6.1.0_20220608.jar')
+    implementation fileTree(include: '*.jar', dir: 'libs')
 
     implementation 'com.google.code.gson:gson:2.8.7'
 

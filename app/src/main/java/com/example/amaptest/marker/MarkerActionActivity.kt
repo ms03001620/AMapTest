@@ -63,8 +63,8 @@ class MarkerActionActivity : AppCompatActivity() {
 
     fun setupMap(savedInstanceState: Bundle?) {
         //https://lbs.amap.com/api/android-sdk/guide/create-project/dev-attention#t2
-        //MapsInitializer.updatePrivacyShow(this, true, true)
-        //MapsInitializer.updatePrivacyAgree(this, true)
+        MapsInitializer.updatePrivacyShow(this, true, true)
+        MapsInitializer.updatePrivacyAgree(this, true)
         mMapView = findViewById(R.id.map)
         mMapView.onCreate(savedInstanceState)
         mMapProxy = MapProxy(BaseMap(mMapView.map), applicationContext)

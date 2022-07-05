@@ -13,10 +13,7 @@ import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
-import com.amap.api.maps.AMap
-import com.amap.api.maps.CameraUpdateFactory
-import com.amap.api.maps.LocationSource
-import com.amap.api.maps.MapView
+import com.amap.api.maps.*
 import com.amap.api.maps.model.*
 import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.R
@@ -85,6 +82,8 @@ class ClusterFragment : Fragment(),
         savedInstanceState: Bundle?,
     ): View {
         val view = inflater.inflate(R.layout.charging_layout_map, container, false)
+        MapsInitializer.updatePrivacyShow(requireContext(), true, true)
+        MapsInitializer.updatePrivacyAgree(requireContext(), true)
         mapView = view.findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
         mapView.map.setCustomMapStyle(
