@@ -12,41 +12,38 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ClusterViewModel : ViewModel() {
-    lateinit var clusterCalcClusterAlgorithm: BaseClusterAlgorithm
-    val stationClusterLiveData = MutableLiveData<Set<Cluster<ClusterItem>>>()
-    lateinit var lastDistanceMerge: DistanceInfo
+    private val algorithm: BaseClusterAlgorithm = DistanceQuadTreeAlgorithm()
+    private var prevDistanceInfo: DistanceInfo? = null
 
-    fun mock(context: Context, distanceInfo: DistanceInfo) {
-        lastDistanceMerge = distanceInfo
+    val clusterLiveData = MutableLiveData<Set<Cluster<ClusterItem>>>()
+
+    fun mock(context: Context, distanceInfo: DistanceInfo, filename: String) {
+        prevDistanceInfo = distanceInfo
         viewModelScope.launch(Dispatchers.IO) {
-            AssetsReadUtils.mockStation(context, "json_stations.json")?.let {
+            AssetsReadUtils.mockStation(context, filename)?.let {
                 it.map {
                     StationClusterItem(it)
                 }.let {
-                    clusterCalcClusterAlgorithm.feed(it)
-                    clusterCalcClusterAlgorithm.calc(distanceInfo, callback = {
-                        stationClusterLiveData.postValue(it)
+                    algorithm.feed(it)
+                    algorithm.calc(distanceInfo, callback = {
+                        clusterLiveData.postValue(it)
                     })
                 }
             }
         }
     }
 
-    fun reCalcCluster(distanceInfo: DistanceInfo) {
-        if (lastDistanceMerge.same(distanceInfo)) {
+    fun createCluster(distanceInfo: DistanceInfo) {
+        if (prevDistanceInfo?.same(distanceInfo) == true) {
             logd("distanceMerge: skip: $distanceInfo")
             return // skip same
         }
-        lastDistanceMerge = distanceInfo
+        prevDistanceInfo = distanceInfo
         viewModelScope.launch {
-            clusterCalcClusterAlgorithm.calc(distanceInfo, callback = {
-                stationClusterLiveData.postValue(it)
+            algorithm.calc(distanceInfo, callback = {
+                clusterLiveData.postValue(it)
             })
         }
     }
 
-    fun initClusterAlgorithm(clusterIconSize: Float) {
-        //clusterCalcClusterAlgorithm = DistanceAlgorithm()
-        clusterCalcClusterAlgorithm = DistanceQuadTreeAlgorithm()
-    }
 }
