@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.maps.*
@@ -14,6 +15,7 @@ import com.amap.api.maps.model.CustomMapStyleOptions
 import com.example.amaptest.AssetsReadUtils
 import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
+import com.example.amaptest.marker.MarkerActionActivity
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.DistanceInfo
 import com.polestar.charging.ui.cluster.view.DefaultClusterRenderer
@@ -100,7 +102,7 @@ class ClusterFragment : Fragment(),
 
     private fun moveCameraToDefault() {
         with(MockUtils.mockBaiYulan()) {
-            CameraUpdateFactory.newLatLng(this)
+            CameraUpdateFactory.newLatLngZoom(this, ZOOM)
         }.let {
             mapView.map.moveCamera(it)
         }
@@ -160,6 +162,7 @@ class ClusterFragment : Fragment(),
 
     companion object {
         fun newInstance() = ClusterFragment()
+        const val ZOOM = 14f
         const val FILE = "json_stations570.json"
     }
 }

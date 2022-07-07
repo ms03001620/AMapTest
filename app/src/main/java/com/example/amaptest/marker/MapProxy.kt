@@ -26,6 +26,8 @@ class MapProxy(private val map: BaseMap, val context: Context) {
             offsetHeight4Text = 0
         )
 
+    val mIconGenerator = com.polestar.charging.ui.cluster.ui.IconGenerator(context)
+
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
         baseMarkerDataList.map {
             createOptionsToPosition(it)
@@ -113,12 +115,16 @@ class MapProxy(private val map: BaseMap, val context: Context) {
         return BitmapDescriptorFactory.fromBitmap(iconCluster.makeIcon(clusterSize.toString()))
     }
 
-    private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData) =
+    private fun createBitmapDescriptorBg(baseMarkerData: BaseMarkerData) =
         when (baseMarkerData) {
             is MarkerCluster -> getClusterBitmapDescriptor(baseMarkerData.getSize())
             is MarkerSingle -> getCollapsedBitmapDescriptor(baseMarkerData.stationDetail.showMarker())
             else -> throw UnsupportedOperationException("type:$baseMarkerData")
         }
+
+    private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData) =
+        mIconGenerator.getDescriptorForCluster(baseMarkerData.getSize())
+
 
     private fun createMarkerOptions(baseMarkerData: BaseMarkerData, latLng: LatLng) =
         MarkerOptions()

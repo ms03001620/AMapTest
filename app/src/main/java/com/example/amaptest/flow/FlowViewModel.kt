@@ -17,6 +17,7 @@ class FlowViewModel : ViewModel() {
             newsApi.latestNews.collect {
                 news.value = it
             }
+            //newsApi.latestNews.
         }
     }
 

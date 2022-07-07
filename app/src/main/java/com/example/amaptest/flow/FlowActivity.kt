@@ -26,7 +26,7 @@ class FlowActivity : AppCompatActivity() {
 
         initBtns()
         initObserve()
-        initStart()
+        //initStart()
     }
 
     private fun initBtns() {
