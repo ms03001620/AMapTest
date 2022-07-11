@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -180,7 +181,9 @@ class EnterActivity : AppCompatActivity() {
     }
 
     fun gotoMarkerAction() {
-        startActivity(Intent(this, MarkerActionActivity::class.java))
+        startActivity(Intent(this, MarkerActionActivity::class.java).also {
+            it.putExtra("file_name", findViewById<EditText>(R.id.file_name).text.toString())
+        })
     }
 
     fun gotoMapPerformance() {
@@ -205,7 +208,9 @@ class EnterActivity : AppCompatActivity() {
     }
 
     fun gotoCluster() {
-        startActivity(Intent(this, ClusterActivity::class.java))
+        startActivity(Intent(this, ClusterActivity::class.java).also {
+            it.putExtra("file_name", findViewById<EditText>(R.id.file_name).text.toString())
+        })
     }
 
     fun gotoFlow() {

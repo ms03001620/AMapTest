@@ -11,7 +11,13 @@ class ClusterActivity : AppCompatActivity() {
         setContentView(R.layout.cluster_activity)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, ClusterFragment.newInstance())
+                .replace(R.id.container, ClusterFragment.newInstance().also {
+                    intent.getStringExtra("file_name")?.let { fileName ->
+                        it.arguments = Bundle().also {
+                            it.putString("file_name", fileName)
+                        }
+                    }
+                })
                 .commitNow()
         }
     }

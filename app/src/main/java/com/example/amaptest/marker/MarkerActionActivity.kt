@@ -51,7 +51,8 @@ class MarkerActionActivity : AppCompatActivity() {
     }
 
     private fun initObserver() {
-        viewModel.loadDefault(this, FILE, SUBLIST_START, SUBLIST_END)
+        val fileName = intent.getStringExtra("file_name") ?: FILE
+        viewModel.loadDefault(this, fileName, SUBLIST_START, SUBLIST_END)
         viewModel.noChangeLiveData.observe(this) {
             markerAction.setList(it)
         }

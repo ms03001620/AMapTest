@@ -95,7 +95,8 @@ class ClusterFragment : Fragment(),
         })
 
         mapView.map.setOnMapLoadedListener {
-            clusterViewModel.mock(requireContext(), getClusterMergeDistance(), FILE)
+            val fileName = arguments?.getString("file_name") ?: FILE
+            clusterViewModel.mock(requireContext(), getClusterMergeDistance(), fileName)
             moveCameraToDefault()
         }
     }
