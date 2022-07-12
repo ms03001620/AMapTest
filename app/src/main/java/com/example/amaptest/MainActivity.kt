@@ -10,8 +10,10 @@ import com.amap.api.maps.MapView
 import com.amap.api.maps.model.*
 import com.example.amaptest.marker.*
 import com.example.amaptest.ui.main.MockUtils
+import com.polestar.base.utils.logd
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.toLatLng
+import kotlin.math.abs
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +25,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     lateinit var mMapView: MapView
-    lateinit var stationsList : List<StationDetail>
+    lateinit var stationsList: List<StationDetail>
     lateinit var mMapProxy: MapProxy
     lateinit var markerAction: MarkerAction
 
@@ -85,11 +87,62 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_fn).setOnClickListener {
-            drawVisibleRegion()
+            drawVisibleRegion(-0.1)
+
+            prev.forEach {
+                val isInclude = getLatLngBounds(
+                    mMapView.map.projection.visibleRegion.latLngBounds,
+                    -0.1
+                ).contains(it.getLatlng())
+                logd("______ $it, contain:$isInclude")
+            }
         }
     }
 
-    fun drawVisibleRegion() {
+    fun drawVisibleRegion(percentOffset: Double = 1.0) {
+        getLatLngBounds(
+            mMapView.map.projection.visibleRegion.latLngBounds,
+            percentOffset
+        ).let {
+            getVisibleLatLngList(it)?.let { list ->
+                PolygonOptions().also {
+                    it.addAll(list)
+                    it.fillColor(Color.TRANSPARENT)
+                    it.strokeColor(Color.RED).strokeWidth(15f)
+                }
+            }?.let { poly ->
+                mMapView.map.addPolygon(poly)
+            }
+        }
+    }
+
+    fun getVisibleLatLngList(bounds: LatLngBounds?): MutableList<LatLng>? {
+        return bounds?.let {
+            return mutableListOf<LatLng>().also {
+                it.add(bounds.southwest)
+                it.add(LatLng(bounds.southwest.latitude, bounds.northeast.longitude))
+                it.add(bounds.northeast)
+                it.add(LatLng(bounds.northeast.latitude, bounds.southwest.longitude))
+            }
+        }
+    }
+
+    fun getLatLngBounds(bounds: LatLngBounds, percentOffset: Double = 1.0): LatLngBounds {
+        var offsetW = 0.0
+
+        if (percentOffset != 0.0) {
+            val width =
+                abs(bounds.southwest.longitude - bounds.northeast.longitude)
+            offsetW = width * percentOffset
+        }
+
+        return LatLngBounds(
+            LatLng(bounds.southwest.latitude - offsetW, bounds.southwest.longitude - offsetW),
+            LatLng(bounds.northeast.latitude + offsetW, bounds.northeast.longitude + offsetW)
+        )
+    }
+
+    fun drawRedRectRoundMap() {
         mMapView.map.projection.visibleRegion?.let { bounds ->
             mutableListOf<LatLng>().also {
                 it.add(bounds.nearLeft)
@@ -127,24 +180,44 @@ class MainActivity : AppCompatActivity() {
         halfHeight: Double = 1.0
     ): List<LatLng> {
         val latLngs: MutableList<LatLng> = ArrayList()
-        latLngs.add(LatLng(center.latitude - halfHeight, center.longitude - halfWidth))//left bottom; nearLeft
-        latLngs.add(LatLng(center.latitude - halfHeight, center.longitude + halfWidth))//left top; farLeft
-        latLngs.add(LatLng(center.latitude + halfHeight, center.longitude + halfWidth))//right top; farRight
-        latLngs.add(LatLng(center.latitude + halfHeight, center.longitude - halfWidth))//right bottom; nearRight
+        latLngs.add(
+            LatLng(
+                center.latitude - halfHeight,
+                center.longitude - halfWidth
+            )
+        )//left bottom; nearLeft
+        latLngs.add(
+            LatLng(
+                center.latitude - halfHeight,
+                center.longitude + halfWidth
+            )
+        )//left top; farLeft
+        latLngs.add(
+            LatLng(
+                center.latitude + halfHeight,
+                center.longitude + halfWidth
+            )
+        )//right top; farRight
+        latLngs.add(
+            LatLng(
+                center.latitude + halfHeight,
+                center.longitude - halfWidth
+            )
+        )//right bottom; nearRight
         return latLngs
     }
 
-    val default = lazy {JsonTestUtil.mock(stationsList.subList(0, 1)).first()}
-    val defaultCluster = lazy {JsonTestUtil.mock(stationsList.subList(5, 7)).first()}
+    val default = lazy { JsonTestUtil.mock(stationsList.subList(0, 1)).first() }
+    val defaultCluster = lazy { JsonTestUtil.mock(stationsList.subList(5, 7)).first() }
 
-    fun initData(){
+    fun initData() {
         AssetsReadUtils.mockStation(this, "json_stations.json")?.let {
             stationsList = it
         }
         Log.d("MainActivity", "stations:$stationsList")
     }
 
-    fun setupMap(savedInstanceState: Bundle?){
+    fun setupMap(savedInstanceState: Bundle?) {
         mMapView = findViewById(R.id.map)
         mMapView.onCreate(savedInstanceState)
         mMapProxy = MapProxy(BaseMap(mMapView.map), applicationContext)
