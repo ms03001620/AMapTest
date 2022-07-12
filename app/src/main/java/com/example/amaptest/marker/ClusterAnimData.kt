@@ -25,3 +25,15 @@ fun ClusterAnimData.getInfoString(): String {
 fun ClusterAnimData.isAnimTaskEmpty(): Boolean {
     return animTask.isEmpty()
 }
+
+
+data class ClusterData(
+    val updateNodeList: MutableList<ClusterUpdateData>,
+    val createNodeList: MutableList<BaseMarkerData>,
+    val deleteNodeList: MutableList<BaseMarkerData>
+)
+
+data class ClusterUpdateData(
+    val markerId: String,
+    val updatedData: BaseMarkerData
+)

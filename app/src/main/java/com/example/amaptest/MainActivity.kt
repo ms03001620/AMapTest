@@ -4,15 +4,12 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapView
-import com.amap.api.maps.model.BitmapDescriptorFactory
-import com.amap.api.maps.model.CustomMapStyleOptions
-import com.amap.api.maps.model.LatLngBounds
-import com.amap.api.maps.model.MyLocationStyle
+import com.amap.api.maps.model.*
 import com.example.amaptest.marker.*
+import com.example.amaptest.ui.main.MockUtils
 import com.polestar.repository.data.charging.StationDetail
 import com.polestar.repository.data.charging.toLatLng
 
@@ -51,43 +48,34 @@ class MainActivity : AppCompatActivity() {
             ),
         )
 
-
-
-/*
-        val prev = JsonTestUtil.mock(stationsList.subList(0, 4), stationsList.subList(6, 8))
-
-        val curr = JsonTestUtil.mock(
-            stationsList.subList(0, 1),
-            stationsList.subList(1, 2),
-            stationsList.subList(2, 4),
-
-            stationsList.subList(6, 8)
-        )
-*/
-
-/*        val prev = JsonTestUtil.mock(stationsList.subList(0, 4))
-
-        val curr = JsonTestUtil.mock(
-            stationsList.subList(0, 1),
-            stationsList.subList(1, 2),
-            stationsList.subList(2, 4),
-        )*/
-
-
         markerAction.setList(prev)
         findViewById<View>(R.id.btn_add).setOnClickListener {
             markerAction.setList(prev)
         }
 
-        findViewById<View>(R.id.btn_move).setOnClickListener {
+/*        findViewById<View>(R.id.btn_plus).setOnClickListener {
             ClusterUtils.createClusterAnimData(prev, curr, 1f).let {
                 markerAction.processNodeList(it)
             }
         }
 
 
-        findViewById<View>(R.id.btn_del).setOnClickListener {
+        findViewById<View>(R.id.btn_sub).setOnClickListener {
             ClusterUtils.createClusterAnimData(curr, prev, 2f).let {
+                markerAction.processNodeList(it)
+            }
+        }*/
+
+
+        findViewById<View>(R.id.btn_plus).setOnClickListener {
+            ClusterUtils.createClusterNoAnimData(prev, curr).let {
+                markerAction.processNodeList(it)
+            }
+        }
+
+
+        findViewById<View>(R.id.btn_sub).setOnClickListener {
+            ClusterUtils.createClusterNoAnimData(curr, prev).let {
                 markerAction.processNodeList(it)
             }
         }
@@ -97,10 +85,53 @@ class MainActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_fn).setOnClickListener {
-            Toast.makeText(this, "size:${mMapProxy.getAllMarkers().size}", Toast.LENGTH_SHORT)
-                .show()
-            markerAction.printMarkers()
+            drawVisibleRegion()
         }
+    }
+
+    fun drawVisibleRegion() {
+        mMapView.map.projection.visibleRegion?.let { bounds ->
+            mutableListOf<LatLng>().also {
+                it.add(bounds.nearLeft)
+                it.add(bounds.farLeft)
+                it.add(bounds.farRight)
+                it.add(bounds.nearRight)
+            }
+        }?.let { list ->
+            PolygonOptions().also {
+                it.addAll(list)
+                it.fillColor(Color.TRANSPARENT)
+                it.strokeColor(Color.RED).strokeWidth(15f)
+            }
+        }?.let { poly ->
+            mMapView.map.addPolygon(poly)
+        }
+    }
+
+
+    fun drawBaiyuLanCircle() {
+        val latLng = MockUtils.mockBaiYulan()
+        mMapView.map.addCircle(
+            CircleOptions()
+                .center(latLng)
+                .radius(1000.0)
+                .fillColor(Color.argb(1, 1, 1, 1))
+                .strokeColor(0xff00000)
+                .strokeWidth(15f)
+        )
+    }
+
+    private fun createRectangle(
+        center: LatLng,
+        halfWidth: Double = 1.0,
+        halfHeight: Double = 1.0
+    ): List<LatLng> {
+        val latLngs: MutableList<LatLng> = ArrayList()
+        latLngs.add(LatLng(center.latitude - halfHeight, center.longitude - halfWidth))//left bottom; nearLeft
+        latLngs.add(LatLng(center.latitude - halfHeight, center.longitude + halfWidth))//left top; farLeft
+        latLngs.add(LatLng(center.latitude + halfHeight, center.longitude + halfWidth))//right top; farRight
+        latLngs.add(LatLng(center.latitude + halfHeight, center.longitude - halfWidth))//right bottom; nearRight
+        return latLngs
     }
 
     val default = lazy {JsonTestUtil.mock(stationsList.subList(0, 1)).first()}

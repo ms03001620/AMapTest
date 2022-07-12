@@ -60,6 +60,9 @@ class MarkerActionActivity : AppCompatActivity() {
         viewModel.clusterAnimDataLiveData.observe(this) {
             markerAction.processNodeList(it)
         }
+        viewModel.clusterDataLiveData.observe(this){
+            markerAction.processNodeList(it)
+        }
     }
 
     fun setupMap(savedInstanceState: Bundle?) {

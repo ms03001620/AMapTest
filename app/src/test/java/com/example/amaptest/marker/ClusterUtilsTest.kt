@@ -1,6 +1,5 @@
 package com.example.amaptest.marker
 
-import com.amap.api.maps.model.LatLng
 import com.example.amaptest.marker.ClusterUtils.subSize
 import com.polestar.charging.ui.cluster.base.ClusterItem
 import com.polestar.charging.ui.cluster.base.StationClusterItem
@@ -74,6 +73,27 @@ class ClusterUtilsTest {
             ).first()
         ).let {
             assertFalse(ClusterUtils.isNoSameHashCode(it))
+        }
+    }
+
+    @Test
+    fun testCreateClusterAnimData1() {
+        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+        val curr = JsonTestUtil.mock(
+            listOf(
+                stationsList.subList(0, 1).first(),
+                stationsList.subList(2, 3).first()
+            ),
+            listOf(
+                stationsList.subList(1, 2).first(),
+                stationsList.subList(3, 4).first()
+            ),
+        )
+
+        ClusterUtils.createClusterNoAnimData(prev, curr).let {
+            assertEquals(1, it.deleteNodeList.size)
+            assertEquals(1, it.updateNodeList.size)
+            assertEquals(1, it.createNodeList.size)
         }
     }
 

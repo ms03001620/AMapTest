@@ -80,12 +80,20 @@ class BaseMap(val map: AMap) {
         return markersHashMap[id]
     }
 
-    fun updateMarker(marker: Marker, id: String, icon: BitmapDescriptor?) {
-        //logd("updateMarker:${id}", TAG)
+    fun updateMarker(marker: Marker, baseMarkerData: BaseMarkerData, icon: BitmapDescriptor?) {
+        val id = baseMarkerData.getId()
+        val number = baseMarkerData.getSize().toString()
         val removed = markersHashMap.remove(marker.title)
         if (removed == null) {
             loge("updateMarker removed null; title:${marker.title}, id: $id", "logicException")
         }
+
+        if (number == marker.snippet) {
+            // marker content not change
+            logw("updateMarker snippet:${marker.snippet}, size:$number, id:$id")
+        }
+
+        marker.snippet = number
         marker.title = id
         marker.setIcon(icon)
         markersHashMap[id] = marker

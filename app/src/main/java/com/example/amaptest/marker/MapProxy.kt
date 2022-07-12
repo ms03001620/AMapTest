@@ -46,7 +46,23 @@ class MapProxy(private val map: BaseMap, val context: Context) {
         if (ClusterUtils.isSamePosition(marker.position, baseMarkerData.getLatlng()).not()) {
             marker.position = baseMarkerData.getLatlng()
         }
-        map.updateMarker(marker, baseMarkerData.getId(), createBitmapDescriptor(baseMarkerData))
+        map.updateMarker(marker, baseMarkerData, createBitmapDescriptor(baseMarkerData))
+    }
+
+    fun updateMarkers(data: List<ClusterUpdateData>?) {
+        data?.forEach { element ->
+            getMarker(element.markerId)?.let {
+                updateMarker(it, element.updatedData)
+            } ?: run {
+                throw IllegalArgumentException("marker not found")
+            }
+        }
+    }
+
+    fun removeClusters(data: List<BaseMarkerData>?) {
+        data?.forEach {
+            map.removeMarker(it.getId())
+        }
     }
 
     fun removeMarker(id: String) {
@@ -128,7 +144,7 @@ class MapProxy(private val map: BaseMap, val context: Context) {
 
     private fun createMarkerOptions(baseMarkerData: BaseMarkerData, latLng: LatLng) =
         MarkerOptions()
-            .snippet(baseMarkerData.getStation()?.id+",${baseMarkerData.getSize()}")
+            .snippet(baseMarkerData.getSize().toString())
             .title(baseMarkerData.getId())
             .position(latLng)
             .icon(createBitmapDescriptor(baseMarkerData))

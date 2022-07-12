@@ -17,6 +17,52 @@ object ClusterUtils {
         return ClusterAnimData(taskList, deleteList, zoom, subCurr)
     }
 
+    fun createClusterNoAnimData(subPrev: MutableList<BaseMarkerData>, subCurr: MutableList<BaseMarkerData>): ClusterData {
+        val prev = subPrev.toMutableList()
+        val curr = subCurr.toMutableList()
+        delSame(prev, curr)
+
+        val updateNodeList = mutableListOf<ClusterUpdateData>()
+        val createNodeList = mutableListOf<BaseMarkerData>()
+        val deleteNodeList = mutableListOf<BaseMarkerData>()
+
+        prev.forEach { prevNode ->
+            if (isPositionNotExist(prevNode, curr)) {
+                deleteNodeList.add(prevNode)
+            }
+        }
+
+        curr.forEach { currNode ->
+            if (isPositionNotExist(currNode, prev)) {
+                createNodeList.add(currNode)
+            } else {
+                val newPos = currNode.getLatlng()
+                var id: String? = null
+
+                prev.forEach {
+                    if (isSamePosition(newPos, it.getLatlng())) {
+                        id = it.getId()
+                    }
+                }
+                assert(id != null)
+                id?.let {
+                    updateNodeList.add(ClusterUpdateData(it, currNode))
+                }
+            }
+        }
+
+        return ClusterData(updateNodeList, createNodeList, deleteNodeList)
+    }
+
+    fun isPositionNotExist(data: BaseMarkerData, target: MutableList<BaseMarkerData>): Boolean {
+        target.forEach { element ->
+            if (isSamePosition(element.getLatlng(), data.getLatlng())) {
+                return false //exits
+            }
+        }
+        return true // no exits
+    }
+
     fun isNoSameHashCode(list: List<BaseMarkerData>): Boolean {
         val set = LinkedHashSet<BaseMarkerData>()
 

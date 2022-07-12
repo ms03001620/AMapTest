@@ -11,7 +11,6 @@ import com.polestar.charging.ui.cluster.base.DistanceInfo
 import com.polestar.charging.ui.cluster.base.StationClusterItem
 import com.polestar.charging.ui.cluster.base.sameZoom
 import com.polestar.charging.ui.cluster.distance.DistanceQuadTreeAlgorithm
-import com.polestar.repository.data.charging.toLatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
@@ -20,6 +19,7 @@ import kotlin.math.abs
 class MarkerActionViewModel : ViewModel() {
     val noChangeLiveData = SingleLiveEvent<MutableList<BaseMarkerData>>()
     val clusterAnimDataLiveData = SingleLiveEvent<ClusterAnimData>()
+    val clusterDataLiveData = SingleLiveEvent<ClusterData>()
 
     var distanceInfo: DistanceInfo? = null
     var prev: MutableList<BaseMarkerData>? = null
@@ -92,8 +92,14 @@ class MarkerActionViewModel : ViewModel() {
                             throw IllegalArgumentException("eeeee")
                         }
 
-                        val p = ClusterUtils.createClusterAnimData(it, curr, distanceInfo.zoomLevel)
-                        clusterAnimDataLiveData.postValue(p)
+/*                        val p = ClusterUtils.createClusterAnimData(it, curr, distanceInfo.zoomLevel)
+                        clusterAnimDataLiveData.postValue(p)*/
+
+
+                        val p = ClusterUtils.createClusterNoAnimData(it, curr)
+                        clusterDataLiveData.postValue(p)
+
+
                     } ?: run {
                         noChangeLiveData.postValue(curr)
                     }

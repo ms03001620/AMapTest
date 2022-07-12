@@ -55,6 +55,12 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
+    fun processNodeList(clusterData: ClusterData) {
+        mapProxy.removeClusters(clusterData.deleteNodeList)
+        mapProxy.createMarkers(clusterData.createNodeList)
+        mapProxy.updateMarkers(clusterData.updateNodeList)
+    }
+
     private fun postSyncTask(task: () -> Unit) {
         GlobalScope.launch(Dispatchers.IO) {
             lock.acquire()
@@ -62,7 +68,7 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
-    private fun unSafeProcessNodeList(clusterAnimData: ClusterAnimData) {
+    private suspend fun unSafeProcessNodeList(clusterAnimData: ClusterAnimData) {
         logd("do task: ${clusterAnimData.getInfoString()}")
         // animId 5
         clusterAnimData.deleteList.forEach {
@@ -82,6 +88,8 @@ class MarkerAction(val mapProxy: MapProxy) {
         if (clusterAnimData.animTask.isNotEmpty() && queue.isEmpty()) {
             assert(false)
         }
+
+        logd("queue size:${queue.size}", "______")
 
         while (queue.isNotEmpty()) {
             queue.poll()?.startAnimation()
