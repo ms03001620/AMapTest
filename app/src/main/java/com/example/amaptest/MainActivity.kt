@@ -38,16 +38,17 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val prev = JsonTestUtil.mock(stationsList.subList(0, 2), stationsList.subList(2, 4))
+        val prev = JsonTestUtil.mock(stationsList)
         val curr = JsonTestUtil.mock(
             listOf(
                 stationsList.subList(0, 1).first(),
-                stationsList.subList(2, 3).first()
+                stationsList.subList(1, 2).first()
             ),
             listOf(
-                stationsList.subList(1, 2).first(),
+                stationsList.subList(2, 3).first(),
                 stationsList.subList(3, 4).first()
             ),
+            stationsList.subList(4, stationsList.size)
         )
 
         markerAction.setList(prev)
@@ -55,7 +56,8 @@ class MainActivity : AppCompatActivity() {
             markerAction.setList(prev)
         }
 
-/*        findViewById<View>(R.id.btn_plus).setOnClickListener {
+
+        findViewById<View>(R.id.btn_plus).setOnClickListener {
             ClusterUtils.createClusterAnimData(prev, curr, 1f).let {
                 markerAction.processNodeList(it)
             }
@@ -64,20 +66,6 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_sub).setOnClickListener {
             ClusterUtils.createClusterAnimData(curr, prev, 2f).let {
-                markerAction.processNodeList(it)
-            }
-        }*/
-
-
-        findViewById<View>(R.id.btn_plus).setOnClickListener {
-            ClusterUtils.createClusterNoAnimData(prev, curr).let {
-                markerAction.processNodeList(it)
-            }
-        }
-
-
-        findViewById<View>(R.id.btn_sub).setOnClickListener {
-            ClusterUtils.createClusterNoAnimData(curr, prev).let {
                 markerAction.processNodeList(it)
             }
         }

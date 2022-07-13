@@ -26,7 +26,7 @@ class MapProxy(private val map: BaseMap, val context: Context) {
             offsetHeight4Text = 0
         )
 
-    val mIconGenerator = com.polestar.charging.ui.cluster.ui.IconGenerator(context)
+/*    val mIconGenerator = com.polestar.charging.ui.cluster.ui.IconGenerator(context)*/
 
     fun createMarkers(baseMarkerDataList: MutableList<BaseMarkerData>) {
         baseMarkerDataList.map {
@@ -46,7 +46,7 @@ class MapProxy(private val map: BaseMap, val context: Context) {
         if (ClusterUtils.isSamePosition(marker.position, baseMarkerData.getLatlng()).not()) {
             marker.position = baseMarkerData.getLatlng()
         }
-        map.updateMarker(marker, baseMarkerData, createBitmapDescriptor(baseMarkerData))
+        map.updateMarker(marker, baseMarkerData, createBitmapDescriptorBg(baseMarkerData))
     }
 
     fun updateMarkers(data: List<ClusterUpdateData>?) {
@@ -138,8 +138,8 @@ class MapProxy(private val map: BaseMap, val context: Context) {
             else -> throw UnsupportedOperationException("type:$baseMarkerData")
         }
 
-    private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData) =
-        mIconGenerator.getDescriptorForCluster(baseMarkerData.getSize())
+/*    private fun createBitmapDescriptor(baseMarkerData: BaseMarkerData) =
+        mIconGenerator.getDescriptorForCluster(baseMarkerData.getSize())*/
 
 
     private fun createMarkerOptions(baseMarkerData: BaseMarkerData, latLng: LatLng) =
@@ -147,7 +147,7 @@ class MapProxy(private val map: BaseMap, val context: Context) {
             .snippet(baseMarkerData.getSize().toString())
             .title(baseMarkerData.getId())
             .position(latLng)
-            .icon(createBitmapDescriptor(baseMarkerData))
+            .icon(createBitmapDescriptorBg(baseMarkerData))
             .setFlat(false)
             .infoWindowEnable(false)
 }

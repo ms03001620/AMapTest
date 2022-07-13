@@ -41,8 +41,7 @@ class MarkerAction(val mapProxy: MapProxy) {
                 lock.acquire()
                 logv("start task:$clusterAnimData", "AnimFactory")
 
-                unSafeProcessNodeList(clusterAnimData)
-                if (clusterAnimData.isAnimTaskEmpty()) {
+                unSafeProcessNodeList(clusterAnimData){
                     lock.release()
                 }
             } catch (e: Exception) {
@@ -68,7 +67,10 @@ class MarkerAction(val mapProxy: MapProxy) {
         }
     }
 
-    private suspend fun unSafeProcessNodeList(clusterAnimData: ClusterAnimData) {
+    private fun unSafeProcessNodeList(
+        clusterAnimData: ClusterAnimData,
+        function: () -> Unit
+    ) {
         logd("do task: ${clusterAnimData.getInfoString()}")
         // animId 5
         clusterAnimData.deleteList.forEach {
@@ -85,14 +87,14 @@ class MarkerAction(val mapProxy: MapProxy) {
             }
         }
 
-        if (clusterAnimData.animTask.isNotEmpty() && queue.isEmpty()) {
-            assert(false)
-        }
-
         logd("queue size:${queue.size}", "______")
 
-        while (queue.isNotEmpty()) {
-            queue.poll()?.startAnimation()
+        if (queue.isEmpty()) {
+            function.invoke()
+        } else {
+            while (queue.isNotEmpty()) {
+                queue.poll()?.startAnimation()
+            }
         }
     }
 
@@ -134,13 +136,9 @@ class MarkerAction(val mapProxy: MapProxy) {
                 marker = mapProxy.createMarker(subNode.subNode, subNode.parentLatLng)
             }
 
-            if (marker != null) {
-                transfer(marker, curr.getLatlng(), false, null)
-                queue.add(marker)
-            } else {
-                loge("createMarker null:${subNode.subNode.getStation()?.id}", "logicException")
-                assert(false)
-            }
+            // animId 4
+            transfer(marker, curr.getLatlng(), false, null)
+            queue.add(marker)
         }
     }
 
@@ -198,33 +196,34 @@ class MarkerAction(val mapProxy: MapProxy) {
     }
 
     private fun transfer(
-        marker: Marker,
+        marker: Marker?,
         moveTo: LatLng,
         removeAtEnd: Boolean = false,
         listener: Animation.AnimationListener? = null
     ) {
-        val set = AnimationSet(true)
-        set.addAnimation(TranslateAnimation(moveTo).apply {
-            this.setInterpolator(AccelerateInterpolator())
-            this.setDuration(CLUSTER_MOVE_ANIM)
-            this.setAnimationListener(
-                lock.createAnimationListener(
-                    object : Animation.AnimationListener {
-                        override fun onAnimationStart() {
-                            listener?.onAnimationStart()
-                        }
+        marker?.let {
+            marker.setAnimation(AnimationSet(true).also { animationSet ->
+                animationSet.addAnimation(TranslateAnimation(moveTo).apply {
+                    this.setInterpolator(AccelerateInterpolator())
+                    this.setDuration(CLUSTER_MOVE_ANIM)
+                    this.setAnimationListener(
+                        lock.createAnimationListener(
+                            object : Animation.AnimationListener {
+                                override fun onAnimationStart() {
+                                    listener?.onAnimationStart()
+                                }
 
-                        override fun onAnimationEnd() {
-                            if (removeAtEnd) {
-                                mapProxy.removeMarker(marker.title)
-                            }
-                            listener?.onAnimationEnd()
-                        }
-                    })
-            )
-        })
-        marker.setAnimation(set)
-        //marker.startAnimation()
+                                override fun onAnimationEnd() {
+                                    if (removeAtEnd) {
+                                        mapProxy.removeMarker(marker.title)
+                                    }
+                                    listener?.onAnimationEnd()
+                                }
+                            })
+                    )
+                })
+            })
+        }
     }
 
 
