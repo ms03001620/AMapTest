@@ -92,12 +92,12 @@ class MarkerActionViewModel : ViewModel() {
                             throw IllegalArgumentException("eeeee")
                         }
 
-/*                        val p = ClusterUtils.createClusterAnimData(it, curr, distanceInfo.zoomLevel)
-                        clusterAnimDataLiveData.postValue(p)*/
+                        val p = ClusterUtils.createClusterAnimData(it, curr, distanceInfo.zoomLevel)
+                        clusterAnimDataLiveData.postValue(p)
 
 
-                        val p = ClusterUtils.createClusterNoAnimData(it, curr)
-                        clusterDataLiveData.postValue(p)
+/*                        val p = ClusterUtils.createClusterNoAnimData(it, curr)
+                        clusterDataLiveData.postValue(p)*/
 
 
                     } ?: run {
