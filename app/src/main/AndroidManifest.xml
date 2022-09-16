@@ -30,6 +30,9 @@
             android:name=".flow.FlowActivity"
             android:exported="false" />
         <activity
+            android:name=".flow.LiveDataActivity"
+            android:exported="false" />
+        <activity
             android:name=".bluetooth.BluetoothActivity"
             android:exported="false" />
         <activity

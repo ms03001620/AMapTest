@@ -18,6 +18,7 @@ import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.bluetooth.BluetoothPermissionHelper
 import com.example.amaptest.bluetooth.BluetoothSampleActivity
 import com.example.amaptest.flow.FlowActivity
+import com.example.amaptest.flow.LiveDataActivity
 import com.example.amaptest.marker.MarkerActionActivity
 import com.robolectric.DialogsActivity
 import com.robolectric.WelcomeActivity
@@ -119,6 +120,9 @@ class EnterActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_flow).setOnClickListener {
             gotoFlow()
         }
+        findViewById<View>(R.id.btn_live_data).setOnClickListener {
+            gotoLiveData()
+        }
 
         findViewById<View>(R.id.btn_maker_action).setOnClickListener {
             gotoMarkerAction()
@@ -211,6 +215,10 @@ class EnterActivity : AppCompatActivity() {
         startActivity(Intent(this, ClusterActivity::class.java).also {
             it.putExtra("file_name", findViewById<EditText>(R.id.file_name).text.toString())
         })
+    }
+
+    fun gotoLiveData() {
+        startActivity(Intent(this, LiveDataActivity::class.java))
     }
 
     fun gotoFlow() {
