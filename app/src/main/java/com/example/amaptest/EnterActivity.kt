@@ -20,6 +20,7 @@ import com.example.amaptest.bluetooth.BluetoothSampleActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.flow.LiveDataActivity
 import com.example.amaptest.marker.MarkerActionActivity
+import com.example.amaptest.pager.PagerActivity
 import com.robolectric.DialogsActivity
 import com.robolectric.WelcomeActivity
 
@@ -100,6 +101,10 @@ class EnterActivity : AppCompatActivity() {
             } else {
                 requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
             }
+        }
+
+        findViewById<View>(R.id.btn_pager).setOnClickListener {
+            gotoPager()
         }
 
         findViewById<View>(R.id.btn_anim).setOnClickListener {
@@ -194,6 +199,9 @@ class EnterActivity : AppCompatActivity() {
         startActivity(Intent(this, MapPerformanceActivity::class.java))
     }
 
+    fun gotoPager() {
+        startActivity(Intent(this, PagerActivity::class.java))
+    }
 
     fun gotoAnim() {
         startActivity(Intent(this, AnimActivity::class.java))
