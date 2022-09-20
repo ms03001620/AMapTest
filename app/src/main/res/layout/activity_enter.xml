@@ -29,6 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Dialog" />
+
         <Button
             android:id="@+id/btn_pager"
             android:layout_width="wrap_content"
@@ -42,24 +43,36 @@
         android:layout_height="wrap_content"
         android:text="json_stations570.json" />
 
-    <Button
-        android:id="@+id/btn_map"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="map" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_map"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="map" />
+
+        <Button
+            android:id="@+id/btn_anim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="anim" />
+
+        <Button
+            android:id="@+id/btn_bottomSheet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="BottomSheet" />
+
+    </LinearLayout>
 
     <Button
-        android:id="@+id/btn_anim"
+        android:id="@+id/btn_fragment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="anim" />
-
-    <Button
-        android:id="@+id/btn_bottomSheet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="BottomSheet" />
-
+        android:text="Fragments" />
 
     <Button
         android:id="@+id/btn_sheetBehavior"
@@ -78,6 +91,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Flow" />
+
     <Button
         android:id="@+id/btn_live_data"
         android:layout_width="wrap_content"
@@ -101,6 +115,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Bluetooth" />
+
     <Button
         android:id="@+id/btn_bluetooth_le"
         android:layout_width="wrap_content"

@@ -111,6 +111,10 @@ class EnterActivity : AppCompatActivity() {
             gotoAnim()
         }
 
+        findViewById<View>(R.id.btn_fragment).setOnClickListener {
+            gotoFragment()
+        }
+
         findViewById<View>(R.id.btn_bottomSheet).setOnClickListener {
             gotoSheet()
         }
@@ -201,6 +205,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoPager() {
         startActivity(Intent(this, PagerActivity::class.java))
+    }
+
+    fun gotoFragment() {
+        startActivity(Intent(this, FragmentsActivity::class.java))
     }
 
     fun gotoAnim() {
