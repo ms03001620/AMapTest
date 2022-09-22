@@ -56,6 +56,7 @@ class VPAdapter(val act: PagerActivity) : RecyclerView.Adapter<VPAdapter.BaseVie
 
     //TODO leak release
     fun clear() {
+        Log.d("ViewPager2", "clear")
         fragmentMap.clear()
     }
 

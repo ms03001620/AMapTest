@@ -43,6 +43,11 @@ class FragmentLifeFragment : Fragment() {
         Log.d(TAG, "onStart")
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "onResume")
+    }
+
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause")
@@ -56,6 +61,11 @@ class FragmentLifeFragment : Fragment() {
     override fun onDetach() {
         Log.d(TAG, "onDetach")
         super.onDetach()
+    }
+
+    override fun onDestroy() {
+        Log.d(TAG, "onDestroy")
+        super.onDestroy()
     }
 
     fun printArguments() {

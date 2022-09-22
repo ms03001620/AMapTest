@@ -1,5 +1,6 @@
 package com.example.amaptest.pager
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -28,12 +29,12 @@ class LiveFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         root.findViewById<TextView>(R.id.text_status).text = "status:$arg"
-        Log.d("LiveFragment", "cccc $arg")
+        Log.d("LiveFragment,ViewPager2", "cccc $arg")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("LiveFragment", "dddd :$arg")
+        Log.d("LiveFragment,ViewPager2", "dddd :$arg")
     }
 
 
