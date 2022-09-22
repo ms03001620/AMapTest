@@ -6,11 +6,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/ssss"
-        android:text="bbbbbbbb"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content">
+
+
+        <Button
+            android:layout_weight=".5"
+            android:id="@+id/btn_ppp"
+            android:text="pppp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+
+        <Button
+            android:layout_weight=".5"
+            android:id="@+id/btn_lll"
+            android:text="llll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/text_status"

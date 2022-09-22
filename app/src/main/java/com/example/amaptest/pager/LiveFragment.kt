@@ -1,5 +1,6 @@
 package com.example.amaptest.pager
 
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +31,13 @@ class LiveFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         root.findViewById<TextView>(R.id.text_status).text = "status:$arg"
+
+        root.findViewById<View>(R.id.btn_lll).setOnClickListener {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+        root.findViewById<View>(R.id.btn_ppp).setOnClickListener {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 
     override fun onDestroyView() {
