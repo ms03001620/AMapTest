@@ -30,7 +30,7 @@ class VPAdapter(val act: PagerActivity) : RecyclerView.Adapter<VPAdapter.BaseVie
 
     override fun onViewDetachedFromWindow(holder: BaseViewHolder) {
         super.onViewDetachedFromWindow(holder)
-        Log.d("ViewPager2", "remove ${holder.layoutPosition}")
+        Log.d("ViewPager2", "remove LiveFragment ${holder.layoutPosition}")
 
         fragmentMap.remove(holder.layoutPosition)?.apply {
             act.supportFragmentManager.beginTransaction().remove(this).commitNow()
@@ -41,7 +41,7 @@ class VPAdapter(val act: PagerActivity) : RecyclerView.Adapter<VPAdapter.BaseVie
 
     override fun onViewAttachedToWindow(holder: BaseViewHolder) {
         super.onViewAttachedToWindow(holder)
-        Log.d("ViewPager2", "add ${holder.layoutPosition}")
+        Log.d("ViewPager2", "add LiveFragment ${holder.layoutPosition}")
 
         LiveFragment().apply {
             this.arguments = bundleOf().also { bundle: Bundle ->

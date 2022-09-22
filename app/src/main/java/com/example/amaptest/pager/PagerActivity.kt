@@ -12,6 +12,7 @@ class PagerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("ViewPager2", "PagerActivity onCreate")
         setContentView(R.layout.activity_pager)
         initView()
         initPager()
@@ -40,7 +41,7 @@ class PagerActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        Log.d("ViewPager2", "onConfigurationChanged:")
+        Log.d("ViewPager2", "PagerActivity onConfigurationChanged:")
         applyFixSmoothError(newConfig)
     }
 

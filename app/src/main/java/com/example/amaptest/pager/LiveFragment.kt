@@ -22,6 +22,7 @@ class LiveFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         arg = arguments?.getString("key", "null") ?: "nil"
+        Log.d("LiveFragment,ViewPager2", "LiveFragment onCreateView  $arg")
         root = inflater.inflate(R.layout.fragment_main, container, false)
         return root
     }
@@ -29,12 +30,11 @@ class LiveFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         root.findViewById<TextView>(R.id.text_status).text = "status:$arg"
-        Log.d("LiveFragment,ViewPager2", "cccc $arg")
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("LiveFragment,ViewPager2", "dddd :$arg")
+        Log.d("LiveFragment,ViewPager2", "LiveFragment onDestroyView :$arg")
     }
 
 
