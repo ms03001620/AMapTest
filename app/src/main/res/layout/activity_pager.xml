@@ -12,4 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ViewStub
+        android:id="@+id/stub_scroll_Interceptor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:inflatedId="@+id/scroll_Interceptor"
+        android:layout="@layout/layout_scroll_interceptor"
+        tools:visibility="visible" />
+
 </LinearLayout>
