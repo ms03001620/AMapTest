@@ -1,5 +1,6 @@
 package com.example.amaptest.pager
 
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
@@ -22,6 +23,7 @@ class LiveFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         arg = arguments?.getString("key", "null") ?: "nil"
+        Log.d("LiveFragment,ViewPager2", "LiveFragment onCreateView  $arg")
         root = inflater.inflate(R.layout.fragment_main, container, false)
         return root
     }
@@ -29,12 +31,18 @@ class LiveFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         root.findViewById<TextView>(R.id.text_status).text = "status:$arg"
-        Log.d("LiveFragment,ViewPager2", "cccc $arg")
+
+        root.findViewById<View>(R.id.btn_lll).setOnClickListener {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+        root.findViewById<View>(R.id.btn_ppp).setOnClickListener {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        Log.d("LiveFragment,ViewPager2", "dddd :$arg")
+        Log.d("LiveFragment,ViewPager2", "LiveFragment onDestroyView :$arg")
     }
 
 

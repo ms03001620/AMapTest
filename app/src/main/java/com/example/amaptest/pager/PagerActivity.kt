@@ -4,6 +4,10 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewStub
+import androidx.core.view.GestureDetectorCompat
 import androidx.viewpager2.widget.ViewPager2
 import com.example.amaptest.R
 
@@ -12,10 +16,57 @@ class PagerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("ViewPager2", "PagerActivity onCreate")
         setContentView(R.layout.activity_pager)
         initView()
         initPager()
     }
+
+    private fun initInterceptor(){
+        val layoutInterceptor = findViewById<ViewStub>(R.id.stub_scroll_Interceptor).inflate()
+
+        pager.isUserInputEnabled = false
+        val detector = GestureDetectorCompat(layoutInterceptor.context, UpDownFlingListener {
+            //ToastUtil.show("aaaa")
+        })
+
+        layoutInterceptor.setOnTouchListener(object : View.OnTouchListener{
+
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                //detector.onTouchEvent(event)
+
+                return  detector.onTouchEvent(event)
+            }
+        })
+//        GestureDetectorHelper(layoutInterceptor, object : OnGesturePageEvent {
+//            override fun canUnLockGesture(finger: Finger): Boolean {
+//                when (finger) {
+//                    Finger.DOWN, Finger.UP -> {
+//                        DialogUtil.confirmDialog(mContext, "", "连麦中无法滑动直播间哦", false, object : DialogUtil.Callback {
+//                            override fun confirm(dialog: Dialog) {
+//                                dialog.dismiss()
+//                            }
+//
+//                            override fun cancel(dialog: Dialog) {
+//                                dialog.dismiss()
+//                            }
+//                        }).show()
+//
+//                    }
+//                }
+//                return false
+//            }
+//
+//            override fun onUnLock() {
+//                viewPager.isUserInputEnabled = true
+//            }
+//
+//            override fun onLock() {
+//                viewPager.isUserInputEnabled = false
+//            }
+//        })
+    }
+
 
     fun initView() {
         pager = findViewById<ViewPager2>(R.id.view_pager)
@@ -40,7 +91,7 @@ class PagerActivity : AppCompatActivity() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        Log.d("ViewPager2", "onConfigurationChanged:")
+        Log.d("ViewPager2", "PagerActivity onConfigurationChanged:")
         applyFixSmoothError(newConfig)
     }
 
