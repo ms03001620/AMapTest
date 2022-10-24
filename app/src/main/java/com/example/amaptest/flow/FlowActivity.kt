@@ -27,18 +27,27 @@ class FlowActivity : AppCompatActivity() {
         initBtns()
         initObserve()
         //initStart()
+
+        viewModel.linkToList()
     }
 
     private fun initBtns() {
         binding.btnSwitch.setOnClickListener {
             viewModel.getNewsOdd()
         }
+        binding.btnAddItem.setOnClickListener {
+            viewModel.addItems(System.currentTimeMillis().toString())
+        }
     }
 
     private fun initObserve() {
-        viewModel.news.observe(this,{
+        viewModel.news.observe(this) {
             binding.textNumber.text = it.toString()
-        })
+        }
+        viewModel.itemString.observe(this) {
+            binding.textItems.text = it
+        }
+
     }
 
     private fun initStart() {

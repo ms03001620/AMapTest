@@ -5,9 +5,10 @@
 
     <data />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         tools:context=".flow.FlowActivity">
 
         <LinearLayout
@@ -30,8 +31,33 @@
                 android:layout_height="wrap_content"
                 android:text="switch1" />
 
+
         </LinearLayout>
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <TextView
+                android:id="@+id/text_items"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="items"
+                android:textSize="30sp" />
+
+            <Button
+                android:id="@+id/btn_add_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="addItem" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 </layout>

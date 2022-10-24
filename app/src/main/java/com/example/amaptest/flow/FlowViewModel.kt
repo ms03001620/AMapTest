@@ -10,7 +10,9 @@ import kotlinx.coroutines.launch
 
 class FlowViewModel : ViewModel() {
     private val newsApi = NewsRepository()
+    private val queueRepository = QueueRepository()
     val news = MutableLiveData<Int>()
+    val itemString = MutableLiveData<String>()
 
     fun getNews() {
         viewModelScope.launch {
@@ -34,4 +36,15 @@ class FlowViewModel : ViewModel() {
         }
     }
 
+    fun linkToList() {
+        viewModelScope.launch {
+            queueRepository.itemsFlow.collect {
+                itemString.value = it
+            }
+        }
+    }
+
+    fun addItems(s: String) {
+        queueRepository.addItem(s)
+    }
 }

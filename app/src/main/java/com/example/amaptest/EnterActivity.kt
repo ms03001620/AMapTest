@@ -20,6 +20,7 @@ import com.example.amaptest.bluetooth.BluetoothSampleActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.flow.LiveDataActivity
 import com.example.amaptest.marker.MarkerActionActivity
+import com.example.amaptest.pager.CountdownTextView
 import com.example.amaptest.pager.PagerActivity
 import com.robolectric.DialogsActivity
 import com.robolectric.WelcomeActivity
@@ -79,12 +80,26 @@ class EnterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_enter)
 
+        val countDown = findViewById<CountdownTextView>(R.id.countdown)
+
+
+
+
         findViewById<View>(R.id.btn_enter).setOnClickListener {
-            if (checkLocation()) {
+            val sleep = 10 * 1000L//1 * 60 * 1000L
+            val grab = 20 * 1000L
+
+            val start = System.currentTimeMillis()
+            val endTime = start + sleep + grab
+            val sleepTime = start + sleep
+
+            countDown.setCountdownAndStart(endMs = endTime, sleepTimeMs = sleepTime)
+
+/*            if (checkLocation()) {
                 gotoLocation()
             } else {
                 requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-            }
+            }*/
         }
 
         findViewById<View>(R.id.btn_welcome).setOnClickListener {
