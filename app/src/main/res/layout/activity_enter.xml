@@ -7,6 +7,12 @@
     android:orientation="vertical"
     tools:context=".EnterActivity">
 
+    <TextView
+        android:id="@+id/text_version_b"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="version"/>
+
     <com.example.amaptest.pager.CountdownTextView
         android:id="@+id/countdown"
         android:layout_width="wrap_content"

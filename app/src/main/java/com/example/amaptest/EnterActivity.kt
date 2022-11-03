@@ -5,13 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.example.amaptest.ble.BleActivity
 import com.example.amaptest.bluetooth.BluetoothActivity
@@ -24,6 +26,7 @@ import com.example.amaptest.pager.CountdownTextView
 import com.example.amaptest.pager.PagerActivity
 import com.robolectric.DialogsActivity
 import com.robolectric.WelcomeActivity
+
 
 class EnterActivity : AppCompatActivity() {
     private var requestOnlyFinePermissionLauncher =
@@ -82,7 +85,14 @@ class EnterActivity : AppCompatActivity() {
 
         val countDown = findViewById<CountdownTextView>(R.id.countdown)
 
+        findViewById<TextView>(R.id.text_version_b).apply {
+            val manufacturer = Build.MANUFACTURER
+            val model = Build.MODEL
+            val version = Build.VERSION.SDK_INT
+            val versionRelease = Build.VERSION.RELEASE
 
+            this.text = "manufacturer $manufacturer model $model version $version versionRelease $versionRelease"
+        }
 
 
         findViewById<View>(R.id.btn_enter).setOnClickListener {
