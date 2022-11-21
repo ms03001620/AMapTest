@@ -14,6 +14,7 @@ class CountdownActivity : AppCompatActivity() {
         setContentView(R.layout.activity_countdown)
 
         countDown = findViewById<ResendTextView>(R.id.countdown)
+        TouchUtils.addTouchAreaSize(countDown, 150)
         countDown.runStoreTime(object: ResendTextView.OnRestoreTime{
             override fun onNoStoreData() {
                 Toast.makeText(getActivity(), "NoData", Toast.LENGTH_LONG).show()

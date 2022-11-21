@@ -43,9 +43,9 @@ android {
 
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
-            def index = sprintf('%02d', 1)
+            def index = versionName
             def date = new Date().format('MMdd')
-            def name = "app-${variant.buildType.name}-${date}-${index}.apk"
+            def name = "app-${variant.buildType.name}-v${index}.apk"
             output.outputFileName = name
         }
     }
