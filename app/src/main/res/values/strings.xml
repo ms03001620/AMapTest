@@ -29,4 +29,11 @@
     <string name="cc_plate_manager">管理车牌信息</string>
     <string name="cc_plate_desc">添加车牌后，部分站点充电后可享受停车优惠</string>
 
+
+    <string name="sms_resend">Resend</string>
+    <string name="sms_resending">Resend（%ss）</string>
+
+    <!--    <string name="sms_resend">重发</string>
+    <string name="sms_resending">重发（%ss）</string>-->
+
 </resources>

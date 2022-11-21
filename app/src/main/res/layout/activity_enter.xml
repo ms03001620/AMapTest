@@ -13,11 +13,6 @@
         android:layout_height="wrap_content"
         android:text="version"/>
 
-    <com.example.amaptest.pager.CountdownTextView
-        android:id="@+id/countdown"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,10 +25,10 @@
             android:text="Location" />
 
         <Button
-            android:id="@+id/btn_welcome"
+            android:id="@+id/btn_countdown"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RoWel" />
+            android:text="CountDown" />
 
         <Button
             android:id="@+id/btn_dialog"

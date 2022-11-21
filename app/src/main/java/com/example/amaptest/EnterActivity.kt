@@ -22,8 +22,8 @@ import com.example.amaptest.bluetooth.BluetoothSampleActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.flow.LiveDataActivity
 import com.example.amaptest.marker.MarkerActionActivity
-import com.example.amaptest.pager.CountdownTextView
 import com.example.amaptest.pager.PagerActivity
+import com.example.amaptest.pager.ResendTextView
 import com.robolectric.DialogsActivity
 import com.robolectric.WelcomeActivity
 
@@ -83,7 +83,10 @@ class EnterActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_enter)
 
-        val countDown = findViewById<CountdownTextView>(R.id.countdown)
+        //RoWel
+        findViewById<View>(R.id.btn_countdown).setOnClickListener {
+            startActivity(Intent(this, CountdownActivity::class.java))
+        }
 
         findViewById<TextView>(R.id.text_version_b).apply {
             val manufacturer = Build.MANUFACTURER
@@ -94,27 +97,15 @@ class EnterActivity : AppCompatActivity() {
             this.text = "manufacturer $manufacturer model $model version $version versionRelease $versionRelease"
         }
 
-
+        // Location
         findViewById<View>(R.id.btn_enter).setOnClickListener {
-            val sleep = 10 * 1000L//1 * 60 * 1000L
-            val grab = 20 * 1000L
-
-            val start = System.currentTimeMillis()
-            val endTime = start + sleep + grab
-            val sleepTime = start + sleep
-
-            countDown.setCountdownAndStart(endMs = endTime, sleepTimeMs = sleepTime)
-
-/*            if (checkLocation()) {
+            if (checkLocation()) {
                 gotoLocation()
             } else {
                 requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-            }*/
+            }
         }
 
-        findViewById<View>(R.id.btn_welcome).setOnClickListener {
-            startActivity(Intent(this, WelcomeActivity::class.java))
-        }
 
         findViewById<View>(R.id.btn_dialog).setOnClickListener {
             startActivity(Intent(this, DialogsActivity::class.java))

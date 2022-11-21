@@ -7,78 +7,106 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
-import java.util.concurrent.TimeUnit
 
-class CountdownTextView(context: Context, attrs: AttributeSet) : AppCompatTextView(context, attrs) {
+open class CountdownTextView(context: Context, attrs: AttributeSet) : AppCompatTextView(context, attrs) {
     interface Callback{
-        fun onCountdown(remaining: Long)
+        fun onCountdown(second: Long, isLast: Boolean)
+        fun onFirstInit()
+        fun onClear()
+    }
+    private var callback: Callback? = null
+    private var count = DEF_COUNT
+
+    fun initAndStart(second: Long, callback: Callback) {
+        this.callback = callback
+        val endTime = System.currentTimeMillis() + second * 1000
+
+        if (haveStoreData()) {
+            if (isInvalid()) {
+                setEndTime(endTime) // init
+                count = second
+                callback.onFirstInit()
+            } else {
+                count = restoreCountByTime()
+                Log.w(TAG, "duplicate init")
+            }
+        } else {
+            setEndTime(endTime) // init
+            count = second
+            callback.onFirstInit()
+        }
+        start()
     }
 
-    private var callback: Callback? = null
-    private var endTimeMs = 0L
-    private var sleepTimeMs = 0L
+    fun haveStoreData() = SPUtils.contains(context, Constants.SP_SMS_DELAY)
+
     private val handlerTimer = Handler(Looper.getMainLooper()) { message ->
-        Log.d(TAG, "handleMessage:${message.what}")
-        if (message.what == MSG_WHAT) {
-            calcAndSetText()
-            sendNextCountdown()
+        if (message.what == MSG_COUNTDOWN) {
+            val end = getEndTime()
+            val now = System.currentTimeMillis()
+            count -= 1
+            val left = end - now
+            Log.d(TAG, "handleMessage:${count}, ${left}")
+            if (left <= 0 || count <= 0) {
+                callback?.onCountdown(0, true)// ms
+                resetData()
+            } else {
+                callback?.onCountdown(count, false)// ms
+                nextCountdown()
+            }
         }
         false
     }
-    private fun calcAndSetText() {
-        val now = System.currentTimeMillis()
-        val time = if (sleepTimeMs - now > 0) {
-            sleepTimeMs
-        } else {
-            endTimeMs
-        }
 
-        val current = time - System.currentTimeMillis()//now
-        text = format(current)
-        callback?.onCountdown(current)
-    }
-
-    private fun sendNextCountdown() {
-        handlerTimer.sendEmptyMessageDelayed(MSG_WHAT, 1000)
-    }
-
-    private fun start() {
-        handlerTimer.sendEmptyMessage(MSG_WHAT)
-    }
-
-    private fun stop() {
-        handlerTimer.removeMessages(MSG_WHAT)
-    }
-
-    fun setCountdownAndStart(endMs: Long, sleepTimeMs: Long = 0L) {
-        this.endTimeMs = endMs
-        this.sleepTimeMs = sleepTimeMs;
-    }
+    fun restoreCountByTime() = (getEndTime() - System.currentTimeMillis()) / 1000 // restore by time
 
     override fun onVisibilityChanged(changedView: View, visibility: Int) {
         super.onVisibilityChanged(changedView, visibility)
-        Log.d(TAG, "onVisibilityChanged visibility:$visibility")
-        if (visibility == View.VISIBLE) {
-            start()
+        if (visibility != View.VISIBLE) {
+            handlerTimer.removeCallbacksAndMessages(null)
         } else {
-            stop()
+            if (count != DEF_COUNT) {
+                count = restoreCountByTime()
+                start()
+            }
         }
     }
 
-    fun setCallback(callback: Callback){
-        this.callback = callback
+    fun isValid() = isInvalid().not()
+
+    fun isInvalid(): Boolean {
+        return getEndTime() < System.currentTimeMillis()// to old
     }
 
-    private fun format(ms: Long): String {
-        return String.format("%02d:%02d",
-            TimeUnit.MILLISECONDS.toMinutes(ms) -
-                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(ms)),
-            TimeUnit.MILLISECONDS.toSeconds(ms) -
-                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms)));
+    private fun setEndTime(t: Long){
+        SPUtils.put(context, Constants.SP_SMS_DELAY, t)
+    }
+
+    private fun getEndTime() = SPUtils.get(context, Constants.SP_SMS_DELAY, -1L) as Long
+
+    private fun nextCountdown() {
+        handlerTimer.removeMessages(MSG_COUNTDOWN)
+        handlerTimer.sendEmptyMessageDelayed(MSG_COUNTDOWN, 1000)
+    }
+
+    private fun resetData() {
+        handlerTimer.removeCallbacksAndMessages(null)
+        SPUtils.remove(context, Constants.SP_SMS_DELAY)
+        count = DEF_COUNT
+    }
+
+    fun start() {
+        nextCountdown()
+    }
+
+    fun clear() {
+        resetData()
+        callback?.onClear()
     }
 
     companion object {
+        const val DEF_COUNT = -1L
         const val TAG = "CountdownTextView"
-        const val MSG_WHAT = 10010
+        const val MSG_COUNTDOWN = 10010
     }
 }

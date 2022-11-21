@@ -9,6 +9,12 @@
     <color name="white">#FFFFFFFF</color>
 
 
+    <color name="default_black_color">#000000</color>
+    <color name="color_8001FE">#8001FE</color>
+    <color name="color_E1ECDF">#E1ECDF</color>
+    <color name="color_3D0A0400">#3D0A0400</color>
+    <color name="color_261D0A01">#261D0A01</color>
+
 
     <color name="base_color_white">#FFFFFF</color>
     <color name="base_color_white_opacity_15">#26FFFFFF</color>
