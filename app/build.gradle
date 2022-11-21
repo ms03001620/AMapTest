@@ -41,6 +41,16 @@ android {
         }
     }
 
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def index = sprintf('%02d', 1)
+            def date = new Date().format('MMdd')
+            def name = "app-${variant.buildType.name}-${date}-${index}.apk"
+            output.outputFileName = name
+        }
+    }
+
+
     testOptions {
         // for android.util.Log not mocked
         unitTests.returnDefaultValues = true
