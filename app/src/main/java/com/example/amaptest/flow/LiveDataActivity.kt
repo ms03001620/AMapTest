@@ -8,11 +8,17 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
 import com.example.amaptest.databinding.ActivityLivedataBinding
+import com.example.amaptest.sync.AsyncToSyncModel
 
 class LiveDataActivity : AppCompatActivity() {
 
     private val viewModel by lazy {
         ViewModelProvider(this, ViewModelFactory())[LiveDataTestModel::class.java]
+    }
+
+
+    private val asyncViewModel by lazy {
+        ViewModelProvider(this, ViewModelFactory())[AsyncToSyncModel::class.java]
     }
 
     lateinit var binding: ActivityLivedataBinding
@@ -27,6 +33,10 @@ class LiveDataActivity : AppCompatActivity() {
 
         binding.btnClear.setOnClickListener {
             getViewModelStore().clear()
+        }
+
+        binding.btnAsync.setOnClickListener {
+            binding.textNumber.text = asyncViewModel.runTaskWithSuspend()
         }
 
 
