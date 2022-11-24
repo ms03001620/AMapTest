@@ -2,7 +2,7 @@
 buildscript {
     ext.versions = [
             'agp'        : '7.0.0',
-            'kotlin'     : '1.5.10'
+            'kotlin'     : '1.7.20'
     ]
 
     repositories {
