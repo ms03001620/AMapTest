@@ -95,8 +95,17 @@ open class CountdownTextView(context: Context, attrs: AttributeSet) : AppCompatT
         count = DEF_COUNT
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        stop()
+    }
+
     fun start() {
         nextCountdown()
+    }
+
+    fun stop() {
+        handlerTimer.removeCallbacksAndMessages(null)
     }
 
     fun clear() {
