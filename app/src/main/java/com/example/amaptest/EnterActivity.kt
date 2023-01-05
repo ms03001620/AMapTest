@@ -93,8 +93,8 @@ class EnterActivity : AppCompatActivity() {
             val model = Build.MODEL
             val version = Build.VERSION.SDK_INT
             val versionRelease = Build.VERSION.RELEASE
-
-            this.text = "manufacturer $manufacturer model $model version $version versionRelease $versionRelease"
+            val channel = BuildConfig.CHANNEL
+            this.text = "manufacturer $manufacturer model $model version $version versionRelease $versionRelease channel $channel"
         }
 
         // Location
