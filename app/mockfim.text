@@ -1,0 +1,39 @@
+{
+    "user_system_default_download_domain": "hey.appc01.com",
+    "id": "60b98a520d81cc7a22cd0a09",
+    "type": "android",
+    "short": "6pu5",
+    "download_domain": "hey.appc01.com",
+    "download_domain_https_ready": true,
+    "app_user_id": "5db8e661f9454831c86d0f5d",
+    "storage": "qiniu",
+    "form_method": "POST",
+    "cert": {
+        "icon": {
+            "key": "9e45decf70cb8aadde3f4134ce08d8913743dd8d",
+            "token": "_Vr9k9CbrqN6dKAd18Ezner7W9yR86vNze9XcT9h:hP9TCxMpHVXogK-Q4_dXogL58cM=:eyJzY29wZSI6ImZpcmljb246OWU0NWRlY2Y3MGNiOGFhZGRlM2Y0MTM0Y2UwOGQ4OTEzNzQzZGQ4ZCIsImNhbGxiYWNrVXJsIjoiaHR0cDovL2Zpci1hcGkuZmlyY2xpLmNuL2F1dGgvcWluaXUvY2FsbGJhY2s_cGFyZW50X2lkPTYwYjk4YTUyMGQ4MWNjN2EyMmNkMGEwOVx1MDAyNnRpbWVzdGFtcD0xNjY5MDkzNTIyXHUwMDI2c2lnbj0yYTRiY1x1MDAyNm9yaWdpbmFsX2tleT1jZGMyYzg5M2E5MzU4NzkzODJhOTdhZmYyYzAxNzBlY2Q5Y2M3YjJkIiwiY2FsbGJhY2tCb2R5Ijoia2V5PSQoa2V5KVx1MDAyNmV0YWc9JChldGFnKVx1MDAyNmZzaXplPSQoZnNpemUpXHUwMDI2Zm5hbWU9JChmbmFtZSlcdTAwMjZvcmlnaW49JCh4Om9yaWdpbilcdTAwMjZpc19jb252ZXJ0ZWQ9JCh4OmlzX2NvbnZlcnRlZCkiLCJkZWFkbGluZSI6MTY2OTA5NDEyMiwidXBob3N0cyI6WyJodHRwOi8vdXAucWluaXUuY29tIiwiaHR0cDovL3VwbG9hZC5xaW5pdS5jb20iLCItSCB1cC5xaW5pdS5jb20gaHR0cDovLzE4My4xMzEuNy4zIl0sImdsb2JhbCI6ZmFsc2V9",
+            "upload_url": "https://upload.qbox.me",
+            "custom_headers": {
+
+            },
+            "custom_callback_data": {
+                "original_key": "cdc2c893a935879382a97aff2c0170ecd9cc7b2d"
+            }
+        },
+        "binary": {
+            "key": "e5f7cd3eb7a7f789fac3b9dbdb91323a81f127e6.apk",
+            "token": "_Vr9k9CbrqN6dKAd18Ezner7W9yR86vNze9XcT9h:JlOFVX4mMLNa3oLWa98HXJBKVt4=:eyJzY29wZSI6InByby1hcHA6ZTVmN2NkM2ViN2E3Zjc4OWZhYzNiOWRiZGI5MTMyM2E4MWYxMjdlNi5hcGsiLCJjYWxsYmFja1VybCI6Imh0dHA6Ly9maXItYXBpLmZpcmNsaS5jbi9hdXRoL3Fpbml1L2NhbGxiYWNrP3BhcmVudF9pZD02MGI5OGE1MjBkODFjYzdhMjJjZDBhMDlcdTAwMjZ0aW1lc3RhbXA9MTY2OTA5MzUyMlx1MDAyNnNpZ249MmE0YmNcdTAwMjZ1c2VyX2lkPTVkYjhlNjYxZjk0NTQ4MzFjODZkMGY1ZCIsImNhbGxiYWNrQm9keSI6ImtleT0kKGtleSlcdTAwMjZldGFnPSQoZXRhZylcdTAwMjZmc2l6ZT0kKGZzaXplKVx1MDAyNmZuYW1lPSQoZm5hbWUpXHUwMDI2b3JpZ2luPSQoeDpvcmlnaW4pXHUwMDI2bmFtZT0kKHg6bmFtZSlcdTAwMjZidWlsZD0kKHg6YnVpbGQpXHUwMDI2dmVyc2lvbj0kKHg6dmVyc2lvbilcdTAwMjZpc191c2VfbXFjPSQoeDppc191c2VfbXFjKVx1MDAyNmNoYW5nZWxvZz0kKHg6Y2hhbmdlbG9nKVx1MDAyNnJlbGVhc2VfdHlwZT0kKHg6cmVsZWFzZV90eXBlKVx1MDAyNmRpc3RyaWJ1dGlvbl9uYW1lPSQoeDpkaXN0cmlidXRpb25fbmFtZSlcdTAwMjZzdXBwb3J0ZWRfcGxhdGZvcm09JCh4OnN1cHBvcnRlZF9wbGF0Zm9ybSlcdTAwMjZtaW5pbXVtX29zX3ZlcnNpb249JCh4Om1pbmltdW1fb3NfdmVyc2lvbilcdTAwMjZ1aV9yZXF1aXJlZF9kZXZpY2VfY2FwYWJpbGl0aWVzPSQoeDp1aV9yZXF1aXJlZF9kZXZpY2VfY2FwYWJpbGl0aWVzKVx1MDAyNnVpX2RldmljZV9mYW1pbHk9JCh4OnVpX2RldmljZV9mYW1pbHkpIiwiZGVhZGxpbmUiOjE2NjkwOTcxMjIsInVwaG9zdHMiOlsiaHR0cDovL3VwLnFpbml1LmNvbSIsImh0dHA6Ly91cGxvYWQucWluaXUuY29tIiwiLUggdXAucWluaXUuY29tIGh0dHA6Ly8xODMuMTMxLjcuMyJdLCJnbG9iYWwiOmZhbHNlfQ==",
+            "upload_url": "https://upload.qbox.me",
+            "custom_headers": {
+
+            }
+        },
+        "mqc": {
+            "total": 5,
+            "used": 0,
+            "is_mqc_availabled": true
+        },
+        "support": "qiniu",
+        "prefix": "x:"
+    }
+}

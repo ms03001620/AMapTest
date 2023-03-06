@@ -1,11 +1,11 @@
 package com.example.amaptest.flow
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 class FlowViewModel : ViewModel() {
@@ -13,6 +13,7 @@ class FlowViewModel : ViewModel() {
     private val queueRepository = QueueRepository()
     val news = MutableLiveData<Int>()
     val itemString = MutableLiveData<String>()
+    val sharedFlow = MutableSharedFlow<Int>(replay = 2)
 
     fun getNews() {
         viewModelScope.launch {
