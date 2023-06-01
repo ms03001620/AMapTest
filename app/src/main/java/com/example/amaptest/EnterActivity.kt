@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.amaptest.ble.BleActivity
 import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.bluetooth.BluetoothPermissionHelper
@@ -23,9 +24,8 @@ import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.flow.LiveDataActivity
 import com.example.amaptest.marker.MarkerActionActivity
 import com.example.amaptest.pager.PagerActivity
-import com.example.amaptest.pager.ResendTextView
+import com.example.amaptest.sync.CellSignalModel
 import com.robolectric.DialogsActivity
-import com.robolectric.WelcomeActivity
 
 
 class EnterActivity : AppCompatActivity() {
@@ -79,9 +79,14 @@ class EnterActivity : AppCompatActivity() {
         }
     })
 
+    private val viewModel by lazy {
+        ViewModelProvider(this, ViewModelFactory())[CellSignalModel::class.java]
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_enter)
+        viewModel.reg(this)
 
         //RoWel
         findViewById<View>(R.id.btn_countdown).setOnClickListener {
@@ -267,6 +272,11 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoBluetoothSample() {
         startActivity(Intent(this, BluetoothSampleActivity::class.java))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.unReg(this)
     }
 
 }
