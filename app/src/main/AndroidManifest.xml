@@ -39,6 +39,9 @@
             android:name=".flow.FlowActivity"
             android:exported="false" />
         <activity
+            android:name=".flow.FlowAvdActivity"
+            android:exported="false" />
+        <activity
             android:name=".pager.PagerActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"

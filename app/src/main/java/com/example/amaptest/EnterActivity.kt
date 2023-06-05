@@ -21,6 +21,7 @@ import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.bluetooth.BluetoothPermissionHelper
 import com.example.amaptest.bluetooth.BluetoothSampleActivity
 import com.example.amaptest.flow.FlowActivity
+import com.example.amaptest.flow.FlowAvdActivity
 import com.example.amaptest.flow.LiveDataActivity
 import com.example.amaptest.marker.MarkerActionActivity
 import com.example.amaptest.pager.PagerActivity
@@ -150,6 +151,9 @@ class EnterActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_flow).setOnClickListener {
             gotoFlow()
         }
+        findViewById<View>(R.id.btn_flow_avd).setOnClickListener {
+            gotoFlowAvd()
+        }
         findViewById<View>(R.id.btn_live_data).setOnClickListener {
             gotoLiveData()
         }
@@ -260,6 +264,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoFlow() {
         startActivity(Intent(this, FlowActivity::class.java))
+    }
+
+    fun gotoFlowAvd() {
+        startActivity(Intent(this, FlowAvdActivity::class.java))
     }
 
     fun gotoBluetooth() {
