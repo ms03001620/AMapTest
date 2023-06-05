@@ -1,11 +1,14 @@
 package com.example.amaptest.flow
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class FlowViewModel : ViewModel() {
@@ -15,37 +18,27 @@ class FlowViewModel : ViewModel() {
     val itemString = MutableLiveData<String>()
     val sharedFlow = MutableSharedFlow<Int>(replay = 2)
 
-    fun getNews() {
-        viewModelScope.launch {
-            newsApi.latestNews.collect {
-                news.value = it
-            }
-            //newsApi.latestNews.
-        }
+    init {
+        getNewsOdd()
     }
 
 
     fun getNewsOdd() {
         viewModelScope.launch {
-            newsApi.latestNews.filter {
-                it % 2 == 0
-            }.catch {
-
-            }.collect {
-                news.value = it
-            }
+            newsApi.latestNews
+                .flowOn(Dispatchers.IO)
+                .filter {
+                    it % 2 == 0
+                }.catch {
+                    it.printStackTrace()
+                }.collect {
+                    news.value = it
+                }
         }
     }
 
-    fun linkToList() {
-        viewModelScope.launch {
-            queueRepository.itemsFlow.collect {
-                itemString.value = it
-            }
-        }
-    }
-
-    fun addItems(s: String) {
-        queueRepository.addItem(s)
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("_____", "onCleared")
     }
 }

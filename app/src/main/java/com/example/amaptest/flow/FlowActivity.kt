@@ -6,7 +6,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
-import com.example.amaptest.databinding.ActivityAnimBinding
 import com.example.amaptest.databinding.ActivityFlowBinding
 
 class FlowActivity : AppCompatActivity() {
@@ -27,16 +26,11 @@ class FlowActivity : AppCompatActivity() {
         initBtns()
         initObserve()
         //initStart()
-
-        viewModel.linkToList()
     }
 
     private fun initBtns() {
         binding.btnSwitch.setOnClickListener {
             viewModel.getNewsOdd()
-        }
-        binding.btnAddItem.setOnClickListener {
-            viewModel.addItems(System.currentTimeMillis().toString())
         }
     }
 
@@ -50,8 +44,4 @@ class FlowActivity : AppCompatActivity() {
 
     }
 
-    private fun initStart() {
-        viewModel.getNews()
-
-    }
 }
