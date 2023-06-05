@@ -3,10 +3,14 @@ package com.example.amaptest.flow
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.amaptest.R
 import com.example.amaptest.ViewModelFactory
 import com.example.amaptest.databinding.ActivityFlowAvdBinding
+import kotlinx.coroutines.launch
 
 class FlowAvdActivity : AppCompatActivity() {
 
@@ -14,7 +18,7 @@ class FlowAvdActivity : AppCompatActivity() {
         ViewModelProvider(
             this,
             ViewModelFactory()
-        )[FlowViewModel::class.java]
+        )[FlowAvdViewModel::class.java]
     }
 
     lateinit var binding: ActivityFlowAvdBinding
@@ -23,25 +27,19 @@ class FlowAvdActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_flow_avd)
 
-        initBtns()
-        initObserve()
-        //initStart()
-    }
-
-    private fun initBtns() {
         binding.btnSwitch.setOnClickListener {
-            viewModel.getNewsOdd()
-        }
-    }
-
-    private fun initObserve() {
-        viewModel.news.observe(this) {
-            binding.textNumber.text = it.toString()
-        }
-        viewModel.itemString.observe(this) {
-            binding.textItems.text = it
+            viewModel.update()
         }
 
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uuid.collect {
+                    binding.textNumber.text = it.toString()
+                }
+            }
+        }
+
     }
+
 
 }
