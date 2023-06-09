@@ -16,7 +16,7 @@ android {
     defaultConfig {
         applicationId "com.example.amaptest"
         minSdk 23
-        targetSdk 29 //31 29
+        targetSdk 31 //31 29
         versionCode 1
         versionName "1.0"
 
@@ -64,9 +64,11 @@ android {
         unitTests.returnDefaultValues = true
     }
 
-    buildFeatures{
+    buildFeatures {
         dataBinding = true
     }
+
+    namespace 'com.example.amaptest'
 }
 
 dependencies {
