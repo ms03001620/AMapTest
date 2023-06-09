@@ -1,7 +1,7 @@
 apply plugin: 'jacoco'
 
 jacoco {
-    setToolVersion("0.8.7")
+    setToolVersion("0.8.8")
     println("getToolVersion :${getToolVersion()}")// getToolVersion :0.8.7
 }
 
@@ -9,25 +9,25 @@ jacoco {
  * 生成针对JunitTest并生成Jacoco覆盖率报告
  * 支持Java和Kotlin代码
  */
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDevDebugUnitTest']) {
     reports {
-        csv.enabled true
-        xml.enabled = true
-        html.enabled = true
+        csv.required.set(false)
+        xml.required.set(false)
+        html.required.set(true)
     }
 
     def excludes = ['**/R.class', '**/BuildConfig.*', "**/DataBinderMapperImpl.*"]
 
     def debugTree = fileTree(
-            dir: "${buildDir}/intermediates/javac/debug/classes",
+            dir: "${buildDir}/intermediates/javac/devDebug/classes",
             excludes: excludes)
     def kotlinDebugTree = fileTree(
-            dir: "${buildDir}/tmp/kotlin-classes/debug",
+            dir: "${buildDir}/tmp/kotlin-classes/devDebug",
             excludes: excludes)
 
     def mainSrc = "${project.projectDir}/src/main/java"
     //def exeDir = "${buildDir}/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec"
-    def exeDir = "${buildDir}/jacoco/testDebugUnitTest.exec"
+    def exeDir = "${buildDir}/jacoco/testDevDebugUnitTest.exec"
 
     println(debugTree.dir)
     println(kotlinDebugTree.dir)
