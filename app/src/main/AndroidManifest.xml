@@ -82,6 +82,9 @@
             android:name=".LocationActivity"
             android:exported="false" />
         <activity
+            android:name=".AMapEnterActivity"
+            android:exported="false" />
+        <activity
             android:name=".EnterActivity"
             android:exported="true">
             <intent-filter>

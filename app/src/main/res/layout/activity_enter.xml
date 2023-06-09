@@ -13,16 +13,17 @@
         android:layout_height="wrap_content"
         android:text="version"/>
 
+
+    <Button
+        android:id="@+id/btn_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go AMap" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_enter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Location" />
 
         <Button
             android:id="@+id/btn_countdown"
@@ -43,22 +44,12 @@
             android:text="Pager" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/file_name"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:text="json_stations570.json" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_map"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="map" />
 
         <Button
             android:id="@+id/btn_anim"
@@ -86,11 +77,6 @@
         android:layout_height="wrap_content"
         android:text="SheetBehavior" />
 
-    <Button
-        android:id="@+id/btn_cluster"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cluster" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -117,18 +103,6 @@
         android:text="LiveData" />
 
     <Button
-        android:id="@+id/btn_maker_action"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MarkerAction" />
-
-    <Button
-        android:id="@+id/btn_map_performance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="MapPerformance" />
-
-    <Button
         android:id="@+id/btn_bluetooth"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -145,6 +119,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Bluetooth_SAMPLE" />
-
 
 </LinearLayout>

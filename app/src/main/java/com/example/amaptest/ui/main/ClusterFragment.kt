@@ -59,8 +59,7 @@ class ClusterFragment : Fragment(),
     }
 
     private fun initMap(view: View, savedInstanceState: Bundle?) {
-        MapsInitializer.updatePrivacyShow(requireContext(), true, true)
-        MapsInitializer.updatePrivacyAgree(requireContext(), true)
+
         mapView = view.findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
         mapView.map.setCustomMapStyle(

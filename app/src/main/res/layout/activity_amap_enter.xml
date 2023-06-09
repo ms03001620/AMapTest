@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".EnterActivity">
+
+    <Button
+        android:id="@+id/btn_enter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Location" />
+
+    <EditText
+        android:id="@+id/file_name"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="json_stations570.json" />
+
+
+    <Button
+        android:id="@+id/btn_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="map" />
+
+    <Button
+        android:id="@+id/btn_cluster"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cluster" />
+
+    <Button
+        android:id="@+id/btn_maker_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MarkerAction" />
+
+    <Button
+        android:id="@+id/btn_map_performance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MapPerformance" />
+
+</LinearLayout>

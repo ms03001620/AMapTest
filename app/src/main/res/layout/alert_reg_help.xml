@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="个人信息保护指引"
+        android:textSize="18sp"
+        android:textColor="#000"
+        android:layout_marginTop="30dp"/>
+
+    <ScrollView
+        android:id="@+id/text_container"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_marginTop="40dp">
+
+        <TextView
+            android:id="@+id/text_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="25dp"
+            android:textColor="#5B5B5B"
+            android:textSize="16sp"
+            android:text="@string/policy_alert" />
+
+    </ScrollView>
+
+
+    <TextView
+        android:id="@+id/text_agree"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:text="同意"
+        android:textColor="#000000"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/text_exit"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="23dp"
+        android:gravity="center"
+        android:text="不同意并退出"
+        android:textColor="#C5C5C5"
+        android:textSize="18dp" />
+
+</LinearLayout>

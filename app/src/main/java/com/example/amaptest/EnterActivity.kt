@@ -1,21 +1,19 @@
 package com.example.amaptest
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.text.method.LinkMovementMethod
 import android.view.View
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.amap.api.maps.MapsInitializer
 import com.example.amaptest.ble.BleActivity
 import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.bluetooth.BluetoothPermissionHelper
@@ -23,24 +21,12 @@ import com.example.amaptest.bluetooth.BluetoothSampleActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.flow.FlowAvdActivity
 import com.example.amaptest.flow.LiveDataActivity
-import com.example.amaptest.marker.MarkerActionActivity
 import com.example.amaptest.pager.PagerActivity
 import com.example.amaptest.sync.CellSignalModel
 import com.robolectric.DialogsActivity
 
 
 class EnterActivity : AppCompatActivity() {
-    private var requestOnlyFinePermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
-            if (allGrants.values.all { it }) {
-                gotoLocation()
-            } else {
-                with(allGrants.keys.toString() + allGrants.values.toString()) {
-                    Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-
     private val helper = BluetoothPermissionHelper(this, object : BluetoothPermissionHelper.OnEnterSettingPage {
         override fun onEnterPositionSetting() {
             showAlertDialog(
@@ -103,26 +89,26 @@ class EnterActivity : AppCompatActivity() {
             this.text = "manufacturer $manufacturer model $model version $version versionRelease $versionRelease channel $channel"
         }
 
-        // Location
-        findViewById<View>(R.id.btn_enter).setOnClickListener {
-            if (checkLocation()) {
-                gotoLocation()
-            } else {
-                requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-            }
-        }
-
-
         findViewById<View>(R.id.btn_dialog).setOnClickListener {
             startActivity(Intent(this, DialogsActivity::class.java))
         }
 
+        // 进入高德地图
         findViewById<View>(R.id.btn_map).setOnClickListener {
-            if (checkLocation()) {
-                gotoMap()
-            } else {
-                requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-            }
+            showPolicyAgree(object: SimpleCallback{
+                override fun onPrivacyShow() {
+                    MapsInitializer.updatePrivacyShow(applicationContext, true, true)
+                }
+
+                override fun onAgree() {
+                    MapsInitializer.updatePrivacyAgree(applicationContext, true)
+                    gotoAMap()
+                }
+
+                override fun onDisagree() {
+                    MapsInitializer.updatePrivacyAgree(applicationContext, false)
+                }
+            })
         }
 
         findViewById<View>(R.id.btn_pager).setOnClickListener {
@@ -145,9 +131,6 @@ class EnterActivity : AppCompatActivity() {
             gotoSheetBehavior()
         }
 
-        findViewById<View>(R.id.btn_cluster).setOnClickListener {
-            gotoCluster()
-        }
         findViewById<View>(R.id.btn_flow).setOnClickListener {
             gotoFlow()
         }
@@ -158,14 +141,6 @@ class EnterActivity : AppCompatActivity() {
             gotoLiveData()
         }
 
-        findViewById<View>(R.id.btn_maker_action).setOnClickListener {
-            gotoMarkerAction()
-        }
-
-        findViewById<View>(R.id.btn_map_performance).setOnClickListener {
-            gotoMapPerformance()
-        }
-
         // 蓝牙
         findViewById<View>(R.id.btn_bluetooth).setOnClickListener {
             //https://developer.android.com/reference/android/bluetooth/BluetoothDevice#createBond()
@@ -174,7 +149,6 @@ class EnterActivity : AppCompatActivity() {
             }
         }
 
-        //   requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
         // 蓝牙LE
         findViewById<View>(R.id.btn_bluetooth_le).setOnClickListener {
             //attemptGotoBluetoothLePage()
@@ -191,10 +165,27 @@ class EnterActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkLocation() = ContextCompat.checkSelfPermission(
-        this,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    ) == PackageManager.PERMISSION_GRANTED
+    // 显示用户隐私协议对话框
+    private fun showPolicyAgree(simpleCallback: SimpleCallback) {
+        val view: View = View.inflate(this, R.layout.alert_reg_help, null)
+        val dialog = AlertDialog.Builder(this).setView(view).setCancelable(false).create()
+
+        val textMessage = view.findViewById<TextView>(R.id.text_message)
+
+        textMessage.setMovementMethod(LinkMovementMethod.getInstance())
+
+        view.findViewById<View>(R.id.text_agree).setOnClickListener(View.OnClickListener {
+            dialog.dismiss()
+            simpleCallback.onAgree()
+        })
+
+        view.findViewById<View>(R.id.text_exit).setOnClickListener(View.OnClickListener() {
+            dialog.dismiss()
+            simpleCallback.onDisagree()
+        })
+        dialog.show()
+        simpleCallback.onPrivacyShow()
+    }
 
     private fun getActivity() = this
 
@@ -213,19 +204,8 @@ class EnterActivity : AppCompatActivity() {
             context.getString(messageResId), listener = { rightCallback?.invoke() })
     }
 
-
-    fun gotoMap() {
-        startActivity(Intent(this, MainActivity::class.java))
-    }
-
-    fun gotoMarkerAction() {
-        startActivity(Intent(this, MarkerActionActivity::class.java).also {
-            it.putExtra("file_name", findViewById<EditText>(R.id.file_name).text.toString())
-        })
-    }
-
-    fun gotoMapPerformance() {
-        startActivity(Intent(this, MapPerformanceActivity::class.java))
+    fun gotoAMap() {
+        startActivity(Intent(this, AMapEnterActivity::class.java))
     }
 
     fun gotoPager() {
@@ -246,16 +226,6 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoSheetBehavior() {
         startActivity(Intent(this, SheetBehaviorActivity::class.java))
-    }
-
-    fun gotoLocation() {
-        startActivity(Intent(this, LocationActivity::class.java))
-    }
-
-    fun gotoCluster() {
-        startActivity(Intent(this, ClusterActivity::class.java).also {
-            it.putExtra("file_name", findViewById<EditText>(R.id.file_name).text.toString())
-        })
     }
 
     fun gotoLiveData() {

@@ -36,4 +36,6 @@
     <!--    <string name="sms_resend">重发</string>
     <string name="sms_resending">重发（%ss）</string>-->
 
+    <string name="policy_alert">欢迎使用高德地图演示功能!\n\n为了您的合法权益，在使用高德地图演示功能之前，请您认真阅读并且了解<a href="https://www.zwechat.com/privacy_policy.html">《用户服务协议》</a>合<a href="https://www.zwechat.com/privacy_policy.html">《隐私条款》</a>的全部内容。\n如您同意，请点击同意并接受我们的服务。</string>
+
 </resources>
