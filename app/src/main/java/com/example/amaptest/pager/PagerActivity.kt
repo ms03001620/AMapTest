@@ -30,14 +30,7 @@ class PagerActivity : AppCompatActivity() {
             //ToastUtil.show("aaaa")
         })
 
-        layoutInterceptor.setOnTouchListener(object : View.OnTouchListener{
 
-            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                //detector.onTouchEvent(event)
-
-                return  detector.onTouchEvent(event)
-            }
-        })
 //        GestureDetectorHelper(layoutInterceptor, object : OnGesturePageEvent {
 //            override fun canUnLockGesture(finger: Finger): Boolean {
 //                when (finger) {

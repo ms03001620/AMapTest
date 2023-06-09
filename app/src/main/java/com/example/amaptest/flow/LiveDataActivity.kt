@@ -32,7 +32,7 @@ class LiveDataActivity : AppCompatActivity() {
         }
 
         binding.btnClear.setOnClickListener {
-            getViewModelStore().clear()
+
         }
 
         binding.btnAsync.setOnClickListener {
