@@ -11,7 +11,7 @@ import kotlin.random.Random
 
 class AvdRepository {
 
-    val randomIndexFlow: Flow<Int> = flow {
+    val indexFlow: Flow<Int> = flow {
         while (true) {
             val index = Random.nextInt(5)
             Log.d("AvdRepository", "randomIndex:$index")
@@ -20,15 +20,15 @@ class AvdRepository {
         }
     }
 
-    val randomUuidFlow = MutableSharedFlow<String>(
+    val uuidFlow = MutableSharedFlow<String>(
         replay = 1,// 1为解决最小化恢复后可以获取上一个值，否则为null，必须重新生成
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
-    suspend fun update() {
+    suspend fun createUuid() {
         val string = UUID.randomUUID().toString()
         Log.d("AvdRepository", "update:$string")
-        randomUuidFlow.emit(string)
+        uuidFlow.emit(string)
     }
 }

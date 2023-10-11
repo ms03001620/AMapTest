@@ -8,16 +8,16 @@ import kotlinx.coroutines.launch
 class FlowAvdViewModel : ViewModel() {
     private val newsApi = AvdRepository()
 
-    val uuid = combine(newsApi.randomIndexFlow, newsApi.randomUuidFlow) { index, str ->
-        val sb = StringBuilder(str)
+    val uuid = combine(newsApi.indexFlow, newsApi.uuidFlow) { index, uuid ->
+        val sb = StringBuilder(uuid)
         sb.insert(index, "[")
         sb.insert(index + 2, "]")
         sb.toString()
     }
 
-    fun update() {
+    fun createUuid() {
         viewModelScope.launch {
-            newsApi.update()
+            newsApi.createUuid()
         }
     }
 

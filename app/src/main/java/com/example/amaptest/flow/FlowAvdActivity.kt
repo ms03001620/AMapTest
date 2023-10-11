@@ -28,7 +28,7 @@ class FlowAvdActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_flow_avd)
 
         binding.btnSwitch.setOnClickListener {
-            viewModel.update()
+            viewModel.createUuid()
         }
 
         lifecycleScope.launch {
