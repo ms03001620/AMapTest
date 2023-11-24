@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.amaptest"
-        minSdk 23
+        minSdk 26
         targetSdk 33 //31 29
         versionCode 1
         versionName "1.0"
@@ -108,4 +108,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.9.0'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
+
+    implementation "com.blankj:utilcodex:1.31.1"
+    
 }
