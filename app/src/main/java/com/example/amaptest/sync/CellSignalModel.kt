@@ -32,7 +32,7 @@ class CellSignalModel : ViewModel() {
         @Deprecated("Deprecated in Java")
         override fun onSignalStrengthsChanged(signalStrength: SignalStrength) {
             super.onSignalStrengthsChanged(signalStrength)
-            Log.d("CellSignalModel", "signalStrength level：" + signalStrength.level)
+            //Log.d("CellSignalModel", "signalStrength level：" + signalStrength.level)
             signalStrengthLiveData.postValue(signalStrength.level)
         }
     }
