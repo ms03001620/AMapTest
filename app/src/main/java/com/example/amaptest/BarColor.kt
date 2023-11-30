@@ -2,6 +2,7 @@ package com.example.amaptest
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Color
 import android.os.Build
 import android.view.View
 import android.view.WindowManager
@@ -35,26 +36,21 @@ class BarColor {
 
     fun setImmersionBar(
         activity: Activity,
-        @ColorInt color: Int,
-        hideStatusBar: Boolean,
-        isDark: Boolean
+        @ColorInt color: Int = Color.TRANSPARENT,
+        hideStatusBar: Boolean = false,
+        isDark: Boolean = true
     ) {
         val window = activity.window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-/*        if (isDark) {
+        if (isDark) {
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         } else {
             window.decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-        }*/
-
-        window.decorView.systemUiVisibility =
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-
-
+        }
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-        //window.statusBarColor = color
+        window.statusBarColor = color
         val winParams = window.attributes
         if (hideStatusBar) {
             winParams.flags =

@@ -40,14 +40,7 @@ class BarColorSetActivity : AppCompatActivity() {
 
         //Immersion bar
         binding.checkImmersion.setOnCheckedChangeListener { buttonView, isChecked ->
-            //tools.setImmersionBar(this, hideStatusBar = isChecked)
-
-            tools.setImmersionBar(
-                this,
-                Color.TRANSPARENT,
-                hideStatusBar = isChecked,
-                isDark = false
-            )
+            tools.setImmersionBar(this)
         }
 
         //FullScreen
@@ -55,12 +48,10 @@ class BarColorSetActivity : AppCompatActivity() {
             tools.setFullScreen(this, isFull = isChecked)
         }
 
-
         //NaviBar
         binding.checkNaviBar.setOnCheckedChangeListener { buttonView, isChecked ->
             tools.setNavibar(this, hide = isChecked)
         }
-
 
         //Statusbar
         binding.checkStatusbar.setOnCheckedChangeListener { buttonView, isChecked ->
