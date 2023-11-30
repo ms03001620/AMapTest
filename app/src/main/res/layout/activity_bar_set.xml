@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data />
+
+    <LinearLayout
+        android:id="@+id/layout_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#22222222"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="statusbar icon"/>
+
+        <Button
+            android:id="@+id/btnWrite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="write" />
+
+        <Button
+            android:id="@+id/btnBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="black" />
+
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="statusbar bg"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnBgRed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="red" />
+
+            <Button
+                android:id="@+id/btnBgGreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="green" />
+
+            <Button
+                android:id="@+id/btnBgTrans"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tran" />
+
+        </LinearLayout>
+
+
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Immersion"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/checkImmersion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Immersion" />
+
+
+            <CheckBox
+                android:id="@+id/checkFullScreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FullScreen" />
+
+            <CheckBox
+                android:id="@+id/checkNaviBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="NaviBar" />
+
+            <CheckBox
+                android:id="@+id/checkStatusbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="StatusBar" />
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</layout>

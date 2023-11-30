@@ -75,6 +75,12 @@ class EnterActivity : AppCompatActivity() {
         setContentView(R.layout.activity_enter)
         viewModel.reg(this)
 
+
+        // 设置状态栏
+        findViewById<View>(R.id.btn_statusbar).setOnClickListener {
+            startActivity(Intent(this, BarColorSetActivity::class.java))
+        }
+
         //RoWel
         findViewById<View>(R.id.btn_countdown).setOnClickListener {
             startActivity(Intent(this, CountdownActivity::class.java))

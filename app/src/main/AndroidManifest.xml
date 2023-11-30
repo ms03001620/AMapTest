@@ -29,6 +29,9 @@
             android:name="com.robolectric.DialogsActivity"
             android:exported="false" />
         <activity
+            android:name="com.example.amaptest.BarColorSetActivity"
+            android:exported="false" />
+        <activity
             android:name="com.robolectric.LoginActivity"
             android:exported="false" />
         <activity
