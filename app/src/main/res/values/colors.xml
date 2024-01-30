@@ -124,4 +124,7 @@
     <!--黑色，不透明15%-->
     <color name="base_color_15_percent_black">#26000000</color>
     <color name="base_color_97999B">#97999B</color>
+
+
+    <color name="store_basic_page_color">#F9F9F9</color>
 </resources>

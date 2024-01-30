@@ -125,6 +125,11 @@ class EnterActivity : AppCompatActivity() {
             gotoAnim()
         }
 
+
+        findViewById<View>(R.id.btn_video).setOnClickListener {
+            gotoVideoActivity()
+        }
+
         findViewById<View>(R.id.btn_fragment).setOnClickListener {
             gotoFragment()
         }
@@ -220,6 +225,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoFragment() {
         startActivity(Intent(this, FragmentsActivity::class.java))
+    }
+
+    fun gotoVideoActivity() {
+        startActivity(Intent(this, VideoActivity::class.java))
     }
 
     fun gotoAnim() {

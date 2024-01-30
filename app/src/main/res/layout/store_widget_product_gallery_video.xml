@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ViewStub
+            android:id="@+id/vs_video_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout="@layout/store_item_vs_gallery_child_video_view" />
+
+        <com.polestar.store.widget.ToolbarSceneImageView
+            android:id="@+id/iv_video_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/store_basic_page_color"
+            android:visibility="gone"
+            android:scaleType="centerCrop"
+            app:detectToY="60dp" />
+
+
+        <ImageView
+            android:id="@+id/button_play"
+            android:layout_width="47dp"
+            android:layout_height="47dp"
+            android:layout_gravity="center"
+            android:src="@drawable/store_ic_video_play" />
+
+        <ProgressBar
+            android:id="@+id/pb_buffering"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/white"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_mute_state"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="end|bottom"
+            android:layout_marginEnd="27dp"
+            android:layout_marginBottom="54dp"
+            android:background="@drawable/store_detail_gallery_video_mute_bg"
+            android:padding="7dp"
+            android:src="@drawable/store_selector_product_video_audio_state" />
+
+    </FrameLayout>
+</layout>

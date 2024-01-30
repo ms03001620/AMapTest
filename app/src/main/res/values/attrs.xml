@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources  xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="SupportVideoView" tools:ignore="ResourceName">
+        <attr name="container_type" format="enum">
+            <enum name="surface_view" value="0"/>
+            <enum name="texture_view" value="1"/>
+        </attr>
+        <attr name="player_core" format="enum">
+            <enum name="exo_player" value="0"/>
+            <enum name="media_player" value="1"/>
+        </attr>
+        <attr name="scale_type" format="enum">
+            <enum name="fit_center" value="0"/>
+            <enum name="center_crop" value="1"/>
+            <enum name="fit_xy" value="2"/>
+        </attr>
+    </declare-styleable>
+
+
+    <declare-styleable name="ToolbarSceneImageView">
+        <attr name="detectToX" format="dimension"/>
+        <attr name="detectToY" format="dimension"/>
+        <attr name="white_threshold" format="float"/>
+        <attr name="black_threshold" format="float"/>
+    </declare-styleable>
+</resources>
