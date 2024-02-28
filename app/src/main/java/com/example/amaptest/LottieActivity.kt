@@ -26,13 +26,15 @@ class LottieActivity : AppCompatActivity() {
     }
 
     private fun initPointView(){
-        binding.pointView.setPoint(50)
+        val point = 100
+
+        binding.pointView.setPoint(point)
         lifecycleScope.launch {
             for(i in 15 downTo 0){
-                delay(500)
+                delay(150)
                 binding.pointView.updateSeconds(i, 15)
             }
-            binding.pointView.doneWithAnim(103600, 50, lifecycleScope)
+            binding.pointView.doneWithAnim(103600, point, lifecycleScope)
         }
     }
 
