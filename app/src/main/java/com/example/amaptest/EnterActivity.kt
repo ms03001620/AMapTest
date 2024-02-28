@@ -125,6 +125,9 @@ class EnterActivity : AppCompatActivity() {
             gotoAnim()
         }
 
+        findViewById<View>(R.id.btn_lottie).setOnClickListener {
+            gotoLottieActivity()
+        }
 
         findViewById<View>(R.id.btn_video).setOnClickListener {
             gotoVideoActivity()
@@ -227,8 +230,12 @@ class EnterActivity : AppCompatActivity() {
         startActivity(Intent(this, FragmentsActivity::class.java))
     }
 
+    fun gotoLottieActivity() {
+        startActivity(Intent(this, LottieActivity::class.java))
+    }
+
     fun gotoVideoActivity() {
-        startActivity(Intent(this, VideoActivity::class.java))
+       // startActivity(Intent(this, VideoActivity::class.java))
     }
 
     fun gotoAnim() {
