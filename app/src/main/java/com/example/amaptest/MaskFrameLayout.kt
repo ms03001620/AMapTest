@@ -1,11 +1,10 @@
 package com.example.amaptest
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
@@ -14,55 +13,68 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
+import android.view.animation.LinearInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toBitmapOrNull
 
 @SuppressLint("AppCompatCustomView")
 class MaskFrameLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
 
+    private var paintMask = Paint()
+    private var bitmapMask: Bitmap? = null
+    private var matrixMask = android.graphics.Matrix()
+    private var animator: ValueAnimator? = null
 
-    var mPaint = Paint()
-    var W = 100
-    var H = 100
+    private val stickBar = RectF(0f, 0f, 50f, 50f)
+    private var stickBarX = 0.0f
 
 
-    /*    override fun onDraw(canvas: Canvas) {
-            super.onDraw(canvas)
-            canvas.drawColor(Color.GREEN)
-            val sc = canvas.saveLayer(0f, 0f, W.toFloat(), H.toFloat(), null, Canvas.ALL_SAVE_FLAG)
-            canvas.drawBitmap(makeDst(W, H), 0f, 0f, mPaint)
-            mPaint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN))
-            canvas.drawBitmap(makeMask(W, H), 0f, 0f, mPaint)
-            mPaint.setXfermode(null)
-            canvas.restoreToCount(sc)
-        }
-        */
-    var mFinalMask: Bitmap? = null//akeMask(100, 100)
-
-    var matrixMask = android.graphics.Matrix()
+    init {
+        paintMask.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
+    }
 
     override fun dispatchDraw(canvas: Canvas) {
         background?.draw(canvas)
 
-        val sc =
-            canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null, Canvas.ALL_SAVE_FLAG)
+        val sc = canvas.saveLayer(
+            0f,
+            0f,
+            width.toFloat(),
+            height.toFloat(),
+            null,
+            Canvas.ALL_SAVE_FLAG
+        )
 
         super.dispatchDraw(canvas)
 
-        val childFirst = getChildAt(0)
-        if (mFinalMask == null && childFirst is ImageView) {
-            mFinalMask = drawableToBitmap(childFirst.drawable)
-            matrixMask = childFirst.imageMatrix
-            mPaint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
+        if (bitmapMask == null) {
+            val childFirst = getChildAt(0)
+            if (childFirst is ImageView) {
+                bitmapMask = drawableToBitmap(childFirst.drawable)
+                matrixMask = childFirst.imageMatrix
+            }
         }
 
-        mFinalMask?.let { mFinalMask ->
-            canvas.drawBitmap(mFinalMask, matrixMask, mPaint)
+        bitmapMask?.let { mFinalMask ->
+            canvas.drawBitmap(mFinalMask, matrixMask, paintMask)
         }
 
         canvas.restoreToCount(sc)
+    }
+
+    private fun startAnimation() {
+        animator?.cancel()
+        animator = ValueAnimator.ofInt(0, 360).apply {
+            //repeatCount = ValueAnimator.INFINITE
+            duration = 2000
+            interpolator = LinearInterpolator()
+            addUpdateListener { valueAnimator ->
+                stickBarX = (valueAnimator.animatedValue as Int).toFloat()
+                println("stickBarX:$stickBarX")
+            }
+        }
+        animator?.start()
     }
 
     private fun drawableToBitmap(drawable: Drawable): Bitmap {
@@ -72,35 +84,7 @@ class MaskFrameLayout(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         if (drawable is GradientDrawable) {
             drawable.toBitmapOrNull()
         }
-        throw UnsupportedOperationException()
-    }
-
-
-    companion object {
-        fun makeDst(w: Int, h: Int): Bitmap {
-            val bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-            val c = Canvas(bm)
-            val p = Paint(Paint.ANTI_ALIAS_FLAG)
-            p.color = -0x33bc
-            c.drawOval(RectF(0f, 0f, (w * 3 / 4).toFloat(), (h * 3 / 4).toFloat()), p)
-            return bm
-        }
-
-        // create a bitmap with a rect, used for the "src" image
-        fun makeMask(w: Int, h: Int): Bitmap {
-            val bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
-            val c = Canvas(bm)
-            val p = Paint(Paint.ANTI_ALIAS_FLAG)
-            p.color = -0x995501
-            c.drawRect(
-                (w / 3).toFloat(),
-                (h / 3).toFloat(),
-                (w * 19 / 20).toFloat(),
-                (h * 19 / 20).toFloat(),
-                p
-            )
-            return bm
-        }
+        throw UnsupportedOperationException("Unsupported: ${drawable.javaClass.simpleName}")
     }
 
 }
