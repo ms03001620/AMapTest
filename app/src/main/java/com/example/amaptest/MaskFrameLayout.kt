@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
@@ -34,25 +35,32 @@ class MaskFrameLayout(context: Context, attrs: AttributeSet?) :FrameLayout(conte
         canvas.restoreToCount(sc)
     }
     */
-    var mFinalMask: Bitmap?= makeMask(100, 100)
+    var mFinalMask: Bitmap?= null//akeMask(100, 100)
+
+    var matrixMask =  android.graphics.Matrix()
 
     override fun dispatchDraw(canvas: Canvas) {
         super.dispatchDraw(canvas)
 
         val childFirst = getChildAt(0)
-        if(childFirst is ImageView){
-            val drawable = childFirst.getDrawable() as BitmapDrawable
+        if(mFinalMask==null && childFirst is ImageView){
+            val drawable = childFirst.drawable as BitmapDrawable
 
             mFinalMask = drawable.getBitmap()
+            matrixMask=childFirst.imageMatrix
         }
 
-
-        if (mFinalMask != null) {
+        mFinalMask?.let {mFinalMask->
             mPaint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
-            canvas.drawBitmap(mFinalMask!!, 0.0f, 0.0f, mPaint)
+
+            canvas.drawBitmap(mFinalMask, matrixMask, mPaint)
             mPaint.setXfermode(null)
         }
+
+
     }
+
+
 
     companion object {
         fun makeDst(w: Int, h: Int): Bitmap {

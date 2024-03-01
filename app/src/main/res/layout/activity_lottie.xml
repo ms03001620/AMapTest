@@ -4,54 +4,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:background="#000"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/amin1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:lottie_autoPlay="true"
         app:lottie_rawRes="@raw/video_close_open"
-        app:lottie_speed="0.1"
-        app:lottie_autoPlay="true"/>
+        app:lottie_speed="0.1" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/amin2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:lottie_speed="0.1"
+        app:lottie_autoPlay="true"
         app:lottie_rawRes="@raw/video_open_close"
-        app:lottie_autoPlay="true"/>
+        app:lottie_speed="0.1" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/amin3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:lottie_autoPlay="true"
         app:lottie_rawRes="@raw/number"
-        app:lottie_speed="0.1"
-        app:lottie_autoPlay="true"/>
+        app:lottie_speed="0.1" />
 
 
     <Button
+        android:id="@+id/btnStart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btnStart"
-        android:text="start"/>
+        android:text="start" />
 
     <View
-        android:background="#22222222"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="2dp"
+        android:background="#22222222" />
 
     <com.polestar.store.widget.SoundButton
         android:id="@+id/btnSound"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <com.polestar.store.widget.PointView
         android:id="@+id/pointView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
+
+    <com.polestar.store.widget.MaskedImageView
+        android:id="@+id/maskedImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/amu_bubble_mask" />
+
+
+    <com.example.amaptest.MaskFrameLayout
+        android:layout_width="200dp"
+        android:layout_height="90dp"
+        android:background="#FFF">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/charging_bg_car" />
+
+        <com.example.amaptest.ChargingProgressView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/charging_icon_progress" />
+
+    </com.example.amaptest.MaskFrameLayout>
 
 </LinearLayout>

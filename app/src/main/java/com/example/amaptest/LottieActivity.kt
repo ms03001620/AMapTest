@@ -23,6 +23,10 @@ class LottieActivity : AppCompatActivity() {
         }
         initSoundBtn()
         initPointView()
+        initMask()
+    }
+
+    private fun initMask(){
     }
 
     private fun initPointView(){
