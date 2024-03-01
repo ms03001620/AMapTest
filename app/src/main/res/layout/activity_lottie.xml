@@ -8,29 +8,36 @@
     android:background="#000"
     android:orientation="vertical">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/amin1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:lottie_autoPlay="true"
-        app:lottie_rawRes="@raw/video_close_open"
-        app:lottie_speed="0.1" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/amin2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:lottie_autoPlay="true"
-        app:lottie_rawRes="@raw/video_open_close"
-        app:lottie_speed="0.1" />
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/amin1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/video_close_open"
+            app:lottie_speed="0.1" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/amin3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:lottie_autoPlay="true"
-        app:lottie_rawRes="@raw/number"
-        app:lottie_speed="0.1" />
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/amin2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/video_open_close"
+            app:lottie_speed="0.1" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/amin3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:lottie_autoPlay="true"
+            app:lottie_rawRes="@raw/number"
+            app:lottie_speed="0.1" />
+
+    </LinearLayout>
 
 
     <Button
@@ -83,5 +90,13 @@
             android:layout_height="match_parent"/>
 
     </com.example.amaptest.MaskFrameLayout>
+
+
+    <com.example.amaptest.MaskFrameView
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:layout_width="300dp"
+        android:layout_height="140dp"
+        android:background="#FFF"/>
 
 </LinearLayout>
