@@ -69,12 +69,17 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/charging_bg_car" />
+            android:src="@drawable/charging_bg_car_single" />
 
-        <com.example.amaptest.ChargingProgressView
+        <com.example.amaptest.CarProgressView
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:background="@drawable/charging_icon_progress" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/charging_bg_car" />
 
     </com.example.amaptest.MaskFrameLayout>
 
