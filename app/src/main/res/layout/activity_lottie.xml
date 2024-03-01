@@ -69,17 +69,25 @@
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@drawable/charging_icon_progress"
             android:src="@drawable/charging_bg_car_single" />
-
-        <com.example.amaptest.CarProgressView
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/charging_icon_progress" />
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/charging_bg_car" />
+
+        <View
+            android:layout_width="100dp"
+            android:background="@drawable/bg_car_progress"
+            android:layout_height="match_parent"/>
+
+<!--        <com.example.amaptest.CarProgressView
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/charging_icon_progress" />-->
+
+
 
     </com.example.amaptest.MaskFrameLayout>
 
