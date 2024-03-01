@@ -40,6 +40,10 @@ class MaskFrameLayout(context: Context, attrs: AttributeSet?) :FrameLayout(conte
     var matrixMask =  android.graphics.Matrix()
 
     override fun dispatchDraw(canvas: Canvas) {
+        background.draw(canvas)
+
+        val sc = canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null, Canvas.ALL_SAVE_FLAG)
+
         super.dispatchDraw(canvas)
 
         val childFirst = getChildAt(0)
@@ -48,14 +52,14 @@ class MaskFrameLayout(context: Context, attrs: AttributeSet?) :FrameLayout(conte
 
             mFinalMask = drawable.getBitmap()
             matrixMask=childFirst.imageMatrix
+            mPaint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
         }
 
         mFinalMask?.let {mFinalMask->
-            mPaint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
-
             canvas.drawBitmap(mFinalMask, matrixMask, mPaint)
-            mPaint.setXfermode(null)
         }
+
+        canvas.restoreToCount(sc)
 
 
     }
