@@ -1,6 +1,5 @@
 package com.example.amaptest.carprocess
 
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -8,9 +7,8 @@ import com.example.amaptest.ui.main.dp
 import kotlin.math.roundToInt
 
 class TextLayout(
-    context: Context,
-    private val paddingStartOfCar: Int,
-    private val paddingEndOfCar: Int
+    val textColor: Int = Color.BLACK,
+    val textSize: Float = 36.dp.toFloat()
 ) {
     private val textPaint: Paint = Paint()
 
@@ -19,8 +17,8 @@ class TextLayout(
 
     init {
         textPaint.textAlign = Paint.Align.CENTER
-        textPaint.textSize = 36.dp.toFloat()
-        textPaint.color = Color.BLACK
+        textPaint.textSize = textSize
+        textPaint.color = textColor
     }
 
     fun onMeasure(width: Int, height: Int) {

@@ -34,7 +34,7 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         carDrawable = context.getDrawable(R.drawable.charging_bg_car)!!
         processLayout = ProcessLayout(getContext(), paddingStartOfCar, paddingEndOfCar)
         stickLayout = StickLayout(getContext(), paddingStartOfCar, paddingEndOfCar)
-        textLayout = TextLayout(getContext(), paddingStartOfCar, paddingEndOfCar)
+        textLayout = TextLayout()
 
         maskDrawable = context.getDrawable(R.drawable.charging_bg_car_single)!!
         paintMask.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
