@@ -1,6 +1,7 @@
 package com.example.amaptest
 
 import android.os.Bundle
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -27,6 +28,19 @@ class LottieActivity : AppCompatActivity() {
     }
 
     private fun initMask(){
+        binding.seekBar.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                binding.maskCar.process(progress / 100f)
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+            }
+        })
     }
 
     private fun initPointView(){

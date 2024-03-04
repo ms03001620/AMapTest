@@ -93,10 +93,23 @@
 
 
     <com.example.amaptest.MaskFrameView
+        android:id="@+id/maskCar"
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
         android:layout_width="300dp"
         android:layout_height="140dp"
         android:background="#FFF"/>
+
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:max="100"
+        android:progress="0" />
+
+
 
 </LinearLayout>
