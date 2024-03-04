@@ -32,7 +32,6 @@ class ProcessLayout(
         processImage = processDrawable.toBitmap(processWidth, height)
     }
 
-
     fun onDraw(canvas: Canvas, process: Float) {
         if (process < 0) {
             return
