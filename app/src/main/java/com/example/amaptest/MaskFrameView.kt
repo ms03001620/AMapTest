@@ -9,6 +9,7 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.NinePatchDrawable
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
@@ -22,11 +23,15 @@ import kotlin.math.roundToInt
 class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     private var widthDp = 0
     private var heightDp = 0
-    private var stickWidth = 20.dp
+    private var stickWidth = 60.dp
     private var process: Float = 0.0f
 
     private val carDrawable: Drawable
     private val processDrawable: Drawable
+    private lateinit var processImage: Bitmap
+    private var processPaint: Paint
+    private var processWidth = 0
+
     private val maskDrawable: Drawable
     private lateinit var maskImage: Bitmap
     private val stickDrawable: Drawable
@@ -37,12 +42,11 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     init {
         carDrawable = getContext().getDrawable(R.drawable.charging_bg_car)!!
-        processDrawable = getContext().getDrawable(R.drawable.bg_car_progress)!!
+        processDrawable = getContext().getDrawable(R.drawable.bg_green_gradient)!!
+        processPaint = Paint()
         maskDrawable = getContext().getDrawable(R.drawable.charging_bg_car_single)!!
-        stickDrawable = getContext().getDrawable(R.drawable.bg_working_single)!!
-
+        stickDrawable = getContext().getDrawable(R.drawable.bg_working)!!
         paintMask.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
-
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -61,15 +65,14 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         stickDrawable.setBounds(0, 0, stickWidth, heightDp)
 
         maskImage = maskDrawable.toBitmap(widthDp, heightDp)
+        processWidth = widthDp
+        processImage = processDrawable.toBitmap(processWidth, heightDp)
     }
 
-    private fun updateProcessView() {
-        processDrawable.updateBounds(right = (widthDp * process).roundToInt())
-    }
+    private fun getProcessWith() = (widthDp * process).roundToInt()
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
         carDrawable.draw(canvas)
 
         val sc = canvas.saveLayer(
@@ -82,40 +85,44 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         )
 
         if (process > 0) {
-            processDrawable.draw(canvas)
+            canvas.drawBitmap(
+                processImage,
+                getProcessWith().toFloat() - processWidth,
+                0f,
+                processPaint
+            )
             stickDrawable.draw(canvas)
         }
 
-        canvas.drawBitmap(maskImage, 0f, 0f, paintMask)
+        //canvas.drawBitmap(maskImage, 0f, 0f, paintMask)
         canvas.restoreToCount(sc)
-    }
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-
-        //startAnimation()
     }
 
     private fun startAnimation() {
         animator?.cancel()
-        animator = ValueAnimator.ofInt(0, widthDp).apply {
-            repeatCount = ValueAnimator.INFINITE
-            duration = 2000
-            interpolator = LinearInterpolator()
-            addUpdateListener { valueAnimator ->
-                val value = valueAnimator.animatedValue as Int
+        val w = getProcessWith()
+        if (w > 0) {
+            animator = ValueAnimator.ofInt(0, getProcessWith()).apply {
+                repeatCount = ValueAnimator.INFINITE
+                duration = 2000
+                interpolator = LinearInterpolator()
+                addUpdateListener { valueAnimator ->
+                    val value = valueAnimator.animatedValue as Int
+                    val start = value - stickWidth
 
-                stickDrawable.setBounds(value, 0, (stickWidth) + value, heightDp)
-                invalidate()
+                    stickDrawable.setBounds(start, 0, value, heightDp)
+                    invalidate()
+                }
             }
+            animator?.start()
         }
-        animator?.start()
     }
 
     fun process(process: Float) {
         this.process = process
-        updateProcessView()
         invalidate()
+
+        startAnimation()
     }
 
 

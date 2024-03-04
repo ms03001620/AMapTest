@@ -61,35 +61,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.polestar.store.widget.MaskedImageView
-        android:id="@+id/maskedImage"
-        android:layout_width="100dp"
+    <ImageView
+        android:layout_width="200dp"
         android:layout_height="40dp"
-        android:background="@drawable/amu_bubble_mask" />
+        android:scaleType="fitXY"
+        android:src="@drawable/progressf"
+        />
 
-    <com.example.amaptest.MaskFrameLayout
-        android:layout_gravity="center"
-        android:layout_width="300dp"
-        android:layout_height="140dp"
-        android:background="#FFF">
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/charging_bg_car_single" />
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/charging_bg_car" />
-
-        <View
-            android:layout_margin="10dp"
-            android:layout_width="150dp"
-            android:background="@drawable/bg_car_progress"
-            android:layout_height="match_parent"/>
-
-    </com.example.amaptest.MaskFrameLayout>
 
 
     <com.example.amaptest.MaskFrameView
