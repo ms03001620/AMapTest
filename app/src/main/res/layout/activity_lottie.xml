@@ -62,14 +62,13 @@
         android:layout_height="wrap_content" />
 
 
-    <com.example.amaptest.carprocess.MaskFrameView
+    <com.com.polestar.charging.ui.carprocess.MaskFrameView
         android:id="@+id/maskCar"
-        android:layout_marginTop="10dp"
-        android:layout_gravity="center"
         android:layout_width="300dp"
         android:layout_height="140dp"
-        android:background="#FFF"/>
-
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:background="#FFF" />
 
     <SeekBar
         android:layout_margin="40dp"

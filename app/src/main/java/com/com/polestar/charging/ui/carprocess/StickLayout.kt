@@ -1,4 +1,4 @@
-package com.example.amaptest.carprocess
+package com.com.polestar.charging.ui.carprocess
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -7,8 +7,8 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.animation.LinearInterpolator
 import androidx.appcompat.content.res.AppCompatResources
+import com.com.polestar.base.ext.dp
 import com.example.amaptest.R
-import com.example.amaptest.ui.main.dp
 import kotlin.math.roundToInt
 
 class StickLayout(
@@ -22,6 +22,7 @@ class StickLayout(
     private var animator: ValueAnimator? = null
     private var carWidth = 0
     private var height = 0
+    private var isCharging = false
 
     init {
         stickDrawable = AppCompatResources.getDrawable(context, R.drawable.charging_stick)
@@ -34,15 +35,16 @@ class StickLayout(
         carWidth = width - paddingStartOfCar - paddingEndOfCar
     }
 
-    fun onDraw(canvas: Canvas, process: Float) {
-        if (process > 0) {
+    fun onDraw(canvas: Canvas, process: Float, isCharging: Boolean) {
+        this.isCharging = isCharging
+        if (process > 0 && isCharging) {
             stickDrawable.draw(canvas)
         }
     }
 
     fun startAnimation(process: Float, function: () -> Unit) {
         animator?.cancel()
-        if (process > 0) {
+        if (process > 0 && isCharging) {
             val xOffset = (carWidth * process).roundToInt()
 
             animator = ValueAnimator.ofInt(paddingStartOfCar, paddingStartOfCar + xOffset).apply {

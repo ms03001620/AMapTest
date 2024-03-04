@@ -1,4 +1,4 @@
-package com.example.amaptest.carprocess
+package com.com.polestar.charging.ui.carprocess
 
 import android.content.Context
 import android.content.res.Resources
@@ -12,8 +12,9 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
+import com.com.polestar.base.ext.dp
 import com.example.amaptest.R
-import com.example.amaptest.ui.main.dp
+
 
 class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
     private var widthDp = 0
@@ -23,6 +24,8 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
     private var paintMask = Paint()
     private var paddingStartOfCar = 35.dp
     private var paddingEndOfCar = 25.dp
+    private var isProcessTextEnable = false
+    private var isCharging = false
 
     private val carDrawable: Drawable
     private val maskDrawable: Drawable
@@ -56,6 +59,16 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         textLayout.onMeasure(widthDp, heightDp)
     }
 
+    fun setProcessTextEnable(isEnable: Boolean) {
+        this.isProcessTextEnable = isEnable
+        invalidate()
+    }
+
+    fun setCharging(isCharging: Boolean) {
+        this.isCharging = isCharging
+        invalidate()
+    }
+
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         carDrawable.draw(canvas)
@@ -70,8 +83,8 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         )
 
         processLayout.onDraw(canvas, process)
-        stickLayout.onDraw(canvas, process)
-        textLayout.onDraw(canvas, process)
+        stickLayout.onDraw(canvas, process, isCharging)
+        textLayout.onDraw(canvas, process, isProcessTextEnable)
 
         canvas.drawBitmap(maskImage, 0f, 0f, paintMask)
         canvas.restoreToCount(sc)

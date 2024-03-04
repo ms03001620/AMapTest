@@ -1,9 +1,9 @@
-package com.example.amaptest.carprocess
+package com.com.polestar.charging.ui.carprocess
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.example.amaptest.ui.main.dp
+import com.com.polestar.base.ext.dp
 import kotlin.math.roundToInt
 
 class TextLayout(
@@ -26,8 +26,10 @@ class TextLayout(
         centerY = height / 2f
     }
 
-    fun onDraw(canvas: Canvas, process: Float) {
-        val processText = (process * 100).roundToInt()
-        canvas.drawText("${processText}%", centerX, centerY, textPaint)
+    fun onDraw(canvas: Canvas, process: Float, isProcessTextEnable: Boolean) {
+        if (isProcessTextEnable) {
+            val processText = (process * 100).roundToInt()
+            canvas.drawText("${processText}%", centerX, centerY, textPaint)
+        }
     }
 }

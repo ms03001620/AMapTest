@@ -1,4 +1,4 @@
-package com.example.amaptest.carprocess
+package com.com.polestar.charging.ui.carprocess
 
 import android.content.Context
 import android.content.res.Resources
