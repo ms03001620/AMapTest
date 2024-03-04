@@ -20,30 +20,30 @@ class ProcessLayout(
     private var processWidth = 0
     private val processDrawable: Drawable
 
+
     init {
-        processDrawable = context.getDrawable(R.drawable.bg_working_single)!!
+        processDrawable = context.getDrawable(R.drawable.bg_green_gradient)!!
         processPaint = Paint()
     }
 
     fun onMeasure(width: Int, height: Int) {
-        val carStart = paddingStartOfCar
-        val carEnd = width - paddingEndOfCar
-
         processDrawable.setBounds(0, 0, width, height)
-        processWidth = width
+
+        processWidth = width - paddingStartOfCar - paddingEndOfCar
         processImage = processDrawable.toBitmap(processWidth, height)
     }
 
-    fun onDraw(canvas: Canvas, process: Float, widthDp: Int) {
+
+    fun onDraw(canvas: Canvas, process: Float) {
         if (process < 0) {
             return
         }
 
-        val left = widthDp * process
+        val xOffset = process * processWidth
 
         canvas.drawBitmap(
             processImage,
-            left - processWidth,
+            paddingStartOfCar + xOffset - processWidth,
             0f,
             processPaint
         )

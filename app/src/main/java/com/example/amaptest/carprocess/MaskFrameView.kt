@@ -35,8 +35,8 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
     private var paintMask = Paint()
     private var animator: ValueAnimator? = null
 
-    private var paddingStartOfCar = 20.dp
-    private var paddingEndOfCar = 20.dp
+    private var paddingStartOfCar = 35.dp
+    private var paddingEndOfCar = 25.dp
 
     init {
         carDrawable = getContext().getDrawable(R.drawable.charging_bg_car)!!
@@ -81,7 +81,7 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
             Canvas.ALL_SAVE_FLAG
         )
 
-        processLayout.onDraw(canvas, process, widthDp)
+        processLayout.onDraw(canvas, process)
 
         if (process > 0) {
             stickDrawable.draw(canvas)
