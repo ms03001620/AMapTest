@@ -24,10 +24,8 @@ class StickLayout(
     private var height = 0
 
     init {
-        stickDrawable =
-            AppCompatResources.getDrawable(context, R.drawable.bg_stick) ?: throw NotFoundException(
-                "bg_stick"
-            )
+        stickDrawable = AppCompatResources.getDrawable(context, R.drawable.bg_stick)
+            ?: throw NotFoundException("bg_stick")
     }
 
     fun onMeasure(width: Int, height: Int) {
