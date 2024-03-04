@@ -26,6 +26,7 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
     private val carDrawable: Drawable
     private val processLayout: ProcessLayout
     private val stickLayout: StickLayout
+    private val textLayout: TextLayout
     private val maskDrawable: Drawable
     private lateinit var maskImage: Bitmap
 
@@ -33,6 +34,8 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         carDrawable = context.getDrawable(R.drawable.charging_bg_car)!!
         processLayout = ProcessLayout(getContext(), paddingStartOfCar, paddingEndOfCar)
         stickLayout = StickLayout(getContext(), paddingStartOfCar, paddingEndOfCar)
+        textLayout = TextLayout(getContext(), paddingStartOfCar, paddingEndOfCar)
+
         maskDrawable = context.getDrawable(R.drawable.charging_bg_car_single)!!
         paintMask.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
     }
@@ -54,6 +57,7 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
 
         processLayout.onMeasure(widthDp, heightDp)
         stickLayout.onMeasure(widthDp, heightDp)
+        textLayout.onMeasure(widthDp, heightDp)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -71,6 +75,7 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
 
         processLayout.onDraw(canvas, process)
         stickLayout.onDraw(canvas, process)
+        textLayout.onDraw(canvas, process)
 
         canvas.drawBitmap(maskImage, 0f, 0f, paintMask)
         canvas.restoreToCount(sc)
