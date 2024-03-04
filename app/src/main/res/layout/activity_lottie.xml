@@ -61,16 +61,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <ImageView
-        android:layout_width="200dp"
-        android:layout_height="40dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/progressf"
-        />
 
-
-
-    <com.example.amaptest.MaskFrameView
+    <com.example.amaptest.carprocess.MaskFrameView
         android:id="@+id/maskCar"
         android:layout_marginTop="10dp"
         android:layout_gravity="center"
@@ -80,14 +72,13 @@
 
 
     <SeekBar
+        android:layout_margin="40dp"
         android:id="@+id/seekBar"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:max="100"
         android:progress="0" />
-
 
 
 </LinearLayout>

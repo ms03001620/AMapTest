@@ -1,4 +1,4 @@
-package com.example.amaptest
+package com.example.amaptest.carprocess
 
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
@@ -9,13 +9,11 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.NinePatchDrawable
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.widget.ImageView
 import androidx.core.graphics.drawable.toBitmap
-import androidx.core.graphics.drawable.updateBounds
+import com.example.amaptest.R
 import com.example.amaptest.ui.main.dp
 import kotlin.math.roundToInt
 
@@ -27,23 +25,22 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
     private var process: Float = 0.0f
 
     private val carDrawable: Drawable
-    private val processDrawable: Drawable
-    private lateinit var processImage: Bitmap
-    private var processPaint: Paint
-    private var processWidth = 0
+    private val processLayout: ProcessLayout
+
 
     private val maskDrawable: Drawable
     private lateinit var maskImage: Bitmap
     private val stickDrawable: Drawable
 
     private var paintMask = Paint()
-
     private var animator: ValueAnimator? = null
+
+    private var paddingStartOfCar = 20.dp
+    private var paddingEndOfCar = 20.dp
 
     init {
         carDrawable = getContext().getDrawable(R.drawable.charging_bg_car)!!
-        processDrawable = getContext().getDrawable(R.drawable.bg_green_gradient)!!
-        processPaint = Paint()
+        processLayout = ProcessLayout(getContext(), paddingStartOfCar, paddingEndOfCar)
         maskDrawable = getContext().getDrawable(R.drawable.charging_bg_car_single)!!
         stickDrawable = getContext().getDrawable(R.drawable.bg_working)!!
         paintMask.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
@@ -61,13 +58,13 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
 
         carDrawable.setBounds(0, 0, widthDp, heightDp)
         maskDrawable.setBounds(0, 0, widthDp, heightDp)
-        processDrawable.setBounds(0, 0, widthDp, heightDp)
         stickDrawable.setBounds(0, 0, stickWidth, heightDp)
-
         maskImage = maskDrawable.toBitmap(widthDp, heightDp)
-        processWidth = widthDp
-        processImage = processDrawable.toBitmap(processWidth, heightDp)
+
+        processLayout.onMeasure(widthDp, heightDp)
     }
+
+
 
     private fun getProcessWith() = (widthDp * process).roundToInt()
 
@@ -84,17 +81,13 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
             Canvas.ALL_SAVE_FLAG
         )
 
+        processLayout.onDraw(canvas, process, widthDp)
+
         if (process > 0) {
-            canvas.drawBitmap(
-                processImage,
-                getProcessWith().toFloat() - processWidth,
-                0f,
-                processPaint
-            )
             stickDrawable.draw(canvas)
         }
 
-        //canvas.drawBitmap(maskImage, 0f, 0f, paintMask)
+        canvas.drawBitmap(maskImage, 0f, 0f, paintMask)
         canvas.restoreToCount(sc)
     }
 
