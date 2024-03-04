@@ -2,17 +2,19 @@ package com.example.amaptest.carprocess
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.content.res.Resources.NotFoundException
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.animation.LinearInterpolator
+import androidx.appcompat.content.res.AppCompatResources
 import com.example.amaptest.R
 import com.example.amaptest.ui.main.dp
 import kotlin.math.roundToInt
 
 class StickLayout(
     context: Context,
-    val paddingStartOfCar: Int,
-    val paddingEndOfCar: Int
+    private val paddingStartOfCar: Int,
+    private val paddingEndOfCar: Int
 ) {
     private val durationAnim = 2000L
     private var stickWidth = 60.dp
@@ -22,7 +24,10 @@ class StickLayout(
     private var height = 0
 
     init {
-        stickDrawable = context.getDrawable(R.drawable.bg_working)!!
+        stickDrawable =
+            AppCompatResources.getDrawable(context, R.drawable.bg_stick) ?: throw NotFoundException(
+                "bg_stick"
+            )
     }
 
     fun onMeasure(width: Int, height: Int) {
@@ -57,5 +62,4 @@ class StickLayout(
             animator?.start()
         }
     }
-
 }
