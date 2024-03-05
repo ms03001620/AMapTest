@@ -105,4 +105,9 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         invalidate()
         stickLayout.process(process)
     }
+
+    override fun onDetachedFromWindow() {
+        stickLayout.release()
+        super.onDetachedFromWindow()
+    }
 }

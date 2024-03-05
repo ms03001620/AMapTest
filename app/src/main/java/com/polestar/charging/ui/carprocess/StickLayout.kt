@@ -15,7 +15,7 @@ class StickLayout(
     private val paddingStartOfCar: Int,
     private val paddingEndOfCar: Int,
     private val stickResId: Int,
-    private val onRequestInvalidate: () -> Unit,
+    private var onRequestInvalidate: (() -> Unit)?,
 ) {
     private val durationAnim = 2000L
     private var stickWidth = 60.dp
@@ -51,7 +51,7 @@ class StickLayout(
             startAnimation()
         } else {
             stopAnimation()
-            onRequestInvalidate.invoke()
+            onRequestInvalidate?.invoke()
         }
     }
 
@@ -63,6 +63,11 @@ class StickLayout(
     private fun stopAnimation() {
         animator?.cancel()
         animator = null
+    }
+
+    fun release() {
+        onRequestInvalidate = null
+        stopAnimation()
     }
 
     private fun startAnimation() {
@@ -79,7 +84,7 @@ class StickLayout(
                     val start = value - stickWidth
 
                     stickDrawable.setBounds(start, 0, value, height)
-                    onRequestInvalidate.invoke()
+                    onRequestInvalidate?.invoke()
                 }
             }
             animator?.start()
