@@ -7,7 +7,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.view.animation.LinearInterpolator
 import androidx.appcompat.content.res.AppCompatResources
-import polestar.base.ext.dp
+import com.polestar.base.ext.dp
 import kotlin.math.roundToInt
 
 class StickLayout(

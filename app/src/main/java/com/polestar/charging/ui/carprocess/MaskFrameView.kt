@@ -13,7 +13,7 @@ import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
 import com.example.amaptest.R
-import polestar.base.ext.dp
+import com.polestar.base.ext.dp
 
 
 class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
@@ -39,7 +39,12 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         maskDrawable = AppCompatResources.getDrawable(context, R.drawable.charging_car_mask)
             ?: throw Resources.NotFoundException("charging_car_mask")
         paintMask.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
-        processLayout = ProcessLayout(getContext(), paddingStartOfCar, paddingEndOfCar)
+        processLayout = ProcessLayout(
+            getContext(),
+            paddingStartOfCar,
+            paddingEndOfCar,
+            R.drawable.charging_process_green
+        )
         stickLayout = StickLayout(
             getContext(),
             paddingStartOfCar,

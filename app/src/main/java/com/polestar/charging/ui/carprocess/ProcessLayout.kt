@@ -8,13 +8,13 @@ import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
-import com.example.amaptest.R
 import kotlin.math.roundToInt
 
 class ProcessLayout(
     context: Context,
     private val paddingStartOfCar: Int,
-    private val paddingEndOfCar: Int
+    private val paddingEndOfCar: Int,
+    private val resId: Int,
 ) {
     private lateinit var processImage: Bitmap
     private var processPaint: Paint
@@ -23,7 +23,7 @@ class ProcessLayout(
     private var height = 0
 
     init {
-        processDrawable = AppCompatResources.getDrawable(context, R.drawable.charging_process_green)
+        processDrawable = AppCompatResources.getDrawable(context, resId)
             ?: throw Resources.NotFoundException("charging_process_green")
         processPaint = Paint()
     }
