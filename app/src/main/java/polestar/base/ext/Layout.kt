@@ -1,4 +1,4 @@
-package com.com.polestar.base.ext
+package polestar.base.ext
 
 import android.content.Context
 import android.content.res.Resources

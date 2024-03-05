@@ -1,4 +1,4 @@
-package com.com.polestar.charging.ui.carprocess
+package com.polestar.charging.ui.carprocess
 
 import android.content.Context
 import android.content.res.Resources
@@ -12,8 +12,8 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
-import com.com.polestar.base.ext.dp
 import com.example.amaptest.R
+import polestar.base.ext.dp
 
 
 class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
@@ -22,10 +22,9 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
 
     private var process: Float = 0.0f
     private var paintMask = Paint()
-    private var paddingStartOfCar = 35.dp
+    private var paddingStartOfCar = 38.dp
     private var paddingEndOfCar = 25.dp
     private var isProcessTextEnable = false
-    private var isCharging = false
 
     private val carDrawable: Drawable
     private val maskDrawable: Drawable
@@ -41,7 +40,14 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
             ?: throw Resources.NotFoundException("charging_car_mask")
         paintMask.setXfermode(PorterDuffXfermode(PorterDuff.Mode.DST_IN))
         processLayout = ProcessLayout(getContext(), paddingStartOfCar, paddingEndOfCar)
-        stickLayout = StickLayout(getContext(), paddingStartOfCar, paddingEndOfCar)
+        stickLayout = StickLayout(
+            getContext(),
+            paddingStartOfCar,
+            R.drawable.charging_stick,
+            paddingEndOfCar
+        ) {
+            invalidate()
+        }
         textLayout = TextLayout()
     }
 
@@ -65,8 +71,7 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     fun setCharging(isCharging: Boolean) {
-        this.isCharging = isCharging
-        invalidate()
+        stickLayout.setCharging(isCharging)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -83,7 +88,7 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         )
 
         processLayout.onDraw(canvas, process)
-        stickLayout.onDraw(canvas, process, isCharging)
+        stickLayout.onDraw(canvas, process)
         textLayout.onDraw(canvas, process, isProcessTextEnable)
 
         canvas.drawBitmap(maskImage, 0f, 0f, paintMask)
@@ -93,9 +98,7 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
     fun process(process: Float) {
         this.process = process
         invalidate()
-
-        stickLayout.startAnimation(process) {
-            invalidate()
-        }
+        stickLayout.process(process)
+        stickLayout.startAnimation()
     }
 }

@@ -1,9 +1,9 @@
-package com.com.polestar.charging.ui.carprocess
+package com.polestar.charging.ui.carprocess
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.com.polestar.base.ext.dp
+import polestar.base.ext.dp
 import kotlin.math.roundToInt
 
 class TextLayout(

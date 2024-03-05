@@ -39,7 +39,6 @@
 
     </LinearLayout>
 
-
     <Button
         android:id="@+id/btnStart"
         android:layout_width="wrap_content"
@@ -62,10 +61,10 @@
         android:layout_height="wrap_content" />
 
 
-    <com.com.polestar.charging.ui.carprocess.MaskFrameView
+    <com.polestar.charging.ui.carprocess.MaskFrameView
         android:id="@+id/maskCar"
-        android:layout_width="300dp"
-        android:layout_height="140dp"
+        android:layout_width="match_parent"
+        android:layout_height="170dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:background="#FFF" />
@@ -78,6 +77,12 @@
         android:layout_height="wrap_content"
         android:max="100"
         android:progress="0" />
+
+    <CheckBox
+        android:id="@+id/checkCharging"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="charging"/>
 
 
 </LinearLayout>

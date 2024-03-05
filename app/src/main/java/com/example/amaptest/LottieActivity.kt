@@ -28,6 +28,7 @@ class LottieActivity : AppCompatActivity() {
     }
 
     private fun initMask(){
+        binding.maskCar.setProcessTextEnable(true)
         binding.seekBar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -41,6 +42,11 @@ class LottieActivity : AppCompatActivity() {
 
             }
         })
+        binding.maskCar.process(0.02f)
+
+        binding.checkCharging.setOnCheckedChangeListener { _, isChecked ->
+            binding.maskCar.setCharging(isChecked)
+        }
     }
 
     private fun initPointView(){
