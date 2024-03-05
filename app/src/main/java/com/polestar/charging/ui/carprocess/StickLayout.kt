@@ -56,6 +56,7 @@ class StickLayout(
 
     fun process(process: Float) {
         this.process = process
+        startAnimation()
     }
 
     fun stopAnimation() {

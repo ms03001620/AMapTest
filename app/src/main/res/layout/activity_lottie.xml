@@ -80,9 +80,17 @@
 
     <CheckBox
         android:id="@+id/checkCharging"
+        android:textColor="#0F0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="charging"/>
+        android:text="showAnim"/>
+
+    <CheckBox
+        android:id="@+id/checkText"
+        android:textColor="#0F0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="showText"/>
 
 
 </LinearLayout>

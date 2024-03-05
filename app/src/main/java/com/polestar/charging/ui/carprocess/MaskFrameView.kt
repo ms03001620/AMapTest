@@ -43,8 +43,8 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         stickLayout = StickLayout(
             getContext(),
             paddingStartOfCar,
+            paddingEndOfCar,
             R.drawable.charging_stick,
-            paddingEndOfCar
         ) {
             invalidate()
         }
@@ -99,6 +99,5 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
         this.process = process
         invalidate()
         stickLayout.process(process)
-        stickLayout.startAnimation()
     }
 }

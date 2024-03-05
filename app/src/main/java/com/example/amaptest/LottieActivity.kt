@@ -28,7 +28,6 @@ class LottieActivity : AppCompatActivity() {
     }
 
     private fun initMask(){
-        binding.maskCar.setProcessTextEnable(true)
         binding.seekBar.setOnSeekBarChangeListener(object :
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
@@ -46,6 +45,10 @@ class LottieActivity : AppCompatActivity() {
 
         binding.checkCharging.setOnCheckedChangeListener { _, isChecked ->
             binding.maskCar.setCharging(isChecked)
+        }
+
+        binding.checkText.setOnCheckedChangeListener { _, isChecked ->
+            binding.maskCar.setProcessTextEnable(isChecked)
         }
     }
 
