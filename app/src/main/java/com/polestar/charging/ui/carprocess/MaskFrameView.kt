@@ -76,7 +76,7 @@ class MaskFrameView(context: Context, attrs: AttributeSet?) : View(context, attr
     }
 
     fun setCharging(isCharging: Boolean) {
-        stickLayout.setCharging(isCharging)
+        stickLayout.startCharging(isCharging)
     }
 
     override fun onDraw(canvas: Canvas) {

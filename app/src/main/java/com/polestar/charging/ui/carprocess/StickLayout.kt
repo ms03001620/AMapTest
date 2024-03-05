@@ -44,13 +44,14 @@ class StickLayout(
         }
     }
 
-    fun setCharging(isCharging: Boolean) {
+    fun startCharging(isCharging: Boolean) {
         this.isCharging = isCharging
 
         if (isCharging) {
             startAnimation()
         } else {
             stopAnimation()
+            onRequestInvalidate.invoke()
         }
     }
 
@@ -59,12 +60,12 @@ class StickLayout(
         startAnimation()
     }
 
-    fun stopAnimation() {
+    private fun stopAnimation() {
         animator?.cancel()
         animator = null
     }
 
-    fun startAnimation() {
+    private fun startAnimation() {
         stopAnimation()
         if (process > 0 && isCharging) {
             val xOffset = (carWidth * process).roundToInt()
