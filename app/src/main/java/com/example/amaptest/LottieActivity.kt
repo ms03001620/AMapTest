@@ -41,7 +41,6 @@ class LottieActivity : AppCompatActivity() {
 
             }
         })
-        binding.maskCar.process(0.02f)
 
         binding.checkCharging.setOnCheckedChangeListener { _, isChecked ->
             binding.maskCar.setCharging(isChecked)
