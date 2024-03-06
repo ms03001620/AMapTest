@@ -42,6 +42,8 @@ class LottieActivity : AppCompatActivity() {
             }
         })
 
+        binding.maskCar.setProcessTextEnable(true)
+
         binding.checkCharging.setOnCheckedChangeListener { _, isChecked ->
             binding.maskCar.setCharging(isChecked)
         }
