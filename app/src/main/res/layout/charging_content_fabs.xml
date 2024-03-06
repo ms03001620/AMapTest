@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/fab_favorite"
             style="@style/ChargingFabMore"
-            android:src="@drawable/charging_icon_favorite" />
+            android:src="@drawable/charging_icon_help" />
 
         <ImageView
             android:id="@+id/fab_help"

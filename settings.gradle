@@ -7,4 +7,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "AMapTest"
-include ':app'
+include ':app', ':lib_base', ':lib_charging'
