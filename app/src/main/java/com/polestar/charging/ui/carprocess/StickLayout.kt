@@ -1,5 +1,6 @@
 package com.polestar.charging.ui.carprocess
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.res.Resources.NotFoundException
@@ -9,6 +10,7 @@ import android.view.animation.LinearInterpolator
 import androidx.appcompat.content.res.AppCompatResources
 import com.polestar.base.ext.dp
 import kotlin.math.roundToInt
+import kotlin.math.roundToLong
 
 class StickLayout(
     context: Context,
@@ -48,6 +50,7 @@ class StickLayout(
         this.isCharging = isCharging
 
         if (isCharging) {
+            stopAnimation()
             startAnimation()
         } else {
             stopAnimation()
@@ -56,11 +59,18 @@ class StickLayout(
     }
 
     fun process(process: Float) {
+        // process 减少时，主要立即更新动画
+        // process 增加时，不需要停止动画，动画会在下一轮更新最新的process
+        if (process < this.process && isCharging) {
+            stopAnimation()
+            startAnimation()
+        }
+
         this.process = process
-        startAnimation()
     }
 
     private fun stopAnimation() {
+        animator?.removeAllListeners()
         animator?.cancel()
         animator = null
     }
@@ -71,13 +81,12 @@ class StickLayout(
     }
 
     private fun startAnimation() {
-        stopAnimation()
         if (process > 0 && isCharging) {
             val xOffset = (carWidth * process).roundToInt()
 
             animator = ValueAnimator.ofInt(paddingStartOfCar, paddingStartOfCar + xOffset).apply {
-                repeatCount = ValueAnimator.INFINITE
-                duration = durationAnim
+                repeatCount = 1
+                duration = durationAnim - (500 * process).roundToLong()//进度越大，速度越快
                 interpolator = LinearInterpolator()
                 addUpdateListener { valueAnimator ->
                     val value = valueAnimator.animatedValue as Int
@@ -86,6 +95,22 @@ class StickLayout(
                     stickDrawable.setBounds(start, 0, value, height)
                     onRequestInvalidate?.invoke()
                 }
+                addListener(object: Animator.AnimatorListener {
+                    override fun onAnimationStart(animation: Animator) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator) {
+                        // 手动实现动画循环，为了新的动画可以后去最新的process
+                        stopAnimation()
+                        startAnimation()
+                    }
+
+                    override fun onAnimationCancel(animation: Animator) {
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator) {
+                    }
+                })
             }
             animator?.start()
         }
