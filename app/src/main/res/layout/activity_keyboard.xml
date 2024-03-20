@@ -4,33 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/tv_des"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="500dp"
+        android:layout_marginTop="25dp"
         android:text="titlee"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="25dp"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
     <EditText
-        android:id="@+id/et_input"
+        android:id="@+id/et_input2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tv_declare"
         android:layout_marginBottom="25dp"
-        android:hint="输入"/>
-    <TextView
+        android:hint="输入2"
+        app:layout_constraintBottom_toTopOf="@+id/et_input1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/et_input1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"
+        android:hint="输入1"
+        app:layout_constraintBottom_toTopOf="@+id/tv_declare"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
         android:id="@+id/tv_declare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="150dp"
+        android:text="ShuSheng007出品,必属精品"
         android:textSize="15sp"
-        android:text="ShuSheng007出品,必属精品"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
