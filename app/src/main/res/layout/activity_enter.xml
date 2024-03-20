@@ -48,6 +48,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Pager" />
+        <Button
+            android:id="@+id/btn_keyboard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Keyboard" />
     </LinearLayout>
 
 

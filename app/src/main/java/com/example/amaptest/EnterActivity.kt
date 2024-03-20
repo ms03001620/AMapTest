@@ -21,6 +21,7 @@ import com.example.amaptest.bluetooth.BluetoothSampleActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.flow.FlowAvdActivity
 import com.example.amaptest.flow.LiveDataActivity
+import com.example.amaptest.keyboard.KeyboardActivity
 import com.example.amaptest.pager.PagerActivity
 import com.example.amaptest.sync.CellSignalModel
 import com.robolectric.DialogsActivity
@@ -119,6 +120,10 @@ class EnterActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_pager).setOnClickListener {
             gotoPager()
+        }
+
+        findViewById<View>(R.id.btn_keyboard).setOnClickListener {
+            gotoKeyboardActivity()
         }
 
         findViewById<View>(R.id.btn_anim).setOnClickListener {
@@ -232,6 +237,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoLottieActivity() {
         startActivity(Intent(this, LottieActivity::class.java))
+    }
+
+    fun gotoKeyboardActivity() {
+        startActivity(Intent(this, KeyboardActivity::class.java))
     }
 
     fun gotoVideoActivity() {
