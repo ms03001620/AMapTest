@@ -22,6 +22,7 @@ import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.flow.FlowAvdActivity
 import com.example.amaptest.flow.LiveDataActivity
 import com.example.amaptest.keyboard.KeyboardActivity
+import com.example.amaptest.life.LifecycleObserverActivity
 import com.example.amaptest.pager.PagerActivity
 import com.example.amaptest.sync.CellSignalModel
 import com.robolectric.DialogsActivity
@@ -146,6 +147,10 @@ class EnterActivity : AppCompatActivity() {
             gotoSheet()
         }
 
+        findViewById<View>(R.id.btn_lifecycle).setOnClickListener {
+            gotoLifecycle()
+        }
+
         findViewById<View>(R.id.btn_sheetBehavior).setOnClickListener {
             gotoSheetBehavior()
         }
@@ -253,6 +258,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoSheet() {
         startActivity(Intent(this, SheetActivity::class.java))
+    }
+
+    fun gotoLifecycle() {
+        startActivity(Intent(this, LifecycleObserverActivity::class.java))
     }
 
     fun gotoSheetBehavior() {

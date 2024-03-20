@@ -20,9 +20,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AMapTest">
         <activity
-            android:name=".keyboard.KeyboardActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:name=".life.LifecycleObserverActivity"
             android:exported="false" />
+        <activity
+            android:name=".keyboard.KeyboardActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".CountdownActivity"
             android:exported="false">
