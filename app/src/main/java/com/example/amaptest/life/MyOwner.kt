@@ -1,30 +1,25 @@
-package com.example.amaptest.life;
+package com.example.amaptest.life
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleOwner;
-import androidx.lifecycle.LifecycleRegistry;
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 
-public class MyOwner implements LifecycleOwner {
-    private LifecycleRegistry lifecycleRegistry;
+class MyOwner(parent: LifecycleOwner) : LifecycleOwner {
+    private val lifecycleRegistry: LifecycleRegistry
 
-    public MyOwner(LifecycleOwner w) {
-        lifecycleRegistry = new LifecycleRegistry(w);
-        lifecycleRegistry.markState(Lifecycle.State.CREATED);
+    init {
+        lifecycleRegistry = LifecycleRegistry(parent)
+        lifecycleRegistry.currentState = Lifecycle.State.CREATED
     }
 
-    public void start(){
-        lifecycleRegistry.markState(Lifecycle.State.RESUMED);
+    fun start() {
+        lifecycleRegistry.currentState = Lifecycle.State.RESUMED
     }
 
-    public void stop() {
-        lifecycleRegistry.markState(Lifecycle.State.DESTROYED);
+    fun stop() {
+        lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
     }
 
-
-    @NonNull
-    @Override
-    public Lifecycle getLifecycle() {
-        return lifecycleRegistry;
-    }
+    override val lifecycle: Lifecycle
+        get() = lifecycleRegistry
 }
