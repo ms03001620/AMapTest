@@ -3,16 +3,16 @@ package com.example.amaptest.life
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
-class MyObserver(owner: LifecycleOwner) : DefaultLifecycleObserver {
-    private var myOwner = MyOwner(owner)
+class NfcObserver(activityOwner: LifecycleOwner) : DefaultLifecycleObserver {
+    private var nfcOwner = NfcOwner(activityOwner)
 
-    fun getOwner() = myOwner
+    fun getNfcOwner() = nfcOwner
 
     override fun onResume(owner: LifecycleOwner) {
-        myOwner.start()
+        nfcOwner.enableOperateNfc()
     }
 
     override fun onPause(owner: LifecycleOwner) {
-        myOwner.stop()
+        nfcOwner.disableOperateNfc()
     }
 }

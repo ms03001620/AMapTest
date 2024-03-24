@@ -9,7 +9,7 @@ import com.example.amaptest.R
 
 class LifecycleObserverActivity : AppCompatActivity(), LifecycleOwner {
     val stringLiveData = MutableLiveData<String>("abc")
-    val observer = MyObserver(this)
+    val observer = NfcObserver(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

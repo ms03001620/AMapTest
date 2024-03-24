@@ -4,7 +4,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 
-class MyOwner(parent: LifecycleOwner) : LifecycleOwner {
+class NfcOwner(parent: LifecycleOwner) : LifecycleOwner {
     private val lifecycleRegistry: LifecycleRegistry
 
     init {
@@ -12,11 +12,11 @@ class MyOwner(parent: LifecycleOwner) : LifecycleOwner {
         lifecycleRegistry.currentState = Lifecycle.State.CREATED
     }
 
-    fun start() {
+    fun enableOperateNfc() {
         lifecycleRegistry.currentState = Lifecycle.State.RESUMED
     }
 
-    fun stop() {
+    fun disableOperateNfc() {
         lifecycleRegistry.currentState = Lifecycle.State.DESTROYED
     }
 
