@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Float.min
 import kotlin.math.abs
+import kotlin.math.max
 
 /**
  * 计算列表header可见度
@@ -49,17 +50,21 @@ class HeaderVisibleViewModel : ViewModel() {
         }
     }
 
-    private fun normalizeHeaderVisible(headerView: View): Float {
+    private fun normalizeHeaderVisible(headerView: View, barHeight: Int): Float {
         val currentRect = Rect()
         val isVisible = headerView.getGlobalVisibleRect(currentRect)
         val height = headerView.height
         val currentHeight = if (isVisible) currentRect.height() else 0
-        return visibleToAlpha(currentHeight, height)
+        return heightToAlpha(currentHeight - barHeight, height - barHeight)
     }
 
-    fun calcHeaderVisible(headerView: View) {
+    private fun heightToAlpha(top: Int, height: Int): Float{
+        return max(0f, top.toFloat() / height)
+    }
+
+    fun calcHeaderVisible(headerView: View, barHeight: Int) {
         viewModelScope.launch(Dispatchers.Default) {
-            headerVisibleLiveData.postValue(normalizeHeaderVisible(headerView))
+            headerVisibleLiveData.postValue(1 - normalizeHeaderVisible(headerView, barHeight))
         }
     }
 }

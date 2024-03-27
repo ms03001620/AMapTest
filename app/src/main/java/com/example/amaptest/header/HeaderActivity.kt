@@ -33,15 +33,14 @@ class HeaderActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.rootScroll.setOnScrollChangeListener(
-            NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, oldScrollX, oldScrollY ->
-                headerViewModel.calcHeaderVisible(binding.imageRepair)
+            NestedScrollView.OnScrollChangeListener { _, _, _, _, _ ->
+                headerViewModel.calcHeaderVisible(binding.imageRepair, binding.toolBar.height)
             })
         initObserver()
     }
 
     private fun initObserver(){
-        headerViewModel.headerVisibleLiveData.observe(this) {
-            val visible = 1f-it
+        headerViewModel.headerVisibleLiveData.observe(this) { visible ->
             // toolbar背景渐变
             val bgColor: Int = Color.WHITE
             val bg = Color.argb(
