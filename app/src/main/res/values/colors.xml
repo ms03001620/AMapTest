@@ -127,4 +127,6 @@
 
 
     <color name="store_basic_page_color">#F9F9F9</color>
+
+    <color name="transparent">#00000000</color>
 </resources>

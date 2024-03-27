@@ -21,6 +21,7 @@ import com.example.amaptest.bluetooth.BluetoothSampleActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.flow.FlowAvdActivity
 import com.example.amaptest.flow.LiveDataActivity
+import com.example.amaptest.header.HeaderActivity
 import com.example.amaptest.keyboard.KeyboardActivity
 import com.example.amaptest.life.LifecycleObserverActivity
 import com.example.amaptest.pager.PagerActivity
@@ -131,6 +132,10 @@ class EnterActivity : AppCompatActivity() {
             gotoAnim()
         }
 
+        findViewById<View>(R.id.btn_header).setOnClickListener {
+            gotoHeader()
+        }
+
         findViewById<View>(R.id.btn_lottie).setOnClickListener {
             gotoLottieActivity()
         }
@@ -231,6 +236,11 @@ class EnterActivity : AppCompatActivity() {
     fun gotoAMap() {
         startActivity(Intent(this, AMapEnterActivity::class.java))
     }
+
+    fun gotoHeader() {
+        startActivity(Intent(this, HeaderActivity::class.java))
+    }
+
 
     fun gotoPager() {
         startActivity(Intent(this, PagerActivity::class.java))
