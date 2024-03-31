@@ -3,15 +3,16 @@ package com.span
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Rect
 import android.text.style.ReplacementSpan
 import kotlin.math.roundToInt
 
 class TagTextSpan(
     val bgColor: Int = Color.parseColor("#FF7500"),
-    val scale: Float = .8f,
+    val scale: Float = .5f,
     val tagTextColor: Int = Color.parseColor("#FFFFFF"),
-    val paddingTop: Int = 10,
-    val paddingBottom: Int = -5,
+    val paddingTop: Int = 0,
+    val paddingBottom: Int = 0,
 ) : ReplacementSpan() {
     private var width = 0.0f
     private var tagWidth = 0.0f
@@ -45,9 +46,9 @@ class TagTextSpan(
         bottom: Int,
         paint: Paint
     ) {
-        tagBackground.drawBg(canvas = canvas, top = top, bottom = bottom)
+        tagBackground.draw(canvas, text, start, end, x, top, y, bottom, paint)
         //drawOriginText(canvas, text, start, end, x, top, y, bottom, paint)
-        tagText.drawTagText(canvas, text, start, end, tagBackground.getBgRect())
+        tagText.drawTagText(canvas, text, start, end, x, top, y, bottom, paint)
     }
 
 

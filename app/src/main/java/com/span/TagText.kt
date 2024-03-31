@@ -10,8 +10,11 @@ import android.text.TextPaint
 class TagText(
     val scale: Float,
     val tagTextColor: Int,
+    val offsetY: Int = 0
 ) {
     private lateinit var paintScale: Paint
+
+    private val originTextRect = Rect()
     private val scaleTextRect = Rect()
 
     fun getSize(
@@ -21,10 +24,13 @@ class TagText(
         end: Int,
         fm: Paint.FontMetricsInt?
     ) {
+        paint.getTextBounds(text.toString(), start, end, originTextRect)
+
+
         paintScale = TextPaint(paint)
         paintScale.textSize = paint.textSize * scale
         paintScale.color = tagTextColor
-        paintScale.textAlign = Paint.Align.CENTER
+        paintScale.textAlign = Paint.Align.LEFT
         paintScale.getTextBounds(text.toString(), start, end, scaleTextRect)
     }
 
@@ -33,15 +39,17 @@ class TagText(
         text: CharSequence?,
         start: Int,
         end: Int,
-        bgRectF: RectF,
+        x: Float,
+        top: Int,
+        y: Int,
+        bottom: Int,
+        paint: Paint
     ) {
-        canvas.drawText(
-            text.toString(),
-            start,
-            end,
-            bgRectF.centerX(),
-            bgRectF.centerY() + scaleTextRect.height() / 2,
-            paintScale
-        )
+
+        val w = (originTextRect.width() - scaleTextRect.width())/2
+        val h =  (originTextRect.height() - scaleTextRect.height())/2
+
+        canvas.drawText(text.toString(), start, end, x+w, y.toFloat()-h, paintScale)
+
     }
 }
