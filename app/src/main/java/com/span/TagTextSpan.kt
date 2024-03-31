@@ -3,9 +3,6 @@ package com.span
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Rect
-import android.graphics.RectF
-import android.text.TextPaint
 import android.text.style.ReplacementSpan
 import kotlin.math.roundToInt
 
@@ -17,8 +14,8 @@ class TagTextSpan(
     private var width = 0.0f
     private var tagWidth = 0.0f
     private lateinit var paintScale: Paint
-    private val scaleTextRect = Rect()
     val tagBackground = TagBackground(bgColor)
+    val tagText = TagText(scale, tagTextColor)
 
     override fun getSize(
         paint: Paint,
@@ -30,13 +27,8 @@ class TagTextSpan(
         width = paint.measureText(text.toString(), 0, text.toString().length)
         tagWidth = paint.measureText(text.toString(), start, end)
 
-        paintScale = TextPaint(paint)
-        paintScale.textSize = paint.textSize * scale
-        paintScale.color = tagTextColor
-        paintScale.textAlign = Paint.Align.CENTER
-        paintScale.getTextBounds(text.toString(), start, end, scaleTextRect)
-
         tagBackground.getSize(width, tagWidth)
+        tagText.getSize(paint, text, start, end, fm)
 
         return tagWidth.roundToInt()
     }
@@ -54,26 +46,9 @@ class TagTextSpan(
     ) {
         tagBackground.drawBg(canvas = canvas, top = top, bottom = bottom)
         drawOriginText(canvas, text, start, end, x, top, y, bottom, paint)
-        drawTagText(canvas, text, start, end, tagBackground.getBgRect(), paintScale)
+        tagText.drawTagText(canvas, text, start, end, tagBackground.getBgRect())
     }
 
-    private fun drawTagText(
-        canvas: Canvas,
-        text: CharSequence?,
-        start: Int,
-        end: Int,
-        bgRectF: RectF,
-        paintScale: Paint
-    ) {
-        canvas.drawText(
-            text.toString(),
-            start,
-            end,
-            bgRectF.centerX(),
-            bgRectF.centerY() + scaleTextRect.height() / 2,
-            paintScale
-        )
-    }
 
     private fun drawOriginText(
         canvas: Canvas,
