@@ -6,7 +6,9 @@ import android.graphics.Paint
 import android.graphics.RectF
 
 class TagBackground(
-    val bgColor: Int
+    val bgColor: Int,
+    val paddingTop: Int,
+    val paddingBottom: Int,
 ) {
     private val bgRectF = RectF()
     private val bgPaint = Paint()
@@ -30,7 +32,13 @@ class TagBackground(
         bgRectF.right = width
         bgRectF.bottom = bottom.toFloat()
 
-        canvas.drawRect(bgRectF, bgPaint)
+        canvas.drawRect(
+            bgRectF.left,
+            bgRectF.top + paddingTop,
+            bgRectF.right,
+            bgRectF.bottom + paddingBottom,
+            bgPaint
+        )
     }
 
     fun getBgRect() = bgRectF

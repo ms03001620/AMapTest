@@ -8,13 +8,14 @@ import kotlin.math.roundToInt
 
 class TagTextSpan(
     val bgColor: Int = Color.parseColor("#FF7500"),
-    val scale: Float = 1f,
+    val scale: Float = .8f,
     val tagTextColor: Int = Color.parseColor("#FFFFFF"),
+    val paddingTop: Int = 10,
+    val paddingBottom: Int = -5,
 ) : ReplacementSpan() {
     private var width = 0.0f
     private var tagWidth = 0.0f
-    private lateinit var paintScale: Paint
-    val tagBackground = TagBackground(bgColor)
+    val tagBackground = TagBackground(bgColor, paddingTop, paddingBottom)
     val tagText = TagText(scale, tagTextColor)
 
     override fun getSize(
@@ -45,7 +46,7 @@ class TagTextSpan(
         paint: Paint
     ) {
         tagBackground.drawBg(canvas = canvas, top = top, bottom = bottom)
-        drawOriginText(canvas, text, start, end, x, top, y, bottom, paint)
+        //drawOriginText(canvas, text, start, end, x, top, y, bottom, paint)
         tagText.drawTagText(canvas, text, start, end, tagBackground.getBgRect())
     }
 
