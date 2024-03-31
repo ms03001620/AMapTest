@@ -11,15 +11,14 @@ import kotlin.math.roundToInt
 
 class TagTextSpan(
     val bgColor: Int = Color.parseColor("#FF7500"),
-    val scale: Float = .7f,
+    val scale: Float = 1f,
     val tagTextColor: Int = Color.parseColor("#FFFFFF"),
 ) : ReplacementSpan() {
     private var width = 0.0f
     private var tagWidth = 0.0f
-    private val bgPaint = Paint()
     private lateinit var paintScale: Paint
     private val scaleTextRect = Rect()
-    private val bgRectF = RectF()
+    val tagBackground = TagBackground(bgColor)
 
     override fun getSize(
         paint: Paint,
@@ -28,7 +27,6 @@ class TagTextSpan(
         end: Int,
         fm: Paint.FontMetricsInt?
     ): Int {
-        bgPaint.setColor(bgColor)
         width = paint.measureText(text.toString(), 0, text.toString().length)
         tagWidth = paint.measureText(text.toString(), start, end)
 
@@ -37,6 +35,8 @@ class TagTextSpan(
         paintScale.color = tagTextColor
         paintScale.textAlign = Paint.Align.CENTER
         paintScale.getTextBounds(text.toString(), start, end, scaleTextRect)
+
+        tagBackground.getSize(width, tagWidth)
 
         return tagWidth.roundToInt()
     }
@@ -52,9 +52,9 @@ class TagTextSpan(
         bottom: Int,
         paint: Paint
     ) {
-        drawBg(canvas = canvas, top = top, bottom = bottom)
+        tagBackground.drawBg(canvas = canvas, top = top, bottom = bottom)
         drawOriginText(canvas, text, start, end, x, top, y, bottom, paint)
-        drawTagText(canvas, text, start, end, bgRectF, paintScale)
+        drawTagText(canvas, text, start, end, tagBackground.getBgRect(), paintScale)
     }
 
     private fun drawTagText(
@@ -87,18 +87,5 @@ class TagTextSpan(
         paint: Paint
     ) {
         canvas.drawText(text.toString(), start, end, x, y.toFloat(), paint)
-    }
-
-    private fun drawBg(
-        canvas: Canvas,
-        top: Int,
-        bottom: Int,
-    ) {
-        bgRectF.left = width - tagWidth
-        bgRectF.top = top.toFloat()
-        bgRectF.right = width
-        bgRectF.bottom = bottom.toFloat()
-
-        canvas.drawRect(bgRectF, bgPaint)
     }
 }
