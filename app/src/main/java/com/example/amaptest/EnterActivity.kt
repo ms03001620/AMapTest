@@ -27,6 +27,7 @@ import com.example.amaptest.life.LifecycleObserverActivity
 import com.example.amaptest.pager.PagerActivity
 import com.example.amaptest.sync.CellSignalModel
 import com.robolectric.DialogsActivity
+import com.span.SpanTextActivity
 
 
 class EnterActivity : AppCompatActivity() {
@@ -136,6 +137,10 @@ class EnterActivity : AppCompatActivity() {
             gotoHeader()
         }
 
+        findViewById<View>(R.id.btn_span).setOnClickListener {
+            gotoSpan()
+        }
+
         findViewById<View>(R.id.btn_lottie).setOnClickListener {
             gotoLottieActivity()
         }
@@ -239,6 +244,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoHeader() {
         startActivity(Intent(this, HeaderActivity::class.java))
+    }
+
+    fun gotoSpan() {
+        startActivity(Intent(this, SpanTextActivity::class.java))
     }
 
 

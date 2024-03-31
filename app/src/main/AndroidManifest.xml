@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AMapTest">
         <activity
+            android:name="com.span.SpanTextActivity"
+            android:exported="false" />
+        <activity
             android:name=".header.HeaderActivity"
             android:exported="false" />
         <activity
