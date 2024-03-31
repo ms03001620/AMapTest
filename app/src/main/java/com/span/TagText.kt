@@ -1,18 +1,21 @@
 package com.span
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
-import android.graphics.RectF
 import android.text.TextPaint
 
 class TagText(
-    val scale: Float,
-    val tagTextColor: Int,
-    val offsetY: Int = 0
+    private val scale: Float,
+    private val textColor: Int?,
+    private val bgMargin: Rect? = null,
+    private val bgColor: Int,
 ) {
     private lateinit var paintScale: Paint
+
+    private val paintBg = Paint().also {
+        it.color = bgColor
+    }
 
     private val originTextRect = Rect()
     private val scaleTextRect = Rect()
@@ -26,11 +29,11 @@ class TagText(
     ) {
         paint.getTextBounds(text.toString(), start, end, originTextRect)
 
-
         paintScale = TextPaint(paint)
         paintScale.textSize = paint.textSize * scale
-        paintScale.color = tagTextColor
-        paintScale.textAlign = Paint.Align.LEFT
+        textColor?.let {
+            paintScale.color = it
+        }
         paintScale.getTextBounds(text.toString(), start, end, scaleTextRect)
     }
 
@@ -45,11 +48,27 @@ class TagText(
         bottom: Int,
         paint: Paint
     ) {
+        val w = (originTextRect.width() - scaleTextRect.width()) / 2
+        val h = (originTextRect.height() - scaleTextRect.height()) / 2
 
-        val w = (originTextRect.width() - scaleTextRect.width())/2
-        val h =  (originTextRect.height() - scaleTextRect.height())/2
+        val textLeft = x + w
+        val textTop = y.toFloat() - h - scaleTextRect.height()
+        val textRight = textLeft + scaleTextRect.width()
+        val textBottom = y.toFloat() - h
 
-        canvas.drawText(text.toString(), start, end, x+w, y.toFloat()-h, paintScale)
+        drawBg(canvas, textLeft, textTop, textRight, textBottom)
+        canvas.drawText(text.toString(), start, end, textLeft, textBottom, paintScale)
+    }
 
+    private fun drawBg(canvas: Canvas, left: Float, top: Float, right: Float, bottom: Float) {
+        bgMargin?.let {
+            canvas.drawRect(
+                left - bgMargin.left,
+                top - bgMargin.top,
+                right + bgMargin.right,
+                bottom + bgMargin.bottom,
+                paintBg
+            )
+        }
     }
 }

@@ -1,23 +1,18 @@
 package com.span
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.text.style.ReplacementSpan
 import kotlin.math.roundToInt
 
 class TagTextSpan(
-    val bgColor: Int = Color.parseColor("#FF7500"),
-    val scale: Float = .5f,
-    val tagTextColor: Int = Color.parseColor("#FFFFFF"),
-    val paddingTop: Int = 0,
-    val paddingBottom: Int = 0,
+    scale: Float = 1f,
+    textColor: Int? = null,
+    bgColor: Int,
+    bgMargin: Rect? = null,
 ) : ReplacementSpan() {
-    private var width = 0.0f
-    private var tagWidth = 0.0f
-    val tagBackground = TagBackground(bgColor, paddingTop, paddingBottom)
-    val tagText = TagText(scale, tagTextColor)
+    private val tagText = TagText(scale, textColor, bgMargin, bgColor)
 
     override fun getSize(
         paint: Paint,
@@ -26,31 +21,10 @@ class TagTextSpan(
         end: Int,
         fm: Paint.FontMetricsInt?
     ): Int {
-        width = paint.measureText(text.toString(), 0, text.toString().length)
-        tagWidth = paint.measureText(text.toString(), start, end)
-
-        tagBackground.getSize(width, tagWidth)
+        val tagWidth = paint.measureText(text.toString(), start, end)
         tagText.getSize(paint, text, start, end, fm)
-
         return tagWidth.roundToInt()
     }
-
-    override fun draw(
-        canvas: Canvas,
-        text: CharSequence?,
-        start: Int,
-        end: Int,
-        x: Float,
-        top: Int,
-        y: Int,
-        bottom: Int,
-        paint: Paint
-    ) {
-        tagBackground.draw(canvas, text, start, end, x, top, y, bottom, paint)
-        //drawOriginText(canvas, text, start, end, x, top, y, bottom, paint)
-        tagText.drawTagText(canvas, text, start, end, x, top, y, bottom, paint)
-    }
-
 
     private fun drawOriginText(
         canvas: Canvas,
@@ -64,5 +38,20 @@ class TagTextSpan(
         paint: Paint
     ) {
         canvas.drawText(text.toString(), start, end, x, y.toFloat(), paint)
+    }
+
+    override fun draw(
+        canvas: Canvas,
+        text: CharSequence?,
+        start: Int,
+        end: Int,
+        x: Float,
+        top: Int,
+        y: Int,
+        bottom: Int,
+        paint: Paint
+    ) {
+        //drawOriginText(canvas, text, start, end, x, top, y, bottom, paint)
+        tagText.drawTagText(canvas, text, start, end, x, top, y, bottom, paint)
     }
 }
