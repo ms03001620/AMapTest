@@ -54,10 +54,7 @@ class TagTextSpan(
     ) {
         drawBg(canvas = canvas, top = top, bottom = bottom)
         drawOriginText(canvas, text, start, end, x, top, y, bottom, paint)
-
         drawTagText(canvas, text, start, end, bgRectF, paintScale)
-
-
     }
 
     private fun drawTagText(
