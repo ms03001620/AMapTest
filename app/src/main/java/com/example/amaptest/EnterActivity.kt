@@ -18,6 +18,7 @@ import com.example.amaptest.ble.BleActivity
 import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.bluetooth.BluetoothPermissionHelper
 import com.example.amaptest.bluetooth.BluetoothSampleActivity
+import com.example.amaptest.floatlist.FloatListActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.flow.FlowAvdActivity
 import com.example.amaptest.flow.LiveDataActivity
@@ -145,6 +146,10 @@ class EnterActivity : AppCompatActivity() {
             gotoLottieActivity()
         }
 
+        findViewById<View>(R.id.btn_float_list).setOnClickListener {
+            gotoFloatListActivity()
+        }
+
         findViewById<View>(R.id.btn_video).setOnClickListener {
             gotoVideoActivity()
         }
@@ -261,6 +266,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoLottieActivity() {
         startActivity(Intent(this, LottieActivity::class.java))
+    }
+
+    fun gotoFloatListActivity() {
+        startActivity(Intent(this, FloatListActivity::class.java))
     }
 
     fun gotoKeyboardActivity() {
