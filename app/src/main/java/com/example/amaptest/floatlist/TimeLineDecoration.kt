@@ -44,9 +44,7 @@ class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
     // 轴点半径
     private var circleRadius = 4.dp
     private val itemViewLeftOffset = 22.dp
-    private val itemViewTopOffset = 24.dp
-
-    private var circleToPaddingLeft = 10.dp
+    private val itemViewBottomOffset = 24.dp
 
     // 圆圈相对item顶部的偏移量，约一行字的高度，圆要定位在第一行文字中部
     private val lineOffset = 10.dp
@@ -58,34 +56,37 @@ class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
         state: RecyclerView.State
     ) {
         super.getItemOffsets(outRect, view, parent, state)
-        outRect.set(itemViewLeftOffset, itemViewTopOffset, 0, 0)
-
-        //val position = parent.getChildAdapterPosition(view)
+        outRect.set(itemViewLeftOffset, 0, 0, itemViewBottomOffset)
     }
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDraw(canvas, parent, state)
+        val size = parent.adapter?.itemCount ?: 0
 
-
-        parent.forEachIndexed { index, child ->
+        parent.forEachIndexed { _, child ->
             if (child is ViewGroup) {
-                // 绘制圆
-                val centerX = 12.dp.toFloat()//顶部按钮半径； //child.left - circleToPaddingLeft.toFloat()
-                val centerY = child.top * 1f + lineOffset // 圆圈相对item顶部的偏移量，约一行字的高度，圆要定位在第一行文字中部
-                canvas.drawCircle(centerX, centerY, circleRadius.toFloat(), mPaint1)
+                val indexInAdapter = parent.getChildAdapterPosition(child)
+                val isNotFirst = indexInAdapter != 0
+
+                val centerX = 12.dp.toFloat()//顶部按钮半径
+                val centerY = child.top * 1f + lineOffset
+
+                if (isNotFirst) {
+                    // 绘制圆
+                    canvas.drawCircle(centerX, centerY, circleRadius.toFloat(), mPaint1)
+                }
 
                 // 绘制上半部线
-                val upLineTopY = (child.top - itemViewTopOffset).toFloat()
+                val upLineTopY = (child.top).toFloat()
                 val upLineBottomY = centerY - circleRadius// - circleRadius
                 canvas.drawLine(centerX, upLineTopY, centerX, upLineBottomY, mPaint)
 
-                val indexInAdapter = parent.getChildAdapterPosition(child)
-                val size = parent.adapter?.itemCount ?: 0
+
                 val isNotLast = indexInAdapter < size-1
                 // 绘制下半部线
                 if (isNotLast) {
                     val bottomLineTopY = centerY + circleRadius// + circleRadius
-                    val bottomLineBottomY = child.bottom.toFloat()
+                    val bottomLineBottomY = child.bottom.toFloat()+itemViewBottomOffset
                     canvas.drawLine(centerX, bottomLineTopY, centerX, bottomLineBottomY, mPaint1)
                 }
             }

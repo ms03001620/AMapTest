@@ -1,7 +1,9 @@
 package com.example.amaptest.floatlist
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -20,16 +22,24 @@ class RepairStepAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), position)
 
     inner class ViewHolder(
         private val binding: ItemRepiarStepBinding,
         private val callback: (RepairStep) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: RepairStep) {
+        fun bind(item: RepairStep, position: Int) {
             binding.title.text = item.title
             binding.subTitle.text = item.subTitle
             binding.time.text = item.time
+
+            if (position == 0) {
+                binding.title.isVisible = false
+                binding.subTitle.setTextColor(Color.parseColor("#101820"))
+            } else {
+                binding.title.isVisible = true
+                binding.subTitle.setTextColor(Color.parseColor("#C9C9C9"))
+            }
         }
     }
 
