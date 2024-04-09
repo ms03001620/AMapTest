@@ -35,9 +35,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:text="待取车"
                 android:textColor="#101820"
-                android:textSize="26sp" />
+                android:textSize="26sp"
+                tools:text="待取车" />
         </LinearLayout>
 
 

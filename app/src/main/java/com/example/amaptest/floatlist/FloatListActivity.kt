@@ -20,6 +20,7 @@ class FloatListActivity : AppCompatActivity() {
 
         val floatLayout = findViewById<FloatLayout>(R.id.floatingView)
 
+        floatLayout.setTitle("预约中")
         floatLayout.setData(mockList)
     }
 

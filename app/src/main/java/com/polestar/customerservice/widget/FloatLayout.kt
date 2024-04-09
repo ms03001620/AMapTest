@@ -17,9 +17,7 @@ class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context,
     private val binding: CsLayoutFloatListBinding
     private var isExpand = false
     private lateinit var adapter: RepairStepAdapter
-
     private var bgColor = Color.parseColor("#F9F9F9")
-    //private var bgColor = Color.parseColor("#FF0000")
 
     init {
         binding = CsLayoutFloatListBinding.inflate(LayoutInflater.from(context), this, true)
@@ -38,9 +36,7 @@ class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context,
     }
 
     private fun initList(){
-        adapter = RepairStepAdapter{
-
-        }
+        adapter = RepairStepAdapter {}
         binding.list.addItemDecoration(TimeLineDecoration(context))
         binding.list.itemAnimator = null
         binding.list.adapter = adapter
@@ -48,14 +44,6 @@ class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context,
 
     private fun toggle() {
         isExpand = !isExpand
-        binding.checkIcon.isChecked = isExpand
-        binding.root.updateLayoutParams {
-            width =
-                if (isExpand) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
-            height =
-                if (isExpand) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
-        }
-
         if (isExpand) {
             setupExpandView()
         } else {
@@ -67,12 +55,28 @@ class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context,
         binding.list.isVisible = true
         binding.space.isVisible = true
         binding.container.setBackgroundColor(bgColor)
+        binding.checkIcon.isChecked = true
+        binding.statusTitle.setTextColor(Color.parseColor("#FF7500"))
+        binding.root.updateLayoutParams {
+            width = ViewGroup.LayoutParams.MATCH_PARENT
+            height = ViewGroup.LayoutParams.MATCH_PARENT
+        }
     }
 
     private fun setupCollapseView() {
         binding.list.isVisible = false
         binding.space.isVisible = false
         binding.container.setBackgroundColor(Color.TRANSPARENT)
+        binding.checkIcon.isChecked = false
+        binding.statusTitle.setTextColor(Color.parseColor("#101820"))
+        binding.root.updateLayoutParams {
+            width = ViewGroup.LayoutParams.WRAP_CONTENT
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+    }
+
+    fun setTitle(title: String?) {
+        binding.statusTitle.text = title.orEmpty()
     }
 
     fun setData(mockList: List<RepairStep>) {
