@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.example.amaptest.R
-import com.polestar.customerservice.widget.FloatLayout
+import com.polestar.customerservice.widget.FloatListLayout
 
 class FloatListActivity : AppCompatActivity() {
 
@@ -18,10 +18,10 @@ class FloatListActivity : AppCompatActivity() {
             Toast.makeText(this, "oh!!!", Toast.LENGTH_SHORT).show()
         }
 
-        val floatLayout = findViewById<FloatLayout>(R.id.floatingView)
+        val floatListLayout = findViewById<FloatListLayout>(R.id.floatingView)
 
-        floatLayout.setTitle("预约中")
-        floatLayout.setData(mockList)
+        floatListLayout.setTitle("预约中")
+        floatListLayout.setData(mockList)
     }
 
 

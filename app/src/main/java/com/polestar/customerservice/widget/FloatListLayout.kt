@@ -13,7 +13,7 @@ import com.example.amaptest.floatlist.RepairStep
 import com.example.amaptest.floatlist.RepairStepAdapter
 import com.example.amaptest.floatlist.TimeLineDecoration
 
-class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class FloatListLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     private val binding: CsLayoutFloatListBinding
     private var isExpand = false
     private lateinit var adapter: RepairStepAdapter
@@ -35,7 +35,7 @@ class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context,
         initList()
     }
 
-    private fun initList(){
+    private fun initList() {
         adapter = RepairStepAdapter {}
         binding.list.addItemDecoration(TimeLineDecoration(context))
         binding.list.itemAnimator = null

@@ -56,7 +56,7 @@
     </LinearLayout>
 
 
-    <com.polestar.customerservice.widget.FloatLayout
+    <com.polestar.customerservice.widget.FloatListLayout
         android:id="@+id/floatingView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
