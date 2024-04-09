@@ -2,14 +2,13 @@ package com.polestar.customerservice.widget.floatlist
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.forEachIndexed
 import androidx.recyclerview.widget.RecyclerView
-import com.polestar.base.R
 import com.polestar.base.ext.dp
 
 /**
@@ -20,26 +19,19 @@ import com.polestar.base.ext.dp
  * @Author:
  * @CreateDate: 2022/5/25 6:25 下午
  */
-class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
-
-    private val paintOrange: Paint = Paint().apply {
-        isAntiAlias = true
-        color = ContextCompat.getColor(context, R.color.base_color_FF7500)
-    }
+class TimeLineDecoration(
+    private val lineColor: Int = Color.parseColor("#D6D7D9"),
+    private val circleRadius: Int = 4.dp,
+    private val itemViewLeftOffset: Int = 22.dp,
+    private val itemViewBottomOffset: Int = 24.dp,
+    private val itemViewTopOffset: Int = 6.dp,
+    private val lineOffset: Int = 10.dp, //圆圈相对item顶部的偏移量，约一行字的高度，圆要定位在第一行文字中部
+) : RecyclerView.ItemDecoration() {
 
     private val paintGray: Paint = Paint().apply {
         isAntiAlias = true
-        color = ContextCompat.getColor(context, R.color.base_orange_D5D6D8)
+        color = lineColor
     }
-
-    // 轴点半径
-    private var circleRadius = 4.dp
-    private val itemViewLeftOffset = 22.dp
-    private val itemViewBottomOffset = 24.dp
-    private val itemViewTopOffset = 6.dp
-
-    // 圆圈相对item顶部的偏移量，约一行字的高度，圆要定位在第一行文字中部
-    private val lineOffset = 10.dp
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -53,7 +45,7 @@ class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDraw(canvas, parent, state)
-        val size = parent.adapter?.itemCount ?: 0
+        val itemCount = parent.adapter?.itemCount ?: 0
 
         parent.forEachIndexed { _, child ->
             if (child is ViewGroup) {
@@ -61,18 +53,18 @@ class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
                 val isNotFirst = indexInAdapter != 0
 
                 val centerX = 12.dp.toFloat()//顶部按钮半径
-                val centerY = child.top * 1f + lineOffset
+                val centerY = child.top + lineOffset.toFloat()
 
                 // 绘制上半部线
                 val upLineTopY = (child.top).toFloat() - itemViewTopOffset.toFloat()
                 val upLineBottomY = centerY
                 canvas.drawLine(centerX, upLineTopY, centerX, upLineBottomY, paintGray)
 
-                val isNotLast = indexInAdapter < size-1
+                val isNotLast = indexInAdapter < itemCount - 1
                 // 绘制下半部线
                 if (isNotLast) {
-                    val bottomLineTopY = centerY// + circleRadius
-                    val bottomLineBottomY = child.bottom.toFloat()+itemViewBottomOffset
+                    val bottomLineTopY = centerY
+                    val bottomLineBottomY = child.bottom.toFloat() + itemViewBottomOffset
                     canvas.drawLine(centerX, bottomLineTopY, centerX, bottomLineBottomY, paintGray)
                 }
 

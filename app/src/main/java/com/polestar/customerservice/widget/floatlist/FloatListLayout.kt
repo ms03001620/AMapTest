@@ -35,7 +35,7 @@ class FloatListLayout(context: Context, attrs: AttributeSet?) : FrameLayout(cont
 
     private fun initList() {
         adapter = RepairStepAdapter {}
-        binding.list.addItemDecoration(TimeLineDecoration(context))
+        binding.list.addItemDecoration(TimeLineDecoration())
         binding.list.itemAnimator = null
         binding.list.adapter = adapter
     }
