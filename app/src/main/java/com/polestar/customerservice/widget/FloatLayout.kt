@@ -75,6 +75,6 @@ class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context,
     }
 
     fun setData(mockList: List<RepairStep>) {
-        adapter.submitList(mockList)
+        adapter.submitList(mockList/*.subList(0, 2)*/)
     }
 }

@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
             android:overScrollMode="never"
-            android:background="#20f0"
+            android:background="#00f0"
             android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="7"

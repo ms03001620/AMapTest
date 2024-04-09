@@ -43,8 +43,10 @@ class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
     // 轴点半径
     private var circleRadius = 4.dp
-    private val itemViewLeftOffset = 16.dp
+    private val itemViewLeftOffset = 22.dp
     private val itemViewTopOffset = 24.dp
+
+    private var circleToPaddingLeft = 10.dp
 
     // 圆圈相对item顶部的偏移量，约一行字的高度，圆要定位在第一行文字中部
     private val lineOffset = 10.dp
@@ -57,49 +59,33 @@ class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
     ) {
         super.getItemOffsets(outRect, view, parent, state)
         outRect.set(itemViewLeftOffset, itemViewTopOffset, 0, 0)
+
+        //val position = parent.getChildAdapterPosition(view)
     }
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         super.onDraw(canvas, parent, state)
 
+
         parent.forEachIndexed { index, child ->
             if (child is ViewGroup) {
-                // 轴点圆心(x,y)
-                val centerX = (child.left - itemViewLeftOffset / 3).toFloat()
+                // 绘制圆
+                val centerX = 12.dp.toFloat()//顶部按钮半径； //child.left - circleToPaddingLeft.toFloat()
                 val centerY = child.top * 1f + lineOffset // 圆圈相对item顶部的偏移量，约一行字的高度，圆要定位在第一行文字中部
+                canvas.drawCircle(centerX, centerY, circleRadius.toFloat(), mPaint1)
 
-                if (index == 0) {
-                    canvas.drawCircle(
-                        centerX,
-                        centerY + circleRadius / 2,
-                        (circleRadius).toFloat(),
-                        mPaint
-                    )
-                    canvas.drawCircle(
-                        centerX,
-                        centerY + circleRadius / 2,
-                        (circleRadius * 2).toFloat(),
-                        mPaintAlpha
-                    )
-                } else {
-                    canvas.drawCircle(centerX, centerY, circleRadius.toFloat(), mPaint1)
-                }
-
-                // 上端点坐标(x,y)
+                // 绘制上半部线
                 val upLineTopY = (child.top - itemViewTopOffset).toFloat()
-                val upLineBottomY = centerY - circleRadius - circleRadius
+                val upLineBottomY = centerY - circleRadius// - circleRadius
+                canvas.drawLine(centerX, upLineTopY, centerX, upLineBottomY, mPaint)
 
-                // 绘制上半部轴线
-                if (index != 0) {
-                    canvas.drawLine(centerX, upLineTopY, centerX, upLineBottomY, mPaint1)
-                }
-
-                // 下端点坐标(x,y)
-                val bottomLineTopY = centerY + circleRadius + circleRadius
-                val bottomLineBottomY = child.bottom.toFloat()
-
-                // 绘制下半部轴线
-                if (index < parent.size - 1) {
+                val indexInAdapter = parent.getChildAdapterPosition(child)
+                val size = parent.adapter?.itemCount ?: 0
+                val isNotLast = indexInAdapter < size-1
+                // 绘制下半部线
+                if (isNotLast) {
+                    val bottomLineTopY = centerY + circleRadius// + circleRadius
+                    val bottomLineBottomY = child.bottom.toFloat()
                     canvas.drawLine(centerX, bottomLineTopY, centerX, bottomLineBottomY, mPaint1)
                 }
             }
