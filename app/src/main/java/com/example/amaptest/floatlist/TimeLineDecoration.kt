@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.forEachIndexed
-import androidx.core.view.size
 import androidx.recyclerview.widget.RecyclerView
 import com.polestar.base.R
 import com.polestar.base.ext.dp
@@ -23,20 +22,12 @@ import com.polestar.base.ext.dp
  */
 class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
-    // 当前轴点
-    private val mPaint: Paint = Paint().apply {
+    private val paintOrange: Paint = Paint().apply {
         isAntiAlias = true
         color = ContextCompat.getColor(context, R.color.base_color_FF7500)
     }
 
-    // 画半透明大轴点
-    private val mPaintAlpha: Paint = Paint().apply {
-        isAntiAlias = true
-        color = ContextCompat.getColor(context, R.color.base_orange_alpha_30)
-    }
-
-    // 画线和已完成轴点
-    private val mPaint1: Paint = Paint().apply {
+    private val paintGray: Paint = Paint().apply {
         isAntiAlias = true
         color = ContextCompat.getColor(context, R.color.base_orange_D5D6D8)
     }
@@ -71,23 +62,22 @@ class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
                 val centerX = 12.dp.toFloat()//顶部按钮半径
                 val centerY = child.top * 1f + lineOffset
 
-                if (isNotFirst) {
-                    // 绘制圆
-                    canvas.drawCircle(centerX, centerY, circleRadius.toFloat(), mPaint1)
-                }
-
                 // 绘制上半部线
                 val upLineTopY = (child.top).toFloat()
-                val upLineBottomY = centerY - circleRadius// - circleRadius
-                canvas.drawLine(centerX, upLineTopY, centerX, upLineBottomY, mPaint)
-
+                val upLineBottomY = centerY// - circleRadius
+                canvas.drawLine(centerX, upLineTopY, centerX, upLineBottomY, paintGray)
 
                 val isNotLast = indexInAdapter < size-1
                 // 绘制下半部线
                 if (isNotLast) {
-                    val bottomLineTopY = centerY + circleRadius// + circleRadius
+                    val bottomLineTopY = centerY// + circleRadius
                     val bottomLineBottomY = child.bottom.toFloat()+itemViewBottomOffset
-                    canvas.drawLine(centerX, bottomLineTopY, centerX, bottomLineBottomY, mPaint1)
+                    canvas.drawLine(centerX, bottomLineTopY, centerX, bottomLineBottomY, paintGray)
+                }
+
+                if (isNotFirst) {
+                    // 绘制圆
+                    canvas.drawCircle(centerX, centerY, circleRadius.toFloat(), paintGray)
                 }
             }
         }
