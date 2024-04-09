@@ -76,7 +76,7 @@ class FloatListLayout(context: Context, attrs: AttributeSet?) : FrameLayout(cont
         binding.statusTitle.text = title.orEmpty()
     }
 
-    fun setData(mockList: List<RepairStep>) {
-        adapter.submitList(mockList/*.subList(0, 2)*/)
+    fun setData(data: List<RepairStep>) {
+        adapter.submitList(data/*.subList(0, 2)*/)
     }
 }
