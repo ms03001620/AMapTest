@@ -36,6 +36,7 @@ class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
     private var circleRadius = 4.dp
     private val itemViewLeftOffset = 22.dp
     private val itemViewBottomOffset = 24.dp
+    private val itemViewTopOffset = 6.dp
 
     // 圆圈相对item顶部的偏移量，约一行字的高度，圆要定位在第一行文字中部
     private val lineOffset = 10.dp
@@ -47,7 +48,7 @@ class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
         state: RecyclerView.State
     ) {
         super.getItemOffsets(outRect, view, parent, state)
-        outRect.set(itemViewLeftOffset, 0, 0, itemViewBottomOffset)
+        outRect.set(itemViewLeftOffset, itemViewTopOffset, 0, itemViewBottomOffset)
     }
 
     override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
@@ -63,8 +64,8 @@ class TimeLineDecoration(context: Context) : RecyclerView.ItemDecoration() {
                 val centerY = child.top * 1f + lineOffset
 
                 // 绘制上半部线
-                val upLineTopY = (child.top).toFloat()
-                val upLineBottomY = centerY// - circleRadius
+                val upLineTopY = (child.top).toFloat() - itemViewTopOffset.toFloat()
+                val upLineBottomY = centerY
                 canvas.drawLine(centerX, upLineTopY, centerX, upLineBottomY, paintGray)
 
                 val isNotLast = indexInAdapter < size-1
