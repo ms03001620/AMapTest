@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import com.example.amaptest.databinding.LayoutFloatListBinding
+import com.example.amaptest.databinding.CsLayoutFloatListBinding
 import com.example.amaptest.floatlist.RepairStep
 import com.example.amaptest.floatlist.RepairStepAdapter
 import com.example.amaptest.floatlist.TimeLineDecoration
 
 class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
-    private val binding: LayoutFloatListBinding
+    private val binding: CsLayoutFloatListBinding
     private var isExpand = false
     private lateinit var adapter: RepairStepAdapter
 
@@ -22,7 +22,7 @@ class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context,
     //private var bgColor = Color.parseColor("#FF0000")
 
     init {
-        binding = LayoutFloatListBinding.inflate(LayoutInflater.from(context), this, true)
+        binding = CsLayoutFloatListBinding.inflate(LayoutInflater.from(context), this, true)
 
         binding.layoutTitle.setOnClickListener {
             toggle()
@@ -76,6 +76,6 @@ class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context,
     }
 
     fun setData(mockList: List<RepairStep>) {
-        adapter.submitList(mockList.subList(0, 2))
+        adapter.submitList(mockList/*.subList(0, 2)*/)
     }
 }

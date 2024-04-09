@@ -27,7 +27,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:clickable="false"
-                android:background="@drawable/sel_checkbox_expand"
+                android:background="@drawable/cs_sel_checkbox_expand"
                 android:button="@null"/>
 
             <TextView
@@ -43,7 +43,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="35dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -52,7 +52,7 @@
             android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="7"
-            tools:listitem="@layout/item_repiar_step"
+            tools:listitem="@layout/cs_item_repiar_step"
             tools:visibility="visible" />
 
     </FrameLayout>

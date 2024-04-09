@@ -7,8 +7,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.amaptest.databinding.ItemRepiarStepBinding
-
+import com.example.amaptest.databinding.CsItemRepiarStepBinding
 
 class RepairStepAdapter(
     val callback: (RepairStep) -> Unit,
@@ -16,7 +15,7 @@ class RepairStepAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ItemRepiarStepBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+            CsItemRepiarStepBinding.inflate(LayoutInflater.from(parent.context), parent, false),
             callback
         )
     }
@@ -25,7 +24,7 @@ class RepairStepAdapter(
         holder.bind(getItem(position), position)
 
     inner class ViewHolder(
-        private val binding: ItemRepiarStepBinding,
+        private val binding: CsItemRepiarStepBinding,
         private val callback: (RepairStep) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: RepairStep, position: Int) {
