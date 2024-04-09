@@ -10,8 +10,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.example.amaptest.databinding.CsLayoutFloatListBinding
 import com.example.amaptest.floatlist.RepairStep
-import com.example.amaptest.floatlist.RepairStepAdapter
-import com.example.amaptest.floatlist.TimeLineDecoration
 
 class FloatListLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     private val binding: CsLayoutFloatListBinding

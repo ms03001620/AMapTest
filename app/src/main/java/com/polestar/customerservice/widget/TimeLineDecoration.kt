@@ -1,4 +1,4 @@
-package com.example.amaptest.floatlist
+package com.polestar.customerservice.widget
 
 import android.content.Context
 import android.graphics.Canvas

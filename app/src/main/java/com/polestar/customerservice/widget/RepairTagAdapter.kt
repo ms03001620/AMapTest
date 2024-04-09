@@ -1,4 +1,4 @@
-package com.example.amaptest.floatlist
+package com.polestar.customerservice.widget
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.amaptest.databinding.CsItemRepiarStepBinding
+import com.example.amaptest.floatlist.RepairStep
 
 class RepairStepAdapter(
     val callback: (RepairStep) -> Unit,
