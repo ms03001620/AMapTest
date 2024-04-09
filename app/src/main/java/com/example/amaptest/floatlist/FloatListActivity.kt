@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import com.example.amaptest.R
 import com.polestar.customerservice.widget.floatlist.FloatListLayout
+import com.polestar.customerservice.widget.floatlist.RepairStep
 
 class FloatListActivity : AppCompatActivity() {
 
@@ -31,5 +32,3 @@ class FloatListActivity : AppCompatActivity() {
         }
     }
 }
-
-data class RepairStep(val id: Int, val title: String, val subTitle: String, val time: String)
