@@ -48,6 +48,7 @@ class FloatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context,
 
     private fun toggle() {
         isExpand = !isExpand
+        binding.checkIcon.isChecked = isExpand
         binding.root.updateLayoutParams {
             width =
                 if (isExpand) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
