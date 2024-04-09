@@ -6,19 +6,18 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/space"
         android:layout_alignParentTop="true"
-        android:orientation="vertical"
         android:paddingTop="50dp">
 
         <LinearLayout
             android:id="@+id/layoutTitle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="38dp"
             android:layout_marginStart="50dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
@@ -44,6 +43,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list"
+            android:layout_marginTop="38dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -55,7 +55,7 @@
             tools:listitem="@layout/item_repiar_step"
             tools:visibility="visible" />
 
-    </LinearLayout>
+    </FrameLayout>
 
     <View
         android:id="@+id/space"
