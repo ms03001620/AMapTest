@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.example.amaptest.R
-import com.polestar.customerservice.widget.FloatListLayout
+import com.polestar.customerservice.widget.floatlist.FloatListLayout
 
 class FloatListActivity : AppCompatActivity() {
 

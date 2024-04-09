@@ -1,4 +1,4 @@
-package com.polestar.customerservice.widget
+package com.polestar.customerservice.widget.floatlist
 
 import android.graphics.Color
 import android.view.LayoutInflater
