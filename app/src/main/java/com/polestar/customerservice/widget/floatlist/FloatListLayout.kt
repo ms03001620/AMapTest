@@ -77,6 +77,6 @@ class FloatListLayout(context: Context, attrs: AttributeSet?) : FrameLayout(cont
     }
 
     fun setData(data: List<RepairStep>) {
-        adapter.submitList(data/*.subList(0, 2)*/)
+        adapter.submitList(data.subList(0, 2))
     }
 }
