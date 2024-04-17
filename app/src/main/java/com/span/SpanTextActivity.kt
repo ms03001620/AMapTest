@@ -40,6 +40,14 @@ class SpanTextActivity : AppCompatActivity() {
             SPAN_EXCLUSIVE_EXCLUSIVE
         )
 
+        spannable.setSpan(
+            DashLineSpan(
+            ),
+            0,
+            5,
+            SPAN_EXCLUSIVE_EXCLUSIVE
+        )
+
         textSpan.text = spannable
     }
 }
