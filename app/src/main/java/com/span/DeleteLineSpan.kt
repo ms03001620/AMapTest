@@ -5,7 +5,12 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.text.style.ReplacementSpan
 
-
+/**
+ * 删除线span
+ *
+ * 支持设置删除线颜色，宽度，和位置微调
+ * 系统的[android.text.style.StrikethroughSpan]可用于简单的删除线样式设置
+ */
 class DeleteLineSpan(
     lineColor: Int = Color.parseColor("#FF0000"),
     lineStrokeWidth: Float = 2f,
