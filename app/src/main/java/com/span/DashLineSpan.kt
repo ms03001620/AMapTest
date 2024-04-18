@@ -7,6 +7,7 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.text.style.ReplacementSpan
 import androidx.core.graphics.toRectF
+import com.polestar.base.utils.logd
 import kotlin.math.roundToInt
 
 class DashLineSpan(
@@ -17,7 +18,9 @@ class DashLineSpan(
         it.color = lineColor
         it.strokeWidth = lineStrokeWidth
     }
-    private lateinit var rectF: RectF
+
+    var size = 0
+
 
     override fun getSize(
         paint: Paint,
@@ -26,11 +29,8 @@ class DashLineSpan(
         end: Int,
         fm: Paint.FontMetricsInt?
     ): Int {
-        val tagWidth = paint.measureText(text.toString(), start, end)
-        val rect = Rect()
-        paint.getTextBounds(text.toString(), start, end, rect)
-        rectF = rect.toRectF()
-        return tagWidth.roundToInt()
+        size = paint.measureText(text.toString(), start, end).roundToInt()
+        return size
     }
 
     override fun draw(
@@ -44,16 +44,14 @@ class DashLineSpan(
         bottom: Int,
         paint: Paint
     ) {
+
+        logd("draw start:$start, end:$end", "_____")
         // draw text
         canvas.drawText(text.toString(), start, end, x, y.toFloat(), paint)
 
-        // draw dash
-        rectF.offset(x, y.toFloat())
-        drawDashLine(canvas, rectF)
+
+        val centerY = top + ((bottom-top)/2f)
+        canvas.drawLine(x, centerY, x+size, centerY, linePaint)
     }
 
-    private fun drawDashLine(canvas: Canvas, rectF: RectF) {
-        val y = rectF.centerY()
-        canvas.drawLine(rectF.left, y, rectF.right, y, linePaint)
-    }
 }
