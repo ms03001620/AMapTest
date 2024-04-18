@@ -32,7 +32,7 @@ class SpanTextActivity : AppCompatActivity() {
         spannable.setSpan(
             DashLineSpan(),
             0,
-            3,
+            4,
             Spanned.SPAN_EXCLUSIVE_INCLUSIVE
         )
 
@@ -60,12 +60,7 @@ class SpanTextActivity : AppCompatActivity() {
         val string = "2020-18-20 12:15 最早"
 
         val spannable: Spannable = SpannableString(string)
-        /*        spannable.setSpan(
-                    BackgroundColorSpan(Color.GRAY),
-                    string.length - 2,
-                    string.length,
-                    SPAN_EXCLUSIVE_EXCLUSIVE
-                )*/
+
         spannable.setSpan(
             TagTextSpan(
                 scale = 0.6f,
@@ -77,7 +72,6 @@ class SpanTextActivity : AppCompatActivity() {
             string.length,
             SPAN_EXCLUSIVE_EXCLUSIVE
         )
-
 
         textSpan.text = spannable
     }
