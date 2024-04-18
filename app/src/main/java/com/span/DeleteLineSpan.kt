@@ -6,7 +6,7 @@ import android.graphics.Paint
 import android.text.style.ReplacementSpan
 
 
-class DashLineSpan(
+class DeleteLineSpan(
     lineColor: Int = Color.parseColor("#FF0000"),
     lineStrokeWidth: Float = 2f,
     private val offsetOfCenterY: Float = 0f,

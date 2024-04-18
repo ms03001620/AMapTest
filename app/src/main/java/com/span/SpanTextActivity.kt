@@ -30,7 +30,7 @@ class SpanTextActivity : AppCompatActivity() {
         val spannable: Spannable = SpannableString("ABCD")
 
         spannable.setSpan(
-            DashLineSpan(),
+            DeleteLineSpan(),
             0,
             4,
             Spanned.SPAN_EXCLUSIVE_INCLUSIVE
