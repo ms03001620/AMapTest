@@ -32,6 +32,7 @@ class LottieActivity : AppCompatActivity() {
             SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 binding.maskCar.process(progress / 100f)
+                binding.maskCarRing.process(progress / 100f)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -43,13 +44,16 @@ class LottieActivity : AppCompatActivity() {
         })
 
         binding.maskCar.setProcessTextEnable(true)
+        binding.maskCarRing.setProcessTextEnable(true)
 
         binding.checkCharging.setOnCheckedChangeListener { _, isChecked ->
             binding.maskCar.setCharging(isChecked)
+            binding.maskCarRing.setCharging(isChecked)
         }
 
         binding.checkText.setOnCheckedChangeListener { _, isChecked ->
             binding.maskCar.setProcessTextEnable(isChecked)
+            binding.maskCarRing.setProcessTextEnable(isChecked)
         }
     }
 
