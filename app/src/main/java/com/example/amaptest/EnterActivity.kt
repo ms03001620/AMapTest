@@ -32,44 +32,7 @@ import com.span.SpanTextActivity
 
 
 class EnterActivity : AppCompatActivity() {
-    private val helper = BluetoothPermissionHelper(this, object : BluetoothPermissionHelper.OnEnterSettingPage {
-        override fun onEnterPositionSetting() {
-            showAlertDialog(
-                getActivity(),
-                R.string.cs_permission_prompt_location,
-                leftCallback = {
-                    Toast.makeText(getActivity(), "已取消定位授权", Toast.LENGTH_LONG).show()
-                },
-                rightCallback = {
-                    try {
-                        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                    } catch (e: Exception) {
-                        startActivity(Intent(Settings.ACTION_SETTINGS))
-                    }
-                })
-        }
 
-        override fun onEnterNearbySetting() {
-            showAlertDialog(
-                getActivity(),
-                R.string.cs_permission_prompt_bluetooth,
-                leftCallback = {
-                    Toast.makeText(getActivity(), "已取消蓝牙授权", Toast.LENGTH_LONG).show()
-                },
-                rightCallback = {
-                    try {
-                        Intent(
-                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.fromParts("package", packageName, null)
-                        ).let {
-                            startActivity(it)
-                        }
-                    } catch (e: Exception) {
-                        //ignore
-                    }
-                })
-        }
-    })
 
     private val viewModel by lazy {
         ViewModelProvider(this, ViewModelFactory())[CellSignalModel::class.java]
@@ -319,6 +282,45 @@ class EnterActivity : AppCompatActivity() {
     fun gotoBluetoothSample() {
         startActivity(Intent(this, BluetoothSampleActivity::class.java))
     }
+
+    private val helper = BluetoothPermissionHelper(this, object : BluetoothPermissionHelper.OnEnterSettingPage {
+        override fun onEnterPositionSetting() {
+            showAlertDialog(
+                getActivity(),
+                R.string.cs_permission_prompt_location,
+                leftCallback = {
+                    Toast.makeText(getActivity(), "已取消定位授权", Toast.LENGTH_LONG).show()
+                },
+                rightCallback = {
+                    try {
+                        startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                    } catch (e: Exception) {
+                        startActivity(Intent(Settings.ACTION_SETTINGS))
+                    }
+                })
+        }
+
+        override fun onEnterNearbySetting() {
+            showAlertDialog(
+                getActivity(),
+                R.string.cs_permission_prompt_bluetooth,
+                leftCallback = {
+                    Toast.makeText(getActivity(), "已取消蓝牙授权", Toast.LENGTH_LONG).show()
+                },
+                rightCallback = {
+                    try {
+                        Intent(
+                            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            Uri.fromParts("package", packageName, null)
+                        ).let {
+                            startActivity(it)
+                        }
+                    } catch (e: Exception) {
+                        //ignore
+                    }
+                })
+        }
+    })
 
     override fun onDestroy() {
         super.onDestroy()
