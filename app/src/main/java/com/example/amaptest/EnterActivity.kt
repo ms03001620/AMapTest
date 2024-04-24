@@ -69,20 +69,8 @@ class EnterActivity : AppCompatActivity() {
 
         // 进入高德地图
         findViewById<View>(R.id.btn_map).setOnClickListener {
-            showPolicyAgree(object: SimpleCallback{
-                override fun onPrivacyShow() {
-                    MapsInitializer.updatePrivacyShow(applicationContext, true, true)
-                }
-
-                override fun onAgree() {
-                    MapsInitializer.updatePrivacyAgree(applicationContext, true)
-                    gotoAMap()
-                }
-
-                override fun onDisagree() {
-                    MapsInitializer.updatePrivacyAgree(applicationContext, false)
-                }
-            })
+            MapsInitializer.updatePrivacyAgree(applicationContext, true)
+            gotoAMap()
         }
 
         findViewById<View>(R.id.btn_pager).setOnClickListener {

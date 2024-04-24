@@ -44,15 +44,27 @@ class DriveMapFragment : Fragment() {
                     }
                 )
                 // 定位按钮是否展示，比如划到地图的其他地方，只需要点这个按钮就能回到当前定位位置
-                isMyLocationButtonEnabled = true
+                isMyLocationButtonEnabled = false
                 // 比例尺是否可用，一般在底部
                 isScaleControlsEnabled = false
                 // 是否展示缩放按钮，一般在右边，一个 加号 和一个 减号
                 isZoomControlsEnabled = false
                 // 禁用所有的手势
-                setAllGesturesEnabled(true)
+                setAllGesturesEnabled(false)
             }
 
+            // 地图正中间用于指示“我当前的位置”的icon
+            val myLocationStyle = MyLocationStyle()
+            myLocationStyle.showMyLocation(true)
+            myLocationStyle.myLocationIcon(
+                BitmapDescriptorFactory.fromResource(R.drawable.charging_pic_my_location_3x)
+            )
+            myLocationStyle.strokeColor(Color.parseColor("#0D101820"))
+            myLocationStyle.strokeWidth(2f)
+            // 定位一次，且将视角移动到地图中心点
+            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE)
+            myLocationStyle.radiusFillColor(Color.parseColor("#0A137ED4"))
+            map.myLocationStyle = myLocationStyle
             map.isMyLocationEnabled = true
 
             map.moveCamera(CameraUpdateFactory.zoomTo(12f))
