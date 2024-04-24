@@ -11,4 +11,7 @@
     <color name="base_color_FF7500">#FF7500</color>
     <color name="base_orange_alpha_30">#80FF7500</color>
     <color name="base_orange_D5D6D8">#D5D6D8</color>
+
+    <color name="pc_black">#000000</color>
+    <color name="pc_white">#FFFFFF</color>
 </resources>
