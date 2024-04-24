@@ -1,19 +1,21 @@
 package com.polestar.customerservice.ui.drive.map
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapsInitializer
-import com.amap.api.maps.model.BitmapDescriptorFactory
 import com.amap.api.maps.model.CustomMapStyleOptions
-import com.amap.api.maps.model.MyLocationStyle
+import com.amap.api.maps.model.LatLng
+import com.amap.api.maps.model.LatLngBounds
+import com.amap.api.maps.model.MarkerOptions
 import com.blankj.utilcode.util.ConvertUtils
-import com.example.amaptest.R
+import com.blankj.utilcode.util.SizeUtils
 import com.example.amaptest.databinding.CsFragmentDriveMapBinding
+import com.polestar.base.ext.dp
 
 class DriveMapFragment : Fragment() {
     private lateinit var binding: CsFragmentDriveMapBinding
@@ -50,24 +52,36 @@ class DriveMapFragment : Fragment() {
                 // 是否展示缩放按钮，一般在右边，一个 加号 和一个 减号
                 isZoomControlsEnabled = false
                 // 禁用所有的手势
-                setAllGesturesEnabled(false)
+                setAllGesturesEnabled(true)
             }
 
-            // 地图正中间用于指示“我当前的位置”的icon
-            val myLocationStyle = MyLocationStyle()
-            myLocationStyle.showMyLocation(true)
-            myLocationStyle.myLocationIcon(
-                BitmapDescriptorFactory.fromResource(R.drawable.charging_pic_my_location_3x)
-            )
-            myLocationStyle.strokeColor(Color.parseColor("#0D101820"))
-            myLocationStyle.strokeWidth(2f)
-            // 定位一次，且将视角移动到地图中心点
-            myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE)
-            myLocationStyle.radiusFillColor(Color.parseColor("#0A137ED4"))
-            map.myLocationStyle = myLocationStyle
-            map.isMyLocationEnabled = true
+            moveToVisible(map)
+        }
 
-            map.moveCamera(CameraUpdateFactory.zoomTo(12f))
+        addMarkets()
+    }
+
+    private fun addMarkets() {
+        binding.mapView.map.let {
+            it.addMarker(createMarket("start", startLatlLng))
+            it.addMarker(createMarket("end", endLatlLng))
+        }
+    }
+
+    // https://lbs.amap.com/api/android-sdk/guide/draw-on-map/draw-marker
+    private fun createMarket(name: String, pos: LatLng) = MarkerOptions()
+        .position(pos)
+        .title(name)
+        .snippet("内容这里")
+
+    private fun moveToVisible(map: AMap, padding: Int = 20.dp) {
+        LatLngBounds.Builder().apply {
+            this.include(startLatlLng)
+            this.include(endLatlLng)
+        }.build().let {
+            CameraUpdateFactory.newLatLngBounds(it, padding)
+        }.let {
+            map.animateCamera(it)
         }
     }
 
@@ -98,5 +112,11 @@ class DriveMapFragment : Fragment() {
     ): View {
         binding = CsFragmentDriveMapBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    companion object{
+        val startLatlLng = LatLng(31.23646044, 121.48020424)
+
+        val endLatlLng = LatLng(31.14589905, 121.44282868)
     }
 }
