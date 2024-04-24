@@ -8,6 +8,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapsInitializer
+import com.amap.api.maps.model.BitmapDescriptor
 import com.amap.api.maps.model.BitmapDescriptorFactory
 import com.amap.api.maps.model.CustomMapStyleOptions
 import com.amap.api.maps.model.LatLng
@@ -37,8 +38,12 @@ class DriveMapFragment : Fragment() {
         ConvertUtils.inputStream2Bytes(requireActivity().assets.open("style_extra.data"))
     }
 
-    private val markIcon by lazy {
-        BitmapDescriptorFactory.fromBitmap(resources.getDrawable(R.drawable.base_ic_navigation_map_marker).toBitmap())
+    private val iconStart by lazy {
+        BitmapDescriptorFactory.fromResource(R.drawable.amap_start)
+    }
+
+    private val iconEnd by lazy {
+        BitmapDescriptorFactory.fromResource(R.drawable.amap_end)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,7 +70,7 @@ class DriveMapFragment : Fragment() {
                 // 是否展示缩放按钮，一般在右边，一个 加号 和一个 减号
                 isZoomControlsEnabled = false
                 // 禁用所有的手势
-                setAllGesturesEnabled(false)
+                setAllGesturesEnabled(true)
             }
         }
         moveToVisible()
@@ -114,8 +119,8 @@ class DriveMapFragment : Fragment() {
         drivingRouteOverlay.setNodeIconVisibility(false) //设置节点marker是否显示
         drivingRouteOverlay.setIsColorfulline(true) //是否用颜色展示交通拥堵情况，默认true
         drivingRouteOverlay.removeFromMap()
-        drivingRouteOverlay.addToMap()
-        drivingRouteOverlay.zoomToSpan()
+        drivingRouteOverlay.addToMap(false)
+        //drivingRouteOverlay.zoomToSpan()
         val dis = drivePath.distance.toInt()
         val dur = drivePath.duration.toInt()
         val des = AMapUtil.getFriendlyTime(dur) + "(" + AMapUtil.getFriendlyLength(dis) + ")"
@@ -124,8 +129,8 @@ class DriveMapFragment : Fragment() {
 
     private fun addMarkets() {
         binding.mapView.map.let {
-            it.addMarker(createMarket("start", startLatlLng))
-            it.addMarker(createMarket("end", endLatlLng))
+            it.addMarker(createMarket("start", startLatlLng, iconStart))
+            it.addMarker(createMarket("end", endLatlLng, iconEnd))
             // 屏蔽marker点击事件
             it.setOnMarkerClickListener {
                 true
@@ -134,9 +139,9 @@ class DriveMapFragment : Fragment() {
     }
 
     // https://lbs.amap.com/api/android-sdk/guide/draw-on-map/draw-marker
-    private fun createMarket(name: String, pos: LatLng) = MarkerOptions()
+    private fun createMarket(name: String, pos: LatLng, icon: BitmapDescriptor) = MarkerOptions()
         .position(pos)
-        .icon(markIcon)
+        .icon(icon)
 
 
     private fun moveToVisible(padding: Int = 40.dp) {
