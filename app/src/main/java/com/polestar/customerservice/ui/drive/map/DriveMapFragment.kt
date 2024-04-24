@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import com.amap.api.maps.AMapUtils
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapsInitializer
 import com.amap.api.maps.model.BitmapDescriptor
@@ -25,6 +27,8 @@ import com.example.amaptest.R
 import com.example.amaptest.databinding.CsFragmentDriveMapBinding
 import com.polestar.base.ext.dp
 import com.polestar.base.views.PolestarToast
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class DriveMapFragment : Fragment() {
@@ -39,7 +43,7 @@ class DriveMapFragment : Fragment() {
     }
 
     private val iconStart by lazy {
-        BitmapDescriptorFactory.fromResource(R.drawable.amap_start)
+        BitmapDescriptorFactory.fromResource(R.drawable.amap_bus)
     }
 
     private val iconEnd by lazy {
@@ -76,6 +80,10 @@ class DriveMapFragment : Fragment() {
         moveToVisible()
         addMarkets()
         loadPath()
+        lifecycleScope.launch {
+            delay(6000)
+            moveToVisible2()
+        }
     }
 
     //https://lbs.amap.com/api/android-sdk/guide/route-plan/drive
@@ -144,15 +152,35 @@ class DriveMapFragment : Fragment() {
         .icon(icon)
 
 
-    private fun moveToVisible(padding: Int = 40.dp) {
+    private fun moveToVisible(padding: Int = 10.dp) {
         LatLngBounds.Builder().apply {
             this.include(startLatlLng)
             this.include(endLatlLng)
+           // this.include(markHeight())
         }.build().let {
             CameraUpdateFactory.newLatLngBounds(it, padding)
         }.let {
-            binding.mapView.map.animateCamera(it)
+            binding.mapView.map.moveCamera(it)
         }
+    }
+
+    private fun moveToVisible2(padding: Int = 10.dp) {
+        LatLngBounds.Builder().apply {
+            this.include(startLatlLng)
+            this.include(endLatlLng)
+            this.include(markHeight())
+        }.build().let {
+            CameraUpdateFactory.newLatLngBounds(it, padding)
+        }.let {
+            binding.mapView.map.moveCamera(it)
+        }
+    }
+
+    private fun markHeight(): LatLng {
+        println(iconStart.height)
+        val point= binding.mapView.map.projection.toScreenLocation(startLatlLng)
+        point.y -= iconStart.height
+        return binding.mapView.map.projection.fromScreenLocation(point)
     }
 
     override fun onResume() {
@@ -188,5 +216,7 @@ class DriveMapFragment : Fragment() {
         val startLatlLng = LatLng(31.23646044, 121.48020424)
 
         val endLatlLng = LatLng(31.14589905, 121.44282868)
+
+        val endMark = LatLng(31.25, 121.48020424)
     }
 }
