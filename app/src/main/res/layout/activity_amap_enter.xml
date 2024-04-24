@@ -7,6 +7,14 @@
     android:orientation="vertical"
     tools:context=".EnterActivity">
 
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/mapContainer"
+        android:name="com.polestar.customerservice.ui.drive.map.DriveMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="207dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <Button
         android:id="@+id/btn_enter"
         android:layout_width="wrap_content"

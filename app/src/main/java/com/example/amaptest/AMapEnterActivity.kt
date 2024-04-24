@@ -15,21 +15,10 @@ import com.example.amaptest.marker.MarkerActionActivity
 
 
 class AMapEnterActivity : AppCompatActivity() {
-    private var requestOnlyFinePermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
-            if (allGrants.values.all { it }) {
-                gotoLocation()
-            } else {
-                with(allGrants.keys.toString() + allGrants.values.toString()) {
-                    Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_amap_enter)
-
 
         // Location
         findViewById<View>(R.id.btn_enter).setOnClickListener {
@@ -42,11 +31,7 @@ class AMapEnterActivity : AppCompatActivity() {
 
 
         findViewById<View>(R.id.btn_map).setOnClickListener {
-            if (checkLocation()) {
-                gotoMap()
-            } else {
-                requestOnlyFinePermissionLauncher.launch(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-            }
+            gotoMap()
         }
 
 
@@ -67,23 +52,6 @@ class AMapEnterActivity : AppCompatActivity() {
         this,
         Manifest.permission.ACCESS_FINE_LOCATION
     ) == PackageManager.PERMISSION_GRANTED
-
-    private fun getActivity() = this
-
-    private fun showAlertDialog(
-        context: Context,
-        messageResId: Int,
-        leftCallback: (() -> Unit)? = null,
-        rightCallback: (() -> Unit)? = null
-    ) {
-        CommonAskDialog.Builder(
-            context,
-            context.getString(R.string.charging_open_settings),
-            context.getString(R.string.base_cancel),
-            leftCallback = leftCallback
-        ).create(
-            context.getString(messageResId), listener = { rightCallback?.invoke() })
-    }
 
 
     fun gotoMap() {
@@ -113,5 +81,17 @@ class AMapEnterActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
     }
+
+    private val requestOnlyFinePermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { allGrants ->
+            if (allGrants.values.all { it }) {
+                gotoLocation()
+            } else {
+                with(allGrants.keys.toString() + allGrants.values.toString()) {
+                    Toast.makeText(applicationContext, this, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
 
 }

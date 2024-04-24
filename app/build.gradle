@@ -106,8 +106,11 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
 
 
-    implementation files('libs/AMap3DMap_9.7.0_AMapSearch_9.7.0_AMapLocation_6.3.0_20230529.aar')
     implementation fileTree(include: '*.jar', dir: 'libs')
+
+    implementation 'com.amap.api:3dmap:9.8.3'
+    implementation 'com.amap.api:search:9.7.0'
+
 
     implementation 'com.google.code.gson:gson:2.9.0'
 
