@@ -4,10 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
-import com.amap.api.maps.AMapUtils
+import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapsInitializer
 import com.amap.api.maps.model.BitmapDescriptor
@@ -27,8 +25,6 @@ import com.example.amaptest.R
 import com.example.amaptest.databinding.CsFragmentDriveMapBinding
 import com.polestar.base.ext.dp
 import com.polestar.base.views.PolestarToast
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 class DriveMapFragment : Fragment() {
@@ -43,7 +39,7 @@ class DriveMapFragment : Fragment() {
     }
 
     private val iconStart by lazy {
-        BitmapDescriptorFactory.fromResource(R.drawable.amap_bus)
+        BitmapDescriptorFactory.fromResource(R.drawable.amap_start)
     }
 
     private val iconEnd by lazy {
@@ -77,13 +73,16 @@ class DriveMapFragment : Fragment() {
                 setAllGesturesEnabled(true)
             }
         }
-        moveToVisible()
+        binding.mapView.map.addOnMapLoadedListener(object: AMap.OnMapLoadedListener{
+            override fun onMapLoaded() {
+                markHeight()
+                moveToVisible2()
+            }
+        })
+
         addMarkets()
+        moveToVisible()
         loadPath()
-        lifecycleScope.launch {
-            delay(6000)
-            moveToVisible2()
-        }
     }
 
     //https://lbs.amap.com/api/android-sdk/guide/route-plan/drive
@@ -152,15 +151,14 @@ class DriveMapFragment : Fragment() {
         .icon(icon)
 
 
-    private fun moveToVisible(padding: Int = 10.dp) {
+    private fun moveToVisible(padding: Int = 10.dp, callback: AMap.CancelableCallback?=null) {
         LatLngBounds.Builder().apply {
             this.include(startLatlLng)
             this.include(endLatlLng)
-           // this.include(markHeight())
         }.build().let {
             CameraUpdateFactory.newLatLngBounds(it, padding)
         }.let {
-            binding.mapView.map.moveCamera(it)
+            binding.mapView.map.animateCamera(it, callback)
         }
     }
 
