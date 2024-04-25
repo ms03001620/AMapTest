@@ -70,7 +70,11 @@ class DriveMapFragment : Fragment() {
                 // 是否展示缩放按钮，一般在右边，一个 加号 和一个 减号
                 isZoomControlsEnabled = false
                 // 禁用所有的手势
-                setAllGesturesEnabled(true)
+                setAllGesturesEnabled(false)
+
+                isRotateGesturesEnabled = true
+                isZoomGesturesEnabled = true
+                isGestureScaleByMapCenter = true
             }
         }
         binding.mapView.map.addOnMapLoadedListener(object: AMap.OnMapLoadedListener{
