@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.amap.api.maps.AMap
 import com.amap.api.maps.CameraUpdateFactory
 import com.amap.api.maps.MapsInitializer
@@ -14,17 +15,12 @@ import com.amap.api.maps.model.CustomMapStyleOptions
 import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.LatLngBounds
 import com.amap.api.maps.model.MarkerOptions
-import com.amap.api.services.core.LatLonPoint
-import com.amap.api.services.route.BusRouteResult
-import com.amap.api.services.route.DriveRouteResult
-import com.amap.api.services.route.RideRouteResult
-import com.amap.api.services.route.RouteSearch
-import com.amap.api.services.route.WalkRouteResult
 import com.blankj.utilcode.util.ConvertUtils
 import com.example.amaptest.R
 import com.example.amaptest.databinding.CsFragmentDriveMapBinding
 import com.polestar.base.ext.dp
-import com.polestar.base.views.PolestarToast
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 class DriveMapFragment : Fragment() {
@@ -45,6 +41,9 @@ class DriveMapFragment : Fragment() {
     private val iconEnd by lazy {
         BitmapDescriptorFactory.fromResource(R.drawable.amap_end)
     }
+
+    private lateinit var driverMoveHelper: DriverMoveHelper
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -79,69 +78,37 @@ class DriveMapFragment : Fragment() {
         }
         binding.mapView.map.addOnMapLoadedListener(object: AMap.OnMapLoadedListener{
             override fun onMapLoaded() {
-                markHeight()
-                moveToVisible2()
+                //markHeight()
+               // moveToVisible2()
             }
         })
+
+        driverMoveHelper = DriverMoveHelper(binding.mapView.map, startLatLng, endLatLng)
 
         addMarkets()
         moveToVisible()
-        loadPath()
+        mockDriverMove()
     }
 
-    //https://lbs.amap.com/api/android-sdk/guide/route-plan/drive
-    private fun loadPath(){
-        val routeSearch = RouteSearch(requireContext())
-        routeSearch.setRouteSearchListener(object: RouteSearch.OnRouteSearchListener{
-            override fun onBusRouteSearched(p0: BusRouteResult?, p1: Int) {
+    private fun mockDriverMove(){
+
+        lifecycleScope.launch {
+            delay(3000)
+
+            driverTrack.forEach {
+                driverMoveHelper.putDriver(it)
+                delay(1000)
             }
+        }
 
-            override fun onDriveRouteSearched(driveRouteResult: DriveRouteResult?, errorCode: Int) {
-                if (errorCode != 1000 || driveRouteResult == null || driveRouteResult.paths.isNullOrEmpty()) {
-                    PolestarToast.showShortToast("查询失败 errorCode:$errorCode")
-                    return
-                }
-                drawRoute(driveRouteResult)
-            }
-
-            override fun onWalkRouteSearched(p0: WalkRouteResult?, p1: Int) {
-            }
-
-            override fun onRideRouteSearched(p0: RideRouteResult?, p1: Int) {
-            }
-        })
-
-        val fromAndTo = RouteSearch.FromAndTo(
-            LatLonPoint(startLatlLng.latitude, startLatlLng.longitude),
-            LatLonPoint(endLatlLng.latitude, endLatlLng.longitude)
-        )
-
-        val req = RouteSearch.DriveRouteQuery(fromAndTo, 0, null, null, "")
-        routeSearch.calculateDriveRouteAsyn(req)
     }
 
-    private fun drawRoute(driveRouteResult: DriveRouteResult) {
-        val drivePath = driveRouteResult.paths[0]
-        val drivingRouteOverlay = DrivingRouteOverlay(
-            requireContext(), binding.mapView.map, drivePath,
-            driveRouteResult.startPos,
-            driveRouteResult.targetPos, null
-        )
-        drivingRouteOverlay.setNodeIconVisibility(false) //设置节点marker是否显示
-        drivingRouteOverlay.setIsColorfulline(true) //是否用颜色展示交通拥堵情况，默认true
-        drivingRouteOverlay.removeFromMap()
-        drivingRouteOverlay.addToMap(false)
-        //drivingRouteOverlay.zoomToSpan()
-        val dis = drivePath.distance.toInt()
-        val dur = drivePath.duration.toInt()
-        val des = AMapUtil.getFriendlyTime(dur) + "(" + AMapUtil.getFriendlyLength(dis) + ")"
-        val taxiCost = driveRouteResult.taxiCost.toInt()
-    }
 
     private fun addMarkets() {
         binding.mapView.map.let {
-            it.addMarker(createMarket("start", startLatlLng, iconStart))
-            it.addMarker(createMarket("end", endLatlLng, iconEnd))
+            it.addMarker(createMarket("start", startLatLng, iconStart))
+            it.addMarker(createMarket("end", endLatLng, iconEnd))
+
             // 屏蔽marker点击事件
             it.setOnMarkerClickListener {
                 true
@@ -149,16 +116,11 @@ class DriveMapFragment : Fragment() {
         }
     }
 
-    // https://lbs.amap.com/api/android-sdk/guide/draw-on-map/draw-marker
-    private fun createMarket(name: String, pos: LatLng, icon: BitmapDescriptor) = MarkerOptions()
-        .position(pos)
-        .icon(icon)
 
-
-    private fun moveToVisible(padding: Int = 10.dp, callback: AMap.CancelableCallback?=null) {
+    private fun moveToVisible(padding: Int = 40.dp, callback: AMap.CancelableCallback?=null) {
         LatLngBounds.Builder().apply {
-            this.include(startLatlLng)
-            this.include(endLatlLng)
+            this.include(startLatLng)
+            this.include(endLatLng)
         }.build().let {
             CameraUpdateFactory.newLatLngBounds(it, padding)
         }.let {
@@ -168,8 +130,8 @@ class DriveMapFragment : Fragment() {
 
     private fun moveToVisible2(padding: Int = 10.dp) {
         LatLngBounds.Builder().apply {
-            this.include(startLatlLng)
-            this.include(endLatlLng)
+            this.include(startLatLng)
+            this.include(endLatLng)
             this.include(markHeight())
         }.build().let {
             CameraUpdateFactory.newLatLngBounds(it, padding)
@@ -180,7 +142,7 @@ class DriveMapFragment : Fragment() {
 
     private fun markHeight(): LatLng {
         println(iconStart.height)
-        val point= binding.mapView.map.projection.toScreenLocation(startLatlLng)
+        val point= binding.mapView.map.projection.toScreenLocation(startLatLng)
         point.y -= iconStart.height
         return binding.mapView.map.projection.fromScreenLocation(point)
     }
@@ -205,6 +167,13 @@ class DriveMapFragment : Fragment() {
         super.onDestroyView()
     }
 
+
+    // https://lbs.amap.com/api/android-sdk/guide/draw-on-map/draw-marker
+    private fun createMarket(name: String, pos: LatLng, icon: BitmapDescriptor) = MarkerOptions()
+        .position(pos)
+        .icon(icon)
+        .anchor(0.5f,0.5f)
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -215,10 +184,19 @@ class DriveMapFragment : Fragment() {
     }
 
     companion object{
-        val startLatlLng = LatLng(31.23646044, 121.48020424)
+        val startLatLng = LatLng(31.23646044, 121.48020424)
 
-        val endLatlLng = LatLng(31.14589905, 121.44282868)
+        val endLatLng = LatLng(31.14589905, 121.44282868)
 
         val endMark = LatLng(31.25, 121.48020424)
+
+        val driverLatLng = LatLng(53.49173138, 122.34166052)
+
+        val driverTrack = (1..18).map { i ->
+            val lat = driverLatLng.latitude
+            LatLng(lat - i, driverLatLng.longitude)
+        }
+
+        //DriverLocation(lat=53.49173138, lng=122.34166052, time=1695352015000)
     }
 }
