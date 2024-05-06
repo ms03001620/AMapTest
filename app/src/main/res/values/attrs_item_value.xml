@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <declare-styleable name="CsItemValueLayout">
+        <attr name="car_item_name" format="reference|string" />
+        <attr name="car_item_status" format="reference|string" />
+        <attr name="car_icon_sel" format="reference" />
+        <attr name="car_bg_color" format="reference" />
+
+        <attr name="cs_value" format="reference|string" />
+        <attr name="cs_value_color" format="reference|color" />
+
+    </declare-styleable>
+</resources>

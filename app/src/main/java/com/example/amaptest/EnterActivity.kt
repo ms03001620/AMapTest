@@ -18,6 +18,7 @@ import com.example.amaptest.ble.BleActivity
 import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.bluetooth.BluetoothPermissionHelper
 import com.example.amaptest.bluetooth.BluetoothSampleActivity
+import com.example.amaptest.carctrl.CarCtrlActivity
 import com.example.amaptest.eventbus.EventbusCreateActivity
 import com.example.amaptest.floatlist.FloatListActivity
 import com.example.amaptest.flow.FlowActivity
@@ -88,6 +89,10 @@ class EnterActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_eventBus).setOnClickListener {
             gotoEventBus()
+        }
+
+        findViewById<View>(R.id.btn_carCtrl).setOnClickListener {
+            gotoCarCtrl()
         }
 
         findViewById<View>(R.id.btn_header).setOnClickListener {
@@ -238,6 +243,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoAnim() {
         startActivity(Intent(this, AnimActivity::class.java))
+    }
+
+    fun gotoCarCtrl() {
+        startActivity(Intent(this, CarCtrlActivity::class.java))
     }
 
     fun gotoEventBus() {

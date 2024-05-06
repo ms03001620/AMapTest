@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#22222222"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.example.amaptest.carctrl.CarItemStatusView
+        android:id="@+id/carItem"
+        android:layout_width="200dp"
+        android:layout_height="120dp"
+        app:car_item_name="空调"
+        app:car_bg_color="@color/bg_sel"
+        app:car_item_status="关了"
+        app:car_icon_sel="@drawable/store_selector_product_video_audio_state"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.example.amaptest.carctrl.CarItemStatusView
+        android:id="@+id/carItemOn"
+        android:layout_width="200dp"
+        android:layout_height="120dp"
+        app:car_item_name="空调"
+        app:car_bg_color="@color/bg_sel"
+        app:car_item_status="开着"
+        app:car_icon_sel="@drawable/store_selector_product_video_audio_state"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/carItem" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

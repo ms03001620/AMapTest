@@ -21,6 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AMapTest">
         <activity
+            android:name=".carctrl.CarCtrlActivity"
+            android:exported="false" />
+        <activity
             android:name=".eventbus.OtherEventActivity"
             android:exported="false" />
         <activity
