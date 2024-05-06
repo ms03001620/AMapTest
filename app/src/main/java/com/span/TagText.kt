@@ -26,7 +26,7 @@ class TagText(
         start: Int,
         end: Int,
         fm: Paint.FontMetricsInt?
-    ) {
+    ): Int {
         paint.getTextBounds(text.toString(), start, end, originTextRect)
 
         paintScale = TextPaint(paint)
@@ -35,6 +35,8 @@ class TagText(
             paintScale.color = it
         }
         paintScale.getTextBounds(text.toString(), start, end, scaleTextRect)
+
+        return scaleTextRect.width() + (bgMargin?.left ?: 0) + (bgMargin?.right ?: 0)
     }
 
     fun drawTagText(
@@ -48,10 +50,9 @@ class TagText(
         bottom: Int,
         paint: Paint
     ) {
-        val w = (originTextRect.width() - scaleTextRect.width()) / 2
         val h = (originTextRect.height() - scaleTextRect.height()) / 2
 
-        val textLeft = x + w
+        val textLeft = x + (bgMargin?.left ?: 0)
         val textTop = y.toFloat() - h - scaleTextRect.height()
         val textRight = textLeft + scaleTextRect.width()
         val textBottom = y.toFloat() - h

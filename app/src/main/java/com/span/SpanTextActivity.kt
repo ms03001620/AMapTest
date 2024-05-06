@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 import android.text.style.StrikethroughSpan
@@ -57,24 +58,46 @@ class SpanTextActivity : AppCompatActivity() {
     private fun initSpanView1() {
         val textSpan = findViewById<TextView>(R.id.textSpan)
 
-        val string = "2020-18-20 12:15 最早"
+        //  val string = "2020-18-20 12:15 最早"
 
-        val spannable: Spannable = SpannableString(string)
-
-        spannable.setSpan(
-            TagTextSpan(
-                scale = 0.6f,
-                bgMargin = Rect(5.dp, 3.dp, 5.dp, 5.dp),
-                textColor = Color.WHITE,
-                bgColor = Color.parseColor("#FF7500")
-            ),
-            string.length - 2,
-            string.length,
-            SPAN_EXCLUSIVE_EXCLUSIVE
+        val sb = SpannableStringBuilder()
+        sb.append("hello")
+        sb.append(" ")
+        sb.append(makeTagSpan("新增"))
+        sb.append(" ")
+        sb.append(
+            makeTagSpan(
+                text = "一般维修",
+                textColor = Color.parseColor("#6C7075"),
+                color = Color.parseColor("#ECECE7")
+            )
         )
 
-        textSpan.text = spannable
+        textSpan.text = sb
+    }
+
+    private fun makeTagSpan(
+        text: String?,
+        textColor: Int = Color.WHITE,
+        color: Int = Color.parseColor("#FF7500")
+
+    ): CharSequence {
+        if (text.isNullOrBlank()) return ""
+        return SpannableString(text).also {
+            it.setSpan(
+                TagTextSpan(
+                    scale = 0.6f,
+                    bgMargin = Rect(5.dp, 3.dp, 6.dp, 5.dp),
+                    textColor = textColor,
+                    bgColor = color
+                ),
+                0,
+                text.length,
+                SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        }
     }
 
 
 }
+

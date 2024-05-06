@@ -21,9 +21,7 @@ class TagTextSpan(
         end: Int,
         fm: Paint.FontMetricsInt?
     ): Int {
-        val tagWidth = paint.measureText(text.toString(), start, end)
-        tagText.getSize(paint, text, start, end, fm)
-        return tagWidth.roundToInt()
+        return tagText.getSize(paint, text, start, end, fm)
     }
 
     private fun drawOriginText(
@@ -51,7 +49,6 @@ class TagTextSpan(
         bottom: Int,
         paint: Paint
     ) {
-        //drawOriginText(canvas, text, start, end, x, top, y, bottom, paint)
         tagText.drawTagText(canvas, text, start, end, x, top, y, bottom, paint)
     }
 }
