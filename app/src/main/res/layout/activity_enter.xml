@@ -148,6 +148,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="FlowAvd" />
+
+        <Button
+            android:id="@+id/btn_eventBus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="EventBus" />
     </LinearLayout>
 
     <Button

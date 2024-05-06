@@ -18,6 +18,7 @@ import com.example.amaptest.ble.BleActivity
 import com.example.amaptest.bluetooth.BluetoothActivity
 import com.example.amaptest.bluetooth.BluetoothPermissionHelper
 import com.example.amaptest.bluetooth.BluetoothSampleActivity
+import com.example.amaptest.eventbus.EventbusCreateActivity
 import com.example.amaptest.floatlist.FloatListActivity
 import com.example.amaptest.flow.FlowActivity
 import com.example.amaptest.flow.FlowAvdActivity
@@ -83,6 +84,10 @@ class EnterActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_anim).setOnClickListener {
             gotoAnim()
+        }
+
+        findViewById<View>(R.id.btn_eventBus).setOnClickListener {
+            gotoEventBus()
         }
 
         findViewById<View>(R.id.btn_header).setOnClickListener {
@@ -233,6 +238,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoAnim() {
         startActivity(Intent(this, AnimActivity::class.java))
+    }
+
+    fun gotoEventBus() {
+        startActivity(Intent(this, EventbusCreateActivity::class.java))
     }
 
     fun gotoSheet() {
