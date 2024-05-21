@@ -29,7 +29,7 @@ class CarItemStatusView(context: Context, attrs: AttributeSet?) : FrameLayout(co
             name = it
         }
         typedArray.getString(R.styleable.CsItemValueLayout_car_item_status).let {
-            this.status = ItemStatus.pairStatusOrLoading(it)
+            this.status = ItemStatus.pairStatusNameOrLoading(it)
         }
         typedArray.getDrawable(R.styleable.CsItemValueLayout_car_icon_sel).let {
             this.icon = it
@@ -75,6 +75,9 @@ class CarItemStatusView(context: Context, attrs: AttributeSet?) : FrameLayout(co
         companion object{
             fun pairStatusOrLoading(label: String?) =
                 ItemStatus.values().find { it.label == label } ?: LOADING
+
+            fun pairStatusNameOrLoading(name: String?) =
+                ItemStatus.values().find { it.name == name } ?: LOADING
         }
     }
 }

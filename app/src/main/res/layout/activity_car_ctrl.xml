@@ -12,7 +12,7 @@
         android:layout_height="120dp"
         app:car_item_name="空调"
         app:car_bg_color="@color/bg_sel"
-        app:car_item_status="关了"
+        app:car_item_status="OFF"
         app:car_icon_sel="@drawable/store_selector_product_video_audio_state"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +23,7 @@
         android:layout_height="120dp"
         app:car_item_name="空调"
         app:car_bg_color="@color/bg_sel"
-        app:car_item_status="开着"
+        app:car_item_status="ON"
         app:car_icon_sel="@drawable/store_selector_product_video_audio_state"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/carItem" />

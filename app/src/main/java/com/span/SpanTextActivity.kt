@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.amaptest.R
 import com.polestar.base.ext.dp
+import com.polestar.base.utils.numberToStringWithSign
 
 
 class SpanTextActivity : AppCompatActivity() {
@@ -72,6 +73,27 @@ class SpanTextActivity : AppCompatActivity() {
                 color = Color.parseColor("#ECECE7")
             )
         )
+
+        val coup = 40f//source.statement?.coupons?.map { it.deductAmount ?: 0f }?.sum() ?: 0f
+        val amount = 80f//source.pickUpInfo?.amount?.toFloat() ?: 0f
+        val payAmount = amount - coup
+       // val sb = SpannableStringBuilder()
+        if (coup != 0f) {
+            val string = coup.toString().numberToStringWithSign()
+            SpannableStringBuilder(string).also {
+                it.setSpan(
+                    StrikethroughSpan(),
+                    0,
+                    string.length,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+                sb.append(it)
+                sb.append("  ")
+            }
+        }
+        sb.append(payAmount.toString().numberToStringWithSign())
+
+
 
         textSpan.text = sb
     }
