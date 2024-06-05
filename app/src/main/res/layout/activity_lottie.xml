@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000"
+    android:background="#fff"
     android:orientation="vertical">
 
     <LinearLayout
@@ -18,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:lottie_autoPlay="true"
-            app:lottie_rawRes="@raw/video_close_open"
+            app:lottie_rawRes="@raw/polestarspinner"
             app:lottie_speed="0.1" />
 
         <com.airbnb.lottie.LottieAnimationView
@@ -72,7 +72,7 @@
     <com.polestar.charging.ui.ring.RingChargingView
         android:id="@+id/maskCarRing"
         android:layout_width="match_parent"
-        android:layout_height="230dp"
+        android:layout_height="30dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:background="#FFF" />
