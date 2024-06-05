@@ -8,7 +8,7 @@ import androidx.core.view.isVisible
 import com.example.amaptest.R
 import com.example.amaptest.databinding.LayoutCarHotLevelBinding
 
-class CarLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class CarSeatLayout(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
     private val binding =
         LayoutCarHotLevelBinding.inflate(LayoutInflater.from(context), this, true)
 
