@@ -107,6 +107,11 @@ class EnterActivity : AppCompatActivity() {
             gotoLottieActivity()
         }
 
+
+        findViewById<View>(R.id.btn_car).setOnClickListener {
+            gotoCarctivity()
+        }
+
         findViewById<View>(R.id.btn_float_list).setOnClickListener {
             gotoFloatListActivity()
         }
@@ -227,6 +232,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoLottieActivity() {
         startActivity(Intent(this, LottieActivity::class.java))
+    }
+
+    fun gotoCarctivity() {
+        startActivity(Intent(this, CarActivity::class.java))
     }
 
     fun gotoFloatListActivity() {

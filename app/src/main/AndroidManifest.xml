@@ -109,6 +109,9 @@
             android:name=".LottieActivity"
             android:exported="false" />
         <activity
+            android:name=".CarActivity"
+            android:exported="false" />
+        <activity
             android:name=".VideoActivity"
             android:exported="false" />
         <activity

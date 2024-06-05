@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ps4_app_climate_topview" />
+
+    <ImageView
+        android:id="@+id/steering"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ps4_app_climate_steering_heat_00000"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/seatFl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ps4_app_climate_seatheat_driver_00000"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/seatFr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ps4_app_climate_seatheat_passenger_00000"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/seatBl"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ps4_app_climate_seatheat_rear_left_00000"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/seatBr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ps4_app_climate_seatheat_rear_right_00000"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</FrameLayout>
+
+

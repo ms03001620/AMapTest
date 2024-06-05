@@ -116,11 +116,25 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_lottie"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Lottie" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_lottie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lottie" />
+
+        <Button
+            android:id="@+id/btn_car"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="car" />
+    </LinearLayout>
+
+
 
     <Button
         android:id="@+id/btn_video"
