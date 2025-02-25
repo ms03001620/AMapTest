@@ -12,8 +12,19 @@ class RectActivity : AppCompatActivity() {
         val viewBinding = ActivityRectBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
+        viewBinding.screenRectView.apply {
+            targetWidth = 200
+            targetHeight = 200
+            strokeWidth = 4f
+            setResultListener { x, y, w, h ->
+                println("Result: x=$x, y=$y, w=$w, h=$h")
+                // Do something with the result (e.g., update UI)
+            }
+        }
+
         viewBinding.btnClear.setOnClickListener {
             viewBinding.gridView.deactivateAllCells()
+            viewBinding.screenRectView.clear()
         }
 
         viewBinding.btnGet.setOnClickListener {

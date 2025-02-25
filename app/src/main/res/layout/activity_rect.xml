@@ -39,4 +39,11 @@
         android:layout_width="match_parent"
         android:layout_height="400dp"/>
 
+    <com.example.amaptest.rect.ScreenRectView
+        android:layout_margin="30dp"
+        android:id="@+id/screenRectView"
+        android:background="#2222"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"/>
+
 </LinearLayout>
