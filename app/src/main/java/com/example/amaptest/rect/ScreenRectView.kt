@@ -1,7 +1,5 @@
 package com.example.amaptest.rect
 
-
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -17,7 +15,6 @@ import kotlin.math.min
 @SuppressLint("ClickableViewAccessibility")
 class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
-    // Configurable properties
     var targetWidth = 200
     var targetHeight = 200
     var strokeWidth = 4f
@@ -26,8 +23,8 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
             borderPaint.strokeWidth = value
             invalidate()
         }
+    private var initialRectList: List<Int>? = null
 
-    // Internal state
     private var startX = 0f
     private var startY = 0f
     private var endX = 0f
@@ -35,8 +32,10 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
     private var rect: Rect? = null
     private var resultListener: ((x: Int, y: Int, w: Int, h: Int) -> Unit)? = null
     private var isDrawing = false
+    private var enableDraw = false
+    var resultList: List<Int>? = null
+        private set
 
-    // Drawing tools
     private val borderPaint = Paint().apply {
         color = Color.RED
         style = Paint.Style.STROKE
@@ -52,6 +51,7 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!enableDraw) return false
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 startX = event.x
@@ -66,8 +66,8 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
                     endY = event.y
                     updateRect()
                     invalidate()
+                    return true
                 }
-                return true
             }
 
             MotionEvent.ACTION_UP -> {
@@ -78,18 +78,19 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
                     calculateResult()
                     invalidate()
                     isDrawing = false
+                    return true
                 }
-                return true
             }
+
             MotionEvent.ACTION_CANCEL -> {
                 if (isDrawing) {
                     isDrawing = false
                     calculateResult()
+                    return true
                 }
-                return true
             }
         }
-        return super.onTouchEvent(event)
+        return false
     }
 
     private fun updateRect() {
@@ -98,7 +99,6 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
         val right = max(startX, endX)
         val bottom = max(startY, endY)
 
-        // Clamp the rectangle within the view bounds
         val clampedLeft = max(0f, left)
         val clampedTop = max(0f, top)
         val clampedRight = min(width.toFloat(), right)
@@ -126,6 +126,7 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
             val resultH = (hRatio * targetHeight).toInt()
 
             resultListener?.invoke(resultX, resultY, resultW, resultH)
+            resultList = listOf(resultX, resultY, resultW, resultH)
         }
     }
 
@@ -135,6 +136,41 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
 
     fun clear() {
         rect = null
+        resultList = null
         invalidate()
+    }
+
+    fun setEnableDraw(enable: Boolean) {
+        enableDraw = enable
+    }
+
+    fun setInitialRectList(list: List<Int>?) {
+        initialRectList = list
+        post {
+            drawInitialRect()
+        }
+    }
+
+    private fun drawInitialRect() {
+        initialRectList?.let { list ->
+            if (list.size == 4) {
+                val x = list[0]
+                val y = list[1]
+                val w = list[2]
+                val h = list[3]
+
+                val screenWidth = width.toFloat()
+                val screenHeight = height.toFloat()
+
+                val left = (x.toFloat() / targetWidth) * screenWidth
+                val top = (y.toFloat() / targetHeight) * screenHeight
+                val right = ((x + w).toFloat() / targetWidth) * screenWidth
+                val bottom = ((y + h).toFloat() / targetHeight) * screenHeight
+
+                rect = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
+                calculateResult()
+                invalidate()
+            }
+        }
     }
 }

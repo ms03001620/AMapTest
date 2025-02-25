@@ -22,12 +22,15 @@ class RectActivity : AppCompatActivity() {
             }
         }
 
+        viewBinding.screenRectView.setInitialRectList(listOf(0, 0, 100, 100))
+
         viewBinding.btnClear.setOnClickListener {
             viewBinding.gridView.deactivateAllCells()
             viewBinding.screenRectView.clear()
         }
 
         viewBinding.btnGet.setOnClickListener {
+            viewBinding.screenRectView.setEnableDraw(true)
             viewBinding.gridView.getActivatedCellsArray().let {
                 println(it)
             }
