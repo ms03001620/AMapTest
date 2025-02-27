@@ -42,7 +42,13 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
         strokeWidth = this@ScreenRectView.strokeWidth
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        println("onMeasure w: $width h:$height")
+    }
+
     override fun onDraw(canvas: Canvas) {
+        println("onDraw w: $width h:$height")
         super.onDraw(canvas)
         rect?.let {
             canvas.drawRect(it, borderPaint)
@@ -104,6 +110,8 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
         val clampedRight = min(width.toFloat(), right)
         val clampedBottom = min(height.toFloat(), bottom)
 
+        println("updateRect w:$width, h:$height")
+
         rect = Rect(clampedLeft.toInt(), clampedTop.toInt(), clampedRight.toInt(), clampedBottom.toInt())
     }
 
@@ -145,6 +153,7 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
     }
 
     fun setInitialRectList(list: List<Int>?) {
+        println("setInitialRectList")
         initialRectList = list
         post {
             drawInitialRect()
@@ -159,6 +168,7 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
                 val w = list[2]
                 val h = list[3]
 
+                println("post drawInitialRect: $width h:$height")
                 val screenWidth = width.toFloat()
                 val screenHeight = height.toFloat()
 
@@ -168,9 +178,9 @@ class ScreenRectView(context: Context, attrs: AttributeSet?) : View(context, att
                 val bottom = ((y + h).toFloat() / targetHeight) * screenHeight
 
                 rect = Rect(left.toInt(), top.toInt(), right.toInt(), bottom.toInt())
-                calculateResult()
                 invalidate()
             }
         }
     }
+
 }
