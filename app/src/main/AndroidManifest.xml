@@ -54,6 +54,14 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".rect.RectAreaActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustResize" />
+
         <activity
             android:name=".CountdownActivity"
             android:exported="false">

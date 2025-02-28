@@ -29,6 +29,7 @@ import com.example.amaptest.keyboard.KeyboardActivity
 import com.example.amaptest.life.LifecycleObserverActivity
 import com.example.amaptest.pager.PagerActivity
 import com.example.amaptest.rect.RectActivity
+import com.example.amaptest.rect.RectAreaActivity
 import com.example.amaptest.sync.CellSignalModel
 import com.robolectric.DialogsActivity
 import com.span.SpanTextActivity
@@ -72,6 +73,10 @@ class EnterActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_rect).setOnClickListener {
             gotoRectActivity()
+        }
+
+        findViewById<View>(R.id.btn_detect_area).setOnClickListener {
+            gotoRectAreaActivity()
         }
 
         // 进入高德地图
@@ -253,6 +258,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoRectActivity() {
         startActivity(Intent(this, RectActivity::class.java))
+    }
+
+    fun gotoRectAreaActivity() {
+        startActivity(Intent(this, RectAreaActivity::class.java))
     }
 
     fun gotoVideoActivity() {
