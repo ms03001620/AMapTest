@@ -10,8 +10,13 @@ import android.graphics.Point
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.pow
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
+@SuppressLint("ClickableViewAccessibility")
 class DrawPathRectView(context: Context, attrs: AttributeSet?) : View(context, attrs) {
 
     // Data
@@ -30,14 +35,12 @@ class DrawPathRectView(context: Context, attrs: AttributeSet?) : View(context, a
     private val redPaint = Paint().apply {
         color = Color.RED
         style = Paint.Style.STROKE
-        strokeWidth = 4f
         isAntiAlias = true
     }
 
     private val greenPaint = Paint().apply {
         color = Color.GREEN
         style = Paint.Style.STROKE
-        strokeWidth = 4f
         isAntiAlias = true
     }
 
@@ -47,13 +50,16 @@ class DrawPathRectView(context: Context, attrs: AttributeSet?) : View(context, a
         maxPointsPerShape: Int,
         maxShapes: Int,
         callback: (String) -> Unit,
-        scaleSize: Point
+        scaleSize: Point,
+        strokeWidth: Float,
     ) {
         this.data = data
         this.maxPointsPerShape = maxPointsPerShape
         this.maxShapes = maxShapes
         this.callback = callback
         this.scaleSize = scaleSize
+        redPaint.strokeWidth = strokeWidth
+        greenPaint.strokeWidth = strokeWidth
         invalidate()
     }
 
@@ -80,6 +86,7 @@ class DrawPathRectView(context: Context, attrs: AttributeSet?) : View(context, a
 
     fun finishAppend() {
         isAppendMode = false
+        tryToRemoveClosePoint()
         invalidate()
     }
 
@@ -92,7 +99,9 @@ class DrawPathRectView(context: Context, attrs: AttributeSet?) : View(context, a
     }
 
     private fun drawShape(canvas: Canvas, shape: List<Point>, isCurrentShape: Boolean) {
-        if (shape.isEmpty()) return
+        if (shape.isEmpty()) {
+            return
+        }
         val path = Path()
         val firstPoint = mapToScreenPoint(shape[0])
         path.moveTo(firstPoint.x.toFloat(), firstPoint.y.toFloat())
@@ -114,20 +123,26 @@ class DrawPathRectView(context: Context, attrs: AttributeSet?) : View(context, a
     }
 
     // Touch Events
-    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (!isEditable) return false
+        if (!isEditable) {
+            return false
+        }
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 isAppendMode = true
                 val startPoint = Point(event.x.roundToInt(), event.y.roundToInt())
                 addDownPoint(startPoint)
+                invalidate()
                 return true
             }
 
             MotionEvent.ACTION_UP -> {
-                val endPoint = Point(event.x.roundToInt(), event.y.roundToInt())
+                val endPoint = Point(
+                    max(0, min(width, event.x.roundToInt())),
+                    max(0, min(height, event.y.roundToInt())),
+                )
                 addUpPoint(endPoint)
+                invalidate()
                 return true
             }
         }
@@ -136,20 +151,38 @@ class DrawPathRectView(context: Context, attrs: AttributeSet?) : View(context, a
 
     private fun addUpPoint(point: Point) {
         val currentShape = data[currentShapeIndex]
-        if (currentShape.size >= maxPointsPerShape) {
+        if (currentShape.size > maxPointsPerShape) {
             callback?.invoke("Max points reached")
             return
         }
         currentShape.add(mapToScalePoint(point))
-        invalidate()
     }
 
     private fun addDownPoint(point: Point) {
         val currentShape = data[currentShapeIndex]
         if (currentShape.size == 0) {
             currentShape.add(mapToScalePoint(point))
-            invalidate()
         }
+    }
+
+    fun tryToRemoveClosePoint() {
+        val currentShape = data[currentShapeIndex]
+        val firstPoint = currentShape.first()
+        while (currentShape.size > 0) {
+            val closePoint = currentShape.last()
+
+            if (calculateDistance(firstPoint, closePoint) < 10) {
+                currentShape.remove(closePoint)
+            } else {
+                break
+            }
+        }
+    }
+
+    fun calculateDistance(p1: Point, p2: Point): Double {
+        val dx = p2.x - p1.x
+        val dy = p2.y - p1.y
+        return sqrt(dx.toDouble().pow(2) + dy.toDouble().pow(2))
     }
 
     // Mapping

@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.amaptest.databinding.ActivityRectAreaBinding
+import com.polestar.base.ext.dp
 
 @SuppressLint("SetTextI18n")
 class RectAreaActivity : AppCompatActivity() {
@@ -33,12 +34,13 @@ class RectAreaActivity : AppCompatActivity() {
                 mutableListOf<Point>(),
                 mutableListOf<Point>(),
             ),
-            maxPointsPerShape = 20,
+            maxPointsPerShape = 6,
             maxShapes = maxShapes,
             scaleSize = Point(100, 100),
             callback = {
                 Toast.makeText(this, "fffull", Toast.LENGTH_SHORT).show()
-            }
+            },
+            strokeWidth = 2.dp.toFloat()
         )
 
 
