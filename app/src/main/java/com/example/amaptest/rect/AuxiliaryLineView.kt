@@ -1,6 +1,5 @@
 package com.example.amaptest.rect
 
-
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
@@ -46,9 +45,10 @@ class AuxiliaryLineView @JvmOverloads constructor(
     private var isEditModel = false
 
     // Configuration
+    val green = Color.parseColor("#008016")
     var mainLineColor = Color.RED
     var auxiliaryLineColor = Color.YELLOW
-    var textColor = Color.GREEN
+    var textColor = green
     var padding = 20
     var lineWidth = 4f
     var screenSize = Point(704, 576) // Default screen size
@@ -62,7 +62,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
     }
 
     private val mainLineOffPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = Color.GREEN
+        color = green
         strokeWidth = lineWidth
         style = Paint.Style.STROKE
     }
@@ -283,6 +283,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
             val moveX = (moveDistance * cos(angle)).roundToInt()
             val moveY = (moveDistance * sin(angle)).roundToInt()
             aPoint.offset(moveX, moveY)
+            bPoint.offset(moveX, moveY)
         } else if (bOutOfBounds) {
             // Only B is out of bounds, move B towards A
             val angle = atan2((aPoint.y - bPoint.y).toDouble(), (aPoint.x - bPoint.x).toDouble())
@@ -296,6 +297,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
             val moveX = (moveDistance * cos(angle)).roundToInt()
             val moveY = (moveDistance * sin(angle)).roundToInt()
             bPoint.offset(moveX, moveY)
+            aPoint.offset(moveX, moveY)
         }
         // Check if after moving, the points are still out of bounds
         if (!viewBounds.contains(aPoint.x, aPoint.y) || !viewBounds.contains(bPoint.x, bPoint.y)) {
