@@ -167,6 +167,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
             MotionEvent.ACTION_DOWN -> {
                 graphList[graphIndex].startPoint =
                     mapToScalePoint(Point(event.x.roundToInt(), event.y.roundToInt()))
+                graphList[graphIndex].endPoint = null
                 graphList[graphIndex].aPoint = null
                 graphList[graphIndex].bPoint = null
                 graphList[graphIndex].paths = null
