@@ -234,8 +234,8 @@ class AuxiliaryLineView @JvmOverloads constructor(
         // Adjust points if they are outside the view bounds
         return adjustPointsToBounds(
             padding,
-            width,
-            height,
+            screenSize.x,
+            screenSize.y,
             aPoint = Point(aX, aY),
             bPoint = Point(bX, bY),
         )
