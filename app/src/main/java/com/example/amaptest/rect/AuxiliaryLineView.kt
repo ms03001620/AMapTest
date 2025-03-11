@@ -29,15 +29,21 @@ class AuxiliaryLineView @JvmOverloads constructor(
 
     // State
     data class Graph(
+        // 主线起点
         var startPoint: Point? = null,
+        // 主线终点
         var endPoint: Point? = null,
+        // 辅助线起点
         var aPoint: Point? = null,
+        // 辅助线终点
         var bPoint: Point? = null,
+        // 主线其他点
         var paths: List<Point>? = null,
     )
 
-    private val graphList = mutableListOf<Graph>(Graph())
+    private val graphList = mutableListOf(Graph())
     private var graphIndex = 0
+    private var isEditModel = false
 
     // Configuration
     var mainLineColor = Color.RED
@@ -51,6 +57,12 @@ class AuxiliaryLineView @JvmOverloads constructor(
     // Paint objects
     private val mainLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = mainLineColor
+        strokeWidth = lineWidth
+        style = Paint.Style.STROKE
+    }
+
+    private val mainLineOffPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = Color.GREEN
         strokeWidth = lineWidth
         style = Paint.Style.STROKE
     }
@@ -84,14 +96,17 @@ class AuxiliaryLineView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        graphList.forEach { graph ->
-            drawMainLine(canvas, graph)
+        graphList.forEachIndexed { index, graph ->
+            val mainLinePaint =
+                if (index == graphIndex && isEditModel) mainLinePaint else mainLineOffPaint
+
+            drawMainLine(canvas, graph, mainLinePaint)
             drawAuxiliaryLine(canvas, graph)
-            drawPath(canvas, graph)
+            drawPath(canvas, graph, mainLinePaint)
         }
     }
 
-    private fun drawMainLine(canvas: Canvas, graph: Graph) {
+    private fun drawMainLine(canvas: Canvas, graph: Graph, paint: Paint) {
         val start = mapToScreenPoint(graph.startPoint ?: return)
         val end = mapToScreenPoint(graph.endPoint ?: return)
 
@@ -101,7 +116,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
             start.y.toFloat(),
             end.x.toFloat(),
             end.y.toFloat(),
-            mainLinePaint
+            paint
         )
         // Draw "Result" label at the start point
         drawLabel(canvas, start, "Result")
@@ -126,7 +141,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
         drawLabel(canvas, bp, "B")
     }
 
-    private fun drawPath(canvas: Canvas, graph: Graph) {
+    private fun drawPath(canvas: Canvas, graph: Graph, paint: Paint) {
         val paths = graph.paths
         if (!paths.isNullOrEmpty()) {
             val end = mapToScreenPoint(graph.endPoint ?: return)
@@ -136,11 +151,12 @@ class AuxiliaryLineView @JvmOverloads constructor(
                 val point = mapToScreenPoint(it)
                 path.lineTo(point.x.toFloat(), point.y.toFloat())
             }
-            canvas.drawPath(path, mainLinePaint)
+            canvas.drawPath(path, paint)
         }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (!isEditModel) return false
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 graphList[graphIndex].startPoint =
@@ -393,6 +409,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
     }
 
     fun swapAB() {
+        if (!isEditModel) return
         val ap = graphList[graphIndex].aPoint
         val bp = graphList[graphIndex].bPoint
         if (ap != null && bp != null) {
@@ -448,6 +465,11 @@ class AuxiliaryLineView @JvmOverloads constructor(
         }
 
         return result
+    }
+
+    fun setEditModel(on: Boolean) {
+        isEditModel = on
+        invalidate()
     }
 
     fun clearGraph() {

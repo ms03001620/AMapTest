@@ -34,8 +34,8 @@ class AuxiliaryLineActivity : AppCompatActivity() {
 
         }
 
-        viewBinding.btnEdit.setOnCheckedChangeListener { buttonView, isChecked ->
-
+        viewBinding.btnEdit.setOnCheckedChangeListener { _, isChecked ->
+            viewBinding.auxiliaryLineView.setEditModel(isChecked)
         }
 
         viewBinding.btnSwitch.setOnClickListener {
