@@ -19,6 +19,8 @@ class AuxiliaryLineActivity : AppCompatActivity() {
         val viewBinding = ActivityAuxiliaryLineBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
+        viewBinding.auxiliaryLineView.setData(counterPoint)
+
         viewBinding.btnClear.setOnClickListener {
 
         }
@@ -41,6 +43,17 @@ class AuxiliaryLineActivity : AppCompatActivity() {
         viewBinding.btnSave.setOnClickListener {
 
         }
+    }
+
+    companion object {
+        val counterPoint: MutableList<MutableList<Int>> = mutableListOf(
+            mutableListOf(2, 20),
+            mutableListOf(167, 167),//1 a point
+            mutableListOf(338, 327),//2 b point
+            mutableListOf(143, 387),
+            mutableListOf(143, 387),//4 start
+            mutableListOf(363, 108)//5 end
+        )
     }
 
 }

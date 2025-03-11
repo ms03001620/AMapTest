@@ -365,4 +365,26 @@ class AuxiliaryLineView @JvmOverloads constructor(
             invalidate()
         }
     }
+
+    fun setData(counterPoint: MutableList<MutableList<Int>>) {
+        if (counterPoint.size >= 6) {
+            val aPointIndex = 1
+            val bPointIndex = 2
+            aPoint = Point(counterPoint[aPointIndex][0], counterPoint[aPointIndex][1])
+            bPoint = Point(counterPoint[bPointIndex][0], counterPoint[bPointIndex][1])
+
+            val startPointIndex = 4
+            val endPointIndex = 5
+
+            startPoint = Point(counterPoint[startPointIndex][0], counterPoint[startPointIndex][1])
+            endPoint  = Point(counterPoint[endPointIndex][0], counterPoint[endPointIndex][1])
+
+            invalidate()
+        }
+
+
+
+    }
+
+
 }
