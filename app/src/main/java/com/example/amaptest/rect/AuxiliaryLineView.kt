@@ -364,24 +364,32 @@ class AuxiliaryLineView @JvmOverloads constructor(
         }
     }
 
-    fun setData(counterPoint: MutableList<MutableList<Int>>) {
-        if (counterPoint.size >= 6) {
-            val aPointIndex = 1
-            val bPointIndex = 2
-            aPoint = Point(counterPoint[aPointIndex][0], counterPoint[aPointIndex][1])
-            bPoint = Point(counterPoint[bPointIndex][0], counterPoint[bPointIndex][1])
+    fun setCurrentGraph(counterPoint: List<MutableList<Int>>) {
+        if (counterPoint.size == 4) {
+            aPoint = Point(counterPoint[0][0], counterPoint[0][1])
+            bPoint = Point(counterPoint[1][0], counterPoint[1][1])
 
-            val startPointIndex = 4
-            val endPointIndex = 5
-
-            startPoint = Point(counterPoint[startPointIndex][0], counterPoint[startPointIndex][1])
-            endPoint = Point(counterPoint[endPointIndex][0], counterPoint[endPointIndex][1])
-
+            startPoint = Point(counterPoint[2][0], counterPoint[2][1])
+            endPoint = Point(counterPoint[3][0], counterPoint[3][1])
             invalidate()
         }
-
-
     }
+
+    fun getCurrentGraph(): List<List<Int>> {
+        val start = startPoint ?: return emptyList()
+        val end = endPoint ?: return emptyList()
+        val apoint = aPoint ?: return emptyList()
+        val bpoint = bPoint ?: return emptyList()
+
+        return mutableListOf(
+            mutableListOf(apoint.x, apoint.y),
+            mutableListOf(bpoint.x, bpoint.y),
+            mutableListOf(start.x, start.y),
+            mutableListOf(end.x, end.y)
+        )
+    }
+
+
 
 
 }
