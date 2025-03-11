@@ -70,33 +70,39 @@ class AuxiliaryLineView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        val start = startPoint
+        val end = endPoint
+
         // Draw main line
-        if (startPoint != null && endPoint != null) {
+        if (start != null && end != null) {
             canvas.drawLine(
-                startPoint!!.x.toFloat(),
-                startPoint!!.y.toFloat(),
-                endPoint!!.x.toFloat(),
-                endPoint!!.y.toFloat(),
+                start.x.toFloat(),
+                start.y.toFloat(),
+                end.x.toFloat(),
+                end.y.toFloat(),
                 mainLinePaint
             )
             // Draw "Result" label at the start point
-            drawLabel(canvas, startPoint!!, "Result")
+            drawLabel(canvas, start, "Result")
         }
 
+        val ap = aPoint
+        val bp = bPoint
+
         // Draw auxiliary line and labels
-        if (aPoint != null && bPoint != null) {
+        if (ap != null && bp != null) {
             canvas.drawLine(
-                aPoint!!.x.toFloat(),
-                aPoint!!.y.toFloat(),
-                bPoint!!.x.toFloat(),
-                bPoint!!.y.toFloat(),
+                ap.x.toFloat(),
+                ap.y.toFloat(),
+                bp.x.toFloat(),
+                bp.y.toFloat(),
                 auxiliaryLinePaint
             )
             // Draw arrow at B point
-            drawArrow(canvas, bPoint!!, aPoint!!, arrowLength)
+            drawArrow(canvas, bp, ap, arrowLength)
             // Draw A and B labels
-            drawLabel(canvas, aPoint!!, if (!isSwapped) "A" else "B")
-            drawLabel(canvas, bPoint!!, if (!isSwapped) "B" else "A")
+            drawLabel(canvas, ap, if (!isSwapped) "A" else "B")
+            drawLabel(canvas, bp, if (!isSwapped) "B" else "A")
         }
     }
 
@@ -125,7 +131,18 @@ class AuxiliaryLineView @JvmOverloads constructor(
                     max(0, min(height, event.y.roundToInt())),
                 )
 
-                generateAuxiliaryLine()
+                val start = startPoint
+                val end = endPoint
+                if (start != null && end != null) {
+                    generateAuxiliaryLine(
+                        start,
+                        end
+                    ).let {
+                        aPoint = it.first
+                        bPoint = it.second
+                    }
+                }
+
                 invalidate() // Redraw
                 return true
             }
@@ -133,20 +150,21 @@ class AuxiliaryLineView @JvmOverloads constructor(
         return super.onTouchEvent(event)
     }
 
-    private fun generateAuxiliaryLine() {
-        if (startPoint == null || endPoint == null) return
-
-        val mainLineLength = calculateDistance(startPoint!!, endPoint!!)
+    private fun generateAuxiliaryLine(
+        startPoint: Point,
+        endPoint: Point,
+    ): Pair<Point, Point> {
+        val mainLineLength = calculateDistance(startPoint, endPoint)
         val auxiliaryLineLength = mainLineLength * 0.6
         val centerPoint = Point(
-            ((startPoint!!.x + endPoint!!.x) / 2f).roundToInt(),
-            ((startPoint!!.y + endPoint!!.y) / 2f).roundToInt()
+            ((startPoint.x + endPoint.x) / 2f).roundToInt(),
+            ((startPoint.y + endPoint.y) / 2f).roundToInt()
         )
 
         // Calculate the angle of the main line
         val angle = atan2(
-            (endPoint!!.y - startPoint!!.y).toDouble(),
-            (endPoint!!.x - startPoint!!.x).toDouble()
+            (endPoint.y - startPoint.y).toDouble(),
+            (endPoint.x - startPoint.x).toDouble()
         )
 
         // Calculate the perpendicular angle
@@ -158,85 +176,93 @@ class AuxiliaryLineView @JvmOverloads constructor(
         val aX = centerPoint.x - (auxiliaryLineLength / 2 * cos(perpendicularAngle)).roundToInt()
         val aY = centerPoint.y - (auxiliaryLineLength / 2 * sin(perpendicularAngle)).roundToInt()
 
-        bPoint = Point(bX, bY)
-        aPoint = Point(aX, aY)
-
         // Adjust points if they are outside the view bounds
-        adjustPointsToBounds()
+        return adjustPointsToBounds(
+            padding,
+            width,
+            height,
+            aPoint = Point(aX, aY),
+            bPoint = Point(bX, bY),
+        )
     }
 
-    private fun adjustPointsToBounds() {
-        if (aPoint == null || bPoint == null || startPoint == null || endPoint == null) return
-
+    private fun adjustPointsToBounds(
+        padding: Int,
+        width: Int,
+        height: Int,
+        aPoint: Point,
+        bPoint: Point,
+    ) : Pair<Point, Point> {
         val viewBounds = android.graphics.Rect(padding, padding, width - padding, height - padding)
 
         // Check if A or B is out of bounds and adjust
-        var aOutOfBounds = !viewBounds.contains(aPoint!!.x, aPoint!!.y)
-        var bOutOfBounds = !viewBounds.contains(bPoint!!.x, bPoint!!.y)
+        val aOutOfBounds = !viewBounds.contains(aPoint.x, aPoint.y)
+        val bOutOfBounds = !viewBounds.contains(bPoint.x, bPoint.y)
 
-        if (!aOutOfBounds && !bOutOfBounds) return
+        if (!aOutOfBounds && !bOutOfBounds) return Pair(aPoint, bPoint)
 
         if (aOutOfBounds && bOutOfBounds) {
             // Both points are out of bounds, move the entire line
             val dx = when {
-                aPoint!!.x < viewBounds.left -> viewBounds.left - aPoint!!.x
-                aPoint!!.x > viewBounds.right -> viewBounds.right - aPoint!!.x
+                aPoint.x < viewBounds.left -> viewBounds.left - aPoint.x
+                aPoint.x > viewBounds.right -> viewBounds.right - aPoint.x
                 else -> 0
             }
             val dy = when {
-                aPoint!!.y < viewBounds.top -> viewBounds.top - aPoint!!.y
-                aPoint!!.y > viewBounds.bottom -> viewBounds.bottom - aPoint!!.y
+                aPoint.y < viewBounds.top -> viewBounds.top - aPoint.y
+                aPoint.y > viewBounds.bottom -> viewBounds.bottom - aPoint.y
                 else -> 0
             }
-            aPoint!!.offset(dx, dy)
-            bPoint!!.offset(dx, dy)
+            aPoint.offset(dx, dy)
+            bPoint.offset(dx, dy)
         } else if (aOutOfBounds) {
             // Only A is out of bounds, move A towards B
-            val angle = atan2((bPoint!!.y - aPoint!!.y).toDouble(), (bPoint!!.x - aPoint!!.x).toDouble())
+            val angle = atan2((bPoint.y - aPoint.y).toDouble(), (bPoint.x - aPoint.x).toDouble())
             val moveDistance = when {
-                aPoint!!.x < viewBounds.left -> viewBounds.left - aPoint!!.x
-                aPoint!!.x > viewBounds.right -> aPoint!!.x - viewBounds.right
-                aPoint!!.y < viewBounds.top -> viewBounds.top - aPoint!!.y
-                aPoint!!.y > viewBounds.bottom -> aPoint!!.y - viewBounds.bottom
+                aPoint.x < viewBounds.left -> viewBounds.left - aPoint.x
+                aPoint.x > viewBounds.right -> aPoint.x - viewBounds.right
+                aPoint.y < viewBounds.top -> viewBounds.top - aPoint.y
+                aPoint.y > viewBounds.bottom -> aPoint.y - viewBounds.bottom
                 else -> 0
             }
             val moveX = (moveDistance * cos(angle)).roundToInt()
             val moveY = (moveDistance * sin(angle)).roundToInt()
-            aPoint!!.offset(moveX, moveY)
+            aPoint.offset(moveX, moveY)
         } else if (bOutOfBounds) {
             // Only B is out of bounds, move B towards A
-            val angle = atan2((aPoint!!.y - bPoint!!.y).toDouble(), (aPoint!!.x - bPoint!!.x).toDouble())
+            val angle = atan2((aPoint.y - bPoint.y).toDouble(), (aPoint.x - bPoint.x).toDouble())
             val moveDistance = when {
-                bPoint!!.x < viewBounds.left -> viewBounds.left - bPoint!!.x
-                bPoint!!.x > viewBounds.right -> bPoint!!.x - viewBounds.right
-                bPoint!!.y < viewBounds.top -> viewBounds.top - bPoint!!.y
-                bPoint!!.y > viewBounds.bottom -> bPoint!!.y - viewBounds.bottom
+                bPoint.x < viewBounds.left -> viewBounds.left - bPoint.x
+                bPoint.x > viewBounds.right -> bPoint.x - viewBounds.right
+                bPoint.y < viewBounds.top -> viewBounds.top - bPoint.y
+                bPoint.y > viewBounds.bottom -> bPoint.y - viewBounds.bottom
                 else -> 0
             }
             val moveX = (moveDistance * cos(angle)).roundToInt()
             val moveY = (moveDistance * sin(angle)).roundToInt()
-            bPoint!!.offset(moveX, moveY)
+            bPoint.offset(moveX, moveY)
         }
         // Check if after moving, the points are still out of bounds
-        if (!viewBounds.contains(aPoint!!.x, aPoint!!.y) || !viewBounds.contains(bPoint!!.x, bPoint!!.y)) {
+        if (!viewBounds.contains(aPoint.x, aPoint.y) || !viewBounds.contains(bPoint.x, bPoint.y)) {
             // If still out of bounds, move the entire line
             val dx = when {
-                aPoint!!.x < viewBounds.left -> viewBounds.left - aPoint!!.x
-                bPoint!!.x < viewBounds.left -> viewBounds.left - bPoint!!.x
-                aPoint!!.x > viewBounds.right -> viewBounds.right - aPoint!!.x
-                bPoint!!.x > viewBounds.right -> viewBounds.right - bPoint!!.x
+                aPoint.x < viewBounds.left -> viewBounds.left - aPoint.x
+                bPoint.x < viewBounds.left -> viewBounds.left - bPoint.x
+                aPoint.x > viewBounds.right -> viewBounds.right - aPoint.x
+                bPoint.x > viewBounds.right -> viewBounds.right - bPoint.x
                 else -> 0
             }
             val dy = when {
-                aPoint!!.y < viewBounds.top -> viewBounds.top - aPoint!!.y
-                bPoint!!.y < viewBounds.top -> viewBounds.top - bPoint!!.y
-                aPoint!!.y > viewBounds.bottom -> viewBounds.bottom - aPoint!!.y
-                bPoint!!.y > viewBounds.bottom -> viewBounds.bottom - bPoint!!.y
+                aPoint.y < viewBounds.top -> viewBounds.top - aPoint.y
+                bPoint.y < viewBounds.top -> viewBounds.top - bPoint.y
+                aPoint.y > viewBounds.bottom -> viewBounds.bottom - aPoint.y
+                bPoint.y > viewBounds.bottom -> viewBounds.bottom - bPoint.y
                 else -> 0
             }
-            aPoint!!.offset(dx, dy)
-            bPoint!!.offset(dx, dy)
+            aPoint.offset(dx, dy)
+            bPoint.offset(dx, dy)
         }
+        return Pair(aPoint, bPoint)
     }
 
     private fun drawArrow(
