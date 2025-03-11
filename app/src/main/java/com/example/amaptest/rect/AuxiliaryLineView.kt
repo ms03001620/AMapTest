@@ -440,7 +440,10 @@ class AuxiliaryLineView @JvmOverloads constructor(
         return result
     }
 
-
+    fun clearGraph() {
+        graphList[graphIndex] = Graph()
+        invalidate()
+    }
 
 
 }

@@ -25,7 +25,7 @@ class AuxiliaryLineActivity : AppCompatActivity() {
         )
 
         viewBinding.btnClear.setOnClickListener {
-
+            viewBinding.auxiliaryLineView.clearGraph()
         }
 
 
