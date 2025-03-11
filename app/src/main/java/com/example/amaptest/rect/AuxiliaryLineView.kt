@@ -392,7 +392,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
     }
 
     fun setCurrentGraph(counterPoint: List<MutableList<Int>>) {
-        if (counterPoint.size == 4) {
+        if (counterPoint.size >= 4) {
             graphList[graphIndex].aPoint = Point(counterPoint[0][0], counterPoint[0][1])
             graphList[graphIndex].bPoint = Point(counterPoint[1][0], counterPoint[1][1])
 
@@ -400,11 +400,11 @@ class AuxiliaryLineView @JvmOverloads constructor(
             graphList[graphIndex].endPoint = Point(counterPoint[3][0], counterPoint[3][1])
         }
 
-/*        if (counterPoint.size > 4) {
+        if (counterPoint.size > 4) {
             graphList[graphIndex].paths = counterPoint.subList(4, counterPoint.size - 1).map {
                 Point(it[0], it[1])
             }
-        }*/
+        }
 
         invalidate()
     }

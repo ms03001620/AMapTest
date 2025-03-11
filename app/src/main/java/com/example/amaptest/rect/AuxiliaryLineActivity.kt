@@ -19,7 +19,7 @@ class AuxiliaryLineActivity : AppCompatActivity() {
         viewBinding.auxiliaryLineView.setGraphNumber(4)
 
         viewBinding.auxiliaryLineView.setCurrentGraph(
-            counterPoint.filterIndexed { index, _ ->
+            counterPointWithPath.filterIndexed { index, _ ->
                 index != configIndex && index != osdIndex
             }
         )
