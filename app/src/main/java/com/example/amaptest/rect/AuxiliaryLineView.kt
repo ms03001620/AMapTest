@@ -69,47 +69,43 @@ class AuxiliaryLineView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val start = startPoint
-        val end = endPoint
+        val start = mapToScreenPoint(startPoint ?: return)
+        val end = mapToScreenPoint(endPoint ?: return)
 
         // Draw main line
-        if (start != null && end != null) {
-            canvas.drawLine(
-                start.x.toFloat(),
-                start.y.toFloat(),
-                end.x.toFloat(),
-                end.y.toFloat(),
-                mainLinePaint
-            )
-            // Draw "Result" label at the start point
-            drawLabel(canvas, start, "Result")
-        }
+        canvas.drawLine(
+            start.x.toFloat(),
+            start.y.toFloat(),
+            end.x.toFloat(),
+            end.y.toFloat(),
+            mainLinePaint
+        )
+        // Draw "Result" label at the start point
+        drawLabel(canvas, start, "Result")
 
-        val ap = aPoint
-        val bp = bPoint
+        val ap = mapToScreenPoint(aPoint ?: return)
+        val bp = mapToScreenPoint(bPoint ?: return)
 
         // Draw auxiliary line and labels
-        if (ap != null && bp != null) {
-            canvas.drawLine(
-                ap.x.toFloat(),
-                ap.y.toFloat(),
-                bp.x.toFloat(),
-                bp.y.toFloat(),
-                auxiliaryLinePaint
-            )
-            // Draw arrow at B point
-            drawArrow(canvas, bp, ap, arrowLength)
-            // Draw A and B labels
-            drawLabel(canvas, ap, "A")
-            drawLabel(canvas, bp, "B")
-        }
+        canvas.drawLine(
+            ap.x.toFloat(),
+            ap.y.toFloat(),
+            bp.x.toFloat(),
+            bp.y.toFloat(),
+            auxiliaryLinePaint
+        )
+        // Draw arrow at B point
+        drawArrow(canvas, bp, ap, arrowLength)
+        // Draw A and B labels
+        drawLabel(canvas, ap, "A")
+        drawLabel(canvas, bp, "B")
     }
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                startPoint = Point(event.x.roundToInt(), event.y.roundToInt())
+                startPoint = mapToScalePoint(Point(event.x.roundToInt(), event.y.roundToInt()))
                 aPoint = null
                 bPoint = null
                 invalidate() // Redraw
@@ -117,7 +113,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
             }
 
             MotionEvent.ACTION_MOVE -> {
-                endPoint = Point(event.x.roundToInt(), event.y.roundToInt())
+                endPoint = mapToScalePoint(Point(event.x.roundToInt(), event.y.roundToInt()))
                 aPoint = null
                 bPoint = null
                 invalidate() // Redraw
@@ -125,9 +121,11 @@ class AuxiliaryLineView @JvmOverloads constructor(
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                endPoint = Point(
-                    max(0, min(width, event.x.roundToInt())),
-                    max(0, min(height, event.y.roundToInt())),
+                endPoint = mapToScalePoint(
+                    Point(
+                        max(0, min(width, event.x.roundToInt())),
+                        max(0, min(height, event.y.roundToInt())),
+                    )
                 )
 
                 val start = startPoint
@@ -191,7 +189,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
         height: Int,
         aPoint: Point,
         bPoint: Point,
-    ) : Pair<Point, Point> {
+    ): Pair<Point, Point> {
         val viewBounds = android.graphics.Rect(padding, padding, width - padding, height - padding)
 
         // Check if A or B is out of bounds and adjust
@@ -377,11 +375,10 @@ class AuxiliaryLineView @JvmOverloads constructor(
             val endPointIndex = 5
 
             startPoint = Point(counterPoint[startPointIndex][0], counterPoint[startPointIndex][1])
-            endPoint  = Point(counterPoint[endPointIndex][0], counterPoint[endPointIndex][1])
+            endPoint = Point(counterPoint[endPointIndex][0], counterPoint[endPointIndex][1])
 
             invalidate()
         }
-
 
 
     }
