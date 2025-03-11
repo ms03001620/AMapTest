@@ -83,14 +83,17 @@ class AuxiliaryLineView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        drawMainLine(canvas)
-        drawAuxiliaryLine(canvas)
-        drawPath(canvas)
+
+        graphList.forEach { graph ->
+            drawMainLine(canvas, graph)
+            drawAuxiliaryLine(canvas, graph)
+            drawPath(canvas, graph)
+        }
     }
 
-    private fun drawMainLine(canvas: Canvas) {
-        val start = mapToScreenPoint(graphList[graphIndex].startPoint ?: return)
-        val end = mapToScreenPoint(graphList[graphIndex].endPoint ?: return)
+    private fun drawMainLine(canvas: Canvas, graph: Graph) {
+        val start = mapToScreenPoint(graph.startPoint ?: return)
+        val end = mapToScreenPoint(graph.endPoint ?: return)
 
         // Draw main line
         canvas.drawLine(
@@ -104,9 +107,9 @@ class AuxiliaryLineView @JvmOverloads constructor(
         drawLabel(canvas, start, "Result")
     }
 
-    private fun drawAuxiliaryLine(canvas: Canvas) {
-        val ap = mapToScreenPoint(graphList[graphIndex].aPoint ?: return)
-        val bp = mapToScreenPoint(graphList[graphIndex].bPoint ?: return)
+    private fun drawAuxiliaryLine(canvas: Canvas, graph: Graph) {
+        val ap = mapToScreenPoint(graph.aPoint ?: return)
+        val bp = mapToScreenPoint(graph.bPoint ?: return)
 
         // Draw auxiliary line and labels
         canvas.drawLine(
@@ -123,10 +126,10 @@ class AuxiliaryLineView @JvmOverloads constructor(
         drawLabel(canvas, bp, "B")
     }
 
-    private fun drawPath(canvas: Canvas) {
-        val paths = graphList[graphIndex].paths
+    private fun drawPath(canvas: Canvas, graph: Graph) {
+        val paths = graph.paths
         if (!paths.isNullOrEmpty()) {
-            val end = mapToScreenPoint(graphList[graphIndex].endPoint ?: return)
+            val end = mapToScreenPoint(graph.endPoint ?: return)
             val path = Path()
             path.moveTo(end.x.toFloat(), end.y.toFloat())
             paths.forEach {
@@ -402,17 +405,24 @@ class AuxiliaryLineView @JvmOverloads constructor(
         }
     }
 
-    fun setCurrentGraph(counterPoint: List<MutableList<Int>>) {
-        if (counterPoint.size >= 4) {
-            graphList[graphIndex].aPoint = Point(counterPoint[0][0], counterPoint[0][1])
-            graphList[graphIndex].bPoint = Point(counterPoint[1][0], counterPoint[1][1])
+    fun setGraph(graphs: List<List<MutableList<Int>>>) {
+        graphs.forEachIndexed { index, mutableLists ->
+            setCurrentGraph(index, mutableLists)
+        }
+    }
 
-            graphList[graphIndex].startPoint = Point(counterPoint[2][0], counterPoint[2][1])
-            graphList[graphIndex].endPoint = Point(counterPoint[3][0], counterPoint[3][1])
+    fun setCurrentGraph(index: Int = 0, counterPoint: List<MutableList<Int>>) {
+        if (counterPoint.size >= 4) {
+            graphIndex = index
+            graphList[index].aPoint = Point(counterPoint[0][0], counterPoint[0][1])
+            graphList[index].bPoint = Point(counterPoint[1][0], counterPoint[1][1])
+
+            graphList[index].startPoint = Point(counterPoint[2][0], counterPoint[2][1])
+            graphList[index].endPoint = Point(counterPoint[3][0], counterPoint[3][1])
         }
 
         if (counterPoint.size > 4) {
-            graphList[graphIndex].paths = counterPoint.subList(4, counterPoint.size).map {
+            graphList[index].paths = counterPoint.subList(4, counterPoint.size).map {
                 Point(it[0], it[1])
             }
         }
