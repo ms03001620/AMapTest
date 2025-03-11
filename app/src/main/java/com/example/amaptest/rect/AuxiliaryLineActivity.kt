@@ -63,6 +63,19 @@ class AuxiliaryLineActivity : AppCompatActivity() {
             mutableListOf(143, 387),//4 start
             mutableListOf(363, 108)//5 end
         )
+
+        val groupGraph = mutableListOf(
+            counterPoint,
+            mutableListOf(
+                mutableListOf(2, 20),
+                mutableListOf(532, 306),
+                mutableListOf(703, 327),
+                mutableListOf(629, 520),
+                mutableListOf(629, 520),
+                mutableListOf(662, 115)
+            )
+        )
+
     }
 
 }
