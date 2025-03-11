@@ -16,7 +16,7 @@ class AuxiliaryLineActivity : AppCompatActivity() {
         val viewBinding = ActivityAuxiliaryLineBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
-        viewBinding.auxiliaryLineView.setGraphNumber(4)
+        viewBinding.auxiliaryLineView.setGraphNumber(maxShapes)
 
 /*        viewBinding.auxiliaryLineView.setCurrentGraph(
             index = 0,
@@ -31,10 +31,14 @@ class AuxiliaryLineActivity : AppCompatActivity() {
 
 
         viewBinding.btnIndex.setOnClickListener {
-
+            val index = viewBinding.auxiliaryLineView.getCurrentGraphIndex()
+            val newIndex = (index + 1) % maxShapes
+            viewBinding.auxiliaryLineView.setCurrentGraphIndex(newIndex)
+            viewBinding.btnIndex.text = "[${viewBinding.auxiliaryLineView.getCurrentGraphIndex()}]"
         }
 
         viewBinding.btnEdit.setOnCheckedChangeListener { _, isChecked ->
+            viewBinding.btnIndex.isEnabled = isChecked
             viewBinding.auxiliaryLineView.setEditModel(isChecked)
         }
 

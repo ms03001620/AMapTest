@@ -18,11 +18,11 @@
             android:text="edit"/>
 
         <Button
-            android:enabled="false"
             android:id="@+id/btnIndex"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="[0]"/>
+            android:enabled="false"
+            android:text="[0]" />
 
         <Button
             android:id="@+id/btnClear"
