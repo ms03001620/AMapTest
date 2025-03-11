@@ -27,61 +27,67 @@ class AuxiliaryLineView @JvmOverloads constructor(
 ) : View(context, attrs, defStyleAttr) {
 
     // State
-    data class Graph(
-        // 主线起点
-        var startPoint: Point? = null,
-        // 主线终点
-        var endPoint: Point? = null,
-        // 辅助线起点
-        var aPoint: Point? = null,
-        // 辅助线终点
-        var bPoint: Point? = null,
-        // 主线其他点
-        var paths: List<Point>? = null,
-    )
-
     private val graphList = mutableListOf(Graph())
     private var graphIndex = 0
     private var isEditModel = false
-
-    // Configuration
-    val green = Color.parseColor("#008016")
-    var mainLineColor = Color.RED
-    var auxiliaryLineColor = Color.YELLOW
-    var textColor = green
-    var padding = 20
-    var lineWidth = 4f
-    var screenSize = Point(704, 576) // Default screen size
-    var arrowLength = 28
+    private var arrowLength: Int = 0
+    private var padding: Int = 0
+    private var screenSize = Point(0, 0)
 
     // Paint objects
-    private val mainLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = mainLineColor
-        strokeWidth = lineWidth
+    private val mainLineOnPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
     }
 
     private val mainLineOffPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = green
-        strokeWidth = lineWidth
         style = Paint.Style.STROKE
     }
 
     private val auxiliaryLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = auxiliaryLineColor
-        strokeWidth = lineWidth
         style = Paint.Style.STROKE
     }
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = textColor
-        textSize = 40f // Adjust as needed
         textAlign = Paint.Align.CENTER
     }
+
     private val arrowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = auxiliaryLineColor
-        strokeWidth = lineWidth
         style = Paint.Style.STROKE
+    }
+
+    init {
+        setConfig()
+    }
+
+    fun setConfig(
+        mainLineOnColor: Int = Color.RED,
+        mainLineOffColor: Int = Color.parseColor("#008016"),
+        auxiliaryLineColor: Int = Color.YELLOW,
+        textColor: Int = Color.parseColor("#008016"),
+        textSize: Float = 40f,
+        padding: Int = 20,
+        strokeWidth: Float = 4f,
+        screenSize: Point = Point(704, 576),
+        arrowLength: Int = 28,
+    ) {
+        mainLineOnPaint.setColor(mainLineOnColor)
+        mainLineOnPaint.strokeWidth = strokeWidth
+
+        mainLineOffPaint.setColor(mainLineOffColor)
+        mainLineOffPaint.strokeWidth = strokeWidth
+
+        auxiliaryLinePaint.setColor(auxiliaryLineColor)
+        auxiliaryLinePaint.strokeWidth = strokeWidth
+
+        arrowPaint.setColor(auxiliaryLineColor)
+        arrowPaint.strokeWidth = strokeWidth
+
+        textPaint.setColor(textColor)
+        textPaint.textSize = textSize
+
+        this.padding = padding
+        this.screenSize = screenSize
+        this.arrowLength = arrowLength
     }
 
     fun setGraphNumber(number: Int) {
@@ -97,12 +103,12 @@ class AuxiliaryLineView @JvmOverloads constructor(
         super.onDraw(canvas)
 
         graphList.forEachIndexed { index, graph ->
-            val mainLinePaint =
-                if (index == graphIndex && isEditModel) mainLinePaint else mainLineOffPaint
+            val linePaint =
+                if (index == graphIndex && isEditModel) mainLineOnPaint else mainLineOffPaint
 
-            drawMainLine(canvas, graph, mainLinePaint)
+            drawMainLine(canvas, graph, linePaint)
             drawAuxiliaryLine(canvas, graph)
-            drawPath(canvas, graph, mainLinePaint)
+            drawPath(canvas, graph, linePaint)
         }
     }
 
@@ -448,20 +454,23 @@ class AuxiliaryLineView @JvmOverloads constructor(
         invalidate()
     }
 
-    fun getCurrentGraph(): List<List<Int>> {
-        val start = graphList[graphIndex].startPoint ?: return emptyList()
-        val end = graphList[graphIndex].endPoint ?: return emptyList()
-        val apoint = graphList[graphIndex].aPoint ?: return emptyList()
-        val bpoint = graphList[graphIndex].bPoint ?: return emptyList()
+    fun getCurrentGraph(
+        index: Int = this.graphIndex
+    ): List<List<Int>> {
+        val graph = graphList[index]
+        val start = graph.startPoint ?: return emptyList()
+        val end = graph.endPoint ?: return emptyList()
+        val aPoint = graph.aPoint ?: return emptyList()
+        val bPoint = graph.bPoint ?: return emptyList()
 
         val result = mutableListOf(
-            mutableListOf(apoint.x, apoint.y),
-            mutableListOf(bpoint.x, bpoint.y),
+            mutableListOf(aPoint.x, aPoint.y),
+            mutableListOf(bPoint.x, bPoint.y),
             mutableListOf(start.x, start.y),
             mutableListOf(end.x, end.y),
         )
 
-        graphList[graphIndex].paths?.map {
+        graph.paths?.map {
             result.add(mutableListOf(it.x, it.y))
         }
 
@@ -485,5 +494,16 @@ class AuxiliaryLineView @JvmOverloads constructor(
         invalidate()
     }
 
-
+    data class Graph(
+        // 主线起点
+        var startPoint: Point? = null,
+        // 主线终点
+        var endPoint: Point? = null,
+        // 辅助线起点
+        var aPoint: Point? = null,
+        // 辅助线终点
+        var bPoint: Point? = null,
+        // 主线其他点
+        var paths: List<Point>? = null,
+    )
 }
