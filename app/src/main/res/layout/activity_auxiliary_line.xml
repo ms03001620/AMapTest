@@ -39,7 +39,7 @@
 
     </LinearLayout>
 
-    <com.example.amaptest.rect.DrawPathRectView
+    <com.example.amaptest.rect.AuxiliaryLineView
         android:layout_margin="30dp"
         android:id="@+id/drawPathRectView"
         android:background="#2222"
