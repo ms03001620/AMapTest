@@ -360,8 +360,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
         canvas.drawText(text, x, y, textPaint)
     }
 
-
-    fun calculateDistance(p1: Point, p2: Point): Double {
+    private fun calculateDistance(p1: Point, p2: Point): Double {
         val dx = p2.x - p1.x
         val dy = p2.y - p1.y
         return sqrt(dx.toDouble().pow(2) + dy.toDouble().pow(2))
@@ -427,12 +426,18 @@ class AuxiliaryLineView @JvmOverloads constructor(
         val apoint = graphList[graphIndex].aPoint ?: return emptyList()
         val bpoint = graphList[graphIndex].bPoint ?: return emptyList()
 
-        return mutableListOf(
+        val result = mutableListOf(
             mutableListOf(apoint.x, apoint.y),
             mutableListOf(bpoint.x, bpoint.y),
             mutableListOf(start.x, start.y),
-            mutableListOf(end.x, end.y)
+            mutableListOf(end.x, end.y),
         )
+
+        graphList[graphIndex].paths?.map {
+            result.add(mutableListOf(it.x, it.y))
+        }
+
+        return result
     }
 
 

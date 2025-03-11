@@ -44,6 +44,7 @@ class AuxiliaryLineActivity : AppCompatActivity() {
 
         viewBinding.btnSave.setOnClickListener {
             val msg = viewBinding.auxiliaryLineView.getCurrentGraph().toTypedArray().contentToString()
+            println(msg)
             Toast.makeText(this, msg, Toast.LENGTH_LONG).show()
 
         }
