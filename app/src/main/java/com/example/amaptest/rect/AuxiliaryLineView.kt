@@ -33,6 +33,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
     var padding = 20
     var lineWidth = 4f
     var screenSize = Point(704, 576) // Default screen size
+    var arrowLength = 28
 
     // State
     private var startPoint: Point? = null
@@ -92,7 +93,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
                 auxiliaryLinePaint
             )
             // Draw arrow at B point
-            drawArrow(canvas, bPoint!!, aPoint!!)
+            drawArrow(canvas, bPoint!!, aPoint!!, arrowLength)
             // Draw A and B labels
             drawLabel(canvas, aPoint!!, if (!isSwapped) "A" else "B")
             drawLabel(canvas, bPoint!!, if (!isSwapped) "B" else "A")
@@ -238,9 +239,13 @@ class AuxiliaryLineView @JvmOverloads constructor(
         }
     }
 
-    private fun drawArrow(canvas: Canvas, from: Point, to: Point) {
+    private fun drawArrow(
+        canvas: Canvas,
+        from: Point,
+        to: Point,
+        arrowLength: Int,
+    ) {
         val angle = atan2((to.y - from.y).toDouble(), (to.x - from.x).toDouble())
-        val arrowLength = calculateDistance(from, to) * 0.09 // 8% of auxiliary line length
         val arrowAngle = Math.PI / 6 // 30 degrees
 
         val leftArrowX = from.x + (arrowLength * cos(angle - arrowAngle)).roundToInt()
@@ -248,11 +253,27 @@ class AuxiliaryLineView @JvmOverloads constructor(
         val rightArrowX = from.x + (arrowLength * cos(angle + arrowAngle)).roundToInt()
         val rightArrowY = from.y + (arrowLength * sin(angle + arrowAngle)).roundToInt()
 
-        canvas.drawLine(from.x.toFloat(), from.y.toFloat(), leftArrowX.toFloat(), leftArrowY.toFloat(), arrowPaint)
-        canvas.drawLine(from.x.toFloat(), from.y.toFloat(), rightArrowX.toFloat(), rightArrowY.toFloat(), arrowPaint)
+        canvas.drawLine(
+            from.x.toFloat(),
+            from.y.toFloat(),
+            leftArrowX.toFloat(),
+            leftArrowY.toFloat(),
+            arrowPaint
+        )
+        canvas.drawLine(
+            from.x.toFloat(),
+            from.y.toFloat(),
+            rightArrowX.toFloat(),
+            rightArrowY.toFloat(),
+            arrowPaint
+        )
     }
 
-    private fun drawLabel(canvas: Canvas, point: Point, text: String) {
+    private fun drawLabel(
+        canvas: Canvas,
+        point: Point,
+        text: String,
+    ) {
         val textBounds = android.graphics.Rect()
         textPaint.getTextBounds(text, 0, text.length, textBounds)
         val textWidth = textBounds.width()
