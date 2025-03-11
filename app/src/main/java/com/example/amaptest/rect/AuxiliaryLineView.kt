@@ -1,11 +1,11 @@
 package com.example.amaptest.rect
 
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Path
 import android.graphics.Point
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -19,6 +19,7 @@ import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+@SuppressLint("ClickableViewAccessibility")
 class AuxiliaryLineView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
@@ -55,7 +56,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = textColor
-        textSize = 30f // Adjust as needed
+        textSize = 40f // Adjust as needed
         textAlign = Paint.Align.CENTER
     }
     private val arrowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -64,7 +65,6 @@ class AuxiliaryLineView @JvmOverloads constructor(
         style = Paint.Style.STROKE
     }
 
-    // ... (Rest of the class will be added below)
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -99,18 +99,21 @@ class AuxiliaryLineView @JvmOverloads constructor(
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent): Boolean {
 
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 startPoint = Point(event.x.roundToInt(), event.y.roundToInt())
-                endPoint = Point(event.x.roundToInt(), event.y.roundToInt())
+                aPoint = null
+                bPoint = null
                 invalidate() // Redraw
                 return true
             }
 
             MotionEvent.ACTION_MOVE -> {
                 endPoint = Point(event.x.roundToInt(), event.y.roundToInt())
+                aPoint = null
+                bPoint = null
                 invalidate() // Redraw
                 return true
             }
@@ -161,55 +164,10 @@ class AuxiliaryLineView @JvmOverloads constructor(
         adjustPointsToBounds()
     }
 
-    private fun drawArrow(canvas: Canvas, from: Point, to: Point) {
-        val angle = atan2((to.y - from.y).toDouble(), (to.x - from.x).toDouble())
-        val arrowLength = calculateDistance(from, to) * 0.08 // 8% of auxiliary line length
-        val arrowAngle = Math.PI / 6 // 30 degrees
-
-        val leftArrowX = from.x + (arrowLength * cos(angle - arrowAngle)).roundToInt()
-        val leftArrowY = from.y + (arrowLength * sin(angle - arrowAngle)).roundToInt()
-        val rightArrowX = from.x + (arrowLength * cos(angle + arrowAngle)).roundToInt()
-        val rightArrowY = from.y + (arrowLength * sin(angle + arrowAngle)).roundToInt()
-
-        canvas.drawLine(from.x.toFloat(), from.y.toFloat(), leftArrowX.toFloat(), leftArrowY.toFloat(), arrowPaint)
-        canvas.drawLine(from.x.toFloat(), from.y.toFloat(), rightArrowX.toFloat(), rightArrowY.toFloat(), arrowPaint)
-    }
-
-    private fun drawLabel(canvas: Canvas, point: Point, text: String) {
-        val textBounds = android.graphics.Rect()
-        textPaint.getTextBounds(text, 0, text.length, textBounds)
-        val textWidth = textBounds.width()
-        val textHeight = textBounds.height()
-
-        var x = point.x.toFloat()
-        var y = point.y.toFloat()
-
-        // Adjust label position to avoid overlapping with the line or going out of bounds
-        if (point.x + textWidth / 2 > width - padding) {
-            x = (width - padding - textWidth / 2).toFloat()
-        } else if (point.x - textWidth / 2 < padding) {
-            x = (padding + textWidth / 2).toFloat()
-        }
-
-        if (point.y - textHeight < padding) {
-            y = (padding + textHeight).toFloat()
-        } else if (point.y > height - padding) {
-            y = (height - padding).toFloat()
-        }
-
-        canvas.drawText(text, x, y, textPaint)
-    }
-
     private fun adjustPointsToBounds() {
         if (aPoint == null || bPoint == null || startPoint == null || endPoint == null) return
 
         val viewBounds = android.graphics.Rect(padding, padding, width - padding, height - padding)
-        val auxiliaryLineLength = calculateDistance(aPoint!!, bPoint!!)
-        val centerPoint = Point(
-            ((startPoint!!.x + endPoint!!.x) / 2f).roundToInt(),
-            ((startPoint!!.y + endPoint!!.y) / 2f).roundToInt()
-        )
-
 
         // Check if A or B is out of bounds and adjust
         var aOutOfBounds = !viewBounds.contains(aPoint!!.x, aPoint!!.y)
@@ -278,6 +236,45 @@ class AuxiliaryLineView @JvmOverloads constructor(
             aPoint!!.offset(dx, dy)
             bPoint!!.offset(dx, dy)
         }
+    }
+
+    private fun drawArrow(canvas: Canvas, from: Point, to: Point) {
+        val angle = atan2((to.y - from.y).toDouble(), (to.x - from.x).toDouble())
+        val arrowLength = calculateDistance(from, to) * 0.09 // 8% of auxiliary line length
+        val arrowAngle = Math.PI / 6 // 30 degrees
+
+        val leftArrowX = from.x + (arrowLength * cos(angle - arrowAngle)).roundToInt()
+        val leftArrowY = from.y + (arrowLength * sin(angle - arrowAngle)).roundToInt()
+        val rightArrowX = from.x + (arrowLength * cos(angle + arrowAngle)).roundToInt()
+        val rightArrowY = from.y + (arrowLength * sin(angle + arrowAngle)).roundToInt()
+
+        canvas.drawLine(from.x.toFloat(), from.y.toFloat(), leftArrowX.toFloat(), leftArrowY.toFloat(), arrowPaint)
+        canvas.drawLine(from.x.toFloat(), from.y.toFloat(), rightArrowX.toFloat(), rightArrowY.toFloat(), arrowPaint)
+    }
+
+    private fun drawLabel(canvas: Canvas, point: Point, text: String) {
+        val textBounds = android.graphics.Rect()
+        textPaint.getTextBounds(text, 0, text.length, textBounds)
+        val textWidth = textBounds.width()
+        val textHeight = textBounds.height()
+
+        var x = point.x.toFloat()
+        var y = point.y.toFloat()
+
+        // Adjust label position to avoid overlapping with the line or going out of bounds
+        if (point.x + textWidth / 2 > width - padding) {
+            x = (width - padding - textWidth / 2).toFloat()
+        } else if (point.x - textWidth / 2 < padding) {
+            x = (padding + textWidth / 2).toFloat()
+        }
+
+        if (point.y - textHeight < padding) {
+            y = (padding + textHeight).toFloat()
+        } else if (point.y > height - padding) {
+            y = (height - padding).toFloat()
+        }
+
+        canvas.drawText(text, x, y, textPaint)
     }
 
 
