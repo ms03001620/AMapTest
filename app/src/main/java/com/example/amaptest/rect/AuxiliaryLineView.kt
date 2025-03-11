@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.Point
 import android.util.AttributeSet
 import android.view.MotionEvent
@@ -80,10 +81,14 @@ class AuxiliaryLineView @JvmOverloads constructor(
         }
     }
 
-
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        drawMainLine(canvas)
+        drawAuxiliaryLine(canvas)
+        drawPath(canvas)
+    }
 
+    private fun drawMainLine(canvas: Canvas) {
         val start = mapToScreenPoint(graphList[graphIndex].startPoint ?: return)
         val end = mapToScreenPoint(graphList[graphIndex].endPoint ?: return)
 
@@ -97,7 +102,9 @@ class AuxiliaryLineView @JvmOverloads constructor(
         )
         // Draw "Result" label at the start point
         drawLabel(canvas, start, "Result")
+    }
 
+    private fun drawAuxiliaryLine(canvas: Canvas) {
         val ap = mapToScreenPoint(graphList[graphIndex].aPoint ?: return)
         val bp = mapToScreenPoint(graphList[graphIndex].bPoint ?: return)
 
@@ -114,18 +121,21 @@ class AuxiliaryLineView @JvmOverloads constructor(
         // Draw A and B labels
         drawLabel(canvas, ap, "A")
         drawLabel(canvas, bp, "B")
-
-
-        val paths = graphList[graphIndex].paths
-        if(!paths.isNullOrEmpty()){
-            paths.forEach {
-                val point = mapToScreenPoint(it)
-                canvas.drawCircle(point.x.toFloat(), point.y.toFloat(), 10f, mainLinePaint)
-            }
-        }
-
     }
 
+    private fun drawPath(canvas: Canvas) {
+        val paths = graphList[graphIndex].paths
+        if (!paths.isNullOrEmpty()) {
+            val end = mapToScreenPoint(graphList[graphIndex].endPoint ?: return)
+            val path = Path()
+            path.moveTo(end.x.toFloat(), end.y.toFloat())
+            paths.forEach {
+                val point = mapToScreenPoint(it)
+                path.lineTo(point.x.toFloat(), point.y.toFloat())
+            }
+            canvas.drawPath(path, mainLinePaint)
+        }
+    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
@@ -134,6 +144,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
                     mapToScalePoint(Point(event.x.roundToInt(), event.y.roundToInt()))
                 graphList[graphIndex].aPoint = null
                 graphList[graphIndex].bPoint = null
+                graphList[graphIndex].paths = null
                 invalidate() // Redraw
                 return true
             }
@@ -143,6 +154,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
                     mapToScalePoint(Point(event.x.roundToInt(), event.y.roundToInt()))
                 graphList[graphIndex].aPoint = null
                 graphList[graphIndex].bPoint = null
+                graphList[graphIndex].paths = null
                 invalidate() // Redraw
                 return true
             }
@@ -401,7 +413,7 @@ class AuxiliaryLineView @JvmOverloads constructor(
         }
 
         if (counterPoint.size > 4) {
-            graphList[graphIndex].paths = counterPoint.subList(4, counterPoint.size - 1).map {
+            graphList[graphIndex].paths = counterPoint.subList(4, counterPoint.size).map {
                 Point(it[0], it[1])
             }
         }
