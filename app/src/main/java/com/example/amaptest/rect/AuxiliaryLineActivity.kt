@@ -78,6 +78,23 @@ class AuxiliaryLineActivity : AppCompatActivity() {
             )
         )
 
+        val counterPointWithPath: MutableList<MutableList<Int>> = mutableListOf(
+            mutableListOf(10, 20),
+            mutableListOf(359, 221),
+            mutableListOf(561, 324),
+            mutableListOf(33, 340),
+            mutableListOf(33, 340),
+            mutableListOf(195, 202),
+            mutableListOf(192, 209),
+            mutableListOf(394, 424),
+            mutableListOf(526, 121),
+            mutableListOf(646, 380),
+            mutableListOf(428, 530),
+            mutableListOf(171, 492),
+            mutableListOf(141, 334),
+            mutableListOf(81, 129)
+        )
+
     }
 
 }

@@ -114,6 +114,16 @@ class AuxiliaryLineView @JvmOverloads constructor(
         // Draw A and B labels
         drawLabel(canvas, ap, "A")
         drawLabel(canvas, bp, "B")
+
+
+        val paths = graphList[graphIndex].paths
+        if(!paths.isNullOrEmpty()){
+            paths.forEach {
+                val point = mapToScreenPoint(it)
+                canvas.drawCircle(point.x.toFloat(), point.y.toFloat(), 10f, mainLinePaint)
+            }
+        }
+
     }
 
 
@@ -388,8 +398,15 @@ class AuxiliaryLineView @JvmOverloads constructor(
 
             graphList[graphIndex].startPoint = Point(counterPoint[2][0], counterPoint[2][1])
             graphList[graphIndex].endPoint = Point(counterPoint[3][0], counterPoint[3][1])
-            invalidate()
         }
+
+/*        if (counterPoint.size > 4) {
+            graphList[graphIndex].paths = counterPoint.subList(4, counterPoint.size - 1).map {
+                Point(it[0], it[1])
+            }
+        }*/
+
+        invalidate()
     }
 
     fun getCurrentGraph(): List<List<Int>> {
