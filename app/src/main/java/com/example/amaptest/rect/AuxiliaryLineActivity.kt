@@ -16,6 +16,8 @@ class AuxiliaryLineActivity : AppCompatActivity() {
         val viewBinding = ActivityAuxiliaryLineBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
 
+        viewBinding.auxiliaryLineView.setGraphNumber(4)
+
         viewBinding.auxiliaryLineView.setCurrentGraph(
             counterPoint.filterIndexed { index, _ ->
                 index != configIndex && index != osdIndex
@@ -36,7 +38,7 @@ class AuxiliaryLineActivity : AppCompatActivity() {
         }
 
         viewBinding.btnSwitch.setOnClickListener {
-            Toast.makeText(this, "switch", Toast.LENGTH_SHORT).show()
+            viewBinding.auxiliaryLineView.swapAB()
         }
 
 

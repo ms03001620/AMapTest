@@ -26,6 +26,18 @@ class AuxiliaryLineView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
+    // State
+    data class Graph(
+        var startPoint: Point? = null,
+        var endPoint: Point? = null,
+        var aPoint: Point? = null,
+        var bPoint: Point? = null,
+        var paths: List<Point>? = null,
+    )
+
+    private val graphList = mutableListOf<Graph>(Graph())
+    private var graphIndex = 0
+
     // Configuration
     var mainLineColor = Color.RED
     var auxiliaryLineColor = Color.YELLOW
@@ -34,12 +46,6 @@ class AuxiliaryLineView @JvmOverloads constructor(
     var lineWidth = 4f
     var screenSize = Point(704, 576) // Default screen size
     var arrowLength = 28
-
-    // State
-    private var startPoint: Point? = null
-    private var endPoint: Point? = null
-    private var aPoint: Point? = null
-    private var bPoint: Point? = null
 
     // Paint objects
     private val mainLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -65,12 +71,21 @@ class AuxiliaryLineView @JvmOverloads constructor(
         style = Paint.Style.STROKE
     }
 
+    fun setGraphNumber(number: Int) {
+        if (number > 1) {
+            graphList.clear()
+            repeat(number) {
+                graphList.add(Graph())
+            }
+        }
+    }
+
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        val start = mapToScreenPoint(startPoint ?: return)
-        val end = mapToScreenPoint(endPoint ?: return)
+        val start = mapToScreenPoint(graphList[graphIndex].startPoint ?: return)
+        val end = mapToScreenPoint(graphList[graphIndex].endPoint ?: return)
 
         // Draw main line
         canvas.drawLine(
@@ -83,8 +98,8 @@ class AuxiliaryLineView @JvmOverloads constructor(
         // Draw "Result" label at the start point
         drawLabel(canvas, start, "Result")
 
-        val ap = mapToScreenPoint(aPoint ?: return)
-        val bp = mapToScreenPoint(bPoint ?: return)
+        val ap = mapToScreenPoint(graphList[graphIndex].aPoint ?: return)
+        val bp = mapToScreenPoint(graphList[graphIndex].bPoint ?: return)
 
         // Draw auxiliary line and labels
         canvas.drawLine(
@@ -105,39 +120,37 @@ class AuxiliaryLineView @JvmOverloads constructor(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                startPoint = mapToScalePoint(Point(event.x.roundToInt(), event.y.roundToInt()))
-                aPoint = null
-                bPoint = null
+                graphList[graphIndex].startPoint =
+                    mapToScalePoint(Point(event.x.roundToInt(), event.y.roundToInt()))
+                graphList[graphIndex].aPoint = null
+                graphList[graphIndex].bPoint = null
                 invalidate() // Redraw
                 return true
             }
 
             MotionEvent.ACTION_MOVE -> {
-                endPoint = mapToScalePoint(Point(event.x.roundToInt(), event.y.roundToInt()))
-                aPoint = null
-                bPoint = null
+                graphList[graphIndex].endPoint =
+                    mapToScalePoint(Point(event.x.roundToInt(), event.y.roundToInt()))
+                graphList[graphIndex].aPoint = null
+                graphList[graphIndex].bPoint = null
                 invalidate() // Redraw
                 return true
             }
 
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                endPoint = mapToScalePoint(
+                graphList[graphIndex].endPoint = mapToScalePoint(
                     Point(
                         max(0, min(width, event.x.roundToInt())),
                         max(0, min(height, event.y.roundToInt())),
                     )
                 )
 
-                val start = startPoint
-                val end = endPoint
-                if (start != null && end != null) {
-                    generateAuxiliaryLine(
-                        start,
-                        end
-                    ).let {
-                        aPoint = it.first
-                        bPoint = it.second
-                    }
+                generateAuxiliaryLine(
+                    graphList[graphIndex].startPoint,
+                    graphList[graphIndex].endPoint
+                )?.let {
+                    graphList[graphIndex].aPoint = it.first
+                    graphList[graphIndex].bPoint = it.second
                 }
 
                 invalidate() // Redraw
@@ -148,9 +161,13 @@ class AuxiliaryLineView @JvmOverloads constructor(
     }
 
     private fun generateAuxiliaryLine(
-        startPoint: Point,
-        endPoint: Point,
-    ): Pair<Point, Point> {
+        startPoint: Point?,
+        endPoint: Point?,
+    ): Pair<Point, Point>? {
+        if (startPoint == null || endPoint == null) {
+            return null
+        }
+
         val mainLineLength = calculateDistance(startPoint, endPoint)
         val auxiliaryLineLength = mainLineLength * 0.6
         val centerPoint = Point(
@@ -352,34 +369,34 @@ class AuxiliaryLineView @JvmOverloads constructor(
     }
 
     fun swapAB() {
-        val ap = aPoint
-        val bp = bPoint
+        val ap = graphList[graphIndex].aPoint
+        val bp = graphList[graphIndex].bPoint
         if (ap != null && bp != null) {
             val (x, y) = ap.x to ap.y
-            aPoint?.x = bp.x
-            aPoint?.y = bp.y
-            bPoint?.x = x
-            bPoint?.y = y
+            graphList[graphIndex].aPoint?.x = bp.x
+            graphList[graphIndex].aPoint?.y = bp.y
+            graphList[graphIndex].bPoint?.x = x
+            graphList[graphIndex].bPoint?.y = y
             invalidate()
         }
     }
 
     fun setCurrentGraph(counterPoint: List<MutableList<Int>>) {
         if (counterPoint.size == 4) {
-            aPoint = Point(counterPoint[0][0], counterPoint[0][1])
-            bPoint = Point(counterPoint[1][0], counterPoint[1][1])
+            graphList[graphIndex].aPoint = Point(counterPoint[0][0], counterPoint[0][1])
+            graphList[graphIndex].bPoint = Point(counterPoint[1][0], counterPoint[1][1])
 
-            startPoint = Point(counterPoint[2][0], counterPoint[2][1])
-            endPoint = Point(counterPoint[3][0], counterPoint[3][1])
+            graphList[graphIndex].startPoint = Point(counterPoint[2][0], counterPoint[2][1])
+            graphList[graphIndex].endPoint = Point(counterPoint[3][0], counterPoint[3][1])
             invalidate()
         }
     }
 
     fun getCurrentGraph(): List<List<Int>> {
-        val start = startPoint ?: return emptyList()
-        val end = endPoint ?: return emptyList()
-        val apoint = aPoint ?: return emptyList()
-        val bpoint = bPoint ?: return emptyList()
+        val start = graphList[graphIndex].startPoint ?: return emptyList()
+        val end = graphList[graphIndex].endPoint ?: return emptyList()
+        val apoint = graphList[graphIndex].aPoint ?: return emptyList()
+        val bpoint = graphList[graphIndex].bPoint ?: return emptyList()
 
         return mutableListOf(
             mutableListOf(apoint.x, apoint.y),
