@@ -32,6 +32,11 @@ class AuxiliaryLineActivity : AppCompatActivity() {
 
         }
 
+        viewBinding.btnSwitch.setOnClickListener {
+            Toast.makeText(this, "switch", Toast.LENGTH_SHORT).show()
+            viewBinding.auxiliaryLineView.swapAB()
+        }
+
 
         viewBinding.btnSave.setOnClickListener {
 

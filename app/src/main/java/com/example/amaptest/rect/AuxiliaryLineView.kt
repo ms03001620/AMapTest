@@ -40,7 +40,6 @@ class AuxiliaryLineView @JvmOverloads constructor(
     private var endPoint: Point? = null
     private var aPoint: Point? = null
     private var bPoint: Point? = null
-    private var isSwapped = false
 
     // Paint objects
     private val mainLinePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -101,8 +100,8 @@ class AuxiliaryLineView @JvmOverloads constructor(
             // Draw arrow at B point
             drawArrow(canvas, bp, ap, arrowLength)
             // Draw A and B labels
-            drawLabel(canvas, ap, if (!isSwapped) "A" else "B")
-            drawLabel(canvas, bp, if (!isSwapped) "B" else "A")
+            drawLabel(canvas, ap, "A")
+            drawLabel(canvas, bp, "B")
         }
     }
 
@@ -352,5 +351,18 @@ class AuxiliaryLineView @JvmOverloads constructor(
         val x = ((point.x / screenWidth) * scaleWidth).roundToInt()
         val y = ((point.y / screenHeight) * scaleHeight).roundToInt()
         return Point(x, y)
+    }
+
+    fun swapAB() {
+        val ap = aPoint
+        val bp = bPoint
+        if (ap != null && bp != null) {
+            val (x, y) = ap.x to ap.y
+            aPoint?.x = bp.x
+            aPoint?.y = bp.y
+            bPoint?.x = x
+            bPoint?.y = y
+            invalidate()
+        }
     }
 }

@@ -30,6 +30,12 @@
             android:layout_height="wrap_content"
             android:text="clear"/>
 
+        <Button
+            android:id="@+id/btnSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="switch"/>
+
 
         <Button
             android:id="@+id/btnSave"
@@ -41,7 +47,7 @@
 
     <com.example.amaptest.rect.AuxiliaryLineView
         android:layout_margin="30dp"
-        android:id="@+id/drawPathRectView"
+        android:id="@+id/auxiliaryLineView"
         android:background="#2222"
         android:layout_width="350dp"
         android:layout_height="250dp"/>
