@@ -32,6 +32,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="detectArea" />
+        <Button
+            android:id="@+id/btn_auxiliary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="auxiliary" />
     </LinearLayout>
 
 

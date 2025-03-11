@@ -28,6 +28,7 @@ import com.example.amaptest.header.HeaderActivity
 import com.example.amaptest.keyboard.KeyboardActivity
 import com.example.amaptest.life.LifecycleObserverActivity
 import com.example.amaptest.pager.PagerActivity
+import com.example.amaptest.rect.AuxiliaryLineActivity
 import com.example.amaptest.rect.RectActivity
 import com.example.amaptest.rect.RectAreaActivity
 import com.example.amaptest.sync.CellSignalModel
@@ -74,6 +75,11 @@ class EnterActivity : AppCompatActivity() {
         findViewById<View>(R.id.btn_rect).setOnClickListener {
             gotoRectActivity()
         }
+
+        findViewById<View>(R.id.btn_auxiliary).setOnClickListener {
+            gotoAuxiliaryLineActivity()
+        }
+
 
         findViewById<View>(R.id.btn_detect_area).setOnClickListener {
             gotoRectAreaActivity()
@@ -258,6 +264,10 @@ class EnterActivity : AppCompatActivity() {
 
     fun gotoRectActivity() {
         startActivity(Intent(this, RectActivity::class.java))
+    }
+
+    fun gotoAuxiliaryLineActivity() {
+        startActivity(Intent(this, AuxiliaryLineActivity::class.java))
     }
 
     fun gotoRectAreaActivity() {
