@@ -18,6 +18,7 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlin.math.sin
 import kotlin.math.sqrt
+import androidx.core.graphics.toColorInt
 
 @SuppressLint("ClickableViewAccessibility")
 class AuxiliaryLineView @JvmOverloads constructor(
@@ -61,9 +62,9 @@ class AuxiliaryLineView @JvmOverloads constructor(
 
     fun setConfig(
         mainLineOnColor: Int = Color.RED,
-        mainLineOffColor: Int = Color.parseColor("#008016"),
+        mainLineOffColor: Int = "#008016".toColorInt(),
         auxiliaryLineColor: Int = Color.YELLOW,
-        textColor: Int = Color.parseColor("#008016"),
+        textColor: Int = "#008016".toColorInt(),
         textSize: Float = 40f,
         padding: Int = 20,
         strokeWidth: Float = 4f,
@@ -124,8 +125,11 @@ class AuxiliaryLineView @JvmOverloads constructor(
             end.y.toFloat(),
             paint
         )
-        // Draw "Result" label at the start point
-        drawLabel(canvas, start, "Result")
+
+        if (graph.aPoint != null) {
+            // Draw "Result" label at the start point
+            drawLabel(canvas, start, end, "Result")
+        }
     }
 
     private fun drawAuxiliaryLine(canvas: Canvas, graph: Graph) {
@@ -143,8 +147,8 @@ class AuxiliaryLineView @JvmOverloads constructor(
         // Draw arrow at B point
         drawArrow(canvas, bp, ap, arrowLength)
         // Draw A and B labels
-        drawLabel(canvas, ap, "A")
-        drawLabel(canvas, bp, "B")
+        drawLabel(canvas, ap, bp, "A")
+        drawLabel(canvas, bp, ap, "B")
     }
 
     private fun drawPath(canvas: Canvas, graph: Graph, paint: Paint) {
@@ -361,7 +365,8 @@ class AuxiliaryLineView @JvmOverloads constructor(
 
     private fun drawLabel(
         canvas: Canvas,
-        point: Point,
+        startPoint: Point,
+        endPoint: Point,
         text: String,
     ) {
         val textBounds = android.graphics.Rect()
@@ -369,20 +374,39 @@ class AuxiliaryLineView @JvmOverloads constructor(
         val textWidth = textBounds.width()
         val textHeight = textBounds.height()
 
-        var x = point.x.toFloat()
-        var y = point.y.toFloat()
+        var x = startPoint.x.toFloat()
+        var y = startPoint.y.toFloat()
+
+        var isBoundFix = false
 
         // Adjust label position to avoid overlapping with the line or going out of bounds
-        if (point.x + textWidth / 2 > width - padding) {
+        if (startPoint.x + textWidth / 2 > width - padding) {
             x = (width - padding - textWidth / 2).toFloat()
-        } else if (point.x - textWidth / 2 < padding) {
+            isBoundFix = true
+        } else if (startPoint.x - textWidth / 2 < padding) {
             x = (padding + textWidth / 2).toFloat()
+            isBoundFix = true
         }
 
-        if (point.y - textHeight < padding) {
+        if (startPoint.y - textHeight < padding) {
             y = (padding + textHeight).toFloat()
-        } else if (point.y > height - padding) {
+            isBoundFix = true
+        } else if (startPoint.y > height - padding) {
             y = (height - padding).toFloat()
+            isBoundFix = true
+        }
+
+        if (!isBoundFix) {
+            val angle = atan2(
+                (startPoint.y - endPoint.y).toDouble(),
+                (startPoint.x - endPoint.x).toDouble()
+            )
+
+            val moveX = (textWidth /2 * cos(angle)).toFloat()
+            val moveY = (textHeight * sin(angle)).toFloat()
+
+            x += moveX
+            y += moveY
         }
 
         canvas.drawText(text, x, y, textPaint)
