@@ -83,6 +83,9 @@
             android:name=".BarColorSetActivity"
             android:exported="false" />
         <activity
+            android:name=".stateless.StatelessActivity"
+            android:exported="false" />
+        <activity
             android:name="com.robolectric.LoginActivity"
             android:exported="false" />
         <activity
