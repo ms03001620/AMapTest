@@ -7,15 +7,16 @@
     android:background="#fff"
     android:orientation="vertical">
 
-<!--    <com.example.amaptest.stateless.StatelessSwitch
-        android:id="@+id/mySwitch"
+    <CheckBox
+        android:id="@+id/checkUpdate"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />-->
+        android:layout_height="wrap_content"
+        android:text="Update ViewModel"
+        tools:ignore="HardcodedText" />
 
     <com.example.amaptest.stateless.StatelessSwitchView
         android:id="@+id/stateless_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
-
 
 </LinearLayout>

@@ -128,4 +128,11 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <style name="CustomSwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:thumb">@drawable/thumb_drawable</item>
+        <item name="track">@drawable/track_drawable</item>
+        <item name="switchMinWidth">50dp</item>
+        <item name="thumbTextPadding">10dp</item>
+    </style>
+
 </resources>
