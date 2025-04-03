@@ -3,6 +3,8 @@ package com.example.amaptest.stateless // 替换为你的包名
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.SoundEffectConstants
 import android.widget.FrameLayout
 import com.example.amaptest.databinding.ViewStatelessSwitchBinding
 
@@ -21,22 +23,21 @@ class StatelessSwitchView @JvmOverloads constructor(
     private var currentAuthoredState: Boolean = false
 
 
+    private val clickHelper = ClickHelper(context) {
+        // 通过回调通知外部
+        onCheckedChange?.invoke(!currentAuthoredState)
+    }
+
     init {
         // 初始设置
         binding.internalSwitch.isChecked = currentAuthoredState
+    }
 
-
-        binding.root.setOnClickListener {
-            onCheckedChange?.invoke(!currentAuthoredState)
-        }
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        return clickHelper.dispatchTouchEvent(ev)
     }
 
 
-
-    /**
-     * 设置权威状态，由外部调用。
-     * (与之前版本相同)
-     */
     @JvmOverloads
     fun setChecked(checked: Boolean, animate: Boolean = true) {
         currentAuthoredState = checked
@@ -49,9 +50,5 @@ class StatelessSwitchView @JvmOverloads constructor(
         }
     }
 
-    fun isChecked(): Boolean {
-        return currentAuthoredState
-    }
-
-
+    fun isChecked() = currentAuthoredState
 }
