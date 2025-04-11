@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.amaptest.databinding.ActivityStatelessBinding
-import com.example.amaptest.stateless.KeepViewModel.Request
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 
@@ -12,7 +11,6 @@ import kotlinx.coroutines.SupervisorJob
 class StatelessActivity : AppCompatActivity() {
     lateinit var binding: ActivityStatelessBinding
     private val viewModel by viewModels<StateViewModel>()
-    private val keepViewModel= KeepViewModel(CoroutineScope(SupervisorJob()))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,9 +20,6 @@ class StatelessActivity : AppCompatActivity() {
         initCheckUpdateViewModel()
         initObserver()
 
-        keepViewModel.postRequest(Request("1") {
-            println("resp:$it")
-        })
     }
 
     private fun initObserver() {
