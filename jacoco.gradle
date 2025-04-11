@@ -11,7 +11,7 @@ jacoco {
  */
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDevDebugUnitTest']) {
     reports {
-        csv.required.set(false)
+        csv.required.set(true)
         xml.required.set(false)
         html.required.set(true)
     }
