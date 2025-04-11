@@ -16,7 +16,7 @@ android {
     defaultConfig {
         applicationId "com.example.amaptest"
         minSdk 26
-        targetSdk 33 //31 29
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -84,6 +84,7 @@ android {
     }
 
     namespace 'com.example.amaptest'
+    buildToolsVersion '33.0.1'
 }
 
 dependencies {
