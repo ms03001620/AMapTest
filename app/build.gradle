@@ -98,13 +98,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
 
 
-    //testImplementation 'junit:junit:4.+'
-    testImplementation 'org.json:json:20210307'
-    testImplementation 'io.mockk:mockk:1.12.0'
-    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation("org.robolectric:robolectric:4.10.3")// use java17
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+
 
 
     implementation fileTree(include: '*.jar', dir: 'libs')
@@ -129,5 +123,18 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.3.0'
 
     implementation("org.greenrobot:eventbus:3.3.1")
+
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+
+
+    
+    testImplementation("com.squareup.okhttp3:mockwebserver:4.9.3")
+    testImplementation("org.mockito:mockito-core:3.12.4")
+    testImplementation 'org.json:json:20210307'
+    testImplementation 'io.mockk:mockk:1.12.0'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4"
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation("org.robolectric:robolectric:4.10.3")// use java17
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     
 }
