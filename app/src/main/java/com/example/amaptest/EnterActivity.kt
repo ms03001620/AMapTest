@@ -64,6 +64,10 @@ class EnterActivity : AppCompatActivity() {
             startActivity(Intent(this, CountdownActivity::class.java))
         }
 
+        findViewById<View>(R.id.btn_media3).setOnClickListener {
+            startActivity(Intent(this, VideoActivity::class.java))
+        }
+
         findViewById<TextView>(R.id.text_version_b).apply {
             val manufacturer = Build.MANUFACTURER
             val model = Build.MODEL

@@ -55,6 +55,12 @@
             android:layout_height="wrap_content"
             android:text="stateless" />
 
+        <Button
+            android:id="@+id/btn_media3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Media3" />
+
     </LinearLayout>
 
 
