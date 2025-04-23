@@ -1,11 +1,19 @@
 package com.example.amaptest
 
 import android.os.Bundle
+import android.util.Log
+import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Tracks
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import androidx.media3.common.MediaItem;
+import androidx.media3.exoplayer.analytics.AnalyticsListener
+import androidx.media3.exoplayer.analytics.AnalyticsListener.EventTime
 import com.example.amaptest.databinding.StoreWidgetProductGalleryVideoBinding
+import java.util.Locale
 
 
 class VideoActivity : AppCompatActivity() {
@@ -41,6 +49,22 @@ class VideoActivity : AppCompatActivity() {
         player?.playWhenReady = true
 
         // 或者 player.play(); // 如果想立即尝试播放
+
+        showDecodeInfo()
+    }
+
+    private fun showDecodeInfo() {
+        player?.addAnalyticsListener(object : AnalyticsListener {
+            @OptIn(UnstableApi::class)
+            override fun onVideoDecoderInitialized(
+                eventTime: EventTime,
+                decoderName: String,
+                initializedTimestampMs: Long,
+                initializationDurationMs: Long
+            ) {
+                Log.i("VideoDecoderCheck", "解码器！" + decoderName);
+            }
+        })
     }
 
     override fun onStart() {
