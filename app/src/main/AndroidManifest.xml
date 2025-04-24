@@ -80,6 +80,9 @@
             android:name="com.robolectric.DialogsActivity"
             android:exported="false" />
         <activity
+            android:name="com.example.amaptest.BatteryActivity"
+            android:exported="false" />
+        <activity
             android:name=".BarColorSetActivity"
             android:exported="false" />
         <activity

@@ -77,6 +77,10 @@ class EnterActivity : AppCompatActivity() {
             this.text = "manufacturer $manufacturer model $model version $version versionRelease $versionRelease channel $channel"
         }
 
+        findViewById<View>(R.id.btn_battery).setOnClickListener {
+            startActivity(Intent(this, BatteryActivity::class.java))
+        }
+
         findViewById<View>(R.id.btn_dialog).setOnClickListener {
             startActivity(Intent(this, DialogsActivity::class.java))
         }
