@@ -33,6 +33,7 @@ import com.example.amaptest.rect.RectActivity
 import com.example.amaptest.rect.RectAreaActivity
 import com.example.amaptest.stateless.StatelessActivity
 import com.example.amaptest.sync.CellSignalModel
+import com.example.amaptest.video.HevcActivity
 import com.robolectric.DialogsActivity
 import com.span.SpanTextActivity
 
@@ -53,6 +54,10 @@ class EnterActivity : AppCompatActivity() {
         // 设置状态栏
         findViewById<View>(R.id.btn_statusbar).setOnClickListener {
             startActivity(Intent(this, BarColorSetActivity::class.java))
+        }
+
+        findViewById<View>(R.id.btn_hevc).setOnClickListener {
+            startActivity(Intent(this, HevcActivity::class.java))
         }
 
         findViewById<View>(R.id.btn_stateless).setOnClickListener {
