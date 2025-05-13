@@ -1,5 +1,6 @@
 package com.example.amaptest.video;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.media.MediaCodec;
@@ -21,7 +22,7 @@ import com.example.amaptest.R;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-
+@SuppressLint("LogNotTimber")
 public class HevcActivity extends AppCompatActivity implements SurfaceHolder.Callback {
     private static final String TAG = "H265Demo";
 
@@ -124,17 +125,20 @@ public class HevcActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
     private boolean setupExtractor(Context context, int resourceId) {
+        boolean result = false;
         extractor = new MediaExtractor();
         AssetFileDescriptor afd = null;
         try {
             afd = context.getResources().openRawResourceFd(resourceId);
             if (afd == null) {
                 Log.e(TAG, "Failed to open raw resource file descriptor for ID: " + resourceId);
-                return false;
+                return result;
             }
             extractor.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
 
-            for (int i = 0; i < extractor.getTrackCount(); i++) {
+            int trackCount = extractor.getTrackCount();
+
+            for (int i = 0; i < trackCount; i++) {
                 MediaFormat format = extractor.getTrackFormat(i);
                 String mime = format.getString(MediaFormat.KEY_MIME);
                 if (mime != null && mime.equals(MediaFormat.MIMETYPE_VIDEO_HEVC)) {
@@ -142,14 +146,12 @@ public class HevcActivity extends AppCompatActivity implements SurfaceHolder.Cal
                     videoFormat = format; // Store the format from extractor
                     extractor.selectTrack(videoTrackIndex);
                     Log.d(TAG, "Found HEVC track at index " + i + " with format: " + videoFormat);
-                    return true;
+                    result =  true;
                 }
             }
             Log.e(TAG, "No HEVC video track found in resource ID: " + resourceId);
-            return false;
         } catch (IOException e) {
             Log.e(TAG, "Error setting up MediaExtractor for resource ID: " + resourceId, e);
-            return false;
         } finally {
             try {
                 if (afd != null) {
@@ -158,6 +160,7 @@ public class HevcActivity extends AppCompatActivity implements SurfaceHolder.Cal
             } catch (IOException e) {
                 Log.e(TAG, "Error closing AssetFileDescriptor", e);
             }
+            return result;
         }
     }
     private void stopAndRelease() {
