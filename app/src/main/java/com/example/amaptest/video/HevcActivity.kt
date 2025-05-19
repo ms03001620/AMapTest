@@ -18,7 +18,6 @@ import com.example.amaptest.R
 import java.io.IOException
 import java.nio.ByteBuffer
 
-@SuppressLint("LogNotTimber")
 class HevcActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private var surfaceView: SurfaceView? = null
     private var surfaceHolder: SurfaceHolder? = null
