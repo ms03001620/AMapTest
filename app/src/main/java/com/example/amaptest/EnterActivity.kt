@@ -293,7 +293,7 @@ class EnterActivity : AppCompatActivity() {
     }
 
     fun gotoVideoActivity() {
-       // startActivity(Intent(this, VideoActivity::class.java))
+        startActivity(Intent(this, VideoActivity::class.java))
     }
 
     fun gotoAnim() {
