@@ -1,269 +1,293 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".EnterActivity">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_version_b"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="version"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/text_version_b"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="version" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_map"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Go AMap" />
+
+            <Button
+                android:id="@+id/btn_rect"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="drawRect" />
+
+            <Button
+                android:id="@+id/btn_detect_area"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="detectArea" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_auxiliary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="auxiliary" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_statusbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="StatusBar" />
+
+            <Button
+                android:id="@+id/btn_stateless"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="stateless" />
+
+            <Button
+                android:id="@+id/btn_media3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Media3" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_countdown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CountDown" />
+
+            <Button
+                android:id="@+id/btn_dialog"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dialog" />
+
+            <Button
+                android:id="@+id/btn_pager"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pager" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_keyboard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Keyboard" />
+
+            <Button
+                android:id="@+id/btn_hevc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="hevc" />
+
+            <Button
+                android:id="@+id/btn_group_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GroupList" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_anim"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="anim" />
+
+            <Button
+                android:id="@+id/btn_bottomSheet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BottomSheet" />
+
+            <Button
+                android:id="@+id/btn_lifecycle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lifecycle" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="header" />
+
+            <Button
+                android:id="@+id/btn_span"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Span" />
+
+            <Button
+                android:id="@+id/btn_float_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FloatList" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_lottie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lottie" />
+
+            <Button
+                android:id="@+id/btn_car"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="car" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_video"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Video" />
+
+            <Button
+                android:id="@+id/btn_battery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Battery" />
+
+        </LinearLayout>
+
         <Button
-            android:id="@+id/btn_map"
+            android:id="@+id/btn_fragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Go AMap" />
+            android:text="Fragments" />
+
         <Button
-            android:id="@+id/btn_rect"
+            android:id="@+id/btn_sheetBehavior"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="drawRect" />
+            android:text="SheetBehavior" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_flow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Flow" />
+
+            <Button
+                android:id="@+id/btn_flow_avd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FlowAvd" />
+
+            <Button
+                android:id="@+id/btn_eventBus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="EventBus" />
+
+            <Button
+                android:id="@+id/btn_carCtrl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CarCtrl" />
+        </LinearLayout>
+
         <Button
-            android:id="@+id/btn_detect_area"
+            android:id="@+id/btn_live_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="detectArea" />
+            android:text="LiveData" />
+
         <Button
-            android:id="@+id/btn_auxiliary"
+            android:id="@+id/btn_bluetooth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="auxiliary" />
+            android:text="Bluetooth" />
+
+        <Button
+            android:id="@+id/btn_bluetooth_le"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bluetooth_LE" />
+
+        <Button
+            android:id="@+id/btn_bluetooth_sample"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bluetooth_SAMPLE" />
+
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            android:id="@+id/btn_statusbar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="StatusBar" />
-
-        <Button
-            android:id="@+id/btn_stateless"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="stateless" />
-
-        <Button
-            android:id="@+id/btn_media3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Media3" />
-
-    </LinearLayout>
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_countdown"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CountDown" />
-
-        <Button
-            android:id="@+id/btn_dialog"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dialog" />
-
-        <Button
-            android:id="@+id/btn_pager"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pager" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-        <Button
-            android:id="@+id/btn_keyboard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Keyboard" />
-
-        <Button
-            android:id="@+id/btn_hevc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="hevc" />
-
-    </LinearLayout>
-
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_anim"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="anim" />
-
-        <Button
-            android:id="@+id/btn_bottomSheet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BottomSheet" />
-
-        <Button
-            android:id="@+id/btn_lifecycle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lifecycle" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="header" />
-        <Button
-            android:id="@+id/btn_span"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Span" />
-
-        <Button
-            android:id="@+id/btn_float_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="FloatList" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_lottie"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Lottie" />
-
-        <Button
-            android:id="@+id/btn_car"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="car" />
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_video"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Video" />
-
-        <Button
-            android:id="@+id/btn_battery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Battery" />
-
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_fragment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Fragments" />
-
-    <Button
-        android:id="@+id/btn_sheetBehavior"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SheetBehavior" />
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/btn_flow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Flow" />
-
-        <Button
-            android:id="@+id/btn_flow_avd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="FlowAvd" />
-
-        <Button
-            android:id="@+id/btn_eventBus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="EventBus" />
-
-        <Button
-            android:id="@+id/btn_carCtrl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CarCtrl" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_live_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="LiveData" />
-
-    <Button
-        android:id="@+id/btn_bluetooth"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bluetooth" />
-
-    <Button
-        android:id="@+id/btn_bluetooth_le"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bluetooth_LE" />
-
-    <Button
-        android:id="@+id/btn_bluetooth_sample"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bluetooth_SAMPLE" />
-
-</LinearLayout>
+</androidx.core.widget.NestedScrollView>
