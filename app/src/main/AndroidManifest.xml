@@ -145,6 +145,12 @@
             android:name=".VideoActivity"
             android:exported="false" />
         <activity
+            android:name=".ProgressActivity"
+            android:exported="false" />
+        <activity
+            android:name=".webview.WebviewActivity"
+            android:exported="false" />
+        <activity
             android:name=".marker.MarkerActionActivity"
             android:exported="false" />
         <activity

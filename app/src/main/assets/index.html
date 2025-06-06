@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JsBridge Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: sans-serif; text-align: center; padding-top: 50px; }
+        button { font-size: 16px; padding: 10px 20px; margin-top: 20px; }
+        #message { margin-top: 30px; color: green; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1>WebView JsBridge 示例</h1>
+
+<button onclick="sendToNative()">调用 Native 的 Toast</button>
+
+<div id="message"></div>
+
+<script type="text/javascript">
+    // JS 调用 Native
+    function sendToNative() {
+        // "Android" 就是我们在 addJavascriptInterface 中定义的对象名
+        // "showToast" 是 Native 中暴露的方法名
+        if (window.Android && typeof window.Android.showToast === 'function') {
+            window.Android.showToast("你好，这是来自网页的消息！👋");
+        } else {
+            document.getElementById('message').innerText = "JsBridge 对象未找到！";
+        }
+    }
+
+    // Native 调用 JS
+    function setMessageFromNative(msg) {
+        document.getElementById('message').innerText = msg;
+    }
+</script>
+
+</body>
+</html>
