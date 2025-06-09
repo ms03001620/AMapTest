@@ -5,7 +5,7 @@ import android.webkit.WebChromeClient
 import androidx.appcompat.app.AppCompatActivity
 import com.example.amaptest.databinding.ActivityWebviewBinding
 
-class WebviewActivity : AppCompatActivity() {
+class WebViewTestActivity : AppCompatActivity() {
     private lateinit var binding: ActivityWebviewBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,8 +28,8 @@ class WebviewActivity : AppCompatActivity() {
     }
 
     private fun setupWebView() {
-        binding.webView.settings.javaScriptEnabled = true // 必须开启 JS
-        binding.webView.webChromeClient = WebChromeClient() // 允许多种 JS 对话框
+        binding.webView.settings.javaScriptEnabled = true
+        binding.webView.webChromeClient = WebChromeClient()
         binding.webView.addJavascriptInterface(WebAppInterface(binding.webView), "Android")
     }
 

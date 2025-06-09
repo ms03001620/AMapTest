@@ -148,7 +148,7 @@
             android:name=".ProgressActivity"
             android:exported="false" />
         <activity
-            android:name=".webview.WebviewActivity"
+            android:name=".webview.WebViewTestActivity"
             android:exported="false" />
         <activity
             android:name=".marker.MarkerActionActivity"

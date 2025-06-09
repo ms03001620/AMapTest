@@ -34,7 +34,7 @@ import com.example.amaptest.rect.RectAreaActivity
 import com.example.amaptest.stateless.StatelessActivity
 import com.example.amaptest.sync.CellSignalModel
 import com.example.amaptest.video.HevcActivity
-import com.example.amaptest.webview.WebviewActivity
+import com.example.amaptest.webview.WebViewTestActivity
 import com.robolectric.DialogsActivity
 import com.span.SpanTextActivity
 
@@ -119,7 +119,7 @@ class EnterActivity : AppCompatActivity() {
         }
 
         findViewById<View>(R.id.btn_webview).setOnClickListener {
-            startActivity(Intent(this, WebviewActivity::class.java))
+            startActivity(Intent(this, WebViewTestActivity::class.java))
         }
 
         findViewById<View>(R.id.btn_keyboard).setOnClickListener {
