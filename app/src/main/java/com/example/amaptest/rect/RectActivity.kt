@@ -9,7 +9,7 @@ import com.example.amaptest.databinding.ActivityRectBinding
 class RectActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enterFullScreen()
+       // enterFullScreen()
 
         val viewBinding = ActivityRectBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
@@ -65,7 +65,7 @@ class RectActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        exitFullScreen()
+      //  exitFullScreen()
     }
 
     override fun onStart() {
