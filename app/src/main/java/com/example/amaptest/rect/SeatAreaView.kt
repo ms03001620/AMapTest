@@ -67,7 +67,6 @@ class SeatAreaView @JvmOverloads constructor(
         this.seatArea = seatArea
         this.seats = seats
 
-        println("_____ setData")
         requestLayout()
         invalidate()
     }
@@ -77,24 +76,18 @@ class SeatAreaView @JvmOverloads constructor(
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)
         val heightMode = getModeString(MeasureSpec.getMode(heightMeasureSpec))
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-        println("_____ onMeasure widthM $widthMode widthSize $widthSize heightM $heightMode heightSize $heightSize")
 
         if (widthMode == "UNSPECIFIED") throw UnsupportedOperationException("widthMode")
-       // if (heightMode == "UNSPECIFIED") throw UnsupportedOperationException("heightMode")
+
+        val scale = calculateScales(widthSize, heightSize)
+        if (scale != null) {
+            scaleX = scale.first
+            scaleY = scale.first
+        }
 
         if (heightMode == "UNSPECIFIED" && seatArea != null) {
-            val scale = calculateScales(widthSize, heightSize)
-            scaleX = scale!!.first
-            scaleY = scale.first
-
             setMeasuredDimension(widthSize, (seatArea!!.areaHeight * scaleY).toInt())
         } else {
-
-            val scale = calculateScales(widthSize, heightSize)
-            if (scale != null) {
-                scaleX = scale.first
-                scaleY = scale.first
-            }
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         }
     }
@@ -119,16 +112,15 @@ class SeatAreaView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        // 绘制背景
         if (seatArea == null) {
-            // 如果没有数据，则不绘制任何内容
             return
         }
+
+        // 绘制背景
         canvas.drawColor(backgroundColor)
 
-        // 遍历并绘制每一个座位
+        // 绘制每一个座位
         for (seat in seats) {
-            // 获取对应状态的UI数据
             val ui = seatStatusUiMap[seat.seatStatus] ?: continue // 如果找不到则跳过
 
             val borderWidth = when (ui) {
@@ -149,17 +141,14 @@ class SeatAreaView @JvmOverloads constructor(
                 is SeatStatusUi.UnChecked -> ui.borderColor
             }
 
-            // 应用映射比例，计算在画布上的实际位置和大小
             val left = seat.x * scaleX
             val top = seat.y * scaleY
             val right = (seat.x + seat.width) * scaleX
             val bottom = (seat.y + seat.height) * scaleY
 
-            // 绘制座位背景
             seatFillPaint.color = backgroundColor
             canvas.drawRect(left, top, right, bottom, seatFillPaint)
 
-            // 绘制座位边框
             borderPaint.color = borderColor
             borderPaint.strokeWidth = borderWidth.toFloat()
 
@@ -178,47 +167,37 @@ class SeatAreaView @JvmOverloads constructor(
      * 处理触摸事件。
      */
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        // 将触摸坐标从画布坐标系转换回数据坐标系
         val touchX = event.x / scaleX
         val touchY = event.y / scaleY
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                // 查找被按下的座位
                 touchedSeat = findSeatAt(touchX, touchY)
-                // 如果找到了一个有效的座位，则消费此事件
                 return touchedSeat != null
             }
 
             MotionEvent.ACTION_UP -> {
                 val seatAtUp = findSeatAt(touchX, touchY)
-                // 检查抬起时是否仍在同一个座位上
                 if (touchedSeat != null && seatAtUp == touchedSeat) {
-                    // 确认点击事件，切换座位状态
                     toggleSeatStatus(touchedSeat!!)
                 }
-                // 重置被触摸的座位
                 touchedSeat = null
             }
 
             MotionEvent.ACTION_CANCEL -> {
-                // 事件被取消，重置
                 touchedSeat = null
             }
         }
-        return true // 消费事件
+        return true
     }
 
     /**
      * 查找给定数据坐标下的座位。
      */
     private fun findSeatAt(dataX: Float, dataY: Float): SeatData? {
-        // 从后往前遍历，这样顶层的座位会被优先选中
         return seats.lastOrNull { seat ->
-            // 进行边界检测
             val isWithinX = dataX >= seat.x && dataX < (seat.x + seat.width)
             val isWithinY = dataY >= seat.y && dataY < (seat.y + seat.height)
-
             isWithinX && isWithinY && seat.seatStatus != SeatStatus.Disable
         }
     }
@@ -230,10 +209,8 @@ class SeatAreaView @JvmOverloads constructor(
         seat.seatStatus = when (seat.seatStatus) {
             SeatStatus.Checked -> SeatStatus.UnChecked
             SeatStatus.UnChecked -> SeatStatus.Checked
-            // Disable状态不响应点击，所以这里不需要处理
             SeatStatus.Disable -> seat.seatStatus
         }
-        // 请求重新绘制以更新UI
         invalidate()
     }
 
