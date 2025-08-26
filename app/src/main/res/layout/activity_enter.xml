@@ -36,6 +36,12 @@
                 android:text="drawRect" />
 
             <Button
+                android:id="@+id/btn_seat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seat" />
+
+            <Button
                 android:id="@+id/btn_detect_area"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

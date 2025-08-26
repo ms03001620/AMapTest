@@ -31,6 +31,7 @@ import com.example.amaptest.pager.PagerActivity
 import com.example.amaptest.rect.AuxiliaryLineActivity
 import com.example.amaptest.rect.RectActivity
 import com.example.amaptest.rect.RectAreaActivity
+import com.example.amaptest.rect.SeatActivity
 import com.example.amaptest.stateless.StatelessActivity
 import com.example.amaptest.sync.CellSignalModel
 import com.example.amaptest.video.HevcActivity
@@ -93,6 +94,10 @@ class EnterActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_rect).setOnClickListener {
             gotoRectActivity()
+        }
+
+        findViewById<View>(R.id.btn_seat).setOnClickListener {
+            startActivity(Intent(this, SeatActivity::class.java))
         }
 
         findViewById<View>(R.id.btn_auxiliary).setOnClickListener {
