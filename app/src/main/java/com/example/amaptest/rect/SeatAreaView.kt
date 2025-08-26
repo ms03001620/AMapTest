@@ -7,7 +7,6 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import java.lang.UnsupportedOperationException
 
 
 /**
@@ -84,34 +83,34 @@ class SeatAreaView @JvmOverloads constructor(
        // if (heightMode == "UNSPECIFIED") throw UnsupportedOperationException("heightMode")
 
         if (heightMode == "UNSPECIFIED" && seatArea != null) {
-            scaleX = widthSize / seatArea!!.areaWidth.toFloat()
-            scaleY = scaleX
+            val scale = calculateScales(widthSize, heightSize)
+            scaleX = scale!!.first
+            scaleY = scale.first
 
             setMeasuredDimension(widthSize, (seatArea!!.areaHeight * scaleY).toInt())
         } else {
 
+            val scale = calculateScales(widthSize, heightSize)
+            if (scale != null) {
+                scaleX = scale.first
+                scaleY = scale.first
+            }
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-            calculateScales(widthSize, heightSize)
         }
-
     }
 
     /**
      * 计算映射比例。
      */
-    private fun calculateScales(width: Int, height: Int) {
+    private fun calculateScales(width: Int, height: Int): Pair<Float, Float>? {
         seatArea?.let {
             if (it.areaWidth > 0 && it.areaHeight > 0) {
                 val w = width.toFloat()
                 val h = height.toFloat()
-
-                println("_____ calculateScales w $w h $h")
-
-                scaleX = w / it.areaWidth
-                //scaleY = h / it.areaHeight
-                scaleY = scaleX
+                return Pair(w / it.areaWidth, h / it.areaHeight)
             }
         }
+        return null
     }
 
     /**
@@ -163,7 +162,15 @@ class SeatAreaView @JvmOverloads constructor(
             // 绘制座位边框
             borderPaint.color = borderColor
             borderPaint.strokeWidth = borderWidth.toFloat()
-            canvas.drawRect(left, top, right, bottom, borderPaint)
+
+            val halfStroke: Float = borderWidth / 2f
+            canvas.drawRect(
+                left + halfStroke,
+                top + halfStroke,
+                right - halfStroke,
+                bottom - halfStroke,
+                borderPaint
+            )
         }
     }
 

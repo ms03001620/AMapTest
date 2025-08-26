@@ -31,11 +31,11 @@
     </ScrollView>
 
 <!--    <com.example.amaptest.rect.SeatAreaView
-        android:id="@+id/seatView"
+        android:id="@+id/seatViewNoScroll"
+        android:layout_marginHorizontal="124dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#2222" />-->
-
 
 
 </LinearLayout>
