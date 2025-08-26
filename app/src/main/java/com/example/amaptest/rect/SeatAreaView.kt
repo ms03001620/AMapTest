@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import java.lang.UnsupportedOperationException
 
 
 /**
@@ -67,26 +68,50 @@ class SeatAreaView @JvmOverloads constructor(
         this.seatArea = seatArea
         this.seats = seats
 
-        calculateScales()
+        println("_____ setData")
+        requestLayout()
         invalidate()
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val widthMode = getModeString(MeasureSpec.getMode(widthMeasureSpec))
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = getModeString(MeasureSpec.getMode(heightMeasureSpec))
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+        println("_____ onMeasure widthM $widthMode widthSize $widthSize heightM $heightMode heightSize $heightSize")
+
+        if (widthMode == "UNSPECIFIED") throw UnsupportedOperationException("widthMode")
+       // if (heightMode == "UNSPECIFIED") throw UnsupportedOperationException("heightMode")
+
+        if (heightMode == "UNSPECIFIED" && seatArea != null) {
+            scaleX = widthSize / seatArea!!.areaWidth.toFloat()
+            scaleY = scaleX
+
+            setMeasuredDimension(widthSize, (seatArea!!.areaHeight * scaleY).toInt())
+        } else {
+
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+            calculateScales(widthSize, heightSize)
+        }
+
     }
 
     /**
      * 计算映射比例。
      */
-    private fun calculateScales() {
+    private fun calculateScales(width: Int, height: Int) {
         seatArea?.let {
             if (it.areaWidth > 0 && it.areaHeight > 0) {
-                scaleX = width.toFloat() / it.areaWidth
-                scaleY = height.toFloat() / it.areaHeight
+                val w = width.toFloat()
+                val h = height.toFloat()
+
+                println("_____ calculateScales w $w h $h")
+
+                scaleX = w / it.areaWidth
+                //scaleY = h / it.areaHeight
+                scaleY = scaleX
             }
         }
-    }
-
-    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        super.onSizeChanged(w, h, oldw, oldh)
-        // 布局变化后计算映射比例
-        calculateScales()
     }
 
     /**
@@ -107,13 +132,6 @@ class SeatAreaView @JvmOverloads constructor(
             // 获取对应状态的UI数据
             val ui = seatStatusUiMap[seat.seatStatus] ?: continue // 如果找不到则跳过
 
-            // 应用映射比例，计算在画布上的实际位置和大小
-            val left = seat.x * scaleX
-            val top = seat.y * scaleY
-            val right = (seat.x + seat.width) * scaleX
-            val bottom = (seat.y + seat.height) * scaleY
-
-
             val borderWidth = when (ui) {
                 is SeatStatusUi.Disable -> ui.borderWidth
                 is SeatStatusUi.Checked -> ui.borderWidth
@@ -131,6 +149,12 @@ class SeatAreaView @JvmOverloads constructor(
                 is SeatStatusUi.Checked -> ui.borderColor
                 is SeatStatusUi.UnChecked -> ui.borderColor
             }
+
+            // 应用映射比例，计算在画布上的实际位置和大小
+            val left = seat.x * scaleX
+            val top = seat.y * scaleY
+            val right = (seat.x + seat.width) * scaleX
+            val bottom = (seat.y + seat.height) * scaleY
 
             // 绘制座位背景
             seatFillPaint.color = backgroundColor
@@ -204,6 +228,16 @@ class SeatAreaView @JvmOverloads constructor(
         }
         // 请求重新绘制以更新UI
         invalidate()
+    }
+
+    fun getModeString(measureSpec: Int): String {
+        val mode = MeasureSpec.getMode(measureSpec)
+        return when (mode) {
+            MeasureSpec.EXACTLY -> "EXACTLY"
+            MeasureSpec.AT_MOST -> "AT_MOST"
+            MeasureSpec.UNSPECIFIED -> "UNSPECIFIED"
+            else -> throw UnsupportedOperationException("Unknown mode: $mode")
+        }
     }
 }
 

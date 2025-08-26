@@ -2,45 +2,40 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btnClear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="clear"/>
-
-        <Button
-            android:id="@+id/btnGet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="get"/>
-
-        <Button
-            android:id="@+id/btnEdit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="edit"/>
-
-        <Button
-            android:id="@+id/btnSave"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="save"/>
+            android:text="clear" />
 
     </LinearLayout>
 
-    <com.example.amaptest.rect.SeatAreaView
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+
+        <com.example.amaptest.rect.SeatAreaView
+            android:id="@+id/seatView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#2222" />
+    </ScrollView>
+
+<!--    <com.example.amaptest.rect.SeatAreaView
         android:id="@+id/seatView"
-        android:background="#2222"
-        android:layout_width="300dp"
-        android:layout_height="match_parent"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2222" />-->
+
+
 
 </LinearLayout>
