@@ -23,6 +23,22 @@ class SeatActivity : AppCompatActivity() {
         }
     }
 
+/*
+    val area = SeatArea(
+        areaWidth = 4000,
+        areaHeight = 4000,
+    )
+
+    val seats = listOf(
+        SeatData(x = 0f, y = 0f, width = 2000f, height = 2000f, seatStatus = SeatStatus.UnChecked),
+        SeatData(x = 2000f, y = 0f, width = 2000f, height = 2000f, seatStatus = SeatStatus.Disable),
+
+        SeatData(x = 0f, y = 2000f, width = 2000f, height = 2000f, seatStatus = SeatStatus.UnChecked),
+        SeatData(x = 2000f, y = 2000f, width = 2000f, height = 2000f, seatStatus = SeatStatus.UnChecked),
+    )
+*/
+
+
     val area = SeatArea(
         areaWidth = 300,
         areaHeight = 500,
@@ -35,6 +51,7 @@ class SeatActivity : AppCompatActivity() {
         SeatData(x = 200f, y = 300f, width = 100f, height = 200f, seatStatus = SeatStatus.Checked),
         SeatData(x = 30f, y = 200f, width = 197f, height = 140f, seatStatus = SeatStatus.UnChecked),
     )
+
 
 }
 
