@@ -107,18 +107,16 @@ class SeatAreaView @JvmOverloads constructor(
 
         if (widthMode == MeasureSpec.UNSPECIFIED) throw UnsupportedOperationException("widthMode")
 
-        if (heightMode == MeasureSpec.UNSPECIFIED) {
-            val scale = calculateScales(seatArea, widthSize, heightSize)
-            scaleX = scale.first
-            scaleY = scale.first
+        val scale = calculateScales(seatArea, widthSize, heightSize)
+        scaleX = scale.first
+        scaleY = scale.first
 
-            setMeasuredDimension(widthSize, (seatArea.areaHeight * scaleY).toInt())
+        val areaHeight = (seatArea.areaHeight * scaleY).toInt()
+
+        if (heightMode == MeasureSpec.UNSPECIFIED) {
+            setMeasuredDimension(widthSize, areaHeight)
         } else {
-            val scale = calculateScales(seatArea, widthSize, heightSize)
-            scaleX = scale.first
-            scaleY = scale.first
-            val areaH = (seatArea.areaHeight * scaleY).toInt()
-            val h = min(heightSize, areaH)
+            val h = min(heightSize, areaHeight)
 
             setMeasuredDimension(widthSize, h)
         }
