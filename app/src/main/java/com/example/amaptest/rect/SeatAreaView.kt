@@ -4,9 +4,12 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.polestar.base.ext.dp
+import com.polestar.base.ext.sp
 import kotlin.math.min
 
 
@@ -26,6 +29,12 @@ class SeatAreaView @JvmOverloads constructor(
     }
     private val seatFillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
+    }
+
+    private val textFillPaint = TextPaint().apply {
+        textSize = 20.sp.toFloat()
+        color = Color.BLACK
+        textAlign = Paint.Align.CENTER
     }
 
     // 座位状态UI
@@ -182,6 +191,11 @@ class SeatAreaView @JvmOverloads constructor(
                 bottom - halfStroke,
                 borderPaint
             )
+
+            val centerX = left + (right - left) / 2
+            val centerY = top + (bottom - top) / 2
+
+            canvas.drawText("aaaa", centerX, centerY, textFillPaint)
         }
     }
 
