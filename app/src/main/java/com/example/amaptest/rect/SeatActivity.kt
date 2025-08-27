@@ -18,9 +18,17 @@ class SeatActivity : AppCompatActivity() {
         lifecycleScope.launch {
             delay(1000)
 
-            viewBinding.seatView.setData(area, seats.map { it.copy() })
+            viewBinding.seatView.setData(area, seats)
             //viewBinding.seatViewNoScroll.setData(area, seats)
         }
+
+        viewBinding.seatView.setOnDataChangeListener(object : SeatAreaView.OnDataChangeListener {
+            override fun onDataChange(seats: List<SeatData>) {
+                println(seats.count {
+                    it.seatStatus == SeatStatus.Checked
+                })
+            }
+        })
     }
 
 /*

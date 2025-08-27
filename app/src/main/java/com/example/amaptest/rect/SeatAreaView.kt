@@ -63,6 +63,9 @@ class SeatAreaView @JvmOverloads constructor(
     // 用于处理点击事件
     private var touchedSeat: SeatData? = null
 
+    // Event
+    private var listener: OnDataChangeListener? = null
+
     init {
         attrs?.let {
             context.withStyledAttributes(it, R.styleable.SeatView, defStyleAttr, 0) {
@@ -81,7 +84,7 @@ class SeatAreaView @JvmOverloads constructor(
      */
     fun setData(seatArea: SeatArea, seats: List<SeatData>) {
         this.seatArea = seatArea
-        this.seats = seats
+        this.seats = seats.map { it.copy() }//deep copy
         requestLayout()
         invalidate()
     }
@@ -254,14 +257,16 @@ class SeatAreaView @JvmOverloads constructor(
      * 切换座位状态 (Checked <-> UnChecked)。
      */
     private fun toggleSeatStatus(seat: SeatData) {
+        if(seat.seatStatus == SeatStatus.Disable) return
+
         seat.seatStatus = when (seat.seatStatus) {
             SeatStatus.Checked -> SeatStatus.UnChecked
             SeatStatus.UnChecked -> SeatStatus.Checked
-            // Disable状态不响应点击，所以这里不需要处理
-            SeatStatus.Disable -> seat.seatStatus
+            SeatStatus.Disable -> SeatStatus.Disable
         }
         // 请求重新绘制以更新UI
         invalidate()
+        listener?.onDataChange(seats)
     }
 
     fun getModeString(mode: Int): String {
@@ -271,6 +276,14 @@ class SeatAreaView @JvmOverloads constructor(
             MeasureSpec.UNSPECIFIED -> "UNSPECIFIED"
             else -> "Unknown mode: $mode"
         }
+    }
+
+    fun setOnDataChangeListener(listener: OnDataChangeListener?) {
+        this.listener = listener
+    }
+
+    interface OnDataChangeListener {
+        fun onDataChange(seats: List<SeatData>)
     }
 }
 
