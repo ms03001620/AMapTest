@@ -45,9 +45,9 @@ class SeatActivity : AppCompatActivity() {
     )
 
     val seats = listOf(
-        SeatData(x = 0f, y = 0f, width = 100f, height = 100f, seatStatus = SeatStatus.Disable),
-        SeatData(x = 100f, y = 400f, width = 100f, height = 100f, seatStatus = SeatStatus.UnChecked),
-        SeatData(x = 200f, y = 0f, width = 100f, height = 100f, seatStatus = SeatStatus.Checked),
+        SeatData(x = 0f, y = 0f, width = 100f, height = 100f, seatStatus = SeatStatus.Disable, title = "不可点击"),
+        SeatData(x = 100f, y = 400f, width = 100f, height = 100f, seatStatus = SeatStatus.UnChecked, title = "12"),
+        SeatData(x = 200f, y = 0f, width = 100f, height = 100f, seatStatus = SeatStatus.UnChecked, title = "Abc"),
         SeatData(x = 200f, y = 300f, width = 100f, height = 200f, seatStatus = SeatStatus.Checked),
         SeatData(x = 30f, y = 200f, width = 197f, height = 140f, seatStatus = SeatStatus.UnChecked),
     )

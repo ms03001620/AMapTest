@@ -27,6 +27,8 @@
             android:id="@+id/seatView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:sv_labelTextColor="#00FF00"
+            app:sv_labelTextSize="24sp"
             android:background="#2222" />
     </ScrollView>
 

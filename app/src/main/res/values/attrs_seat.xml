@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SeatView">
+        <attr name="sv_labelTextSize" format="dimension" />
+        <attr name="sv_labelTextColor" format="color" />
+    </declare-styleable>
+</resources>

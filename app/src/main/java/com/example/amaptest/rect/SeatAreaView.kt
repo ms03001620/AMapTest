@@ -8,15 +8,13 @@ import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.polestar.base.ext.dp
-import com.polestar.base.ext.sp
+import androidx.core.content.withStyledAttributes
+import com.example.amaptest.R
 import kotlin.math.min
 
 
 /**
- * 一个自定义View，用于显示和管理座位布局。
- *
- * A custom view for displaying and managing a seat layout.
+ * 用于显示区域和座位
  */
 class SeatAreaView @JvmOverloads constructor(
     context: Context,
@@ -30,10 +28,7 @@ class SeatAreaView @JvmOverloads constructor(
     private val seatFillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
     }
-
     private val textFillPaint = TextPaint().apply {
-        textSize = 20.sp.toFloat()
-        color = Color.BLACK
         textAlign = Paint.Align.CENTER
     }
 
@@ -55,8 +50,6 @@ class SeatAreaView @JvmOverloads constructor(
             backgroundColor = Color.WHITE
         )
     )
-    // 整体背景色
-    private val backgroundColor = 0x2222
 
     // Data
     // 区域和座位列表数据
@@ -70,19 +63,31 @@ class SeatAreaView @JvmOverloads constructor(
     // 用于处理点击事件
     private var touchedSeat: SeatData? = null
 
+    init {
+        attrs?.let {
+            context.withStyledAttributes(it, R.styleable.SeatView, defStyleAttr, 0) {
+                getColor(R.styleable.SeatView_sv_labelTextColor, Color.BLACK).let {
+                    textFillPaint.color = it
+                }
+                getDimension(R.styleable.SeatView_sv_labelTextSize, 24f).let {
+                    textFillPaint.textSize = it
+                }
+            }
+        }
+    }
+
     /**
      * 设置座位区域和座位列表数据。
      */
     fun setData(seatArea: SeatArea, seats: List<SeatData>) {
         this.seatArea = seatArea
         this.seats = seats
-
-        println("_____ setData")
         requestLayout()
         invalidate()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        val seatArea = seatArea
         if (seatArea == null) {
             super.onMeasure(0, 0)
             return
@@ -97,40 +102,33 @@ class SeatAreaView @JvmOverloads constructor(
         if (widthMode == MeasureSpec.UNSPECIFIED ) throw UnsupportedOperationException("widthMode")
 
         if (heightMode == MeasureSpec.UNSPECIFIED) {
-            val scale = calculateScales(widthSize, heightSize)
-            scaleX = scale!!.first
+            val scale = calculateScales(seatArea, widthSize, heightSize)
+            scaleX = scale.first
             scaleY = scale.first
 
-            setMeasuredDimension(widthSize, (seatArea!!.areaHeight * scaleY).toInt())
+            setMeasuredDimension(widthSize, (seatArea.areaHeight * scaleY).toInt())
         } else {
+            val scale = calculateScales(seatArea,widthSize, heightSize)
+            scaleX = scale.first
+            scaleY = scale.first
+            val areaH = (seatArea.areaHeight * scaleY).toInt()
+            val h = min(heightSize, areaH)
 
-            val scale = calculateScales(widthSize, heightSize)
-            if (scale != null) {
-                scaleX = scale.first
-                scaleY = scale.first
-
-                val areaH = (seatArea!!.areaHeight * scaleY).toInt()
-
-                val h = min(heightSize, areaH)
-                setMeasuredDimension(widthSize, h)
-                return
-            }
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+            setMeasuredDimension(widthSize, h)
         }
     }
 
     /**
      * 计算映射比例。
      */
-    private fun calculateScales(width: Int, height: Int): Pair<Float, Float>? {
-        seatArea?.let {
-            if (it.areaWidth > 0 && it.areaHeight > 0) {
-                val w = width.toFloat()
-                val h = height.toFloat()
-                return Pair(w / it.areaWidth, h / it.areaHeight)
-            }
+    private fun calculateScales(seatArea: SeatArea,width: Int, height: Int): Pair<Float, Float> {
+        if (seatArea.areaWidth <= 0 || seatArea.areaHeight <= 0) {
+            throw IllegalArgumentException("data logic error")
         }
-        return null
+
+        val w = width.toFloat()
+        val h = height.toFloat()
+        return Pair(w / seatArea.areaWidth, h / seatArea.areaHeight)
     }
 
     /**
@@ -144,7 +142,6 @@ class SeatAreaView @JvmOverloads constructor(
             // 如果没有数据，则不绘制任何内容
             return
         }
-        canvas.drawColor(backgroundColor)
 
         // 遍历并绘制每一个座位
         for (seat in seats) {
@@ -192,10 +189,16 @@ class SeatAreaView @JvmOverloads constructor(
                 borderPaint
             )
 
-            val centerX = left + (right - left) / 2
-            val centerY = top + (bottom - top) / 2
+            // 文字
+            if (!seat.title.isNullOrBlank()) {
+                val centerX = left + (right - left) / 2
+                val centerY = top + (bottom - top) / 2
 
-            canvas.drawText("aaaa", centerX, centerY, textFillPaint)
+                val fontMetrics = textFillPaint.fontMetrics
+                val baselineY = centerY - (fontMetrics.descent + fontMetrics.ascent) / 2
+                //  canvas.drawPoint(centerX, centerY, borderPaint) // auxiliary
+                canvas.drawText(seat.title.orEmpty(), centerX, baselineY, textFillPaint)
+            }
         }
     }
 
@@ -299,6 +302,7 @@ data class SeatData(
     val width: Float,
     val height: Float,
     var seatStatus: SeatStatus,
+    var title: String? = null,
 )
 
 enum class SeatStatus {
