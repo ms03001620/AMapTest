@@ -97,9 +97,15 @@ class SeatAreaView @JvmOverloads constructor(
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)
         val heightMode = MeasureSpec.getMode(heightMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-        println("_____ onMeasure widthM ${getModeString(widthMode)} widthSize $widthSize heightM ${getModeString(heightMode)} heightSize $heightSize")
+        println(
+            "_____ onMeasure widthM ${getModeString(widthMode)} widthSize $widthSize heightM ${
+                getModeString(
+                    heightMode
+                )
+            } heightSize $heightSize"
+        )
 
-        if (widthMode == MeasureSpec.UNSPECIFIED ) throw UnsupportedOperationException("widthMode")
+        if (widthMode == MeasureSpec.UNSPECIFIED) throw UnsupportedOperationException("widthMode")
 
         if (heightMode == MeasureSpec.UNSPECIFIED) {
             val scale = calculateScales(seatArea, widthSize, heightSize)
@@ -108,7 +114,7 @@ class SeatAreaView @JvmOverloads constructor(
 
             setMeasuredDimension(widthSize, (seatArea.areaHeight * scaleY).toInt())
         } else {
-            val scale = calculateScales(seatArea,widthSize, heightSize)
+            val scale = calculateScales(seatArea, widthSize, heightSize)
             scaleX = scale.first
             scaleY = scale.first
             val areaH = (seatArea.areaHeight * scaleY).toInt()
@@ -121,7 +127,7 @@ class SeatAreaView @JvmOverloads constructor(
     /**
      * 计算映射比例。
      */
-    private fun calculateScales(seatArea: SeatArea,width: Int, height: Int): Pair<Float, Float> {
+    private fun calculateScales(seatArea: SeatArea, width: Int, height: Int): Pair<Float, Float> {
         if (seatArea.areaWidth <= 0 || seatArea.areaHeight <= 0) {
             throw IllegalArgumentException("data logic error")
         }
