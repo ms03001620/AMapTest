@@ -7,6 +7,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import kotlin.math.min
 
 
 /**
@@ -67,27 +68,44 @@ class SeatAreaView @JvmOverloads constructor(
         this.seatArea = seatArea
         this.seats = seats
 
+        println("_____ setData")
         requestLayout()
         invalidate()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val widthMode = getModeString(MeasureSpec.getMode(widthMeasureSpec))
-        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
-        val heightMode = getModeString(MeasureSpec.getMode(heightMeasureSpec))
-        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
-
-        if (widthMode == "UNSPECIFIED") throw UnsupportedOperationException("widthMode")
-
-        val scale = calculateScales(widthSize, heightSize)
-        if (scale != null) {
-            scaleX = scale.first
-            scaleY = scale.first
+        if (seatArea == null) {
+            super.onMeasure(0, 0)
+            return
         }
 
-        if (heightMode == "UNSPECIFIED" && seatArea != null) {
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
+        println("_____ onMeasure widthM ${getModeString(widthMode)} widthSize $widthSize heightM ${getModeString(heightMode)} heightSize $heightSize")
+
+        if (widthMode == MeasureSpec.UNSPECIFIED ) throw UnsupportedOperationException("widthMode")
+
+        if (heightMode == MeasureSpec.UNSPECIFIED) {
+            val scale = calculateScales(widthSize, heightSize)
+            scaleX = scale!!.first
+            scaleY = scale.first
+
             setMeasuredDimension(widthSize, (seatArea!!.areaHeight * scaleY).toInt())
         } else {
+
+            val scale = calculateScales(widthSize, heightSize)
+            if (scale != null) {
+                scaleX = scale.first
+                scaleY = scale.first
+
+                val areaH = (seatArea!!.areaHeight * scaleY).toInt()
+
+                val h = min(heightSize, areaH)
+                setMeasuredDimension(widthSize, h)
+                return
+            }
             super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         }
     }
@@ -112,15 +130,16 @@ class SeatAreaView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        // 绘制背景
         if (seatArea == null) {
+            // 如果没有数据，则不绘制任何内容
             return
         }
-
-        // 绘制背景
         canvas.drawColor(backgroundColor)
 
-        // 绘制每一个座位
+        // 遍历并绘制每一个座位
         for (seat in seats) {
+            // 获取对应状态的UI数据
             val ui = seatStatusUiMap[seat.seatStatus] ?: continue // 如果找不到则跳过
 
             val borderWidth = when (ui) {
@@ -141,14 +160,17 @@ class SeatAreaView @JvmOverloads constructor(
                 is SeatStatusUi.UnChecked -> ui.borderColor
             }
 
+            // 应用映射比例，计算在画布上的实际位置和大小
             val left = seat.x * scaleX
             val top = seat.y * scaleY
             val right = (seat.x + seat.width) * scaleX
             val bottom = (seat.y + seat.height) * scaleY
 
+            // 绘制座位背景
             seatFillPaint.color = backgroundColor
             canvas.drawRect(left, top, right, bottom, seatFillPaint)
 
+            // 绘制座位边框
             borderPaint.color = borderColor
             borderPaint.strokeWidth = borderWidth.toFloat()
 
@@ -178,7 +200,9 @@ class SeatAreaView @JvmOverloads constructor(
 
             MotionEvent.ACTION_UP -> {
                 val seatAtUp = findSeatAt(touchX, touchY)
+                // 检查抬起时是否仍在同一个座位上
                 if (touchedSeat != null && seatAtUp == touchedSeat) {
+                    // 确认点击事件，切换座位状态
                     toggleSeatStatus(touchedSeat!!)
                 }
                 touchedSeat = null
@@ -195,9 +219,12 @@ class SeatAreaView @JvmOverloads constructor(
      * 查找给定数据坐标下的座位。
      */
     private fun findSeatAt(dataX: Float, dataY: Float): SeatData? {
+        // 从后往前遍历，这样顶层的座位会被优先选中
         return seats.lastOrNull { seat ->
+            // 进行边界检测
             val isWithinX = dataX >= seat.x && dataX < (seat.x + seat.width)
             val isWithinY = dataY >= seat.y && dataY < (seat.y + seat.height)
+
             isWithinX && isWithinY && seat.seatStatus != SeatStatus.Disable
         }
     }
@@ -209,18 +236,19 @@ class SeatAreaView @JvmOverloads constructor(
         seat.seatStatus = when (seat.seatStatus) {
             SeatStatus.Checked -> SeatStatus.UnChecked
             SeatStatus.UnChecked -> SeatStatus.Checked
+            // Disable状态不响应点击，所以这里不需要处理
             SeatStatus.Disable -> seat.seatStatus
         }
+        // 请求重新绘制以更新UI
         invalidate()
     }
 
-    fun getModeString(measureSpec: Int): String {
-        val mode = MeasureSpec.getMode(measureSpec)
+    fun getModeString(mode: Int): String {
         return when (mode) {
             MeasureSpec.EXACTLY -> "EXACTLY"
             MeasureSpec.AT_MOST -> "AT_MOST"
             MeasureSpec.UNSPECIFIED -> "UNSPECIFIED"
-            else -> throw UnsupportedOperationException("Unknown mode: $mode")
+            else -> "Unknown mode: $mode"
         }
     }
 }

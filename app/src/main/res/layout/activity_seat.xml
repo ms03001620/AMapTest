@@ -21,7 +21,7 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="350dp">
 
         <com.example.amaptest.rect.SeatAreaView
             android:id="@+id/seatView"
@@ -30,12 +30,16 @@
             android:background="#2222" />
     </ScrollView>
 
-<!--    <com.example.amaptest.rect.SeatAreaView
-        android:id="@+id/seatViewNoScroll"
-        android:layout_marginHorizontal="124dp"
+ <!--   <com.example.amaptest.rect.SeatAreaView
+        android:id="@+id/seatView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="#2222" />-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="fotter"/>
 
 
 </LinearLayout>
