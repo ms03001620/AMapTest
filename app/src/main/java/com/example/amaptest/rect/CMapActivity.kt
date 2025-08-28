@@ -27,9 +27,9 @@ class CMapActivity : AppCompatActivity() {
         // 模拟数据
         val seats = mutableListOf<Seat>()
         var id = 0
-        for (row in 0 until 10) {
-            for (col in 0 until 15) {
-                val width = 80f + (row % 3) * 10 // 随机不同大小
+        for (row in 0 until 7) {
+            for (col in 0 until 7) {
+                val width = 80f
                 val height = 80f
                 seats.add(
                     Seat(
