@@ -29,13 +29,13 @@ class CMapActivity : AppCompatActivity() {
         var id = 0
         for (row in 0 until 7) {
             for (col in 0 until 7) {
-                val width = 80f
-                val height = 80f
+                val width = 180f
+                val height = 180f
                 seats.add(
                     Seat(
                         id = "S$id",
-                        x = col * 100f,
-                        y = row * 100f,
+                        x = col * 200f,
+                        y = row * 200f,
                         width = width,
                         height = height
                     )

@@ -28,8 +28,10 @@ class SeatMapView @JvmOverloads constructor(
     private val matrix = Matrix()
     private val inverseMatrix = Matrix()
 
-    // 手势检测
+    // 缩放
     private val scaleDetector = ScaleGestureDetector(context, ScaleListener())
+    // 点击
+    private val gestureDetector = GestureDetector(context, GestureListener())
 
     // 滑动地图
     private var lastTouchX = 0f
@@ -118,6 +120,7 @@ class SeatMapView @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        gestureDetector.onTouchEvent(event)
         scaleDetector.onTouchEvent(event)
 
         if (scaleDetector.isInProgress) {
@@ -155,5 +158,35 @@ class SeatMapView @JvmOverloads constructor(
         }
     }
 
+    private inner class GestureListener: GestureDetector.SimpleOnGestureListener(){
+        override fun onDown(e: MotionEvent): Boolean = true
+
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            // 1. 获取触摸点的视图坐标
+            val touchX = e.x
+            val touchY = e.y
+
+            // 2. 将视图坐标转换为内容坐标
+            val points = floatArrayOf(touchX, touchY)
+            matrix.invert(inverseMatrix) // 确保 inverseMatrix 是 matrix 的最新逆矩阵
+            inverseMatrix.mapPoints(points) // points 现在包含了内容坐标 (worldX, worldY)
+
+            val worldX = points[0]
+            val worldY = points[1]
+
+            // 3. 遍历座位，检查哪个座位包含了转换后的触摸点
+            for (seat in seats) {
+                val seatRect = RectF(seat.x, seat.y, seat.x + seat.width, seat.y + seat.height)
+                if (seatRect.contains(worldX, worldY)) {
+                    // 座位被点击了
+                    seat.selected = !seat.selected // 切换选中状态
+                    onSeatSelected?.invoke(seat)    // 调用回调
+                    invalidate()                   // 请求重绘以更新视图
+                    return true // 表示事件已处理
+                }
+            }
+            return false // 没有座位被点击
+        }
+    }
 
 }
