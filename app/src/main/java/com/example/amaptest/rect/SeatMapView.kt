@@ -36,6 +36,7 @@ class SeatMapView @JvmOverloads constructor(
     // 滑动地图
     private var lastTouchX = 0f
     private var lastTouchY = 0f
+    private var lastTouch = false
 
     // MiniMap
     private val miniMapPaint = Paint().apply { color = Color.argb(100, 255, 0, 0) }
@@ -123,25 +124,32 @@ class SeatMapView @JvmOverloads constructor(
         gestureDetector.onTouchEvent(event)
         scaleDetector.onTouchEvent(event)
 
-        if (scaleDetector.isInProgress) {
-            return false
+        if(scaleDetector.isInProgress){
+            lastTouch = false
+            return true
         }
 
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
+                lastTouch = true
                 lastTouchX = event.x
                 lastTouchY = event.y
             }
 
             MotionEvent.ACTION_MOVE -> {
-                val dx = event.x - lastTouchX
-                val dy = event.y - lastTouchY
-                matrix.postTranslate(dx, dy)
+                if(lastTouch){
+                    val dx = event.x - lastTouchX
+                    val dy = event.y - lastTouchY
+                    matrix.postTranslate(dx, dy)
 
-                lastTouchX = event.x
-                lastTouchY = event.y
+                    lastTouchX = event.x
+                    lastTouchY = event.y
 
-                invalidate()
+                    invalidate()
+                }
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                lastTouch = false
             }
         }
         return true
@@ -168,8 +176,9 @@ class SeatMapView @JvmOverloads constructor(
 
             // 2. 将视图坐标转换为内容坐标
             val points = floatArrayOf(touchX, touchY)
-            matrix.invert(inverseMatrix) // 确保 inverseMatrix 是 matrix 的最新逆矩阵
-            inverseMatrix.mapPoints(points) // points 现在包含了内容坐标 (worldX, worldY)
+            val tempInverseMatrix = Matrix()
+            matrix.invert(tempInverseMatrix)
+            tempInverseMatrix.mapPoints(points)
 
             val worldX = points[0]
             val worldY = points[1]
@@ -179,13 +188,13 @@ class SeatMapView @JvmOverloads constructor(
                 val seatRect = RectF(seat.x, seat.y, seat.x + seat.width, seat.y + seat.height)
                 if (seatRect.contains(worldX, worldY)) {
                     // 座位被点击了
-                    seat.selected = !seat.selected // 切换选中状态
-                    onSeatSelected?.invoke(seat)    // 调用回调
-                    invalidate()                   // 请求重绘以更新视图
-                    return true // 表示事件已处理
+                    seat.selected = !seat.selected
+                    onSeatSelected?.invoke(seat)
+                    invalidate()
+                    return true
                 }
             }
-            return false // 没有座位被点击
+            return false
         }
     }
 
