@@ -25,6 +25,8 @@ class SeatMapView @JvmOverloads constructor(
         Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = Color.LTGRAY }
     private val selectedPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = Color.GREEN }
+    private val testPaint =
+        Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = Color.GREEN }
 
     // Matrix 控制缩放和平移
     private val matrix = Matrix()
@@ -81,6 +83,54 @@ class SeatMapView @JvmOverloads constructor(
 
         // 绘制缩略图
         drawMiniMap(canvas)
+
+        // ---------------
+
+/*        val contentLeft = mapRect?.left ?: 0f
+        val contentTop = mapRect?.top ?: 0f
+
+        val sourcePoint = floatArrayOf(contentLeft, contentTop)
+
+        val screenPoint = FloatArray(2)
+
+        matrix.mapPoints(screenPoint, sourcePoint)
+
+
+        val mapLeftOnScreenX: Float = screenPoint[0]
+        val mapTopOnScreenY: Float = screenPoint[1]
+
+        println("mapLeftOnScreenX: $mapLeftOnScreenX")*/
+
+/*        val screenBoundsOfMap = RectF(mapRect) // 如果 mapRect 可能为 null，进行处理
+
+
+        matrix.mapRect(screenBoundsOfMap)
+
+        // 3. 现在 screenBoundsOfMap 包含了地图内容在屏幕上的边界
+        val mapLeftOnScreen: Float = screenBoundsOfMap.left
+        val mapTopOnScreen: Float = screenBoundsOfMap.top
+        val mapRightOnScreen: Float = screenBoundsOfMap.right
+        val mapBottomOnScreen: Float = screenBoundsOfMap.bottom
+
+        //println("left: $mapLeftOnScreen, top: $mapTopOnScreen")
+        println("right: $mapRightOnScreen, bottom: $mapBottomOnScreen")*/
+
+
+        val screenBoundsOfMap = RectF(mapRect)
+        matrix.mapRect(screenBoundsOfMap)
+
+        val maxBoundsIsViewBounds = RectF(0f, 0f, width.toFloat(), height.toFloat())
+
+        val t = maxBoundsIsViewBounds.contains(screenBoundsOfMap)
+
+        println("________ $t")
+    }
+
+    lateinit var maxBoundsIsViewBounds: RectF
+
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        maxBoundsIsViewBounds = RectF(0f, 0f, width.toFloat(), height.toFloat())
     }
 
     private fun drawMiniMap(canvas: Canvas) {
@@ -142,6 +192,13 @@ class SeatMapView @JvmOverloads constructor(
 
             MotionEvent.ACTION_MOVE -> {
                 if(lastTouch){
+                    val screenBoundsOfMap = RectF(mapRect)
+                    matrix.mapRect(screenBoundsOfMap)
+
+                    if(!maxBoundsIsViewBounds.contains(screenBoundsOfMap)){
+                        return true
+                    }
+
                     val dx = event.x - lastTouchX
                     val dy = event.y - lastTouchY
                     matrix.postTranslate(dx, dy)
