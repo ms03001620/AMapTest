@@ -9,7 +9,6 @@ import android.view.ScaleGestureDetector
 import android.view.View
 import jp.linktivity.citypass.temp.one.Seat
 import kotlin.math.max
-import kotlin.math.min
 import androidx.core.graphics.withMatrix
 
 class SeatMapView @JvmOverloads constructor(
@@ -17,6 +16,10 @@ class SeatMapView @JvmOverloads constructor(
 ) : View(context, attrs) {
 
     private val seats = mutableListOf<Seat>()
+
+    private var seatsRectList: List<SeatRect>? = null
+
+    private var mapRect: RectF? = null
 
     private val seatPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = Color.LTGRAY }
@@ -41,27 +44,38 @@ class SeatMapView @JvmOverloads constructor(
     private val miniMapPaint = Paint().apply { color = Color.argb(100, 255, 0, 0) }
     private val miniViewPortPaint =
         Paint().apply { style = Paint.Style.STROKE; color = Color.RED; strokeWidth = 3f }
-    private val miniMapSize = 300f
+    private val miniMapSize = 250f
     private val miniMapMargin = 50f
 
     // 座位选中回调
     var onSeatSelected: ((Seat) -> Unit)? = null
 
     fun setSeats(list: List<Seat>) {
+        if (list.isEmpty()) return
+
         seats.clear()
         seats.addAll(list)
+
+        seatsRectList = list.map { seat ->
+            SeatRect(
+                id = seat.id,
+                selected = seat.selected,
+                rect = RectF(seat.x, seat.y, seat.x + seat.width, seat.y + seat.height)
+            )
+        }
+
+        mapRect = getSeatsBounds()
         invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (seats.isEmpty()) return
 
+        val data = seatsRectList ?: return
         canvas.withMatrix(matrix) {
             // 绘制座位
-            for (seat in seats) {
-                val rect = RectF(seat.x, seat.y, seat.x + seat.width, seat.y + seat.height)
-                drawRect(rect, if (seat.selected) selectedPaint else seatPaint)
+            for (seat in data) {
+                drawRect(seat.rect, if (seat.selected) selectedPaint else seatPaint)
             }
         }
 
@@ -70,7 +84,7 @@ class SeatMapView @JvmOverloads constructor(
     }
 
     private fun drawMiniMap(canvas: Canvas) {
-        val bounds = getSeatsBounds() ?: return
+        val bounds = mapRect ?: return
         val scale = miniMapSize / max(bounds.width(), bounds.height())
         val left = width - miniMapSize - miniMapMargin
         val top = miniMapMargin
@@ -103,19 +117,10 @@ class SeatMapView @JvmOverloads constructor(
     }
 
     private fun getSeatsBounds(): RectF? {
-        if (seats.isEmpty()) return null
-
-        // 当 x, y 是左上角坐标时：
-        // 左边界就是所有 seat.x 中的最小值
         val left = seats.minOf { it.x }
-        // 上边界就是所有 seat.y 中的最小值
         val top = seats.minOf { it.y }
-
-        // 右边界是所有 (seat.x + seat.width) 中的最大值
         val right = seats.maxOf { it.x + it.width }
-        // 下边界是所有 (seat.y + seat.height) 中的最大值
         val bottom = seats.maxOf { it.y + it.height }
-
         return RectF(left, top, right, bottom)
     }
 
@@ -169,10 +174,12 @@ class SeatMapView @JvmOverloads constructor(
         override fun onDown(e: MotionEvent): Boolean = true
 
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            val seat = findSeatByPoint(e.x, e.y)
-            if (seat != null) {
-                seat.selected = !seat.selected
-                onSeatSelected?.invoke(seat)
+            val seatRect = findSeatByPoint(e.x, e.y)
+            if (seatRect != null) {
+                seatRect.selected = !seatRect.selected
+                val origin = seats.first { it.id == seatRect.id }
+                origin.selected = seatRect.selected
+                onSeatSelected?.invoke(origin)
                 invalidate()
                 return true
             }
@@ -180,7 +187,8 @@ class SeatMapView @JvmOverloads constructor(
         }
     }
 
-    fun findSeatByPoint(touchX: Float, touchY: Float): Seat? {
+    fun findSeatByPoint(touchX: Float, touchY: Float): SeatRect? {
+        val data = seatsRectList ?: return null
         val points = floatArrayOf(touchX, touchY)
         val tempInverseMatrix = Matrix()
         matrix.invert(tempInverseMatrix)
@@ -189,13 +197,19 @@ class SeatMapView @JvmOverloads constructor(
         val worldX = points[0]
         val worldY = points[1]
 
-        for (seat in seats) {
-            val seatRect = RectF(seat.x, seat.y, seat.x + seat.width, seat.y + seat.height)
-            if (seatRect.contains(worldX, worldY)) {
+        for (seat in data) {
+            if (seat.rect.contains(worldX, worldY)) {
                 return seat
             }
         }
         return null
     }
+
+    data class SeatRect(
+        val id: String,
+        val rect: RectF,
+        var selected: Boolean,
+        val disable: Boolean? = false,
+    )
 
 }
