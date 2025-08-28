@@ -1,6 +1,5 @@
 package jp.linktivity.citypass.temp.four;
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
@@ -166,36 +165,37 @@ class SeatMapView @JvmOverloads constructor(
         }
     }
 
-    private inner class GestureListener: GestureDetector.SimpleOnGestureListener(){
+    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
         override fun onDown(e: MotionEvent): Boolean = true
 
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            // 1. 获取触摸点的视图坐标
-            val touchX = e.x
-            val touchY = e.y
-
-            // 2. 将视图坐标转换为内容坐标
-            val points = floatArrayOf(touchX, touchY)
-            val tempInverseMatrix = Matrix()
-            matrix.invert(tempInverseMatrix)
-            tempInverseMatrix.mapPoints(points)
-
-            val worldX = points[0]
-            val worldY = points[1]
-
-            // 3. 遍历座位，检查哪个座位包含了转换后的触摸点
-            for (seat in seats) {
-                val seatRect = RectF(seat.x, seat.y, seat.x + seat.width, seat.y + seat.height)
-                if (seatRect.contains(worldX, worldY)) {
-                    // 座位被点击了
-                    seat.selected = !seat.selected
-                    onSeatSelected?.invoke(seat)
-                    invalidate()
-                    return true
-                }
+            val seat = findSeatByPoint(e.x, e.y)
+            if (seat != null) {
+                seat.selected = !seat.selected
+                onSeatSelected?.invoke(seat)
+                invalidate()
+                return true
             }
             return false
         }
+    }
+
+    fun findSeatByPoint(touchX: Float, touchY: Float): Seat? {
+        val points = floatArrayOf(touchX, touchY)
+        val tempInverseMatrix = Matrix()
+        matrix.invert(tempInverseMatrix)
+        tempInverseMatrix.mapPoints(points)
+
+        val worldX = points[0]
+        val worldY = points[1]
+
+        for (seat in seats) {
+            val seatRect = RectF(seat.x, seat.y, seat.x + seat.width, seat.y + seat.height)
+            if (seatRect.contains(worldX, worldY)) {
+                return seat
+            }
+        }
+        return null
     }
 
 }
