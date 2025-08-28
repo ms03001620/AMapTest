@@ -53,6 +53,11 @@
             android:exported="false"
             android:configChanges="orientation|screenSize"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".rect.CMapActivity"
+            android:exported="false"
+            android:configChanges="orientation|screenSize"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".rect.SeatActivity"

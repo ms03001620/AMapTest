@@ -29,6 +29,7 @@ import com.example.amaptest.keyboard.KeyboardActivity
 import com.example.amaptest.life.LifecycleObserverActivity
 import com.example.amaptest.pager.PagerActivity
 import com.example.amaptest.rect.AuxiliaryLineActivity
+import com.example.amaptest.rect.CMapActivity
 import com.example.amaptest.rect.RectActivity
 import com.example.amaptest.rect.RectAreaActivity
 import com.example.amaptest.rect.SeatActivity
@@ -94,6 +95,14 @@ class EnterActivity : AppCompatActivity() {
 
         findViewById<View>(R.id.btn_rect).setOnClickListener {
             gotoRectActivity()
+        }
+
+        findViewById<View>(R.id.btn_seat).setOnClickListener {
+            startActivity(Intent(this, SeatActivity::class.java))
+        }
+
+        findViewById<View>(R.id.btn_cmap).setOnClickListener {
+            startActivity(Intent(this, CMapActivity::class.java))
         }
 
         findViewById<View>(R.id.btn_seat).setOnClickListener {
