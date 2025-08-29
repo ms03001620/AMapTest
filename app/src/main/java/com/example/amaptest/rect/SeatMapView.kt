@@ -3,6 +3,7 @@ package jp.linktivity.citypass.temp.four;
 import android.content.Context
 import android.graphics.*
 import android.util.AttributeSet
+import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
@@ -10,6 +11,8 @@ import android.view.View
 import jp.linktivity.citypass.temp.one.Seat
 import kotlin.math.max
 import androidx.core.graphics.withMatrix
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class SeatMapView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null
@@ -20,13 +23,14 @@ class SeatMapView @JvmOverloads constructor(
     private var seatsRectList: List<SeatRect>? = null
 
     private var mapRect: RectF? = null
+    private lateinit var mapCenter: Point
 
     private val seatPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = Color.LTGRAY }
     private val selectedPaint =
         Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = Color.GREEN }
     private val testPaint =
-        Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = Color.GREEN }
+        Paint(Paint.ANTI_ALIAS_FLAG).apply { style = Paint.Style.FILL; color = Color.GREEN; strokeWidth = 8f }
 
     // Matrix 控制缩放和平移
     private val matrix = Matrix()
@@ -44,9 +48,9 @@ class SeatMapView @JvmOverloads constructor(
 
     // MiniMap
     private val miniMapPaint = Paint().apply { color = Color.argb(100, 255, 0, 0) }
-    private val miniViewPortPaint =
-        Paint().apply { style = Paint.Style.STROKE; color = Color.RED; strokeWidth = 3f }
-    private val miniMapSize = 250f
+    private val miniMapWindow =
+        Paint().apply { style = Paint.Style.STROKE; color = Color.RED; strokeWidth = 2f }
+    private val miniMapSize = 180f
     private val miniMapMargin = 50f
 
     // 座位选中回调
@@ -67,6 +71,7 @@ class SeatMapView @JvmOverloads constructor(
         }
 
         mapRect = getSeatsBounds()
+        mapCenter = Point(mapRect!!.centerX().toInt(), mapRect!!.centerY().toInt())
         invalidate()
     }
 
@@ -77,60 +82,22 @@ class SeatMapView @JvmOverloads constructor(
         canvas.withMatrix(matrix) {
             // 绘制座位
             for (seat in data) {
-                drawRect(seat.rect, if (seat.selected) selectedPaint else seatPaint)
+               drawRect(seat.rect, if (seat.selected) selectedPaint else seatPaint)
             }
+            canvas.drawPoint(mapCenter.x.toFloat(), mapCenter.y.toFloat(), testPaint)
         }
+
+        canvas.drawPoint(windowBounds.centerX(), windowBounds.centerY(), testPaint)
 
         // 绘制缩略图
         drawMiniMap(canvas)
-
-        // ---------------
-
-/*        val contentLeft = mapRect?.left ?: 0f
-        val contentTop = mapRect?.top ?: 0f
-
-        val sourcePoint = floatArrayOf(contentLeft, contentTop)
-
-        val screenPoint = FloatArray(2)
-
-        matrix.mapPoints(screenPoint, sourcePoint)
-
-
-        val mapLeftOnScreenX: Float = screenPoint[0]
-        val mapTopOnScreenY: Float = screenPoint[1]
-
-        println("mapLeftOnScreenX: $mapLeftOnScreenX")*/
-
-/*        val screenBoundsOfMap = RectF(mapRect) // 如果 mapRect 可能为 null，进行处理
-
-
-        matrix.mapRect(screenBoundsOfMap)
-
-        // 3. 现在 screenBoundsOfMap 包含了地图内容在屏幕上的边界
-        val mapLeftOnScreen: Float = screenBoundsOfMap.left
-        val mapTopOnScreen: Float = screenBoundsOfMap.top
-        val mapRightOnScreen: Float = screenBoundsOfMap.right
-        val mapBottomOnScreen: Float = screenBoundsOfMap.bottom
-
-        //println("left: $mapLeftOnScreen, top: $mapTopOnScreen")
-        println("right: $mapRightOnScreen, bottom: $mapBottomOnScreen")*/
-
-
-        val screenBoundsOfMap = RectF(mapRect)
-        matrix.mapRect(screenBoundsOfMap)
-
-        val maxBoundsIsViewBounds = RectF(0f, 0f, width.toFloat(), height.toFloat())
-
-        val t = maxBoundsIsViewBounds.contains(screenBoundsOfMap)
-
-        println("________ $t")
     }
 
-    lateinit var maxBoundsIsViewBounds: RectF
+    lateinit var windowBounds: RectF
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        maxBoundsIsViewBounds = RectF(0f, 0f, width.toFloat(), height.toFloat())
+        windowBounds = RectF(0f, 0f, width.toFloat(), height.toFloat())
     }
 
     private fun drawMiniMap(canvas: Canvas) {
@@ -163,7 +130,7 @@ class SeatMapView @JvmOverloads constructor(
             left + (points[2] - bounds.left) * scale,
             top + (points[3] - bounds.top) * scale
         )
-        canvas.drawRect(miniRect, miniViewPortPaint)
+        canvas.drawRect(miniRect, miniMapWindow)
     }
 
     private fun getSeatsBounds(): RectF? {
@@ -192,15 +159,9 @@ class SeatMapView @JvmOverloads constructor(
 
             MotionEvent.ACTION_MOVE -> {
                 if(lastTouch){
-                    val screenBoundsOfMap = RectF(mapRect)
-                    matrix.mapRect(screenBoundsOfMap)
+                    var dx = event.x - lastTouchX
+                    var dy = event.y - lastTouchY
 
-                    if(!maxBoundsIsViewBounds.contains(screenBoundsOfMap)){
-                        return true
-                    }
-
-                    val dx = event.x - lastTouchX
-                    val dy = event.y - lastTouchY
                     matrix.postTranslate(dx, dy)
 
                     lastTouchX = event.x
@@ -215,6 +176,7 @@ class SeatMapView @JvmOverloads constructor(
         }
         return true
     }
+
 
     private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
@@ -261,6 +223,13 @@ class SeatMapView @JvmOverloads constructor(
         }
         return null
     }
+
+    fun calculateDistanceBetweenPointsF(point1: PointF, point2: PointF): Float {
+        val dx = point2.x - point1.x
+        val dy = point2.y - point1.y
+        return sqrt(dx.pow(2) + dy.pow(2))
+    }
+
 
     data class SeatRect(
         val id: String,
