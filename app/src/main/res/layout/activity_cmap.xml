@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <jp.linktivity.citypass.temp.four.SeatMapView
+    <com.example.amaptest.rect.SeatMapView
         android:id="@+id/seatMapView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

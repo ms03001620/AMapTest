@@ -1,13 +1,17 @@
-package jp.linktivity.citypass.temp.four
+package com.example.amaptest.rect
 
 import android.content.Context
 import android.graphics.*
+import android.os.Handler
+import android.os.Looper
+import android.os.Message
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import androidx.core.graphics.withMatrix
+import com.polestar.base.ext.dp
 import jp.linktivity.citypass.temp.one.Seat
 import kotlin.math.max
 import kotlin.math.min
@@ -27,13 +31,13 @@ class SeatMapView @JvmOverloads constructor(
     private val matrix = Matrix()
 
     //允许越过边界的距离
-    private val overScrollOffset = 100f
+    private val overScrollOffset = 0f//100f.dp
 
 
     // 缩放
     private val scaleDetector = ScaleGestureDetector(context, ScaleListener())
-    private val minScale = 0.5f
-    private val maxScale = 3.0f
+    private val minScale = 0.8f
+    private val maxScale = 5.0f
 
 
     // 滑动相关
@@ -44,14 +48,25 @@ class SeatMapView @JvmOverloads constructor(
 
     // MiniMap
     private val inverseMatrix = Matrix()
-    private val miniMapPaint = Paint().apply { color = Color.argb(100, 255, 0, 0) }
+    private val miniMapPaint = Paint().apply { color = Color.argb(22, 0, 0, 0) }
     private val miniMapWindow =
         Paint().apply { style = Paint.Style.STROKE; color = Color.RED; strokeWidth = 2f }
-    private val miniMapSize = 180f
+    private val miniMapSize = 80f.dp
     private val miniMapMargin = 50f
+    private var showMiniMap = false
+    // 地图显示控制
+    private val miniMapHideHandler = Handler(Looper.getMainLooper(), object: Handler.Callback {
+        override fun handleMessage(msg: Message): Boolean {
+            showMiniMap = false
+            invalidate()
+            return true
+        }
+    })
 
     // Callback
     var onSeatSelected: ((Seat) -> Unit)? = null
+
+
 
     fun setSeats(list: List<Seat>) {
         if (list.isEmpty()) return
@@ -68,10 +83,10 @@ class SeatMapView @JvmOverloads constructor(
         }
         mapRect = getSeatsBounds()
 
-        // 当View已经有尺寸时，重置矩阵以显示地图
+/*        // 当View已经有尺寸时，重置矩阵以显示地图
         if (width > 0 && height > 0) {
             resetMatrix()
-        }
+        }*/
         invalidate()
     }
 
@@ -82,7 +97,7 @@ class SeatMapView @JvmOverloads constructor(
         // 计算缩放比例，让地图完整显示在View中
         val scaleX = width / localMapRect.width()
         val scaleY = height / localMapRect.height()
-        val scale = min(scaleX, scaleY) // 取较小的比例以保证完全可见
+        val scale = min(scaleX, scaleY)
         matrix.postScale(scale, scale)
 
         // 计算平移距离，让地图居中
@@ -142,6 +157,7 @@ class SeatMapView @JvmOverloads constructor(
                 lastTouchY = event.y
             }
             MotionEvent.ACTION_MOVE -> {
+                showMiniMap()
                 if (isDragging) {
                     val dx = event.x - lastTouchX
                     val dy = event.y - lastTouchY
@@ -174,16 +190,16 @@ class SeatMapView @JvmOverloads constructor(
         // 水平检查
         if (transformedRect.width() < viewWidth) {
             // 地图比视图窄，限制其在视图内部移动，但允许向外偏移
-            if (transformedRect.left < -overScrollOffset) { // <-- 修改
+            if (transformedRect.left < -overScrollOffset) {
                 dx = -overScrollOffset - transformedRect.left
-            } else if (transformedRect.right > viewWidth + overScrollOffset) { // <-- 修改
+            } else if (transformedRect.right > viewWidth + overScrollOffset) {
                 dx = (viewWidth + overScrollOffset) - transformedRect.right
             }
         } else {
             // 地图比视图宽，限制视图不出现超过偏移量的空白
-            if (transformedRect.left > overScrollOffset) { // <-- 修改
+            if (transformedRect.left > overScrollOffset) {
                 dx = overScrollOffset - transformedRect.left
-            } else if (transformedRect.right < viewWidth - overScrollOffset) { // <-- 修改
+            } else if (transformedRect.right < viewWidth - overScrollOffset) {
                 dx = (viewWidth - overScrollOffset) - transformedRect.right
             }
         }
@@ -191,16 +207,16 @@ class SeatMapView @JvmOverloads constructor(
         // 垂直检查
         if (transformedRect.height() < viewHeight) {
             // 地图比视图矮，限制其在视图内部移动，但允许向外偏移
-            if (transformedRect.top < -overScrollOffset) { // <-- 修改
+            if (transformedRect.top < -overScrollOffset) {
                 dy = -overScrollOffset - transformedRect.top
-            } else if (transformedRect.bottom > viewHeight + overScrollOffset) { // <-- 修改
+            } else if (transformedRect.bottom > viewHeight + overScrollOffset) {
                 dy = (viewHeight + overScrollOffset) - transformedRect.bottom
             }
         } else {
             // 地图比视图高，限制视图不出现超过偏移量的空白
-            if (transformedRect.top > overScrollOffset) { // <-- 修改
+            if (transformedRect.top > overScrollOffset) {
                 dy = overScrollOffset - transformedRect.top
-            } else if (transformedRect.bottom < viewHeight - overScrollOffset) { // <-- 修改
+            } else if (transformedRect.bottom < viewHeight - overScrollOffset) {
                 dy = (viewHeight - overScrollOffset) - transformedRect.bottom
             }
         }
@@ -208,6 +224,12 @@ class SeatMapView @JvmOverloads constructor(
         if (dx != 0f || dy != 0f) {
             matrix.postTranslate(dx, dy)
         }
+    }
+    private fun showMiniMap() {
+        miniMapHideHandler.removeMessages(0)
+        miniMapHideHandler.sendEmptyMessageDelayed(0, 2000)
+        showMiniMap = true
+        invalidate()
     }
 
     private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -229,6 +251,7 @@ class SeatMapView @JvmOverloads constructor(
             }
 
             matrix.postScale(actualScaleFactor, actualScaleFactor, detector.focusX, detector.focusY)
+            showMiniMap()
             checkBounds() // 缩放后检查边界
             invalidate()
             return true
@@ -239,7 +262,8 @@ class SeatMapView @JvmOverloads constructor(
         // 返回true消费事件，是让拖动生效的关键
         override fun onDown(e: MotionEvent): Boolean = true
 
-        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+        override fun onSingleTapUp(e: MotionEvent): Boolean {
+            showMiniMap()
             val seatRect = findSeatByPoint(e.x, e.y)
             if (seatRect != null) {
                 seatRect.selected = !seatRect.selected
@@ -254,6 +278,9 @@ class SeatMapView @JvmOverloads constructor(
     }
 
     private fun drawMiniMap(canvas: Canvas) {
+        if (!showMiniMap) {
+            return
+        }
         val bounds = mapRect ?: return
         val scale = miniMapSize / max(bounds.width(), bounds.height())
         val left = width - miniMapSize - miniMapMargin
@@ -277,12 +304,20 @@ class SeatMapView @JvmOverloads constructor(
         val points = floatArrayOf(0f, 0f, width.toFloat(), height.toFloat())
         matrix.invert(inverseMatrix)
         inverseMatrix.mapPoints(points)
-        val miniRect = RectF(
-            left + (points[0] - bounds.left) * scale,
-            top + (points[1] - bounds.top) * scale,
-            left + (points[2] - bounds.left) * scale,
-            top + (points[3] - bounds.top) * scale
-        )
+
+        val rectTop = top + (points[1] - bounds.top) * scale
+        val miniRectTop = if (rectTop < top) top else rectTop
+        val rectBottom = top + (points[3] - bounds.top) * scale
+        val miniRectBottom = if (rectBottom > bottom) bottom else rectBottom
+
+        val rectLeft = left + (points[0] - bounds.left) * scale
+        val miniRectLeft = if (rectLeft < left) left else rectLeft
+
+        val rectRight = left + (points[2] - bounds.left) * scale
+        val miniRectRight = if (rectRight > right) right else rectRight
+
+        val miniRect = RectF(miniRectLeft, miniRectTop, miniRectRight, miniRectBottom,)
+        canvas.drawRect(miniRect, miniMapWindow)
         canvas.drawRect(miniRect, miniMapWindow)
     }
 
@@ -308,7 +343,7 @@ class SeatMapView @JvmOverloads constructor(
     private fun getCurrentScale(): Float {
         val values = FloatArray(9)
         matrix.getValues(values)
-        return values[Matrix.MSCALE_X] // 对于X和Y等比缩放，取一个即可
+        return values[Matrix.MSCALE_X]
     }
 
     data class SeatRect(

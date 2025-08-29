@@ -137,13 +137,13 @@ val Int.sp: Int
             floor(Resources.getSystem().displayMetrics.scaledDensity * this.toDouble()).toInt()
         }
 
-val Float.dp: Int
+val Float.dp: Float
     get() {
         return TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             this,
             Resources.getSystem().displayMetrics
-        ).toInt()
+        )
     }
 
 /**
