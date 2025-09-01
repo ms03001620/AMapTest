@@ -19,8 +19,9 @@ class CMapActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             delay(1000)
+            init()
         }
-        init()
+
     }
 
     private fun init() {
@@ -28,7 +29,7 @@ class CMapActivity : AppCompatActivity() {
         val seats = mutableListOf<Seat>()
         var id = 0
         for (row in 0 until 7) {
-            for (col in 0 until 7) {
+            for (col in 0 until 12) {
                 val width = 80f
                 val height = 80f
                 seats.add(

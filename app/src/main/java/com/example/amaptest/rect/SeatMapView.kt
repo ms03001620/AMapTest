@@ -51,8 +51,8 @@ class SeatMapView @JvmOverloads constructor(
     private val miniMapPaint = Paint().apply { color = Color.argb(22, 0, 0, 0) }
     private val miniMapWindow =
         Paint().apply { style = Paint.Style.STROKE; color = Color.RED; strokeWidth = 2f }
-    private val miniMapSize = 80f.dp
-    private val miniMapMargin = 50f
+    private val miniMapSize = 200f.dp
+    private val miniMapMargin = 24f.dp
     private var showMiniMap = false
     // 地图显示控制
     private val miniMapHideHandler = Handler(Looper.getMainLooper(), object: Handler.Callback {
